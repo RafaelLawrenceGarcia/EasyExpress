@@ -26,8 +26,13 @@ public class GameManager : MonoBehaviour
         // If we flagged that we are "Continuing", load the data now
         if (PlayerPrefs.GetInt("IsLoadingGame") == 1)
         {
-            LoadPlayerData();
+           if (CloudDataHandler.Instance != null)
+            {
+                CloudDataHandler.Instance.LoadGameData(); 
+            }
             PlayerPrefs.SetInt("IsLoadingGame", 0); // Reset flag
+            
+            
         }
     }
 

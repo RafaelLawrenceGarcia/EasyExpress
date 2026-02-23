@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class PlacementManager : MonoBehaviour
 {
+    [Header("Shop System Integration")]
+    public ItemData currentPlacementItem; 
+
     [Header("Settings")]
     public float reachDistance = 2.5f; 
 
@@ -93,8 +96,18 @@ public class PlacementManager : MonoBehaviour
     {
         GameObject newItem = null;
 
-        // 1. Spawn the Real Object
-        if (currentSlotTag == "Workstation" || currentSlotTag == "WorkstationSlot")
+        // 1. Check if we are placing a specific Shop Item
+        if (currentPlacementItem != null && currentPlacementItem.prefabToPlace != null)
+        {
+            newItem = Instantiate(currentPlacementItem.prefabToPlace, currentSlotTransform.position, currentSlotTransform.rotation);
+            // Optional: tag it based on category
+          if (currentPlacementItem.itemType == ItemCategory.PCPart) newItem.tag = "PickupPC";
+            else newItem.tag = "Untagged"; 
+
+            // Consumed? If you want items to be one-time use, remove it from inventory here.
+        }
+        // 2. Fallback to your old logic (The Boxes)
+        else if (currentSlotTag == "Workstation" || currentSlotTag == "WorkstationSlot")
         {
             newItem = Instantiate(realPCPrefab, currentSlotTransform.position, currentSlotTransform.rotation);
             newItem.tag = "PickupPC"; 
@@ -105,21 +118,14 @@ public class PlacementManager : MonoBehaviour
             newItem.tag = "PickupBox";
         }
 
-        // --- CHECK THIS PART CAREFULLY ---
-        // 2. TELL THE SLOT TO HIDE
+        // 3. Occupy Slot (Existing logic)
         if (currentSlotData != null)
         {
-            // This line sends the "Turn Off" signal
             currentSlotData.PlaceItemHere(newItem);
         }
-        else
-        {
-            // If you see this in the console, you forgot to add the SlotData script to the cube!
-            Debug.LogError("MISSING SCRIPT: The Green Cube does not have the SlotData script!");
-        }
-        // ---------------------------------
 
-        // 3. Reset Player
+        // 4. Reset
         isHoldingCardboardBox = false; 
+        currentPlacementItem = null; // Clear the selection
     }
 }

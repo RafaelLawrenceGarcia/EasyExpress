@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d988921e4a5a08443a8ada3d869c6c21, type: 3}
+  m_Name: Job_BrokenRAM
+  m_EditorClassIdentifier: Assembly-CSharp::EmailData
+  senderName: Goofy AH RAF
+  profilePic: {fileID: 1987536967, guid: 2104b22c0a9c2d949b88f5ac6dd9c4b7, type: 3}
+  subjectLine: IM dumb
+  bodyText: My PC is not booting up and I dont know the cause. I am really dumb so
+    please fix it for me
+  labourCost: 500
+  partsBudget: 1200
+  objectives:
+  - PC Ready To boot
+  - Clean Dust
+  - Check Parts

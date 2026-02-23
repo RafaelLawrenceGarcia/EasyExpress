@@ -17,8 +17,10 @@ public class PlayerInteract : MonoBehaviour
     public InspectionManager inspectionManager; 
 
     [Header("UI References")]
+    public GameObject goldHUD; // <--- NEW: Reference to your Gold HUD!
     public GameObject pressEPrompt; 
     public GameObject dialoguePanel; 
+    public PCController computerOS; 
     public TextMeshProUGUI nameText; 
     public TextMeshProUGUI dialogueText;
 
@@ -39,11 +41,36 @@ public class PlayerInteract : MonoBehaviour
 
         // IMPORTANT: I removed the "AddListener" lines here.
         // You MUST connect the buttons in the Inspector to avoid the "Double Click" bug.
+        if (dialoguePanel != null) dialoguePanel.SetActive(false);
+        if (computerOS != null) computerOS.gameObject.SetActive(false);
+        if (pressEPrompt != null) pressEPrompt.SetActive(false);
+        
+        // NEW: Ensure the Gold HUD is visible when you start walking around
+        if (goldHUD != null) goldHUD.SetActive(true); 
     }
 
-    void Update()
+ void Update()
     {
-        // 1. Mouse Cursor Logic
+        // --- 1. COMPUTER INPUT LOGIC ---
+        // Check if the Computer OS is actually visible
+        if (computerOS != null && computerOS.gameObject.activeSelf)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                PauseManager.BlockPause = true; // Stop Pause Menu
+
+                // Ask the Computer: "Can I leave?"
+                // If it returns TRUE, it means we are at the Desktop and can stand up.
+                // If it returns FALSE, it means it just closed an App (Shop) and went to Desktop.
+                if (computerOS.HandleEscapeInput())
+                {
+                    CloseShopComputer();
+                }
+                return; 
+            }
+        }
+
+        // 2. Mouse Cursor Logic (Standard)
         if (isInteracting) 
         {
             Cursor.lockState = CursorLockMode.None;
@@ -51,6 +78,7 @@ public class PlayerInteract : MonoBehaviour
             return; 
         }
 
+        // 3. Normal Raycast Logic
         Ray ray = mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
@@ -59,35 +87,32 @@ public class PlayerInteract : MonoBehaviour
             // --- IDENTIFY WHAT WE HIT ---
             NPCWalker cityNPC = hit.collider.GetComponent<NPCWalker>();
             CustomerInside shopCustomer = hit.collider.GetComponent<CustomerInside>();
+            ShopTrigger shopPC = hit.collider.GetComponent<ShopTrigger>();
             ShopDoor shopDoor = hit.collider.GetComponent<ShopDoor>();   
             SceneDoor sceneDoor = hit.collider.GetComponent<SceneDoor>(); 
             InspectableItem item = hit.collider.GetComponent<InspectableItem>(); 
             
             bool isPickupBox = hit.collider.CompareTag("PickupBox");
             bool isPickupPC = hit.collider.CompareTag("PickupPC"); 
-            
-            // Only allow shop customer if they are at the counter
             bool readyShopCustomer = (shopCustomer != null && shopCustomer.isAtSpot);
 
             // --- SHOW PROMPT ---
-            if (cityNPC || readyShopCustomer || shopDoor || sceneDoor || item || isPickupBox || isPickupPC)
+            if (cityNPC || readyShopCustomer || shopDoor || sceneDoor || item || isPickupBox || isPickupPC || shopPC)
             {
                 pressEPrompt.SetActive(true); 
 
                 // --- PRESS E TO INTERACT ---
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    if (cityNPC) StartCityInteraction(cityNPC); // <--- OLD LOGIC RESTORED
+                    if (cityNPC) StartCityInteraction(cityNPC);
+                    else if (shopPC) OpenShopComputer(); // E will ONLY open it
                     else if (readyShopCustomer) StartShopInteraction(shopCustomer);
                     else if (shopDoor) shopDoor.EnterShop(transform.root.gameObject);
                     else if (sceneDoor) sceneDoor.EnterDoor();
-                    else if (item) 
+                    else if (item && inspectionManager) 
                     {
-                        if(inspectionManager) 
-                        {
-                            inspectionManager.Inspect(item);
-                            pressEPrompt.SetActive(false);
-                        }
+                        inspectionManager.Inspect(item);
+                        pressEPrompt.SetActive(false);
                     }
                 }
 
@@ -122,6 +147,9 @@ public class PlayerInteract : MonoBehaviour
         FreezePlayer(true);
         pressEPrompt.SetActive(false);
         dialoguePanel.SetActive(true);
+
+        // FORCE HIDE the Shop (Safety check)
+        if(computerOS != null) computerOS.gameObject.SetActive(false);
         
         // Reset Buttons
         option1Button.interactable = true;
@@ -226,5 +254,41 @@ public class PlayerInteract : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         OnExitClick();
+    }
+
+  void OpenShopComputer()
+    {
+        isInteracting = true;
+        
+        // 1. Show the Computer OS Root
+        if(computerOS != null) 
+        {
+            computerOS.gameObject.SetActive(true);
+            computerOS.ShowDesktop(); // Reset to desktop when logging in
+        }
+
+        // 2. Safety: Hide other UI
+        if(dialoguePanel != null) dialoguePanel.SetActive(false);
+        pressEPrompt.SetActive(false);
+        
+        // NEW: Hide the Gold HUD so it doesn't overlap your computer screen
+        if(goldHUD != null) goldHUD.SetActive(false);
+
+        // 3. Freeze Player
+        FreezePlayer(true);
+    }
+
+    public void CloseShopComputer()
+    {
+        isInteracting = false;
+
+        // 1. Hide the entire Computer
+        if(computerOS != null) computerOS.gameObject.SetActive(false);
+        
+        // NEW: Bring the Gold HUD back when you stand up!
+        if(goldHUD != null) goldHUD.SetActive(true);
+
+        // 2. Unfreeze
+        FreezePlayer(false);
     }
 }

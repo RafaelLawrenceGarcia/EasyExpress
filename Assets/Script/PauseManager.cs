@@ -3,54 +3,65 @@ using UnityEngine;
 public class PauseManager : MonoBehaviour
 {
     [Header("UI Reference")]
-    public GameObject optionsPanel; // Drag your entire Options Menu (the black box) here
+    public GameObject optionsPanel; 
 
-    // Global state so other scripts can check if we are paused
     public static bool isPaused = false;
+    
+    // --- 1. THE BLOCKER FLAG ---
+    // Other scripts can set this to TRUE to stop the pause menu from opening
+    public static bool BlockPause = false; 
 
     void Start()
     {
-        // Ensure the menu is hidden when the game starts
-        if(optionsPanel != null)
-            optionsPanel.SetActive(false);
-            
-        ResumeGame(); // Ensure time is running and cursor is locked
+        if(optionsPanel != null) optionsPanel.SetActive(false);
+        ResumeGame();
     }
 
     void Update()
     {
-        // Toggle Pause when ESC is pressed
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            // --- 2. CHECK THE FLAG ---
+            // If something else (like the Shop) blocked us, STOP immediately.
+            if (BlockPause) return; 
+
             if (isPaused)
             {
                 ResumeGame();
             }
             else
             {
-                PauseGame();
+                // Only pause if the cursor is HIDDEN (Gameplay Mode)
+                if (Cursor.visible == false)
+                {
+                    PauseGame();
+                }
             }
         }
     }
 
+    // --- 3. AUTO-RESET ---
+    // LateUpdate runs AFTER all Update functions are done.
+    // This resets the flag so the pause menu works again in the next frame.
+    void LateUpdate()
+    {
+        BlockPause = false;
+    }
+
     public void PauseGame()
     {
-        optionsPanel.SetActive(true); // Show the menu
-        Time.timeScale = 0f;          // FREEZE the game logic/physics
+        optionsPanel.SetActive(true); 
+        Time.timeScale = 0f;          
         isPaused = true;
-
-        // Unlock the mouse so you can click the sliders
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     public void ResumeGame()
     {
-        optionsPanel.SetActive(false); // Hide the menu
-        Time.timeScale = 1f;           // UNFREEZE the game
+        optionsPanel.SetActive(false); 
+        Time.timeScale = 1f;           
         isPaused = false;
-
-        // Lock the mouse back to the center for gameplay
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
