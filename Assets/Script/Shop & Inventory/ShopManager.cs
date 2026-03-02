@@ -7,8 +7,8 @@ using System.Collections.Generic;
 public class ShopManager : MonoBehaviour
 {
     [Header("Search UI")]
-    public TMP_InputField searchInputField; // <--- NEW: Reference to your Search Bar
-    private string currentCategory = "";    // <--- NEW: Remembers what category we are in
+    public TMP_InputField searchInputField; 
+    private string currentCategory = "";    
 
     [Header("Category Navigation UI")]
     public GameObject categoryScreen;        
@@ -74,7 +74,6 @@ public class ShopManager : MonoBehaviour
         GenerateCategories();
         OpenCategoryScreen();
 
-        // --- NEW: Tell the search bar to trigger our filter method whenever the text changes! ---
         if (searchInputField != null)
         {
             searchInputField.onValueChanged.AddListener(UpdateSearchFilter);
@@ -123,15 +122,14 @@ public class ShopManager : MonoBehaviour
         // Save the category we just clicked on
         currentCategory = categoryName;
 
-        // Clear the search bar (this automatically triggers UpdateSearchFilter and spawns the items!)
+        // Clear the search bar quietly
         if (searchInputField != null)
         {
-            searchInputField.text = ""; 
+            searchInputField.SetTextWithoutNotify(""); 
         }
-        else
-        {
-            UpdateSearchFilter(""); // Fallback just in case
-        }
+
+        // Forcefully spawn the items right now!
+        UpdateSearchFilter(""); 
     }
 
     public void BackToCategories()
@@ -139,7 +137,26 @@ public class ShopManager : MonoBehaviour
         OpenCategoryScreen();
     }
 
-    // --- NEW: DYNAMIC SEARCH FILTER ---
+    // --- NEW: Internal Escape Logic ---
+    // Returns TRUE if it did something (like close the cart). 
+    // Returns FALSE if it's already on the main screen and should be shut down.
+    public bool HandleEscape()
+    {
+        if (isCartOpen)
+        {
+            ToggleCart();
+            return true; 
+        }
+        else if (itemListScreen != null && itemListScreen.activeSelf)
+        {
+            ReturnToCategoryList(); // <--- Updated to use your new command!
+            return true; 
+        }
+        
+        return false; 
+    }
+
+    // --- DYNAMIC SEARCH FILTER ---
 
     public void UpdateSearchFilter(string searchTerm)
     {
@@ -149,29 +166,43 @@ public class ShopManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        // 2. Make the search term lowercase so it doesn't matter if they type "gtx" or "GTX"
         string lowerSearchTerm = searchTerm.ToLower();
 
-        // 3. Loop through all items and spawn only the ones that match
+        // 3. Loop through all items
         foreach (ItemData item in itemsForSale)
         {
-            // First check if it belongs to the category we are currently looking at
-            if (item.category == currentCategory)
+            // The Category Bypass
+            bool matchesCategory = string.IsNullOrEmpty(currentCategory) || item.category == currentCategory;
+
+            if (matchesCategory)
             {
-                // Then check if the search bar is empty OR if the item name contains the typed letters
                 if (string.IsNullOrEmpty(lowerSearchTerm) || item.itemName.ToLower().Contains(lowerSearchTerm))
                 {
                     GameObject newProduct = Instantiate(productTemplatePrefab, contentContainer);
                     Transform t = newProduct.transform;
 
-                    t.Find("Product Name").GetComponent<TextMeshProUGUI>().text = item.itemName; 
-                    t.Find("Product Price").GetComponent<TextMeshProUGUI>().text = "₱" + item.price.ToString("N0"); 
-                    t.Find("Product Specs").GetComponent<TextMeshProUGUI>().text = item.description; 
-                    t.Find("Image").GetComponent<Image>().sprite = item.icon; 
+                    // --- THE SAFE CHECKS ---
+                    Transform nameObj = t.Find("Product Name");
+                    if (nameObj != null) nameObj.GetComponent<TextMeshProUGUI>().text = item.itemName;
 
-                    Button addToCartBtn = t.Find("Add To Cart").GetComponent<Button>();
-                    addToCartBtn.onClick.AddListener(() => AddToCart(item));
+                    Transform priceObj = t.Find("Product Price");
+                    if (priceObj != null) priceObj.GetComponent<TextMeshProUGUI>().text = "₱" + item.price.ToString("N0");
 
+                    Transform specsObj = t.Find("Product Specs");
+                    if (specsObj != null) specsObj.GetComponent<TextMeshProUGUI>().text = item.description;
+
+                    Transform imgObj = t.Find("Image");
+                    if (imgObj != null) imgObj.GetComponent<Image>().sprite = item.icon;
+
+                    // Add to Cart Button
+                    Transform cartBtnObj = t.Find("Add To Cart");
+                    if (cartBtnObj != null)
+                    {
+                        Button addToCartBtn = cartBtnObj.GetComponent<Button>();
+                        addToCartBtn.onClick.AddListener(() => AddToCart(item));
+                    }
+
+                    // Main Panel Button (for opening details)
                     Button mainPanelBtn = newProduct.GetComponent<Button>();
                     if (mainPanelBtn != null)
                     {
@@ -327,6 +358,30 @@ public class ShopManager : MonoBehaviour
         Vector2 targetPos = isCartOpen ? cartVisiblePosition : cartHiddenPosition;
 
         activeCartAnimation = StartCoroutine(SlideCartCoroutine(targetPos));
+    }
+
+    public void ReturnToCategoryList()
+    {
+        // 1. Turn OFF the Item List panel
+        if (itemListScreen != null) 
+        {
+            itemListScreen.SetActive(false);
+        }
+
+        // 2. Turn ON the Category screen
+        if (categoryScreen != null) 
+        {
+            categoryScreen.SetActive(true);
+        }
+
+        // 3. Reset the memory so the shop is fresh!
+        currentCategory = "";
+        
+        // 4. Clear the search bar visually without triggering a new search
+        if (searchInputField != null)
+        {
+            searchInputField.SetTextWithoutNotify(""); 
+        }
     }
 
     private IEnumerator SlideCartCoroutine(Vector2 targetPosition)

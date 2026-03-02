@@ -3,47 +3,44 @@ using UnityEngine;
 public class PCController : MonoBehaviour
 {
     [Header("Desktop")]
-    public GameObject desktopPanel; // Assign 'Computer_own' here
+    public GameObject desktopPanel; 
 
     [Header("Applications")]
-    public GameObject storeAppPanel;
+    public GameObject storeAppPanel;  // This is StoreUI (Categories)
+    public GameObject storeAppPanel2; // NEW: This is StoreUI2 (Item List)
     public GameObject furnitureShopPanel;
     public GameObject emailAppPanel;
     public GameObject programsAppPanel;
-    public GameObject wallpaperAppPanel; // New Wallpaper App slot!
+    public GameObject wallpaperAppPanel; 
 
     private void Start()
     {
         ShowDesktop();
     }
 
-    // --- NAVIGATION LOGIC ---
-
     public void ShowDesktop()
     {
-        // 1. Turn ON the Desktop
         if (desktopPanel) desktopPanel.SetActive(true);
 
-        // 2. Turn OFF all apps to prevent overlapping
+        // Turn OFF BOTH store panels when going to desktop
         if (storeAppPanel) storeAppPanel.SetActive(false);
+        if (storeAppPanel2) storeAppPanel2.SetActive(false); 
+        
         if (furnitureShopPanel) furnitureShopPanel.SetActive(false);
         if (emailAppPanel) emailAppPanel.SetActive(false);
         if (programsAppPanel) programsAppPanel.SetActive(false);
         if (wallpaperAppPanel) wallpaperAppPanel.SetActive(false);
     }
 
-    // --- NEW: CLOSE BUTTON FUNCTION ---
-    // Connect this to the red "X" buttons on your app panels!
     public void CloseCurrentApp()
     {
         ShowDesktop(); 
     }
 
-    // --- APP OPENING FUNCTIONS ---
-
     public void OpenStoreApp()
     {
-        ShowDesktop(); // Closes everything else first!
+        ShowDesktop(); 
+        // Always start the store at the Category screen
         if (storeAppPanel) storeAppPanel.SetActive(true);
     }
 
