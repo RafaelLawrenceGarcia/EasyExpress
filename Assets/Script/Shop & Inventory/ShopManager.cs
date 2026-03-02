@@ -6,10 +6,14 @@ using System.Collections.Generic;
 
 public class ShopManager : MonoBehaviour
 {
+    [Header("Search UI")]
+    public TMP_InputField searchInputField; // <--- NEW: Reference to your Search Bar
+    private string currentCategory = "";    // <--- NEW: Remembers what category we are in
+
     [Header("Category Navigation UI")]
-    public GameObject categoryScreen;        // The "Item Category" ScrollView
-    public GameObject itemListScreen;        // The "Item List" ScrollView
-    public GameObject categoryButtonPrefab;  // The prefab for the category button
+    public GameObject categoryScreen;        
+    public GameObject itemListScreen;        
+    public GameObject categoryButtonPrefab;  
     public Transform categoryContentContainer; 
 
     [Header("Shop UI References")]
@@ -67,16 +71,20 @@ public class ShopManager : MonoBehaviour
 
         RefreshCartUI();
         
-        // NEW: Generate the category buttons and show the category screen!
         GenerateCategories();
         OpenCategoryScreen();
+
+        // --- NEW: Tell the search bar to trigger our filter method whenever the text changes! ---
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.AddListener(UpdateSearchFilter);
+        }
     }
 
-    // --- NEW: CATEGORY NAVIGATION METHODS ---
+    // --- CATEGORY NAVIGATION METHODS ---
 
     void GenerateCategories()
     {
-        // 1. Find all the unique categories from your itemsForSale list
         List<string> uniqueCategories = new List<string>();
         foreach (ItemData item in itemsForSale)
         {
@@ -86,74 +94,92 @@ public class ShopManager : MonoBehaviour
             }
         }
 
-        // 2. Clear out any old buttons
         foreach (Transform child in categoryContentContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // 3. Spawn a button for each category found
         foreach (string cat in uniqueCategories)
         {
             GameObject newCatBtn = Instantiate(categoryButtonPrefab, categoryContentContainer);
-            
-            // Set the text on the button to the category name
             newCatBtn.GetComponentInChildren<TextMeshProUGUI>().text = cat;
             
-            // Tell the button to open this specific category when clicked
-            string selectedCategory = cat; // Store in local variable for the listener
+            string selectedCategory = cat; 
             newCatBtn.GetComponent<Button>().onClick.AddListener(() => OpenItemList(selectedCategory));
         }
     }
 
     public void OpenCategoryScreen()
     {
-        // Turn ON Categories, turn OFF Items
         categoryScreen.SetActive(true);
         itemListScreen.SetActive(false);
     }
 
     public void OpenItemList(string categoryName)
     {
-        // Turn OFF Categories, turn ON Items
         categoryScreen.SetActive(false);
         itemListScreen.SetActive(true);
 
-        // Clear out the old items from the previous category we looked at
+        // Save the category we just clicked on
+        currentCategory = categoryName;
+
+        // Clear the search bar (this automatically triggers UpdateSearchFilter and spawns the items!)
+        if (searchInputField != null)
+        {
+            searchInputField.text = ""; 
+        }
+        else
+        {
+            UpdateSearchFilter(""); // Fallback just in case
+        }
+    }
+
+    public void BackToCategories()
+    {
+        OpenCategoryScreen();
+    }
+
+    // --- NEW: DYNAMIC SEARCH FILTER ---
+
+    public void UpdateSearchFilter(string searchTerm)
+    {
+        // 1. Clear out the old items
         foreach (Transform child in contentContainer)
         {
             Destroy(child.gameObject);
         }
 
-        // Spawn ONLY the items that match the clicked category!
+        // 2. Make the search term lowercase so it doesn't matter if they type "gtx" or "GTX"
+        string lowerSearchTerm = searchTerm.ToLower();
+
+        // 3. Loop through all items and spawn only the ones that match
         foreach (ItemData item in itemsForSale)
         {
-            if (item.category == categoryName)
+            // First check if it belongs to the category we are currently looking at
+            if (item.category == currentCategory)
             {
-                GameObject newProduct = Instantiate(productTemplatePrefab, contentContainer);
-                Transform t = newProduct.transform;
-
-                t.Find("Product Name").GetComponent<TextMeshProUGUI>().text = item.itemName; 
-                t.Find("Product Price").GetComponent<TextMeshProUGUI>().text = "₱" + item.price.ToString("N0"); 
-                t.Find("Product Specs").GetComponent<TextMeshProUGUI>().text = item.description; 
-                t.Find("Image").GetComponent<Image>().sprite = item.icon; 
-
-                Button addToCartBtn = t.Find("Add To Cart").GetComponent<Button>();
-                addToCartBtn.onClick.AddListener(() => AddToCart(item));
-
-                Button mainPanelBtn = newProduct.GetComponent<Button>();
-                if (mainPanelBtn != null)
+                // Then check if the search bar is empty OR if the item name contains the typed letters
+                if (string.IsNullOrEmpty(lowerSearchTerm) || item.itemName.ToLower().Contains(lowerSearchTerm))
                 {
-                    mainPanelBtn.onClick.AddListener(() => OpenProductDetails(item));
+                    GameObject newProduct = Instantiate(productTemplatePrefab, contentContainer);
+                    Transform t = newProduct.transform;
+
+                    t.Find("Product Name").GetComponent<TextMeshProUGUI>().text = item.itemName; 
+                    t.Find("Product Price").GetComponent<TextMeshProUGUI>().text = "₱" + item.price.ToString("N0"); 
+                    t.Find("Product Specs").GetComponent<TextMeshProUGUI>().text = item.description; 
+                    t.Find("Image").GetComponent<Image>().sprite = item.icon; 
+
+                    Button addToCartBtn = t.Find("Add To Cart").GetComponent<Button>();
+                    addToCartBtn.onClick.AddListener(() => AddToCart(item));
+
+                    Button mainPanelBtn = newProduct.GetComponent<Button>();
+                    if (mainPanelBtn != null)
+                    {
+                        mainPanelBtn.onClick.AddListener(() => OpenProductDetails(item));
+                    }
                 }
             }
         }
-    }
-
-    // Hook this method to your new "Back" button!
-    public void BackToCategories()
-    {
-        OpenCategoryScreen();
     }
 
     // ----------------------------------------

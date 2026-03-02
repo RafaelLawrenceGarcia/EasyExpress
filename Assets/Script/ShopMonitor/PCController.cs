@@ -6,10 +6,11 @@ public class PCController : MonoBehaviour
     public GameObject desktopPanel; // Assign 'Computer_own' here
 
     [Header("Applications")]
-    public GameObject storeAppPanel;    // Assign 'Store' here
-    public GameObject furnitureShopPanel; // Assign 'Shop' here (if different)
-    public GameObject emailAppPanel;    // Assign 'Email' here
-    public GameObject programsAppPanel; // Assign 'ADD/REMOVE PROGRAMS' here
+    public GameObject storeAppPanel;
+    public GameObject furnitureShopPanel;
+    public GameObject emailAppPanel;
+    public GameObject programsAppPanel;
+    public GameObject wallpaperAppPanel; // New Wallpaper App slot!
 
     private void Start()
     {
@@ -23,46 +24,63 @@ public class PCController : MonoBehaviour
         // 1. Turn ON the Desktop
         if (desktopPanel) desktopPanel.SetActive(true);
 
-        // 2. Turn OFF all apps
+        // 2. Turn OFF all apps to prevent overlapping
         if (storeAppPanel) storeAppPanel.SetActive(false);
         if (furnitureShopPanel) furnitureShopPanel.SetActive(false);
         if (emailAppPanel) emailAppPanel.SetActive(false);
         if (programsAppPanel) programsAppPanel.SetActive(false);
+        if (wallpaperAppPanel) wallpaperAppPanel.SetActive(false);
+    }
+
+    // --- NEW: CLOSE BUTTON FUNCTION ---
+    // Connect this to the red "X" buttons on your app panels!
+    public void CloseCurrentApp()
+    {
+        ShowDesktop(); 
     }
 
     // --- APP OPENING FUNCTIONS ---
-    // Connect these to your Desktop Icons!
 
     public void OpenStoreApp()
     {
-        // We keep desktop TRUE so you can see the wallpaper behind it
+        ShowDesktop(); // Closes everything else first!
         if (storeAppPanel) storeAppPanel.SetActive(true);
     }
 
     public void OpenFurnitureShop()
     {
+        ShowDesktop();
         if (furnitureShopPanel) furnitureShopPanel.SetActive(true);
     }
 
     public void OpenEmailApp()
     {
+        ShowDesktop();
         if (emailAppPanel) emailAppPanel.SetActive(true);
     }
 
     public void OpenProgramsApp()
     {
+        ShowDesktop();
         if (programsAppPanel) programsAppPanel.SetActive(true);
+    }
+
+    public void OpenWallpaperApp()
+    {
+        ShowDesktop();
+        if (wallpaperAppPanel) wallpaperAppPanel.SetActive(true);
     }
 
     // --- INPUT HANDLING ---
     public bool HandleEscapeInput()
     {
-        // Check if ANY app is open. If so, close it and go to Desktop.
+        // Added the wallpaper app to the check list
         bool isAnyAppOpen = 
             (storeAppPanel != null && storeAppPanel.activeSelf) ||
             (furnitureShopPanel != null && furnitureShopPanel.activeSelf) ||
             (emailAppPanel != null && emailAppPanel.activeSelf) ||
-            (programsAppPanel != null && programsAppPanel.activeSelf);
+            (programsAppPanel != null && programsAppPanel.activeSelf) ||
+            (wallpaperAppPanel != null && wallpaperAppPanel.activeSelf);
 
         if (isAnyAppOpen)
         {

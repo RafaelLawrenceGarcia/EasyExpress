@@ -15,9 +15,10 @@ MonoBehaviour:
   id: 
   itemName: GTX 1660 Super
   icon: {fileID: 692355008, guid: d857eb8f60262ad4f90893e7cf9c9510, type: 3}
+  category: GPU
   description: DD5 4GB RAM
   specs: 
   price: 400
-  category: 0
+  itemType: 0
   prefabToPlace: {fileID: 0}
   isTool: 0

@@ -41,31 +41,44 @@ public class EmailManager : MonoBehaviour
         RefreshInboxUI();
     }
 
-    public void RefreshInboxUI()
+   public void RefreshInboxUI()
+{
+    foreach (Transform child in inboxContentContainer)
     {
-        foreach (Transform child in inboxContentContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        foreach (EmailData email in activeEmails)
-        {
-            GameObject newEmailBtn = Instantiate(emailInboxPrefab, inboxContentContainer);
-            Transform t = newEmailBtn.transform;
-
-            t.Find("Sender Name").GetComponent<TextMeshProUGUI>().text = email.senderName;
-            t.Find("Subject Line").GetComponent<TextMeshProUGUI>().text = email.subjectLine;
-
-            Transform profileImageTransform = t.Find("Profile Image");
-            if (profileImageTransform != null)
-            {
-                profileImageTransform.GetComponent<Image>().sprite = email.profilePic;
-            }
-
-            Button btn = newEmailBtn.GetComponent<Button>();
-            btn.onClick.AddListener(() => SelectEmail(email));
-        }
+        Destroy(child.gameObject);
     }
+
+    foreach (EmailData email in activeEmails)
+    {
+        GameObject newEmailBtn = Instantiate(emailInboxPrefab, inboxContentContainer);
+        Transform t = newEmailBtn.transform;
+
+        // SAFELY look for the Sender Name
+        Transform senderTransform = t.Find("Sender Name");
+        if (senderTransform != null) {
+            senderTransform.GetComponent<TextMeshProUGUI>().text = email.senderName;
+        } else {
+            Debug.LogWarning("Could not find a child named 'Sender Name' on your prefab!");
+        }
+
+        // SAFELY look for the Subject Line
+        Transform subjectTransform = t.Find("Subject Line");
+        if (subjectTransform != null) {
+            subjectTransform.GetComponent<TextMeshProUGUI>().text = email.subjectLine;
+        }
+
+        // SAFELY look for the Profile Image
+        Transform profileImageTransform = t.Find("Profile Image");
+        if (profileImageTransform != null)
+        {
+            profileImageTransform.GetComponent<Image>().sprite = email.profilePic;
+        }
+
+        // Because the script didn't crash above, this will successfully run!
+        Button btn = newEmailBtn.GetComponent<Button>();
+        btn.onClick.AddListener(() => SelectEmail(email));
+    }
+}
 
     public void SelectEmail(EmailData email)
     {
