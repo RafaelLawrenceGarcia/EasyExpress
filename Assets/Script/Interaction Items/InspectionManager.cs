@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using TMPro;
-using System.Collections.Generic; // ADDED THIS for the Dictionary
+using System.Collections.Generic;
 
 public class InspectionManager : MonoBehaviour
 {
@@ -24,7 +24,7 @@ public class InspectionManager : MonoBehaviour
     public Camera inspectionCamera;
 
     [Header("Blur Settings")]
-    public Volume blurVolume; // Drag your BlurVolume here!
+    public Volume blurVolume;
 
     [Header("Scripts & Animators to Disable")]
     public GTAMovement playerMovement;
@@ -144,6 +144,17 @@ public class InspectionManager : MonoBehaviour
         currentClone.transform.localScale = Vector3.one;
 
         Destroy(currentClone.GetComponent<Rigidbody>());
+
+        // --- NEW FIX: DELETE THE PARENT SCRIPT ON THE CLONE ---
+        // This stops the entire PC from turning green!
+        InspectableItem rootScript = currentClone.GetComponent<InspectableItem>();
+        if (rootScript != null) Destroy(rootScript);
+
+        // --- TURN OFF THE OUTER SHELL COLLIDER ---
+        // Lets your mouse laser pass through the invisible outer box
+        Collider mainCollider = currentClone.GetComponent<Collider>();
+        if (mainCollider != null) mainCollider.enabled = false; 
+
         SetLayerRecursively(currentClone, LayerMask.NameToLayer("InspectLayer"));
 
         // Auto-Frame

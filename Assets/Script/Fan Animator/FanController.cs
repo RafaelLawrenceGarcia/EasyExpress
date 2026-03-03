@@ -1,10 +1,10 @@
-    using UnityEngine;
+using UnityEngine;
 
 public class PCFanController : MonoBehaviour
 {
     [Header("Rotation Settings")]
     public float spinSpeed = 1000f;
-    public Vector3 spinAxis = new Vector3(1, 0, 0); // Z-axis is usually forward/backward
+    public Vector3 spinAxis = new Vector3(0, 0, 1);
 
     [Header("RGB Lighting Settings")]
     public bool enableRainbowRGB = true;
@@ -13,22 +13,31 @@ public class PCFanController : MonoBehaviour
 
     private Material fanMaterial;
     private float currentHue;
+    private Renderer fanRenderer; 
 
-   void Start()
+    void Start()
     {
-        // Notice the added "InChildren" here! This tells the invisible pivot to grab the colors from the fan blade attached to it.
-        Renderer rend = GetComponentInChildren<Renderer>(); 
-        if (rend != null)
+        // Save the renderer so we can find the physical center of the model later
+        fanRenderer = GetComponentInChildren<Renderer>(); 
+        if (fanRenderer != null)
         {
-            fanMaterial = rend.material; 
+            fanMaterial = fanRenderer.material; 
             fanMaterial.EnableKeyword("_EMISSION"); 
         }
     }
 
     void Update()
     {
-        // 1. Spin the fan blade smoothly
-        transform.Rotate(spinAxis * spinSpeed * Time.deltaTime);
+        // 1. THE AUTOMATIC PIVOT FIX
+        // We find the 'bounds.center' (the exact middle of the 3D mesh) and spin around that!
+        if (fanRenderer != null)
+        {
+            // Convert your local axis (0,0,1) into a world direction
+            Vector3 worldAxis = transform.TransformDirection(spinAxis);
+            
+            // Spin around the visual center, completely ignoring the broken pivot point
+            transform.RotateAround(fanRenderer.bounds.center, worldAxis, spinSpeed * Time.deltaTime);
+        }
 
         // 2. Cycle the RGB Rainbow Glow
         if (enableRainbowRGB && fanMaterial != null)

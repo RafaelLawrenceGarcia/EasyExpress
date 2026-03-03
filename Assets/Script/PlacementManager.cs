@@ -22,18 +22,18 @@ public class PlacementManager : MonoBehaviour
     public GameObject realBoxPrefab;     
 
     [Header("State")]
-    public bool isHoldingCardboardBox = false;
+    public bool isHoldingItem = false; 
 
     private bool canPlace = false;
     private Transform currentSlotTransform; 
     private string currentSlotTag;
-    private SlotData currentSlotData; // <--- NEW: Stores the slot's data
+    private SlotData currentSlotData; 
 
     void Update()
     {
         HandleVisuals();
 
-        if (!isHoldingCardboardBox) return;
+        if (!isHoldingItem) return;
 
         Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
@@ -43,21 +43,17 @@ public class PlacementManager : MonoBehaviour
             currentSlotTransform = hit.transform;
             currentSlotTag = hit.collider.tag;
             
-            // --- NEW: CHECK IF SLOT IS FULL ---
             currentSlotData = hit.collider.GetComponent<SlotData>();
 
-            // Valid Tag?
             bool isValidTag = (currentSlotTag == "Workstation" || currentSlotTag == "WorkstationSlot" || 
                                currentSlotTag == "Storage" || currentSlotTag == "StorageSlot");
 
-            // Valid AND Not Full?
             if (isValidTag && currentSlotData != null && !currentSlotData.isOccupied)
             {
                 canPlace = true;
             }
             else
             {
-                // Either wrong tag, or the slot is already full!
                 canPlace = false;
             }
         }
@@ -74,7 +70,7 @@ public class PlacementManager : MonoBehaviour
 
     void HandleVisuals()
     {
-        if (isHoldingCardboardBox)
+        if (isHoldingItem) 
         {
             if (heldItemModel && !heldItemModel.activeSelf) heldItemModel.SetActive(true);
             if (playerBodyModel && playerBodyModel.activeSelf) playerBodyModel.SetActive(false);
@@ -88,25 +84,24 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
-    // ... inside PlacementManager.cs ...
-
-    // ... inside PlacementManager.cs ...
+    public void PickUpObject(GameObject pickedUpObj)
+    {
+        if (isHoldingItem) return;
+        
+        isHoldingItem = true;
+        Destroy(pickedUpObj); 
+    }
 
     void PerformPlacement()
     {
         GameObject newItem = null;
 
-        // 1. Check if we are placing a specific Shop Item
         if (currentPlacementItem != null && currentPlacementItem.prefabToPlace != null)
         {
             newItem = Instantiate(currentPlacementItem.prefabToPlace, currentSlotTransform.position, currentSlotTransform.rotation);
-            // Optional: tag it based on category
           if (currentPlacementItem.itemType == ItemCategory.PCPart) newItem.tag = "PickupPC";
             else newItem.tag = "Untagged"; 
-
-            // Consumed? If you want items to be one-time use, remove it from inventory here.
         }
-        // 2. Fallback to your old logic (The Boxes)
         else if (currentSlotTag == "Workstation" || currentSlotTag == "WorkstationSlot")
         {
             newItem = Instantiate(realPCPrefab, currentSlotTransform.position, currentSlotTransform.rotation);
@@ -118,14 +113,12 @@ public class PlacementManager : MonoBehaviour
             newItem.tag = "PickupBox";
         }
 
-        // 3. Occupy Slot (Existing logic)
         if (currentSlotData != null)
         {
             currentSlotData.PlaceItemHere(newItem);
         }
 
-        // 4. Reset
-        isHoldingCardboardBox = false; 
-        currentPlacementItem = null; // Clear the selection
+        isHoldingItem = false; 
+        currentPlacementItem = null;
     }
 }

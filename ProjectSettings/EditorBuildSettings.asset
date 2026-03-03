@@ -9,11 +9,11 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: d05e50be032bdfc49b3bbcd390a0b52e
   - enabled: 1
-    path: Assets/Scenes/GamePlay.unity
-    guid: 12a95c9d0505ced4b8b4df9d4a71cbee
+    path: Assets/Scenes/Gameplay.unity
+    guid: 09fee8868ab83f2458b9e4d6fb696771
   - enabled: 1
-    path: Assets/Scenes/EasyExpressUI.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/City.unity
+    guid: 3ef9658da06403045bffbe7ea802757b
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

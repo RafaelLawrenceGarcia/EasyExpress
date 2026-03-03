@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d988921e4a5a08443a8ada3d869c6c21, type: 3}
   m_Name: Job_BrokenRAM
   m_EditorClassIdentifier: Assembly-CSharp::EmailData
-  senderName: Goofy AH RAF
+  senderName: Bob Martis III
   profilePic: {fileID: 1987536967, guid: 2104b22c0a9c2d949b88f5ac6dd9c4b7, type: 3}
-  subjectLine: IM dumb
-  bodyText: My PC is not booting up and I dont know the cause. I am really dumb so
-    please fix it for me
+  subjectLine: PC not Booting up.
+  bodyText: My PC is not booting up and I dont know the cause. Can you Fix it?
   labourCost: 500
   partsBudget: 1200
   objectives:
   - PC Ready To boot
   - Clean Dust
   - Check Parts
+  pcProblems: []

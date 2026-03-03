@@ -3,12 +3,15 @@ using UnityEngine.UI;
 
 public class ProgramEntry : MonoBehaviour
 {
-    public Button actionButton; // The whole prefab image should probably have the Button component
+    public Button actionButton; 
 
-    // We only need to tell the button what its job is (Install or Uninstall)
     public void Setup(Sprite appImage)
     {
-        // This sets the visual for the prefab in the grid
-        GetComponent<Image>().sprite = appImage;
+        // FIX: Instead of looking for an Image on itself, 
+        // it grabs the Image from the button you already linked in the Inspector!
+        if (actionButton != null)
+        {
+            actionButton.GetComponent<Image>().sprite = appImage;
+        }
     }
 }
