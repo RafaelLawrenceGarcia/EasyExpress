@@ -129,6 +129,16 @@ MonoBehaviour:
   itemName: 24 Pins
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 2202330260441919059}
+  connectorType: 24pin
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &76097253658228979
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,6 +246,16 @@ MonoBehaviour:
   itemName: Heatsink
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &7332279430326005171
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -393,6 +413,16 @@ MonoBehaviour:
   itemName: RAM
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &145177319853014528
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,6 +536,16 @@ MonoBehaviour:
   itemName: RAM
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &8453487004014457330
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -635,6 +675,16 @@ MonoBehaviour:
   itemName: SSD Slot
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &9121137695863811070
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -764,6 +814,16 @@ MonoBehaviour:
   itemName: Heatsink
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &1948081639384915177
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -814,7 +874,7 @@ Transform:
   m_GameObject: {fileID: 840023496505003431}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -893,6 +953,16 @@ MonoBehaviour:
   itemName: 4 pin
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &1019230858105151497
 GameObject:
   m_ObjectHideFlags: 0
@@ -1101,7 +1171,7 @@ Transform:
   m_GameObject: {fileID: 1267824535075773558}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1180,6 +1250,16 @@ MonoBehaviour:
   itemName: 5 pin
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &1339283138572090471
 GameObject:
   m_ObjectHideFlags: 0
@@ -1299,7 +1379,7 @@ Transform:
   m_GameObject: {fileID: 1374374305503119230}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1378,6 +1458,16 @@ MonoBehaviour:
   itemName: 10 Pins
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &7468877401947930253
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1507,6 +1597,17 @@ MonoBehaviour:
   itemName: PC Case
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts:
+  - {fileID: 1930042012967327047}
 --- !u!64 &3000283392493716638
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1647,7 +1748,7 @@ Transform:
   m_GameObject: {fileID: 1526790707367928530}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1726,6 +1827,16 @@ MonoBehaviour:
   itemName: 4 pin
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &1574557806516179008
 GameObject:
   m_ObjectHideFlags: 0
@@ -1841,13 +1952,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1863190328022470884}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.70710695, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.821, y: 1.0788, z: -0.083}
-  m_LocalScale: {x: 100, y: 99.999985, z: 99.999985}
+  m_LocalRotation: {x: -0.00000017881389, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.008210145, y: 0.00083000184, z: 0.010787998}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2490394184043178505}
-  m_Father: {fileID: 9115520994834098308}
+  m_Father: {fileID: 8063753731285973457}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3800974544380612214
 MonoBehaviour:
@@ -1998,6 +2109,16 @@ MonoBehaviour:
   itemName: Audio/Mic
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &1900518431823841510
 GameObject:
   m_ObjectHideFlags: 0
@@ -2127,6 +2248,16 @@ MonoBehaviour:
   itemName: RAM Slot
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &1964262175833931763
 GameObject:
   m_ObjectHideFlags: 0
@@ -2238,6 +2369,16 @@ MonoBehaviour:
   itemName: Intel Cpu
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &6580168029597178330
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2288,7 +2429,7 @@ Transform:
   m_GameObject: {fileID: 2170300968647964560}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2367,6 +2508,16 @@ MonoBehaviour:
   itemName: 4 pin
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &2176435559335548806
 GameObject:
   m_ObjectHideFlags: 0
@@ -2502,6 +2653,16 @@ MonoBehaviour:
   itemName: RAM
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &2228942810177077625
 GameObject:
   m_ObjectHideFlags: 0
@@ -2534,7 +2695,9 @@ Transform:
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7920086808753373107}
+  - {fileID: 9211321019385521467}
   m_Father: {fileID: 9115520994834098308}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5313309319339062571
@@ -2609,6 +2772,16 @@ MonoBehaviour:
   itemName: Power Supply
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &5743688055042657341
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2760,6 +2933,16 @@ MonoBehaviour:
   itemName: PCIE Lane 1
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &2240718332892562702
 GameObject:
   m_ObjectHideFlags: 0
@@ -2867,6 +3050,16 @@ MonoBehaviour:
   itemName: CMOS
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &3427432929965556163
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3008,7 +3201,7 @@ Transform:
   m_GameObject: {fileID: 2253448125308282007}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3087,6 +3280,16 @@ MonoBehaviour:
   itemName: 10 Pins
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &2657688374502772809
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3137,7 +3340,7 @@ Transform:
   m_GameObject: {fileID: 2322181122420209262}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3216,6 +3419,16 @@ MonoBehaviour:
   itemName: 4 pin
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &2486004211709532452
 GameObject:
   m_ObjectHideFlags: 0
@@ -3245,7 +3458,7 @@ Transform:
   m_GameObject: {fileID: 2486004211709532452}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3324,6 +3537,16 @@ MonoBehaviour:
   itemName: 24 Pins
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &1028740861388191234
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3563,7 +3786,8 @@ Transform:
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5657170387285624794}
   m_Father: {fileID: 9115520994834098308}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4042768338522108676
@@ -3638,6 +3862,16 @@ MonoBehaviour:
   itemName: Fan Frame
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &51062803571335080
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3793,6 +4027,16 @@ MonoBehaviour:
   itemName: USB 2.0
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &2973129158234551648
 GameObject:
   m_ObjectHideFlags: 0
@@ -3902,6 +4146,16 @@ MonoBehaviour:
   itemName: Display Port
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &673617977788570348
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4053,6 +4307,16 @@ MonoBehaviour:
   itemName: RAM Slot
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &3644524526080496160
 GameObject:
   m_ObjectHideFlags: 0
@@ -4164,6 +4428,16 @@ MonoBehaviour:
   itemName: SSD NvMe M.2
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &8906354539155520130
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4186,6 +4460,63 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5804727923383348310, guid: 20decb1f2f66f3c42aead13360d8c819, type: 3}
+--- !u!1 &3707590734996956208
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9211321019385521467}
+  - component: {fileID: 2815240377740227834}
+  m_Layer: 6
+  m_Name: powersupply
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9211321019385521467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3707590734996956208}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.0056, y: 0.00088, z: 0.00084}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5372824824519835294}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2815240377740227834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3707590734996956208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  itemName: Power Supply
+  itemDescription: No description available.
+  isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &3758999377124379639
 GameObject:
   m_ObjectHideFlags: 0
@@ -4315,6 +4646,16 @@ MonoBehaviour:
   itemName: RAM Slot
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &3959703422599909776
 GameObject:
   m_ObjectHideFlags: 0
@@ -4340,13 +4681,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3959703422599909776}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.70710695, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.821, y: 0.651, z: -0.083}
-  m_LocalScale: {x: 100, y: 99.999985, z: 99.999985}
+  m_LocalRotation: {x: -0.00000017881389, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.008210145, y: 0.0008300024, z: 0.0065099993}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5669155322645888850}
-  m_Father: {fileID: 9115520994834098308}
+  m_Father: {fileID: 7082410634000728733}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &781174408119706343
 MonoBehaviour:
@@ -4584,6 +4925,16 @@ MonoBehaviour:
   itemName: SATA
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &4847238456139288974
 GameObject:
   m_ObjectHideFlags: 0
@@ -4692,6 +5043,16 @@ MonoBehaviour:
   itemName: USB 3.0
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &3024799567760965025
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4933,6 +5294,95 @@ MonoBehaviour:
   itemName: RAM Slot
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
+--- !u!1 &5195733425723353114
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7920086808753373107}
+  - component: {fileID: 822078678391060669}
+  - component: {fileID: 5648767235252121266}
+  m_Layer: 6
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7920086808753373107
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5195733425723353114}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.00352, y: 0, z: 0.001624}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5372824824519835294}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &822078678391060669
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5195733425723353114}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.001776428, y: 0.002020416, z: 0.0005004716}
+  m_Center: {x: 0.0012516784, y: 0.0011698485, z: -0.00048235833}
+--- !u!114 &5648767235252121266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5195733425723353114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  itemName: PSU 24-Pin Socket
+  itemDescription: No description available.
+  isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 2815240377740227834}
+  connectorType: 24pin
+  isPSUPort: 1
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &5320067111583136078
 GameObject:
   m_ObjectHideFlags: 0
@@ -4965,7 +5415,8 @@ Transform:
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1333047605301327842}
   m_Father: {fileID: 9115520994834098308}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7627197660266436448
@@ -5040,6 +5491,16 @@ MonoBehaviour:
   itemName: Fan Frame
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &8655550327520533084
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5169,6 +5630,16 @@ MonoBehaviour:
   itemName: PSU Fan
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &1529167354212747403
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5300,6 +5771,16 @@ MonoBehaviour:
   itemName: USB 3.0
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &8864780786878313653
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5441,6 +5922,16 @@ MonoBehaviour:
   itemName: GPU
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &3151292245227269974
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5488,13 +5979,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6301541475581213688}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.70710695, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0.772, y: 1.059, z: -0.056}
-  m_LocalScale: {x: 100, y: 99.999985, z: 99.999985}
+  m_LocalRotation: {x: -0.00000017881389, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.0077200327, y: 0.0005599952, z: 0.010589999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3663380301549687527}
-  m_Father: {fileID: 9115520994834098308}
+  m_Father: {fileID: 32206430205850530}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4875159194902192003
 MonoBehaviour:
@@ -5545,7 +6036,8 @@ Transform:
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4855876574034096990}
   m_Father: {fileID: 9115520994834098308}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6921439974096128461
@@ -5620,6 +6112,16 @@ MonoBehaviour:
   itemName: Fan Frame
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &200140171786287661
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5749,6 +6251,16 @@ MonoBehaviour:
   itemName: PCIE Lane 1
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &7615957295320461402
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5785,7 +6297,7 @@ GameObject:
   - component: {fileID: 399064075839039282}
   - component: {fileID: 1930042012967327047}
   m_Layer: 6
-  m_Name: case.002
+  m_Name: screws
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5900,6 +6412,16 @@ MonoBehaviour:
   itemName: Screws
   itemDescription: 
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &6854631590815768223
 GameObject:
   m_ObjectHideFlags: 0
@@ -5929,7 +6451,7 @@ Transform:
   m_GameObject: {fileID: 6854631590815768223}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6008,6 +6530,16 @@ MonoBehaviour:
   itemName: 10 Pins
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &4910957396080842156
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6135,8 +6667,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: PC Case
-  itemDescription: No description available.
+  itemDescription: d
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &4376225537577249494
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6188,7 +6730,7 @@ Transform:
   m_GameObject: {fileID: 7361314138198155437}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6267,6 +6809,16 @@ MonoBehaviour:
   itemName: 14 Pins
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &6205455577324578693
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6321,7 +6873,8 @@ Transform:
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 9080961648554268005}
   m_Father: {fileID: 9115520994834098308}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &7215038223593988912
@@ -6396,6 +6949,16 @@ MonoBehaviour:
   itemName: Fan Frame
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &7905857323899464046
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6507,10 +7070,6 @@ Transform:
   - {fileID: 5100783494544287386}
   - {fileID: 7164745095931445266}
   - {fileID: 3354696813668574730}
-  - {fileID: 1333047605301327842}
-  - {fileID: 9080961648554268005}
-  - {fileID: 4855876574034096990}
-  - {fileID: 5657170387285624794}
   - {fileID: 8063753731285973457}
   - {fileID: 7082410634000728733}
   - {fileID: 4394797731043476072}
@@ -6580,6 +7139,16 @@ MonoBehaviour:
   itemName: PC
   itemDescription: No description available.
   isMainObject: 1
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &7942438246270153990
 GameObject:
   m_ObjectHideFlags: 0
@@ -6605,13 +7174,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7942438246270153990}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.70710695, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.821, y: 0.192, z: -0.105}
-  m_LocalScale: {x: 100, y: 99.999985, z: 99.999985}
+  m_LocalRotation: {x: -0.00000017881389, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.008210145, y: 0.0010499962, z: 0.0019199991}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4349610784643105736}
-  m_Father: {fileID: 9115520994834098308}
+  m_Father: {fileID: 4394797731043476072}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2000685017260989079
 MonoBehaviour:
@@ -6659,7 +7228,7 @@ Transform:
   m_GameObject: {fileID: 7981270059970566694}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6738,6 +7307,16 @@ MonoBehaviour:
   itemName: 10 Pins
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &8489690190112119398
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6878,7 +7457,7 @@ Transform:
   m_GameObject: {fileID: 8199372452755682099}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6957,6 +7536,16 @@ MonoBehaviour:
   itemName: 8 pin
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &8330070321173465054
 GameObject:
   m_ObjectHideFlags: 0
@@ -6985,7 +7574,7 @@ Transform:
   m_GameObject: {fileID: 8330070321173465054}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7064,6 +7653,16 @@ MonoBehaviour:
   itemName: 4 pin
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &8454606282929521383
 GameObject:
   m_ObjectHideFlags: 0
@@ -7173,6 +7772,16 @@ MonoBehaviour:
   itemName: HDMI Port
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &3397371563657635772
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -7224,7 +7833,7 @@ Transform:
   m_GameObject: {fileID: 8621576769981879532}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7303,6 +7912,16 @@ MonoBehaviour:
   itemName: 10 Pins
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!64 &831217025348576622
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -7460,6 +8079,16 @@ MonoBehaviour:
   itemName: RAM
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []
 --- !u!1 &8657867454448135000
 GameObject:
   m_ObjectHideFlags: 0
@@ -7793,3 +8422,13 @@ MonoBehaviour:
   itemName: SATA
   itemDescription: No description available.
   isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  blockingParts: []

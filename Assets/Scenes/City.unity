@@ -419,6 +419,26 @@ PrefabInstance:
       propertyPath: movementScript
       value: 
       objectReference: {fileID: 743896761}
+    - target: {fileID: 2261285949199785299, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2433054718395571401, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2433054718395571401, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2433054718395571401, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 2433054718395571401, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -50
+      objectReference: {fileID: 0}
     - target: {fileID: 2487654066907869622, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
       propertyPath: m_Name
       value: HumanPrototypeFemale(Copy)2(1)
@@ -482,6 +502,22 @@ PrefabInstance:
     - target: {fileID: 3672788777857563221, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197844854317915148, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197844854317915148, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197844854317915148, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197844854317915148, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5348294414349243518, guid: 36c4b378b57f54c49be3e885882ce3cf, type: 3}
       propertyPath: m_Cameras.Array.size
