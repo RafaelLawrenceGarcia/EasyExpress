@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Splines;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using TMPro;
@@ -24,6 +25,11 @@ public class InspectionManager : MonoBehaviour
     public Material highlightMaterial;
     public Material validPortMaterial;
     public Material invalidPortMaterial;
+    public Material ghostMaterial;
+
+    [Header("Player Storage (Inventory)")]
+    [Tooltip("Parts you remove will be placed in here so you can install them elsewhere.")]
+    public List<GameObject> playerStorage = new List<GameObject>();
 
     [Header("Cameras")]
     public Camera mainCamera;
@@ -46,14 +52,11 @@ public class InspectionManager : MonoBehaviour
     public float smoothTime = 10f;
 
     [Header("Wiring System")]
-    [Tooltip("Connector mesh that spawns at both ends of a wire.")]
     public GameObject wireHeadPrefab;
+    public Vector3 wireHeadOffset = new Vector3(0, 0, 0.02f); 
     public Material cableMaterial;
-    [Tooltip("Base sag multiplier. 0.15-0.3 looks natural.")]
     public float cableSag = 0.2f;
-    [Range(0f, 2f)]
-    public float sagLengthScale = 0.6f;
-    [Tooltip("Higher = smoother curve.")]
+    [Range(0f, 2f)] public float sagLengthScale = 0.6f;
     public int cableResolution = 20;
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -67,8 +70,9 @@ public class InspectionManager : MonoBehaviour
     private Transform       wireStartTransform;
     private GameObject      activeWireHead;
     private GameObject      activeWireTail;
-
-    private Coroutine activeSnapCoroutine;
+    private Coroutine       activeSnapCoroutine;
+    private Vector3         activeRibbonDir    = Vector3.right; 
+    private Vector3         activeEndRibbonDir = Vector3.up;    
 
     private GameObject currentClone;
     private GameObject voidAnchor;
@@ -86,8 +90,14 @@ public class InspectionManager : MonoBehaviour
     private GameObject lastHitObject;
     private Dictionary<Renderer, Material[]> originalMaterialCache = new Dictionary<Renderer, Material[]>();
     private float optimalDistance;
-
     private List<InspectableItem> allPorts = new List<InspectableItem>();
+
+    // --- NEW: State Tracking for the Real Object ---
+    private Vector3 savedOriginalPosition;
+    private Quaternion savedOriginalRotation;
+    private Transform savedOriginalParent;
+    private bool savedRbKinematic;
+    private Dictionary<GameObject, int> originalLayerCache = new Dictionary<GameObject, int>();
 
     // ─────────────────────────────────────────────────────────────────────────────
     //  UNITY LIFECYCLE
@@ -170,25 +180,49 @@ public class InspectionManager : MonoBehaviour
             voidAnchor.transform.position = new Vector3(0, -1000, 0);
         }
 
-        currentClone = Instantiate(originalItem.gameObject, voidAnchor.transform);
+        // --- NEW: WE NO LONGER CLONE! WE EDIT THE REAL OBJECT ---
+        currentClone = originalItem.gameObject;
+
+        // Save its real-world position and properties so we can put it back later
+        savedOriginalPosition = currentClone.transform.position;
+        savedOriginalRotation = currentClone.transform.rotation;
+        savedOriginalParent = currentClone.transform.parent;
+
+        // Move the real object to the black void
+        currentClone.transform.SetParent(voidAnchor.transform);
         currentClone.transform.localPosition = Vector3.zero;
         currentClone.transform.localRotation = Quaternion.identity;
-        currentClone.transform.localScale    = Vector3.one;
 
-        Destroy(currentClone.GetComponent<Rigidbody>());
+        // Turn off physics while inspecting
+        Rigidbody rb = currentClone.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            savedRbKinematic = rb.isKinematic;
+            rb.isKinematic = true;
+        }
 
         InspectableItem rootScript = currentClone.GetComponent<InspectableItem>();
-        if (rootScript != null) Destroy(rootScript);
+        if (rootScript != null) rootScript.enabled = false;
 
         Collider mainCollider = currentClone.GetComponent<Collider>();
         if (mainCollider != null) mainCollider.enabled = false;
 
-        SetLayerRecursively(currentClone, LayerMask.NameToLayer("InspectLayer"));
+        // Save original layers and move to InspectLayer
+        SaveAndSetLayers(currentClone, LayerMask.NameToLayer("InspectLayer"));
 
         Bounds bounds = new Bounds(currentClone.transform.position, Vector3.zero);
         foreach (Renderer r in currentClone.GetComponentsInChildren<Renderer>())
             bounds.Encapsulate(r.bounds);
         currentClone.transform.position += voidAnchor.transform.position - bounds.center;
+
+        // If there are any ghost slots from a previous session, turn them visible again!
+        foreach (InspectableItem item in currentClone.GetComponentsInChildren<InspectableItem>(true))
+        {
+            if (item.isInventorySlot)
+            {
+                foreach(Renderer r in item.GetComponentsInChildren<Renderer>()) r.enabled = true;
+            }
+        }
 
         float objectSize = bounds.extents.magnitude;
         if (objectSize == 0) objectSize = 1f;
@@ -220,7 +254,37 @@ public class InspectionManager : MonoBehaviour
         if (blurVolume != null) blurVolume.weight = 0;
         ClearHighlight();
 
-        if (currentClone != null) Destroy(currentClone);
+        if (currentClone != null)
+        {
+            // Turn all ghost slots invisible before putting the PC back on the desk
+            foreach (InspectableItem item in currentClone.GetComponentsInChildren<InspectableItem>(true))
+            {
+                if (item.isInventorySlot)
+                {
+                    foreach (Renderer r in item.GetComponentsInChildren<Renderer>()) r.enabled = false;
+                }
+            }
+
+            // Restore the object's normal layers
+            RestoreLayers(currentClone);
+            originalLayerCache.Clear(); // Empty cache for next time
+
+            InspectableItem rootScript = currentClone.GetComponent<InspectableItem>();
+            if (rootScript != null) rootScript.enabled = true;
+
+            Collider mainCollider = currentClone.GetComponent<Collider>();
+            if (mainCollider != null) mainCollider.enabled = true;
+
+            Rigidbody rb = currentClone.GetComponent<Rigidbody>();
+            if (rb != null) rb.isKinematic = savedRbKinematic;
+
+            // Put the real object back exactly where we found it!
+            currentClone.transform.SetParent(savedOriginalParent);
+            currentClone.transform.position = savedOriginalPosition;
+            currentClone.transform.rotation = savedOriginalRotation;
+        }
+        
+        currentClone = null; // Detach reference (we do NOT destroy it anymore!)
         allPorts.Clear();
 
         if (infoPanel)    infoPanel.SetActive(false);
@@ -255,25 +319,125 @@ public class InspectionManager : MonoBehaviour
         InspectableItem part = lastHitObject.GetComponent<InspectableItem>();
         if (part == null) return;
 
-        if      (part.isRemovable)   TryRemovePart(part);
-        else if (part.isPowerButton) TogglePCPower();
-        else if (part.isWirePort)    HandleWirePort(part);
+        if      (part.isInventorySlot) TryInstallPart(part); 
+        else if (part.isRemovable)     TryRemovePart(part);
+        else if (part.isPowerButton)   TogglePCPower();
+        else if (part.isWirePort)      HandleWirePort(part);
     }
 
     void TryRemovePart(InspectableItem part)
     {
         foreach (InspectableItem blocker in part.blockingParts)
         {
-            if (blocker != null)
+            if (blocker != null && !blocker.isInventorySlot)
             {
                 Debug.Log($"Cannot remove {part.itemName} - blocked by {blocker.itemName}.");
                 return;
             }
         }
+        
         Debug.Log($"Removing {part.itemName}");
-        GameObject objToDestroy = lastHitObject;
+
         ClearHighlight();
-        StartCoroutine(AnimateRemovalAndDestroy(objToDestroy));
+
+        GameObject storedPart = Instantiate(part.gameObject, voidAnchor.transform);
+        storedPart.SetActive(false);
+        SetLayerRecursively(storedPart, LayerMask.NameToLayer("Default")); 
+        playerStorage.Add(storedPart);
+        Debug.Log($"Added {part.itemName} to Storage!");
+
+        GameObject flyingCopy = Instantiate(part.gameObject, part.transform.position, part.transform.rotation, voidAnchor.transform);
+        Destroy(flyingCopy.GetComponent<InspectableItem>()); 
+        
+        foreach (Light l in flyingCopy.GetComponentsInChildren<Light>()) Destroy(l);
+        foreach (TrailRenderer t in flyingCopy.GetComponentsInChildren<TrailRenderer>()) Destroy(t);
+        foreach (ParticleSystem p in flyingCopy.GetComponentsInChildren<ParticleSystem>()) Destroy(p);
+
+        StartCoroutine(AnimateRemovalAndDestroy(flyingCopy));
+
+        part.isRemovable = false;
+        part.isInventorySlot = true;
+
+        foreach (Renderer rend in part.GetComponentsInChildren<Renderer>())
+        {
+            Material[] ghostMats = new Material[rend.sharedMaterials.Length];
+            for (int i = 0; i < ghostMats.Length; i++) ghostMats[i] = ghostMaterial;
+            rend.sharedMaterials = ghostMats;
+        }
+    }
+
+    void TryInstallPart(InspectableItem slot)
+    {
+        GameObject partToInstall = null;
+        foreach (GameObject item in playerStorage)
+        {
+            InspectableItem storedScript = item.GetComponent<InspectableItem>();
+            if (storedScript != null && storedScript.partCategory == slot.partCategory)
+            {
+                partToInstall = item;
+                break; 
+            }
+        }
+
+        if (partToInstall == null)
+        {
+            Debug.Log($"You don't have any '{slot.partCategory}' components in your storage to install here!");
+            return;
+        }
+
+        Debug.Log($"Installing {partToInstall.GetComponent<InspectableItem>().itemName} from storage");
+        ClearHighlight();
+        playerStorage.Remove(partToInstall);
+
+        partToInstall.transform.SetParent(slot.transform.parent, false);
+        partToInstall.transform.localPosition = slot.transform.localPosition;
+        partToInstall.transform.localRotation = slot.transform.localRotation;
+        partToInstall.transform.localScale = slot.transform.localScale;
+        
+        SetLayerRecursively(partToInstall, currentClone.layer);
+        partToInstall.SetActive(true);
+
+        InspectableItem newPartScript = partToInstall.GetComponent<InspectableItem>();
+        newPartScript.isRemovable = true;
+        newPartScript.isInventorySlot = false;
+
+        InspectableItem[] allItems = currentClone.GetComponentsInChildren<InspectableItem>(true);
+        foreach (var item in allItems)
+        {
+            if (item.blockingParts != null && item.blockingParts.Contains(slot))
+            {
+                item.blockingParts.Remove(slot);
+                item.blockingParts.Add(newPartScript);
+            }
+        }
+
+        allPorts.RemoveAll(p => p == null || p.transform.IsChildOf(slot.transform));
+        foreach (var p in partToInstall.GetComponentsInChildren<InspectableItem>())
+        {
+            if (p.isWirePort) allPorts.Add(p);
+        }
+
+        Destroy(slot.gameObject);
+        StartCoroutine(AnimateInstall(partToInstall));
+    }
+
+    private IEnumerator AnimateInstall(GameObject obj)
+    {
+        float duration = 0.2f;
+        float elapsed = 0f;
+        Vector3 finalScale = obj.transform.localScale;
+        obj.transform.localScale = finalScale * 0.8f; 
+
+        while (elapsed < duration)
+        {
+            if (obj == null) break;
+            elapsed += Time.deltaTime;
+            float easeT = elapsed / duration;
+            float bounce = Mathf.Sin(easeT * Mathf.PI) * 0.15f; 
+            obj.transform.localScale = Vector3.Lerp(finalScale * 0.8f, finalScale, easeT) + (finalScale * bounce);
+            yield return null;
+        }
+        if (obj != null) obj.transform.localScale = finalScale;
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -290,23 +454,18 @@ public class InspectionManager : MonoBehaviour
             wireStartTransform      = clickedPort.transform;
             activeWireConnectorType = clickedPort.connectorType;
 
-            // Head connector mesh — stays at start port
             if (wireHeadPrefab != null)
             {
-                activeWireHead = Instantiate(wireHeadPrefab,
-                                             clickedPort.transform.position,
-                                             clickedPort.transform.rotation,
-                                             currentClone.transform);
-                SetLayerRecursively(activeWireHead, currentClone.layer);
+                activeWireHead = SpawnWireHead(clickedPort.transform, currentClone.transform);
             }
             else
             {
                 activeWireHead = new GameObject("DynamicCable_Head");
                 activeWireHead.transform.SetParent(currentClone.transform);
                 activeWireHead.transform.position = clickedPort.transform.position;
+                activeWireHead.transform.rotation = clickedPort.transform.rotation;
             }
 
-            // Build strands
             activeWireLines.Clear();
             CableTypeProfile profile = CableProfile.Instance != null
                 ? CableProfile.Instance.Get(clickedPort.connectorType) : null;
@@ -382,53 +541,75 @@ public class InspectionManager : MonoBehaviour
         isWiring = false;
         ClearPortHighlights();
 
-        Vector3 startPos = wireStartTransform.position;
-        Vector3 endPos   = endPort.transform.position;
+        InspectableItem devicePort;
+        InspectableItem psuPort;
+
+        if (startPort.placeHeadHere && !endPort.placeHeadHere)
+        {
+            devicePort = startPort;
+            psuPort    = endPort;
+        }
+        else if (endPort.placeHeadHere && !startPort.placeHeadHere)
+        {
+            devicePort = endPort;
+            psuPort    = startPort;
+        }
+        else
+        {
+            devicePort = startPort.isPSUPort ? endPort   : startPort;
+            psuPort    = startPort.isPSUPort ? startPort : endPort;
+        }
+
+        activeRibbonDir = devicePort.ribbonAxis.normalized;
+        if (activeRibbonDir.sqrMagnitude < 0.001f) activeRibbonDir = Vector3.up;
+
+        activeEndRibbonDir = psuPort.ribbonAxis.normalized;
+        if (activeEndRibbonDir.sqrMagnitude < 0.001f) activeEndRibbonDir = Vector3.right;
+
+        Vector3 startPos = devicePort.transform.position;
+        Vector3 endPos   = psuPort.transform.position;
         float   cLen     = Vector3.Distance(startPos, endPos);
         float   sag      = Mathf.Max(cLen * cableSag, 0.05f);
 
-        Vector3[] finalPath = CableRouteManager.Instance != null
-            ? CableRouteManager.Instance.GetRoute(startPort.connectorType, startPos, endPos)
-            : new Vector3[]
-            {
-                startPos,
-                Vector3.Lerp(startPos, endPos, 0.25f) + Vector3.down * sag,
-                Vector3.Lerp(startPos, endPos, 0.75f) + Vector3.down * sag,
-                endPos
-            };
+        Vector3[] finalPath;
+        if (CableRouteManager.Instance != null)
+        {
+            finalPath = CableRouteManager.Instance.GetRoute(startPort.connectorType, startPos, endPos);
+        }
+        else
+        {
+            Vector3 behindBoard = startPos - devicePort.transform.forward * (cLen * 0.25f);
+            behindBoard.y       = startPos.y - sag * 0.5f;
+            Vector3 risePoint   = new Vector3(endPos.x, endPos.y - cLen * 0.25f, endPos.z);
+            finalPath = new Vector3[] { startPos, behindBoard, risePoint, endPos };
+        }
 
-        // ── Reparent all strands to currentClone BEFORE destroying the head ─────────
-        // ── Reparent strands to currentClone BEFORE destroying head ─────────────
         List<LineRenderer> lrSnapshot   = new List<LineRenderer>(activeWireLines);
         string             snapConnType = activeWireConnectorType;
 
         foreach (LineRenderer lr in lrSnapshot)
             if (lr != null) lr.transform.SetParent(currentClone.transform);
 
-        // Spawn a permanent head connector at start port (replaces the one on activeWireHead)
-        if (wireHeadPrefab != null)
-        {
-            GameObject permHead = Instantiate(wireHeadPrefab,
-                                            startPos,
-                                            wireStartTransform.rotation,
-                                            currentClone.transform);
-            SetLayerRecursively(permHead, currentClone.layer);
-        }
-
-        // NOW safe to destroy the temporary drag head
         if (activeWireHead != null) { Destroy(activeWireHead); activeWireHead = null; }
 
-        // Tail connector
-        if (wireHeadPrefab != null)
+        if (devicePort.wireHead != null)
         {
-            activeWireTail = Instantiate(wireHeadPrefab,
-                                        endPort.transform.position,
-                                        endPort.transform.rotation,
-                                        currentClone.transform);
-            SetLayerRecursively(activeWireTail, currentClone.layer);
+            devicePort.wireHead.SetActive(true);
+        }
+        else
+        {
+            devicePort.wireHead = SpawnWireHead(devicePort.transform, currentClone.transform);
         }
 
-        // Collider at midpoint
+        if (psuPort.wireHead != null)
+        {
+            psuPort.wireHead.SetActive(true);
+        }
+        else
+        {
+            psuPort.wireHead = SpawnWireHead(psuPort.transform, currentClone.transform);
+        }
+
         GameObject wireColliderGO = new GameObject("WireCollider");
         wireColliderGO.transform.SetParent(currentClone.transform);
         wireColliderGO.transform.position = Vector3.Lerp(startPos, endPos, 0.5f);
@@ -458,13 +639,13 @@ public class InspectionManager : MonoBehaviour
         wireCleaner.portA = startPort;
         wireCleaner.portB = endPort;
 
-        // Immediately draw committed curve — inside case, zero camera push
-        DrawCommittedCurve(lrSnapshot, snapConnType, startPos, endPos, sag);
+        DrawCommittedCurve(lrSnapshot, snapConnType, startPos, endPos, sag,
+                           activeRibbonDir, activeEndRibbonDir);
 
-        // Then animate to route
         if (activeSnapCoroutine != null) StopCoroutine(activeSnapCoroutine);
         activeSnapCoroutine = StartCoroutine(
-            AnimateCableSnap(lrSnapshot, snapConnType, finalPath, 0.4f));
+            AnimateCableSnap(lrSnapshot, snapConnType, finalPath, 0.4f,
+                             activeRibbonDir, activeEndRibbonDir));
 
         activeWireTail          = null;
         activeWireLine          = null;
@@ -472,51 +653,6 @@ public class InspectionManager : MonoBehaviour
         wireStartPortItem       = null;
         wireStartTransform      = null;
         activeWireConnectorType = "";
-    }
-
-    // Immediately positions all strands at their final committed location
-    // Uses pure downward sag — zero camera push, zero chance of going outside
-    void DrawCommittedCurve(List<LineRenderer> lines, string connType,
-                            Vector3 startPos, Vector3 endPos, float sag)
-    {
-        if (lines == null || lines.Count == 0) return;
-
-        CableTypeProfile profile = CableProfile.Instance != null
-            ? CableProfile.Instance.Get(connType) : null;
-
-        int   strandCount   = lines.Count;
-        float strandSpacing = profile != null ? profile.strandSpacing : 0.003f;
-        float totalWidth    = strandSpacing * (strandCount - 1);
-
-        Vector3 cableDir  = (endPos - startPos).normalized;
-        Vector3 ribbonDir = Vector3.Cross(cableDir, Vector3.up).normalized;
-        if (ribbonDir.sqrMagnitude < 0.001f)
-            ribbonDir = Vector3.Cross(cableDir, Vector3.forward).normalized;
-
-        for (int s = 0; s < strandCount; s++)
-        {
-            LineRenderer lr = lines[s];
-            if (lr == null) continue;
-
-            lr.useWorldSpace = true;
-
-            float   t_off  = strandCount > 1 ? (s / (float)(strandCount - 1)) - 0.5f : 0f;
-            Vector3 offset = ribbonDir * (t_off * totalWidth);
-
-            Vector3 p0 = startPos + offset;
-            Vector3 p3 = endPos   + offset;
-            // Control points stay BETWEEN the two ports — mathematically cannot go outside
-            Vector3 c1 = Vector3.Lerp(p0, p3, 0.25f) + Vector3.down * sag;
-            Vector3 c2 = Vector3.Lerp(p0, p3, 0.75f) + Vector3.down * sag;
-
-            lr.positionCount = cableResolution;
-            for (int i = 0; i < cableResolution; i++)
-            {
-                float t = i / (float)(cableResolution - 1);
-                float u = 1f - t;
-                lr.SetPosition(i, (u*u*u)*p0 + 3*(u*u)*t*c1 + 3*u*(t*t)*c2 + (t*t*t)*p3);
-            }
-        }
     }
 
     void AddWireBlocker(InspectableItem port, InspectableItem wireItem)
@@ -584,101 +720,196 @@ public class InspectionManager : MonoBehaviour
             ? lastHitObject.GetComponent<InspectableItem>() : null;
 
         if (hoveredPort != null && hoveredPort.isWirePort && hoveredPort != wireStartPortItem)
-            DrawDragCurve(wireStartTransform.position, hoveredPort.transform.position);
+            DrawDragSpline(wireStartTransform.position, hoveredPort.transform.position);
         else
         {
             Ray ray = inspectionCamera.ScreenPointToRay(Input.mousePosition);
-            DrawDragCurve(wireStartTransform.position, ray.GetPoint(currentDistance * 0.7f));
+            DrawDragSpline(wireStartTransform.position, ray.GetPoint(currentDistance * 0.7f));
         }
     }
 
-    // Drag-only curve — uses camera push so wire clears the case opening while dragging
-    void DrawDragCurve(Vector3 startWorld, Vector3 endWorld)
+    // ─────────────────────────────────────────────────────────────────────────────
+    //  SPLINE HELPERS
+    // ─────────────────────────────────────────────────────────────────────────────
+    Spline BuildSpline(Vector3[] waypoints)
+    {
+        var spline = new Spline();
+        foreach (var wp in waypoints)
+            spline.Add(new BezierKnot(wp), TangentMode.AutoSmooth);
+        return spline;
+    }
+
+    Vector3[] SampleSpline(Spline spline, int resolution)
+    {
+        var pts = new Vector3[resolution];
+        for (int i = 0; i < resolution; i++)
+        {
+            float t = i / (float)(resolution - 1);
+            pts[i] = spline.EvaluatePosition(t);
+        }
+        return pts;
+    }
+
+    Vector3 StrandOffset(int strandIndex, int strandCount, float totalWidth, Vector3 ribbonDir)
+    {
+        float t = strandCount > 1 ? (strandIndex / (float)(strandCount - 1)) - 0.5f : 0f;
+        return ribbonDir * (t * totalWidth);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    //  DRAG PREVIEW
+    // ─────────────────────────────────────────────────────────────────────────────
+    void DrawDragSpline(Vector3 startWorld, Vector3 endWorld)
     {
         if (activeWireLines == null || activeWireLines.Count == 0) return;
 
-        float   cableLen  = Vector3.Distance(startWorld, endWorld);
-        float   sag       = Mathf.Max(cableLen * cableSag, 0.05f);
-        Vector3 cableDir  = (endWorld - startWorld).normalized;
-        Vector3 ribbonDir = Vector3.Cross(cableDir, Vector3.up).normalized;
-        if (ribbonDir.sqrMagnitude < 0.001f)
-            ribbonDir = Vector3.Cross(cableDir, Vector3.forward).normalized;
-
-        CableTypeProfile profile = CableProfile.Instance != null
-            ? CableProfile.Instance.Get(activeWireConnectorType) : null;
-
-        int   strandCount   = activeWireLines.Count;
-        float strandSpacing = profile != null ? profile.strandSpacing : 0.003f;
-        float totalWidth    = strandSpacing * (strandCount - 1);
+        float   cableLen = Vector3.Distance(startWorld, endWorld);
+        float   sag      = Mathf.Max(cableLen * cableSag, 0.05f);
 
         Vector3 pushDir = inspectionCamera.transform.position - startWorld;
         pushDir.y = 0f;
         if (pushDir.sqrMagnitude > 0.001f) pushDir.Normalize();
+
+        Vector3 mid1 = Vector3.Lerp(startWorld, endWorld, 0.33f)
+                     + pushDir * (cableLen * 0.35f) + Vector3.down * sag;
+        Vector3 mid2 = Vector3.Lerp(startWorld, endWorld, 0.66f)
+                     + pushDir * (cableLen * 0.35f) + Vector3.down * sag;
+
+        CableTypeProfile profile = CableProfile.Instance?.Get(activeWireConnectorType);
+        int   strandCount   = activeWireLines.Count;
+        float strandSpacing = profile != null ? profile.strandSpacing : 0.003f;
+        float totalWidth    = strandSpacing * (strandCount - 1);
+
+        Vector3 startRibbonDir = Vector3.up;
+        if (wireStartPortItem != null)
+        {
+            startRibbonDir = wireStartPortItem.ribbonAxis.normalized;
+            if (startRibbonDir.sqrMagnitude < 0.001f) startRibbonDir = Vector3.up;
+        }
+        else
+        {
+            startRibbonDir = inspectionCamera.transform.up;
+        }
+
+        Vector3 endRibbonDir = startRibbonDir;
+        if (lastHitObject != null)
+        {
+            InspectableItem hovered = lastHitObject.GetComponent<InspectableItem>();
+            if (hovered != null && hovered.isWirePort && hovered != wireStartPortItem)
+            {
+                endRibbonDir = hovered.ribbonAxis.normalized;
+                if (endRibbonDir.sqrMagnitude < 0.001f) endRibbonDir = Vector3.right;
+            }
+        }
+
+        Spline baseSpline = BuildSpline(new Vector3[] { startWorld, mid1, mid2, endWorld });
+        Vector3[] basePts = SampleSpline(baseSpline, cableResolution);
 
         for (int s = 0; s < strandCount; s++)
         {
             LineRenderer lr = activeWireLines[s];
             if (lr == null) continue;
             lr.useWorldSpace = true;
-
-            float   t_off  = strandCount > 1 ? (s / (float)(strandCount - 1)) - 0.5f : 0f;
-            Vector3 offset = ribbonDir * (t_off * totalWidth);
-
-            Vector3 p0 = startWorld + offset;
-            Vector3 p3 = endWorld   + offset;
-            Vector3 c1 = p0 + pushDir * (cableLen * 0.35f) + Vector3.down * sag;
-            Vector3 c2 = p3 + pushDir * (cableLen * 0.35f) + Vector3.down * sag;
-
             lr.positionCount = cableResolution;
+
             for (int i = 0; i < cableResolution; i++)
             {
-                float t = i / (float)(cableResolution - 1);
-                float u = 1f - t;
-                lr.SetPosition(i, (u*u*u)*p0 + 3*(u*u)*t*c1 + 3*u*(t*t)*c2 + (t*t*t)*p3);
+                float   t         = i / (float)(cableResolution - 1);
+                Vector3 ribbonDir = Vector3.Slerp(startRibbonDir, endRibbonDir, t).normalized;
+                Vector3 off       = StrandOffset(s, strandCount, totalWidth, ribbonDir);
+                lr.SetPosition(i, basePts[i] + off);
             }
         }
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
-    //  CABLE SNAP ANIMATION
-    //  Animates from the already-correct committed position to the routed path.
-    //  Since both start and end are inside the case this can never go outside.
+    //  COMMITTED WIRE
+    // ─────────────────────────────────────────────────────────────────────────────
+    void DrawCommittedCurve(List<LineRenderer> lines, string connType,
+                            Vector3 startPos, Vector3 endPos, float sag,
+                            Vector3 startRibbonDir, Vector3 endRibbonDir)
+    {
+        if (lines == null || lines.Count == 0) return;
+
+        CableTypeProfile profile = CableProfile.Instance?.Get(connType);
+        int   strandCount   = lines.Count;
+        float strandSpacing = profile != null ? profile.strandSpacing : 0.003f;
+        float totalWidth    = strandSpacing * (strandCount - 1);
+
+        float cableLen = Vector3.Distance(startPos, endPos);
+        float useSag   = Mathf.Max(cableLen * cableSag, sag);
+
+        Vector3 mid = new Vector3(
+            Mathf.Lerp(startPos.x, endPos.x, 0.3f),
+            startPos.y - useSag,
+            Mathf.Lerp(startPos.z, endPos.z, 0.3f));
+
+        Spline   baseSpline = BuildSpline(new Vector3[] { startPos, mid, endPos });
+        Vector3[] basePts   = SampleSpline(baseSpline, cableResolution);
+
+        for (int s = 0; s < strandCount; s++)
+        {
+            LineRenderer lr = lines[s];
+            if (lr == null) continue;
+            lr.useWorldSpace = true;
+            lr.positionCount = cableResolution;
+
+            for (int i = 0; i < cableResolution; i++)
+            {
+                float   t         = i / (float)(cableResolution - 1);
+                Vector3 ribbonDir = Vector3.Slerp(startRibbonDir, endRibbonDir, t).normalized;
+                Vector3 off       = StrandOffset(s, strandCount, totalWidth, ribbonDir);
+                lr.SetPosition(i, basePts[i] + off);
+            }
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    //  CABLE SNAP ANIMATION 
     // ─────────────────────────────────────────────────────────────────────────────
     private IEnumerator AnimateCableSnap(
         List<LineRenderer> lrSnapshot,
         string             connType,
         Vector3[]          routePositions,
-        float              duration)
+        float              duration,
+        Vector3            startRibbonDir,
+        Vector3            endRibbonDir)
     {
         if (lrSnapshot == null || lrSnapshot.Count == 0) yield break;
 
         int res = cableResolution;
 
-        // Capture current positions as the "from" state (already committed, inside case)
-        Vector3[][] fromPositions = new Vector3[lrSnapshot.Count][];
-        for (int s = 0; s < lrSnapshot.Count; s++)
+        CableTypeProfile profile = CableProfile.Instance?.Get(connType);
+        int   strandCount   = lrSnapshot.Count;
+        float strandSpacing = profile != null ? profile.strandSpacing : 0.003f;
+        float totalWidth    = strandSpacing * (strandCount - 1);
+
+        Vector3[][] fromPositions = new Vector3[strandCount][];
+        for (int s = 0; s < strandCount; s++)
         {
-            LineRenderer lr = lrSnapshot[s];
             fromPositions[s] = new Vector3[res];
+            LineRenderer lr = lrSnapshot[s];
             if (lr != null && lr.positionCount == res)
                 lr.GetPositions(fromPositions[s]);
             else if (lr != null)
                 for (int i = 0; i < res; i++) fromPositions[s][i] = lr.transform.position;
         }
 
-        Vector3[] toPoints = SampleCatmullRom(routePositions, res);
+        Spline   baseRouteSpline = BuildSpline(routePositions);
+        Vector3[] baseRoutePts   = SampleSpline(baseRouteSpline, res);
 
-        CableTypeProfile profile = CableProfile.Instance != null
-            ? CableProfile.Instance.Get(connType) : null;
-
-        int   strandCount   = lrSnapshot.Count;
-        float strandSpacing = profile != null ? profile.strandSpacing : 0.003f;
-        float totalWidth    = strandSpacing * (strandCount - 1);
-
-        Vector3 cableDir  = (routePositions[routePositions.Length - 1] - routePositions[0]).normalized;
-        Vector3 ribbonDir = Vector3.Cross(cableDir, Vector3.up).normalized;
-        if (ribbonDir.sqrMagnitude < 0.001f)
-            ribbonDir = Vector3.Cross(cableDir, Vector3.forward).normalized;
+        Vector3[][] targetPositions = new Vector3[strandCount][];
+        for (int s = 0; s < strandCount; s++)
+        {
+            targetPositions[s] = new Vector3[res];
+            for (int i = 0; i < res; i++)
+            {
+                float   t         = i / (float)(res - 1);
+                Vector3 ribbonDir = Vector3.Slerp(startRibbonDir, endRibbonDir, t).normalized;
+                Vector3 off       = StrandOffset(s, strandCount, totalWidth, ribbonDir);
+                targetPositions[s][i] = baseRoutePts[i] + off;
+            }
+        }
 
         float elapsed = 0f;
         while (elapsed < duration)
@@ -690,70 +921,32 @@ public class InspectionManager : MonoBehaviour
             {
                 LineRenderer lr = lrSnapshot[s];
                 if (lr == null) continue;
-
-                float   t_off  = strandCount > 1 ? (s / (float)(strandCount - 1)) - 0.5f : 0f;
-                Vector3 offset = ribbonDir * (t_off * totalWidth);
-
                 lr.positionCount = res;
                 for (int i = 0; i < res; i++)
-                    lr.SetPosition(i, Vector3.Lerp(fromPositions[s][i], toPoints[i] + offset, eased));
+                    lr.SetPosition(i, Vector3.Lerp(fromPositions[s][i], targetPositions[s][i], eased));
             }
             yield return null;
         }
 
-        // Snap to exact final
         for (int s = 0; s < strandCount; s++)
         {
             LineRenderer lr = lrSnapshot[s];
             if (lr == null) continue;
-            float   t_off  = strandCount > 1 ? (s / (float)(strandCount - 1)) - 0.5f : 0f;
-            Vector3 offset = ribbonDir * (t_off * totalWidth);
             lr.positionCount = res;
             for (int i = 0; i < res; i++)
-                lr.SetPosition(i, toPoints[i] + offset);
+                lr.SetPosition(i, targetPositions[s][i]);
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  CATMULL-ROM SAMPLER
-    // ─────────────────────────────────────────────────────────────────────────────
-    Vector3[] SampleCatmullRom(Vector3[] points, int count)
+    GameObject SpawnWireHead(Transform port, Transform parent)
     {
-        Vector3[] result = new Vector3[count];
-
-        if (points.Length == 1) { for (int i = 0; i < count; i++) result[i] = points[0]; return result; }
-        if (points.Length == 2)
-        {
-            for (int i = 0; i < count; i++)
-                result[i] = Vector3.Lerp(points[0], points[1], i / (float)(count - 1));
-            return result;
-        }
-
-        Vector3[] ext = new Vector3[points.Length + 2];
-        ext[0] = points[0] + (points[0] - points[1]);
-        for (int i = 0; i < points.Length; i++) ext[i + 1] = points[i];
-        ext[ext.Length - 1] = points[points.Length - 1]
-                            + (points[points.Length - 1] - points[points.Length - 2]);
-
-        int segments = points.Length - 1;
-        for (int i = 0; i < count; i++)
-        {
-            float globalT = i / (float)(count - 1) * segments;
-            int   seg     = Mathf.Min((int)globalT, segments - 1);
-            float localT  = globalT - seg;
-
-            Vector3 p0 = ext[seg];
-            Vector3 p1 = ext[seg + 1];
-            Vector3 p2 = ext[seg + 2];
-            Vector3 p3 = ext[seg + 3];
-
-            result[i] = 0.5f * (
-                  (2f * p1)
-                + (-p0 + p2)                    * localT
-                + (2f*p0 - 5f*p1 + 4f*p2 - p3) * localT * localT
-                + (-p0 + 3f*p1 - 3f*p2 + p3)   * localT * localT * localT);
-        }
-        return result;
+        if (wireHeadPrefab == null) return null;
+        
+        GameObject head = Instantiate(wireHeadPrefab, port.position, port.rotation, parent);
+        head.transform.Translate(wireHeadOffset, Space.Self);
+        
+        SetLayerRecursively(head, parent.gameObject.layer);
+        return head;
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -860,8 +1053,7 @@ public class InspectionManager : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     private IEnumerator AnimateRemovalAndDestroy(GameObject obj)
     {
-        Collider col = obj.GetComponent<Collider>();
-        if (col != null) col.enabled = false;
+        foreach (Collider c in obj.GetComponentsInChildren<Collider>()) c.enabled = false;
 
         float   duration   = 0.4f;
         float   elapsed    = 0f;
@@ -947,5 +1139,26 @@ public class InspectionManager : MonoBehaviour
         obj.layer = newLayer;
         foreach (Transform child in obj.transform)
             SetLayerRecursively(child.gameObject, newLayer);
+    }
+
+    void SaveAndSetLayers(GameObject obj, int newLayer)
+    {
+        if (!originalLayerCache.ContainsKey(obj))
+            originalLayerCache[obj] = obj.layer;
+        
+        obj.layer = newLayer;
+        foreach (Transform child in obj.transform)
+            SaveAndSetLayers(child.gameObject, newLayer);
+    }
+
+    void RestoreLayers(GameObject obj)
+    {
+        if (originalLayerCache.ContainsKey(obj))
+            obj.layer = originalLayerCache[obj];
+        else
+            obj.layer = LayerMask.NameToLayer("Default");
+
+        foreach (Transform child in obj.transform)
+            RestoreLayers(child.gameObject);
     }
 }

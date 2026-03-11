@@ -1,17 +1,12 @@
 using UnityEngine;
 
-/// <summary>
-/// Attach to an empty GameObject inside your PC case.
-/// Set connectorType to match InspectableItem.connectorType (e.g. "24pin").
-/// Add child empty GameObjects as waypoints and assign them in order.
-/// The cyan gizmo lines in the Scene view show the route.
-/// </summary>
 public class CableRoute : MonoBehaviour
 {
     [Tooltip("Must match InspectableItem.connectorType exactly, e.g. '24pin'")]
     public string connectorType;
 
-    [Tooltip("Ordered waypoints the cable will follow through the case.")]
+    [Tooltip("Ordered waypoints the cable will follow through the case. " +
+             "For a 24-pin: MB port → behind board → cable-mgmt hole → PSU shroud → PSU socket.")]
     public Transform[] waypoints;
 
     void OnDrawGizmos()

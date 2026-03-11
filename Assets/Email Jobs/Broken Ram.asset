@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d988921e4a5a08443a8ada3d869c6c21, type: 3}
+  m_Name: Broken Ram
+  m_EditorClassIdentifier: Assembly-CSharp::EmailData
+  senderName: Rafael
+  profilePic: {fileID: 1987536967, guid: 2104b22c0a9c2d949b88f5ac6dd9c4b7, type: 3}
+  subjectLine: PC Unable to Bootup
+  bodyText: 
+  labourCost: 0
+  partsBudget: 0
+  objectives:
+  - PC able to boot up
+  - Clean up Dust
+  pcProblems:
+  - PC not booting up
+  - Dust all over the case
+  basePCCasePrefab: {fileID: 5178879464572469348, guid: 22a4bbc49875e4a46b431b155f393b7e, type: 3}
+  startingParts:
+  - partCategory: RAM
+    partName: RAM 1
+    partPrefab: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
+  - partCategory: Motherboard
+    partName: MSI Motherboard
+    partPrefab: {fileID: 7402668134811180990, guid: e9560bebbc2cd9442a1a6dc6acc88c6e, type: 3}

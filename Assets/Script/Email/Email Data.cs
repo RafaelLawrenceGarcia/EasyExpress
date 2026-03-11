@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "New Email", menuName = "EasyExpress/Email Job")]
 public class EmailData : ScriptableObject
@@ -20,4 +21,19 @@ public class EmailData : ScriptableObject
 
     [Header("PC Diagnostics")]
     public string[] pcProblems; 
+
+    [Header("Auto-Build PC Setup")]
+    [Tooltip("The empty PC case prefab to spawn on the shelf.")]
+    public GameObject basePCCasePrefab; 
+    [Tooltip("The parts that will automatically be built inside the case.")]
+    public List<StartingPCComponent> startingParts; 
+}
+
+// Defining the component class down here keeps Unity's asset system happy!
+[System.Serializable]
+public class StartingPCComponent
+{
+    public string partCategory;   // e.g., "RAM", "GPU", "CaseFan"
+    public string partName;       // e.g., "8GB DDR4 FuryX"
+    public GameObject partPrefab; // The 3D model to spawn
 }
