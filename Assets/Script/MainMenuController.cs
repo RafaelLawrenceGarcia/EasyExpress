@@ -3,45 +3,83 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
-using System.Collections.Generic;
 
 public class MainMenu : MonoBehaviour
 {
-    [Header("Buttons")]
+    [Header("Main Buttons")]
+    public Button playButton;
+    public Button creditsButton;
+    public Button optionsButton;
+    public Button logoutButton;
+
+    [Header("Mode Selection Buttons")]
+    public Button singleplayerButton;
+    public Button multiplayerButton;
+    public Button backToMainButton;
+
+    [Header("Save Selection (Optional)")]
+    public GameObject saveSelectionPanel;
     public Button continueButton;
     public Button newGameButton;
-    public Button optionsButton;
-    public Button quitButton;
+    public Button backToModeButton;
 
     [Header("Panels")]
     public GameObject mainPanel;
+    public GameObject modeSelectionPanel;
     public GameObject optionsPanel;
+    public GameObject creditsPanel;
     public Text statusText; 
 
     [Header("Settings")]
-    public string firstLevelName = "City";
+    public string gameplaySceneName = "Gameplay"; // Make sure this matches your exact scene name!
 
     void Start()
     {
-        continueButton.interactable = false;
-        newGameButton.interactable = false; 
+        // Main Panel
+        if (playButton != null) playButton.onClick.AddListener(OpenModeSelection);
+        if (optionsButton != null) optionsButton.onClick.AddListener(OpenOptions);
+        if (creditsButton != null) creditsButton.onClick.AddListener(OpenCredits);
+        if (logoutButton != null) logoutButton.onClick.AddListener(Logout);
 
-        newGameButton.onClick.AddListener(NewGame);
-        optionsButton.onClick.AddListener(OpenOptions);
-        quitButton.onClick.AddListener(QuitGame);
-        continueButton.onClick.AddListener(ContinueGame);
+        // Mode Selection
+        // ---> CHANGED: Now skips save selection and loads the scene directly
+        if (singleplayerButton != null) singleplayerButton.onClick.AddListener(StartSingleplayer);
+        if (multiplayerButton != null) multiplayerButton.onClick.AddListener(() => Debug.Log("Multiplayer TBD!"));
+        if (backToMainButton != null) backToMainButton.onClick.AddListener(ShowMainPanel);
 
-        // --- FIXED: LISTEN TO THE NEW NAME ---
+        // Save Selection (Safe to leave empty in Inspector for now)
+        if (newGameButton != null) newGameButton.onClick.AddListener(NewGame);
+        if (continueButton != null) continueButton.onClick.AddListener(ContinueGame);
+        if (backToModeButton != null) backToModeButton.onClick.AddListener(OpenModeSelection);
+
         AuthManager.OnLoginSuccessEvent += CheckForSaveData;
     }
 
-    void OnDestroy()
-    {
-        // --- FIXED: UNSUBSCRIBE FROM THE NEW NAME ---
-        AuthManager.OnLoginSuccessEvent -= CheckForSaveData;
-    }
+    void OnDestroy() => AuthManager.OnLoginSuccessEvent -= CheckForSaveData;
 
-    // --- PLAYFAB LOGIC ---
+    #region Panel Navigation
+    public void ShowMainPanel() => SwitchPanel(mainPanel);
+    public void OpenModeSelection() => SwitchPanel(modeSelectionPanel);
+    public void OpenSaveSelection() => SwitchPanel(saveSelectionPanel);
+    public void OpenOptions() => SwitchPanel(optionsPanel);
+    public void OpenCredits() => SwitchPanel(creditsPanel);
+
+    private void SwitchPanel(GameObject activePanel)
+    {
+        if (mainPanel != null) mainPanel.SetActive(activePanel == mainPanel);
+        if (modeSelectionPanel != null) modeSelectionPanel.SetActive(activePanel == modeSelectionPanel);
+        if (saveSelectionPanel != null) saveSelectionPanel.SetActive(activePanel == saveSelectionPanel);
+        if (optionsPanel != null) optionsPanel.SetActive(activePanel == optionsPanel);
+        if (creditsPanel != null) creditsPanel.SetActive(activePanel == creditsPanel);
+    }
+    #endregion
+
+    #region Game Logic
+    void StartSingleplayer()
+    {
+        // Loads the gameplay scene immediately
+        SceneManager.LoadScene(gameplaySceneName);
+    }
 
     void CheckForSaveData()
     {
@@ -50,18 +88,15 @@ public class MainMenu : MonoBehaviour
         PlayFabClientAPI.GetUserData(new GetUserDataRequest(), 
         result => 
         {
-            newGameButton.interactable = true; 
-
+            if (newGameButton != null) newGameButton.interactable = true; 
             if (result.Data != null && result.Data.ContainsKey("Gold"))
             {
-                Debug.Log("Save Data Found!");
-                continueButton.interactable = true; 
+                if (continueButton != null) continueButton.interactable = true; 
                 if(statusText) statusText.text = "Welcome Back!";
             }
             else
             {
-                Debug.Log("No Save Data Found (New Player)");
-                continueButton.interactable = false;
+                if (continueButton != null) continueButton.interactable = false;
                 if(statusText) statusText.text = "Ready.";
             }
         }, 
@@ -71,26 +106,20 @@ public class MainMenu : MonoBehaviour
     void NewGame()
     {
         PlayerPrefs.SetInt("IsLoadingGame", 0);
-        SceneManager.LoadScene(firstLevelName);
+        SceneManager.LoadScene(gameplaySceneName);
     }
 
     void ContinueGame()
     {
         PlayerPrefs.SetInt("IsLoadingGame", 1);
-        SceneManager.LoadScene(firstLevelName);
+        SceneManager.LoadScene(gameplaySceneName);
     }
 
-    void OpenOptions()
+    public void Logout()
     {
-        mainPanel.SetActive(false);
-        optionsPanel.SetActive(true);
+        PlayFabClientAPI.ForgetAllCredentials();
+        AuthManager auth = Object.FindFirstObjectByType<AuthManager>();
+        if (auth != null) auth.ResetToLogin();
     }
-
-    public void CloseOptions() 
-    {
-        optionsPanel.SetActive(false);
-        mainPanel.SetActive(true);
-    }
-
-    void QuitGame() => Application.Quit();
+    #endregion
 }
