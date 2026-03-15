@@ -94,6 +94,7 @@ public class PlayerInteract : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
+                    
                     if (cityNPC) StartCityInteraction(cityNPC);
                     else if (shopPC) OpenShopComputer(); 
                     else if (readyShopCustomer) StartShopInteraction(shopCustomer);
@@ -101,6 +102,7 @@ public class PlayerInteract : MonoBehaviour
                     else if (sceneDoor) sceneDoor.EnterDoor();
                     else if (canInspectInWorld && inspectionManager) 
                     {
+                        if (TutorialManager.Instance != null) TutorialManager.Instance.CompletePCTask();
                         inspectionManager.Inspect(item);
                         pressEPrompt.SetActive(false);
                     }
@@ -116,11 +118,24 @@ public class PlayerInteract : MonoBehaviour
         else pressEPrompt.SetActive(false);
     }
 
-    void PickUpItem(GameObject itemObj)
+   void PickUpItem(GameObject itemObj)
     {
         if (placementManager != null && !placementManager.isHoldingItem)
         {
-            placementManager.PickUpObject(itemObj); 
+            // SAFETY CHECK: If we clicked a sticker or a piece of cardboard, grab the main parent!
+            JobBox boxScript = itemObj.GetComponentInParent<JobBox>();
+            if (boxScript != null)
+            {
+                itemObj = boxScript.gameObject; 
+            }
+
+            PCCaseBuilder pcScript = itemObj.GetComponentInParent<PCCaseBuilder>();
+            if (pcScript != null)
+            {
+                itemObj = pcScript.gameObject;
+            }
+
+            placementManager.PickUpObject(itemObj);
             pressEPrompt.SetActive(false);
         }
     }
@@ -142,7 +157,6 @@ public class PlayerInteract : MonoBehaviour
 
         nameText.text = npc.npcName;
         dialogueText.text = npc.greeting;
-
         npc.StartConversation(); 
     }
 
@@ -155,7 +169,7 @@ public class PlayerInteract : MonoBehaviour
         FreezePlayer(true);
         pressEPrompt.SetActive(false);
         dialoguePanel.SetActive(true);
-
+        if(computerOS != null) computerOS.gameObject.SetActive(false);
         option1Button.interactable = true;
         option2Button.interactable = true;
 
@@ -184,10 +198,9 @@ public class PlayerInteract : MonoBehaviour
         {
             dialogueText.text = "Deal! I'll take a look.";
             currentShopNPC.AcceptJob();
-            
             option1Button.interactable = false;
             option2Button.interactable = false;
-            StartCoroutine(CloseAfterDelay()); 
+            StartCoroutine(CloseAfterDelay(true)); // Pass TRUE because we accepted
         }
     }
 
@@ -204,7 +217,7 @@ public class PlayerInteract : MonoBehaviour
             
             option1Button.interactable = false;
             option2Button.interactable = false;
-            StartCoroutine(CloseAfterDelay());
+            StartCoroutine(CloseAfterDelay(false)); // Pass FALSE because we rejected
         }
     }
 
@@ -218,10 +231,16 @@ public class PlayerInteract : MonoBehaviour
         if (currentShopNPC != null) currentShopNPC.EndShopConversation();
     }
 
-    IEnumerator CloseAfterDelay()
+    // UPDATED COROUTINE: Now checks if we accepted the job to trigger tutorial
+    IEnumerator CloseAfterDelay(bool acceptedJob)
     {
         yield return new WaitForSeconds(1.5f);
         OnExitClick();
+
+        if (acceptedJob && TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.CompleteCustomerTask();
+        }
     }
 
   void OpenShopComputer()

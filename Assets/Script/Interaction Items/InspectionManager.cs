@@ -989,6 +989,10 @@ public class InspectionManager : MonoBehaviour
 
             if (part != null)
             {
+                // --- TUTORIAL TRIGGER ADDED HERE ---
+                // This triggers continuously while looking at any part!
+                if (TutorialManager.Instance != null) TutorialManager.Instance.CompleteHoverTask();
+
                 if (hitObj != lastHitObject)
                 {
                     if (!isWiring) ClearHighlight();

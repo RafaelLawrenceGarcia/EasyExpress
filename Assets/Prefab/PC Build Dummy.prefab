@@ -961,7 +961,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: RAM 4
-  partCategory: RAM4
+  partCategory: RAM
   itemDescription: No description available.
   isMainObject: 0
   isRemovable: 1
@@ -3917,7 +3917,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: RAM 4
-  partCategory: RAM1
+  partCategory: RAM
   itemDescription: No description available.
   isMainObject: 0
   isRemovable: 1
@@ -5844,7 +5844,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: RAM 4
-  partCategory: RAM2
+  partCategory: RAM
   itemDescription: No description available.
   isMainObject: 0
   isRemovable: 1
@@ -8884,8 +8884,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5178879464572469348}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -35.68752, y: 2.466782, z: 335.999}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8921,7 +8921,7 @@ Transform:
   - {fileID: 6907438498779611553}
   - {fileID: 2176805758760562523}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8902105681143248262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8968,12 +8968,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.8712006, y: 1.5751617, z: 1.847517}
-  m_Center: {x: 0.17919922, y: 0.28758085, z: -0.2735511}
+  m_Size: {x: 3.2802773, y: 1.5751617, z: 1}
+  m_Center: {x: 0.6197262, y: 0.28758085, z: 0}
 --- !u!64 &8659894682264109394
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -13998,7 +13998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: RAM 4
-  partCategory: RAM3
+  partCategory: RAM
   itemDescription: No description available.
   isMainObject: 0
   isRemovable: 1

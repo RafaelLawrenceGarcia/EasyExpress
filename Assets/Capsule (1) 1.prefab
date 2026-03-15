@@ -161,7 +161,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 1
+  m_BaseOffset: 0.75
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &7518792808140712979
@@ -176,8 +176,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7a131e49b59d3248a747179b45e31f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomerInside
+  npcName: Customer
   jobRequest: 
   budget: 0
-  hasBeenServed: 0
-  counterTag: ShopCounter
-  exitTag: ShopInsideDoor
+  assignedJob: {fileID: 0}
+  possibleCases:
+  - {fileID: 5178879464572469348, guid: 22a4bbc49875e4a46b431b155f393b7e, type: 3}
+  possibleMotherboards: []
+  possibleRAMs:
+  - partCategory: RAM1
+    partName: RAM Slot 1
+    partPrefab: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
+  - partCategory: RAM2
+    partName: RAM Slot 2
+    partPrefab: {fileID: 611883677828862588, guid: ef39ed9db4ea6ff41ae424412ceda4c2, type: 3}
+  - partCategory: RAM3
+    partName: RAM Slot 3
+    partPrefab: {fileID: 4318764074237770179, guid: 9079e0ca59de7f54a8b062d388eeb96a, type: 3}
+  - partCategory: RAM4
+    partName: RAM Slot 4
+    partPrefab: {fileID: 1205316677405593970, guid: 62293427be80faf4bac86f98da257a69, type: 3}
+  possibleGPUs:
+  - partCategory: GPU
+    partName: GPU
+    partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+  possiblePSUs: []
+  willBrowseFirst: 1
+  browseTime: 3
+  buyChance: 60
+  minItemsToBrowse: 1
+  maxItemsToBrowse: 4
+  isBrowsing: 0
+  isServed: 0
+  isAtSpot: 0
+  mySpawner: {fileID: 0}

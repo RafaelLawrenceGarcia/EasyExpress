@@ -1,4 +1,7 @@
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
+using System.Collections; 
 
 public class PlacementManager : MonoBehaviour
 {
@@ -28,6 +31,9 @@ public class PlacementManager : MonoBehaviour
     private Transform currentSlotTransform; 
     private string currentSlotTag;
     private SlotData currentSlotData; 
+
+    // Remembers the physical object in your hands
+    private GameObject currentlyHeldObject;
 
     void Update()
     {
@@ -64,7 +70,17 @@ public class PlacementManager : MonoBehaviour
 
         if (canPlace && Input.GetMouseButtonDown(0))
         {
-            PerformPlacement();
+            // 1. Is the CEO currently talking?
+            bool ceoIsTalking = TutorialManager.Instance != null && TutorialManager.Instance.dialogueManager.isDialogueActive;
+            
+            // 2. Are we clicking on a UI button?
+            bool clickingUI = UnityEngine.EventSystems.EventSystem.current != null && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+
+            // Only place the box if BOTH of those are false!
+            if (!ceoIsTalking && !clickingUI)
+            {
+                PerformPlacement();
+            }
         }
     }
 
@@ -84,38 +100,103 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
-    public void PickUpObject(GameObject pickedUpObj)
+   public void PickUpObject(GameObject pickedUpObj)
     {
         if (isHoldingItem) return;
-        
+        if (TutorialManager.Instance != null && pickedUpObj.CompareTag("PickupBox")) 
+            TutorialManager.Instance.CompletePickupBoxTask();
         isHoldingItem = true;
-        Destroy(pickedUpObj); 
-    }
+        
+        // HIDE the object instead of destroying it so it keeps its data!
+        currentlyHeldObject = pickedUpObj;
+        currentlyHeldObject.SetActive(false);
 
+        // SAFETY FIX: Detach the box from any weirdly-scaled parents so the stickers don't float!
+        currentlyHeldObject.transform.SetParent(null);
+        
+        // FOOLPROOF SLOT CLEAR: Search all slots to find the one holding this box and empty it
+        SlotData[] allSlots = FindObjectsOfType<SlotData>();
+        foreach (SlotData slot in allSlots)
+        {
+            if (slot.currentItem == pickedUpObj)
+            {
+                slot.isOccupied = false;
+                slot.currentItem = null;
+
+                // THE FIX: Force the green shelf's Mesh Renderers to check themselves back on!
+                MeshRenderer[] renderers = slot.GetComponentsInChildren<MeshRenderer>(true);
+                foreach(MeshRenderer mr in renderers)
+                {
+                    mr.enabled = true;
+                }
+            }
+        }
+    }
+    
     void PerformPlacement()
     {
-        GameObject newItem = null;
+        GameObject itemToPlaceInSlot = null;
 
+        // 1. Placing a store-bought item
         if (currentPlacementItem != null && currentPlacementItem.prefabToPlace != null)
         {
-            newItem = Instantiate(currentPlacementItem.prefabToPlace, currentSlotTransform.position, currentSlotTransform.rotation);
-          if (currentPlacementItem.itemType == ItemCategory.PCPart) newItem.tag = "PickupPC";
-            else newItem.tag = "Untagged"; 
+            itemToPlaceInSlot = Instantiate(currentPlacementItem.prefabToPlace, currentSlotTransform.position, currentSlotTransform.rotation);
+            if (currentPlacementItem.itemType == ItemCategory.PCPart) itemToPlaceInSlot.tag = "PickupPC";
+            else itemToPlaceInSlot.tag = "Untagged"; 
         }
-        else if (currentSlotTag == "Workstation" || currentSlotTag == "WorkstationSlot")
+        // 2. Placing the physical object you are holding
+        else if (currentlyHeldObject != null)
         {
-            newItem = Instantiate(realPCPrefab, currentSlotTransform.position, currentSlotTransform.rotation);
-            newItem.tag = "PickupPC"; 
-        }
-        else
-        {
-            newItem = Instantiate(realBoxPrefab, currentSlotTransform.position, currentSlotTransform.rotation);
-            newItem.tag = "PickupBox";
+            currentlyHeldObject.transform.position = currentSlotTransform.position;
+            currentlyHeldObject.transform.rotation = currentSlotTransform.rotation;
+            currentlyHeldObject.SetActive(true);
+
+            itemToPlaceInSlot = currentlyHeldObject;
+
+            // --- SCENARIO A: IS IT A BOX GOING ON THE WORKSTATION? UNPACK IT! ---
+            if (currentlyHeldObject.CompareTag("PickupBox") && (currentSlotTag == "Workstation" || currentSlotTag == "WorkstationSlot"))
+            {
+                // TRIGGER ADDED HERE
+                if (TutorialManager.Instance != null) TutorialManager.Instance.CompletePlaceBoxTask();
+
+                JobBox boxScript = currentlyHeldObject.GetComponent<JobBox>();
+                if (boxScript != null)
+                {
+                    itemToPlaceInSlot = boxScript.UnpackPC(currentSlotTransform);
+                }
+            }
+            // --- SCENARIO B: IS IT A PC GOING ON THE STORAGE SHELF? PACK IT IN A BOX! ---
+            else if ((currentlyHeldObject.CompareTag("PickupPC") || currentlyHeldObject.GetComponent<PCCaseBuilder>() != null) && 
+                     (currentSlotTag == "Storage" || currentSlotTag == "StorageSlot"))
+            {
+                if (realBoxPrefab != null)
+                {
+                    // 1. Spawn a brand new cardboard box on the shelf
+                    GameObject newBox = Instantiate(realBoxPrefab, currentSlotTransform.position, currentSlotTransform.rotation);
+                    
+                    // 2. Tell the box to swallow the PC and hide it!
+                    JobBox boxScript = newBox.GetComponent<JobBox>();
+                    if (boxScript != null)
+                    {
+                        boxScript.PackExistingPC(currentlyHeldObject);
+                    }
+
+                    // 3. Register the newly spawned cardboard box to the shelf slot, not the naked PC
+                    itemToPlaceInSlot = newBox;
+                }
+                else
+                {
+                    Debug.LogWarning("You forgot to assign your Cardboard Box Prefab to the 'Real Box Prefab' slot in the PlacementManager!");
+                }
+            }
+
+            currentlyHeldObject = null;
         }
 
-        if (currentSlotData != null)
+        // Tell the slot it is full
+        if (currentSlotData != null && itemToPlaceInSlot != null)
         {
-            currentSlotData.PlaceItemHere(newItem);
+            currentSlotData.PlaceItemHere(itemToPlaceInSlot);
         }
 
         isHoldingItem = false; 
