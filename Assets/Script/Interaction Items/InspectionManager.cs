@@ -92,7 +92,7 @@ public class InspectionManager : MonoBehaviour
     private float optimalDistance;
     private List<InspectableItem> allPorts = new List<InspectableItem>();
 
-    // --- NEW: State Tracking for the Real Object ---
+    // --- State Tracking for the Real Object ---
     private Vector3 savedOriginalPosition;
     private Quaternion savedOriginalRotation;
     private Transform savedOriginalParent;
@@ -180,7 +180,6 @@ public class InspectionManager : MonoBehaviour
             voidAnchor.transform.position = new Vector3(0, -1000, 0);
         }
 
-        // --- NEW: WE NO LONGER CLONE! WE EDIT THE REAL OBJECT ---
         currentClone = originalItem.gameObject;
 
         // Save its real-world position and properties so we can put it back later
@@ -191,7 +190,9 @@ public class InspectionManager : MonoBehaviour
         // Move the real object to the black void
         currentClone.transform.SetParent(voidAnchor.transform);
         currentClone.transform.localPosition = Vector3.zero;
-        currentClone.transform.localRotation = Quaternion.identity;
+        
+        // --- ROTATE 180 DEGREES SO THE GLASS FACES THE CAMERA IMMEDIATELY ---
+        currentClone.transform.localRotation = Quaternion.Euler(0, 180f, 0);
 
         // Turn off physics while inspecting
         Rigidbody rb = currentClone.GetComponent<Rigidbody>();
@@ -284,7 +285,7 @@ public class InspectionManager : MonoBehaviour
             currentClone.transform.rotation = savedOriginalRotation;
         }
         
-        currentClone = null; // Detach reference (we do NOT destroy it anymore!)
+        currentClone = null; // Detach reference
         allPorts.Clear();
 
         if (infoPanel)    infoPanel.SetActive(false);
@@ -337,6 +338,9 @@ public class InspectionManager : MonoBehaviour
         }
         
         Debug.Log($"Removing {part.itemName}");
+
+        // --- TUTORIAL TRIGGER COMPLETE REMOVE ---
+        if (TutorialManager.Instance != null) TutorialManager.Instance.CompleteRemoveTask();
 
         ClearHighlight();
 
@@ -990,7 +994,6 @@ public class InspectionManager : MonoBehaviour
             if (part != null)
             {
                 // --- TUTORIAL TRIGGER ADDED HERE ---
-                // This triggers continuously while looking at any part!
                 if (TutorialManager.Instance != null) TutorialManager.Instance.CompleteHoverTask();
 
                 if (hitObj != lastHitObject)
@@ -1087,6 +1090,7 @@ public class InspectionManager : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     void HandleInput()
     {
+        // --- 1. Right Click - Rotate Object (Orbit Camera) ---
         if (Input.GetMouseButton(1) && !isWiring)
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -1095,17 +1099,23 @@ public class InspectionManager : MonoBehaviour
             targetOrbitAngles.x -= Input.GetAxis("Mouse Y") * orbitSpeed;
             targetOrbitAngles.x  = Mathf.Clamp(targetOrbitAngles.x, -89f, 89f);
         }
-        else { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
-
-        float inputX = Input.GetAxis("Horizontal");
-        float inputY = Input.GetAxis("Vertical");
-        if (inputX != 0 || inputY != 0)
-        {
-            Quaternion camRot = Quaternion.Euler(targetOrbitAngles.x, targetOrbitAngles.y, 0);
-            targetFocusPoint += (camRot * Vector3.right * inputX + camRot * Vector3.up * inputY)
-                              * panSpeed * Time.deltaTime;
+        else 
+        { 
+            Cursor.lockState = CursorLockMode.None; 
+            Cursor.visible   = true; 
         }
 
+        // --- 2. Middle Mouse - Move (Pan Camera) ---
+        if (Input.GetMouseButton(2)) 
+        {
+            float inputX = -Input.GetAxis("Mouse X");
+            float inputY = -Input.GetAxis("Mouse Y");
+            
+            Quaternion camRot = Quaternion.Euler(targetOrbitAngles.x, targetOrbitAngles.y, 0);
+            targetFocusPoint += (camRot * Vector3.right * inputX + camRot * Vector3.up * inputY) * panSpeed * 0.5f;
+        }
+
+        // --- 3. Scroll - Zoom ---
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll != 0)
         {
