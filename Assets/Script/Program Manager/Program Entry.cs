@@ -3,15 +3,16 @@ using UnityEngine.UI;
 
 public class ProgramEntry : MonoBehaviour
 {
-    public Button actionButton; 
+    [Header("UI References")]
+    public Image appIconImage;  // The picture of the app
+    public Button actionButton; // The button the player clicks to install/uninstall
 
-    public void Setup(Sprite appImage)
+    // The ProgramManager calls this to pass the picture data to the prefab!
+    public void Setup(Sprite icon)
     {
-        // FIX: Instead of looking for an Image on itself, 
-        // it grabs the Image from the button you already linked in the Inspector!
-        if (actionButton != null)
+        if (appIconImage != null && icon != null)
         {
-            actionButton.GetComponent<Image>().sprite = appImage;
+            appIconImage.sprite = icon;
         }
     }
 }

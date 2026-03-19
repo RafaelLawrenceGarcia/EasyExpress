@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6910710319196752183}
   - component: {fileID: 5389092462482250398}
   - component: {fileID: 2721649690172285749}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: GPU Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}

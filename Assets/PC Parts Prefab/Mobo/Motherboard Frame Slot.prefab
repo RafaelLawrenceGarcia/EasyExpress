@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6379978420603473004}
   - component: {fileID: 1339830836254948175}
   - component: {fileID: 1065619779024875505}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM Slot 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 4262058393196298198}
   - component: {fileID: 7626255545315818664}
   - component: {fileID: 2599688476853494813}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 10 Pin (10th Missing) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -304,7 +304,7 @@ GameObject:
   - component: {fileID: 6586879955448082562}
   - component: {fileID: 4858441925657421793}
   - component: {fileID: 6669512410675163747}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM SLOT 4.Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -449,7 +449,7 @@ GameObject:
   - component: {fileID: 1972194271326146260}
   - component: {fileID: 4315179624369267709}
   - component: {fileID: 8872280541800223576}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 4 Pin (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -595,7 +595,7 @@ GameObject:
   - component: {fileID: 5042312104065045663}
   - component: {fileID: 2558744844312907857}
   - component: {fileID: 9171928143357236340}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: USB 3.0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -740,7 +740,7 @@ GameObject:
   - component: {fileID: 3102542100257402127}
   - component: {fileID: 6945238968037749868}
   - component: {fileID: 7202432479158114986}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: PCIE Lane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -854,7 +854,7 @@ GameObject:
   - component: {fileID: 5210435204805593364}
   - component: {fileID: 3373654311122528358}
   - component: {fileID: 8201872799091745854}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Cube.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -999,7 +999,7 @@ GameObject:
   - component: {fileID: 7724484380486329480}
   - component: {fileID: 4887128171377022551}
   - component: {fileID: 5134192322373772432}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 4 Pin (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1145,7 +1145,7 @@ GameObject:
   - component: {fileID: 8371679606257937775}
   - component: {fileID: 1707586650181687131}
   - component: {fileID: 2820648520229990431}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: CMOS Battery
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1290,7 +1290,7 @@ GameObject:
   - component: {fileID: 129771564702951521}
   - component: {fileID: 2919856019963317513}
   - component: {fileID: 1259565274581836476}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: '8 Pin '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1436,7 +1436,7 @@ GameObject:
   - component: {fileID: 4004605198721788056}
   - component: {fileID: 8675827767521906030}
   - component: {fileID: 9151301691673880}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Cube.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1581,7 +1581,7 @@ GameObject:
   - component: {fileID: 7686022526246341707}
   - component: {fileID: 4295070135464104381}
   - component: {fileID: 8067158414010673815}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM Slot 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1726,7 +1726,7 @@ GameObject:
   - component: {fileID: 757053334845683295}
   - component: {fileID: 6088989282305397694}
   - component: {fileID: 3744789860061465796}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM Slot 1.002Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1871,7 +1871,7 @@ GameObject:
   - component: {fileID: 1148722344359026222}
   - component: {fileID: 5234848467686662508}
   - component: {fileID: 6277533669904763932}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 5 Pin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2017,7 +2017,7 @@ GameObject:
   - component: {fileID: 803399444438814290}
   - component: {fileID: 5671434815438980128}
   - component: {fileID: 5106950340251890994}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM Slot 2.Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2162,7 +2162,7 @@ GameObject:
   - component: {fileID: 2789554496976433144}
   - component: {fileID: 7272992237632832385}
   - component: {fileID: 1636221517666813807}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SSD Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2307,7 +2307,7 @@ GameObject:
   - component: {fileID: 760627919615884439}
   - component: {fileID: 5596671602196015743}
   - component: {fileID: 8394648345458821262}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 14 pin (1st Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2453,7 +2453,7 @@ GameObject:
   - component: {fileID: 8218952414693905723}
   - component: {fileID: 5004373573737096568}
   - component: {fileID: 3920043895368519358}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SATA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2598,7 +2598,7 @@ GameObject:
   - component: {fileID: 3472544273192575050}
   - component: {fileID: 5713340563598737029}
   - component: {fileID: 1782094922940014061}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 4 Pin (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2744,7 +2744,7 @@ GameObject:
   - component: {fileID: 6889145690878302252}
   - component: {fileID: 6060892043888575077}
   - component: {fileID: 5661187194828560743}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 10 Pin(5th Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2890,7 +2890,7 @@ GameObject:
   - component: {fileID: 6010122768597922418}
   - component: {fileID: 5873692099565875825}
   - component: {fileID: 4688641332154062690}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Display Port
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3037,7 +3037,7 @@ GameObject:
   - component: {fileID: 3628988085539637742}
   - component: {fileID: 2584919183695149563}
   - component: {fileID: 8648930756565135046}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM SLOT 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3182,7 +3182,7 @@ GameObject:
   - component: {fileID: 7100128516398221350}
   - component: {fileID: 5828154894780008860}
   - component: {fileID: 2994310544614671583}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 10 Pin(4th Pin Pin Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3328,7 +3328,7 @@ GameObject:
   - component: {fileID: 1757546824590579858}
   - component: {fileID: 2785394587554873409}
   - component: {fileID: 7464718653377972314}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM Slot 1.Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3473,7 +3473,7 @@ GameObject:
   - component: {fileID: 579224850225400955}
   - component: {fileID: 3754737702735295563}
   - component: {fileID: 3149318740722195727}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM SLOT 3.002Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3618,7 +3618,7 @@ GameObject:
   - component: {fileID: 4882210608992518574}
   - component: {fileID: 9217028328439589541}
   - component: {fileID: 8875748723312485801}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM SLOT 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3764,7 +3764,7 @@ GameObject:
   - component: {fileID: 8975263439826039493}
   - component: {fileID: 4040863146518947873}
   - component: {fileID: 9123237656892691591}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 24 Pins
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3930,7 +3930,7 @@ GameObject:
   - component: {fileID: 7923541481461256949}
   - component: {fileID: 1808590488771414548}
   - component: {fileID: 4565351855242839829}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Heatsink 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4075,7 +4075,7 @@ GameObject:
   - component: {fileID: 9006843838882620862}
   - component: {fileID: 8280069332816490224}
   - component: {fileID: 3641569248862950057}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: '10 Pin (10th Missing) (2) '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4221,7 +4221,7 @@ GameObject:
   - component: {fileID: 2095612120784611287}
   - component: {fileID: 7986337073401555803}
   - component: {fileID: 8095435858496452901}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: USB 3.0 & Ethernet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4368,7 +4368,7 @@ GameObject:
   - component: {fileID: 2646045725976811069}
   - component: {fileID: 7613906950874527958}
   - component: {fileID: 1118154584971731131}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: HDMI Port
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4515,7 +4515,7 @@ GameObject:
   - component: {fileID: 2826064112692605913}
   - component: {fileID: 4671079973227283257}
   - component: {fileID: 2797383950169367930}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM SLOT 4.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4660,7 +4660,7 @@ GameObject:
   - component: {fileID: 7601054953203634554}
   - component: {fileID: 3797965189234935645}
   - component: {fileID: 7463192544079212985}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM Slot 2.002Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4804,7 +4804,7 @@ GameObject:
   - component: {fileID: 953479161272711467}
   - component: {fileID: 1213295745635533543}
   - component: {fileID: 5317701823381458354}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Motherboard Frame Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4961,7 +4961,7 @@ GameObject:
   - component: {fileID: 2179420990219419804}
   - component: {fileID: 961851511418664721}
   - component: {fileID: 1295230763758268452}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: RAM SLOT 3.Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5107,7 +5107,7 @@ GameObject:
   - component: {fileID: 7412032307631238729}
   - component: {fileID: 6514188298228973227}
   - component: {fileID: 2464820042685715535}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 20 Pin (10th Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5274,7 +5274,7 @@ GameObject:
   - component: {fileID: 3752466185072457133}
   - component: {fileID: 2213340077891305978}
   - component: {fileID: 2584474634669077780}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 'SATA '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5419,7 +5419,7 @@ GameObject:
   - component: {fileID: 4598769496301471137}
   - component: {fileID: 4575630273359884186}
   - component: {fileID: 9044440056291417648}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 4 Pin (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5565,7 +5565,7 @@ GameObject:
   - component: {fileID: 7899798149334186620}
   - component: {fileID: 3622258891106161396}
   - component: {fileID: 98663161747376881}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 4 Pin (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5710,7 +5710,7 @@ GameObject:
   - component: {fileID: 38169619467895803}
   - component: {fileID: 5290901900216313068}
   - component: {fileID: 3066744829235806526}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: PCIE Lane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5824,7 +5824,7 @@ GameObject:
   - component: {fileID: 6020559249361467566}
   - component: {fileID: 476612293691494541}
   - component: {fileID: 6739707279849569124}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: USB 2.0 w/ PS/2 Port
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5973,7 +5973,7 @@ GameObject:
   - component: {fileID: 7163257266270218876}
   - component: {fileID: 5020687916784602143}
   - component: {fileID: 1330145844849553922}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Heatsink 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6118,7 +6118,7 @@ GameObject:
   - component: {fileID: 7371973770957658300}
   - component: {fileID: 7528653544769626714}
   - component: {fileID: 5154338816488924943}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: 10 Pin (6th Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

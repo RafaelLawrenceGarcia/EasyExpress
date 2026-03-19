@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2364209086429133118}
   - component: {fileID: 4170927296692917876}
   - component: {fileID: 8226398569718017810}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: pipelocker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 1096194282544546446}
   - component: {fileID: 5607735991370436886}
   - component: {fileID: 4921804145374002935}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Intel CPU Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -311,7 +311,7 @@ GameObject:
   - component: {fileID: 8439815559029396150}
   - component: {fileID: 1367215852773337825}
   - component: {fileID: 4665734686742780799}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: CPU BACKFRAME
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -457,7 +457,7 @@ GameObject:
   - component: {fileID: 5882914254335766035}
   - component: {fileID: 1311218012507232770}
   - component: {fileID: 1622945207964821549}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: CPU Cover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -601,7 +601,7 @@ GameObject:
   - component: {fileID: 2691857794583843310}
   - component: {fileID: 8722421426522471860}
   - component: {fileID: 4325796184851649393}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}

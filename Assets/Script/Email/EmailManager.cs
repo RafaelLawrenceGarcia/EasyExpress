@@ -9,10 +9,10 @@ public class EmailManager : MonoBehaviour
 
     [Header("Inbox UI (Left Panel)")]
     public GameObject emailInboxPrefab;
-    public Transform inboxContentContainer; 
+    public Transform inboxContentContainer;
 
     [Header("Detail UI (Right Panel)")]
-    public GameObject detailPanel;          
+    public GameObject detailPanel;
     public TextMeshProUGUI senderText;
     public TextMeshProUGUI subjectText;
     public TextMeshProUGUI bodyText;
@@ -22,17 +22,21 @@ public class EmailManager : MonoBehaviour
     public Image detailProfilePic;
 
     [Header("PC Status Panel UI")]
-    public GameObject pcStatusPanel;      
+    public GameObject pcStatusPanel;
     public TextMeshProUGUI pcProblemsText;
+
+    // NEW: Container and Prefab for individual PC Specs
+    public Transform pcSpecsContentContainer;
+    public GameObject pcSpecItemPrefab;
 
     [Header("Action Buttons")]
     public Button acceptButton;
     public Button rejectButton;
-    public Button completeButton; // For finishing jobs
+    public Button completeButton;
 
     [Header("Job Database")]
-    public List<EmailData> activeEmails = new List<EmailData>(); // Pending Emails
-    public List<EmailData> acceptedJobs = new List<EmailData>(); // Active Jobs (Emails + Walk-ins)
+    public List<EmailData> activeEmails = new List<EmailData>();
+    public List<EmailData> acceptedJobs = new List<EmailData>();
     private EmailData currentlySelectedEmail;
 
     [Header("Shop Integration")]
@@ -40,8 +44,8 @@ public class EmailManager : MonoBehaviour
     public GameObject deliveryBoxPrefab;
 
     [Header("Shipping / Drop-off")]
-    public Transform shippingZone; 
-    public float shippingRadius = 2.0f; 
+    public Transform shippingZone;
+    public float shippingRadius = 2.0f;
 
     void Awake()
     {
@@ -51,25 +55,54 @@ public class EmailManager : MonoBehaviour
     void Start()
     {
         if (detailPanel != null) detailPanel.SetActive(false);
-        if (pcStatusPanel != null) pcStatusPanel.SetActive(false); 
+        if (pcStatusPanel != null) pcStatusPanel.SetActive(false);
         RefreshInboxUI();
+    }
+
+    public void OpenEmailApp()
+    {
+        if (detailPanel != null) detailPanel.SetActive(false);
+        if (pcStatusPanel != null) pcStatusPanel.SetActive(false);
+        RefreshInboxUI();
+    }
+
+    public void TogglePCStatusPanel()
+    {
+        if (pcStatusPanel == null) return;
+        pcStatusPanel.SetActive(!pcStatusPanel.activeSelf);
+    }
+
+    public void ClosePCStatusPanel()
+    {
+        if (pcStatusPanel == null) return;
+        pcStatusPanel.SetActive(false);
     }
 
     public void RefreshInboxUI()
     {
         foreach (Transform child in inboxContentContainer) Destroy(child.gameObject);
 
-        // 1. Show Pending Emails
         foreach (EmailData email in activeEmails)
         {
             CreateInboxButton(email, "PENDING");
         }
 
-        // 2. Show Accepted/Walk-in Jobs
         foreach (EmailData email in acceptedJobs)
         {
             CreateInboxButton(email, "IN PROGRESS");
         }
+    }
+
+    private Transform FindChildRecursive(Transform parent, string targetName)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.name == targetName) return child;
+
+            Transform result = FindChildRecursive(child, targetName);
+            if (result != null) return result;
+        }
+        return null;
     }
 
     void CreateInboxButton(EmailData email, string statusPrefix)
@@ -77,77 +110,148 @@ public class EmailManager : MonoBehaviour
         GameObject newEmailBtn = Instantiate(emailInboxPrefab, inboxContentContainer);
         Transform t = newEmailBtn.transform;
 
-        Transform senderTransform = t.Find("Sender Name");
+        Transform senderTransform = FindChildRecursive(t, "Sender Name");
         if (senderTransform != null) senderTransform.GetComponent<TextMeshProUGUI>().text = email.senderName;
-        
-        Transform subjectTransform = t.Find("Subject Line");
+
+        Transform subjectTransform = FindChildRecursive(t, "Subject Line");
         if (subjectTransform != null) subjectTransform.GetComponent<TextMeshProUGUI>().text = $"[{statusPrefix}] " + email.subjectLine;
 
-        Transform profileImageTransform = t.Find("Profile Image");
-        if (profileImageTransform != null) profileImageTransform.GetComponent<Image>().sprite = email.profilePic;
+        Transform profileImageTransform = FindChildRecursive(t, "Profile Image");
+        if (profileImageTransform != null && email.profilePic != null) profileImageTransform.GetComponent<Image>().sprite = email.profilePic;
 
         Button btn = newEmailBtn.GetComponent<Button>();
-        btn.onClick.AddListener(() => SelectEmail(email));
+        if (btn != null)
+        {
+            btn.onClick.AddListener(() => SelectEmail(email));
+        }
     }
 
     public void SelectEmail(EmailData email)
     {
         currentlySelectedEmail = email;
-        detailPanel.SetActive(true); 
 
-        senderText.text = email.senderName;
-        subjectText.text = email.subjectLine;
-        
-        string specText = "\n\n<b>Current PC Specs:</b>\n";
-        foreach (StartingPCComponent part in email.startingParts) specText += $"• <b>{part.partCategory}</b>: {part.partName}\n";
-        bodyText.text = email.bodyText + specText;
-
-        labourText.text = "Labour: ₱" + email.labourCost.ToString("N0");
-        budgetText.text = "Budget: ₱" + email.partsBudget.ToString("N0");
-        if (detailProfilePic != null) detailProfilePic.sprite = email.profilePic;
-
-        string combinedObjectives = "";
-        foreach (string obj in email.objectives) combinedObjectives += "• " + obj + "\n";
-        objectivesText.text = combinedObjectives;
-
-        string combinedProblems = "";
-        foreach (string problem in email.pcProblems) combinedProblems += "<color=red>■</color> " + problem + "\n\n";
-        if (pcProblemsText != null) pcProblemsText.text = combinedProblems;
-
+        if (detailPanel != null) detailPanel.SetActive(true);
         if (pcStatusPanel != null) pcStatusPanel.SetActive(false);
 
-        // TOGGLE BUTTONS: If it's a pending email, show Accept/Reject. If it's active, show Complete.
+        if (senderText != null) senderText.text = email.senderName;
+        if (subjectText != null) subjectText.text = email.subjectLine;
+        if (bodyText != null) bodyText.text = email.bodyText;
+
+        // ---------------------------------------------------------
+        // --- NEW: DYNAMIC PC SPECS GROUPING & SPAWNING ---
+        // ---------------------------------------------------------
+        if (pcSpecsContentContainer != null)
+        {
+            // 1. Clear out old specs from the previous email
+            foreach (Transform child in pcSpecsContentContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            if (email.startingParts != null && pcSpecItemPrefab != null)
+            {
+                // 2. Count and group identical parts
+                Dictionary<string, PartGroup> groupedParts = new Dictionary<string, PartGroup>();
+
+                foreach (StartingPCComponent part in email.startingParts)
+                {
+                    if (groupedParts.ContainsKey(part.partName))
+                    {
+                        groupedParts[part.partName].amount++; // Found a duplicate, add to the count!
+                    }
+                    else
+                    {
+                        PartGroup newGroup = new PartGroup();
+                        newGroup.part = part;
+                        newGroup.amount = 1;
+                        groupedParts.Add(part.partName, newGroup); // First time seeing this part
+                    }
+                }
+
+                // 3. Spawn a prefab for each unique group
+                foreach (KeyValuePair<string, PartGroup> kvp in groupedParts)
+                {
+                    PartGroup group = kvp.Value;
+
+                    GameObject newSpecObj = Instantiate(pcSpecItemPrefab, pcSpecsContentContainer);
+                    Transform t = newSpecObj.transform;
+
+                    // Apply the grouped text (e.g., "RAM: 8GB DDR4 x4")
+                    Transform textObj = FindChildRecursive(t, "Spec Text");
+                    if (textObj != null)
+                    {
+                        string amountString = group.amount > 1 ? $" x{group.amount}" : "";
+                        textObj.GetComponent<TextMeshProUGUI>().text = $"<b>{group.part.partCategory}:</b> {group.part.partName}{amountString}";
+                    }
+
+                    // Apply the icon
+                    Transform imgObj = FindChildRecursive(t, "Spec Image");
+                    if (imgObj != null && group.part.partIcon != null)
+                    {
+                        imgObj.GetComponent<Image>().sprite = group.part.partIcon;
+                    }
+                }
+            }
+        }
+        // ---------------------------------------------------------
+
+        if (labourText != null) labourText.text = "Labour: ₱" + email.labourCost.ToString("N0");
+        if (budgetText != null) budgetText.text = "Budget: ₱" + email.partsBudget.ToString("N0");
+        if (detailProfilePic != null && email.profilePic != null) detailProfilePic.sprite = email.profilePic;
+
+        string combinedObjectives = "";
+        if (email.objectives != null)
+        {
+            foreach (string obj in email.objectives) combinedObjectives += "• " + obj + "\n";
+        }
+        if (objectivesText != null) objectivesText.text = combinedObjectives;
+
+        string combinedProblems = "";
+        if (email.pcProblems != null)
+        {
+            foreach (string problem in email.pcProblems) combinedProblems += "<color=red>■</color> " + problem + "\n\n";
+        }
+        if (pcProblemsText != null) pcProblemsText.text = combinedProblems;
+
         if (activeEmails.Contains(email))
         {
-            acceptButton.gameObject.SetActive(true);
-            rejectButton.gameObject.SetActive(true);
+            if (acceptButton != null) acceptButton.gameObject.SetActive(true);
+            if (rejectButton != null) rejectButton.gameObject.SetActive(true);
             if (completeButton != null) completeButton.gameObject.SetActive(false);
 
-            acceptButton.onClick.RemoveAllListeners();
-            acceptButton.onClick.AddListener(() => AcceptJob(email));
+            if (acceptButton != null)
+            {
+                acceptButton.onClick.RemoveAllListeners();
+                acceptButton.onClick.AddListener(() => AcceptJob(email));
+            }
 
-            rejectButton.onClick.RemoveAllListeners();
-            rejectButton.onClick.AddListener(() => RejectJob(email));
+            if (rejectButton != null)
+            {
+                rejectButton.onClick.RemoveAllListeners();
+                rejectButton.onClick.AddListener(() => RejectJob(email));
+            }
         }
         else if (acceptedJobs.Contains(email))
         {
-            acceptButton.gameObject.SetActive(false);
-            rejectButton.gameObject.SetActive(false);
+            if (acceptButton != null) acceptButton.gameObject.SetActive(false);
+            if (rejectButton != null) rejectButton.gameObject.SetActive(false);
             if (completeButton != null) completeButton.gameObject.SetActive(true);
 
-            completeButton.onClick.RemoveAllListeners();
-            completeButton.onClick.AddListener(() => CompleteJob(email));
+            if (completeButton != null)
+            {
+                completeButton.onClick.RemoveAllListeners();
+                completeButton.onClick.AddListener(() => CompleteJob(email));
+            }
         }
     }
 
-    // --- REUSABLE SPAWNING LOGIC ---
     public bool SpawnBoxFromData(GameObject casePrefab, List<StartingPCComponent> parts)
     {
         int emptySlot = GetEmptyShelfSpot();
-        if (emptySlot == -1) return false; 
+        if (emptySlot == -1) return false;
 
         Transform spot = shelfLocations[emptySlot];
-        
+
         if (deliveryBoxPrefab != null)
         {
             GameObject newBox = Instantiate(deliveryBoxPrefab, spot.position, spot.rotation);
@@ -157,17 +261,16 @@ public class EmailManager : MonoBehaviour
         return true;
     }
 
-    // --- EMAIL BUTTON LOGIC ---
     public void AcceptJob(EmailData email)
     {
         bool success = SpawnBoxFromData(email.basePCCasePrefab, email.startingParts);
-        
+
         if (success)
         {
-            activeEmails.Remove(email); 
-            acceptedJobs.Add(email);    
+            activeEmails.Remove(email);
+            acceptedJobs.Add(email);
             RefreshInboxUI();
-            SelectEmail(email);         
+            SelectEmail(email);
         }
         else
         {
@@ -178,8 +281,8 @@ public class EmailManager : MonoBehaviour
     public void RejectJob(EmailData email)
     {
         activeEmails.Remove(email);
-        detailPanel.SetActive(false); 
-        RefreshInboxUI();             
+        if (detailPanel != null) detailPanel.SetActive(false);
+        RefreshInboxUI();
     }
 
     public void CompleteJob(EmailData email)
@@ -198,20 +301,20 @@ public class EmailManager : MonoBehaviour
             if (Vector3.Distance(pc.transform.position, shippingZone.position) <= shippingRadius)
             {
                 pcToShip = pc;
-                break; 
+                break;
             }
         }
 
         if (pcToShip != null)
         {
-            Destroy(pcToShip.gameObject); 
-            
+            Destroy(pcToShip.gameObject);
+
             float totalPay = email.labourCost + email.partsBudget;
             PlayerWallet wallet = FindObjectOfType<PlayerWallet>();
             if (wallet != null) wallet.AddGold(totalPay);
 
             acceptedJobs.Remove(email);
-            detailPanel.SetActive(false);
+            if (detailPanel != null) detailPanel.SetActive(false);
             RefreshInboxUI();
 
             Debug.Log("PC Shipped! Paid ₱" + totalPay);
@@ -222,11 +325,10 @@ public class EmailManager : MonoBehaviour
         }
     }
 
-    // --- WALK-IN CUSTOMER LOGIC ---
     public void ReceiveWalkInJob(EmailData emailTemplate, string customerName)
     {
         bool success = SpawnBoxFromData(emailTemplate.basePCCasePrefab, emailTemplate.startingParts);
-        
+
         if (!success)
         {
             Debug.LogWarning("Shelves are full! Cannot accept walk-in.");
@@ -236,25 +338,22 @@ public class EmailManager : MonoBehaviour
         EmailData newJob = Instantiate(emailTemplate);
         newJob.senderName = customerName + " (Walk-In)";
         newJob.subjectLine = "In-Store Repair Drop-off";
-        
+
         acceptedJobs.Add(newJob);
         RefreshInboxUI();
     }
 
-    // --- NEW SMART PHYSICS SHELF CHECKER ---
     private int GetEmptyShelfSpot()
     {
         for (int i = 0; i < shelfLocations.Length; i++)
         {
             Transform spot = shelfLocations[i];
-            
-            // Draw a tiny invisible sphere on the shelf to see if a box is touching it
+
             Collider[] itemsOnShelf = Physics.OverlapSphere(spot.position, 0.2f);
             bool isFull = false;
-            
+
             foreach (Collider item in itemsOnShelf)
             {
-                // If the sphere touches a box or a PC, this spot is taken!
                 if (item.GetComponentInParent<JobBox>() != null || item.GetComponentInParent<PCCaseBuilder>() != null)
                 {
                     isFull = true;
@@ -262,9 +361,15 @@ public class EmailManager : MonoBehaviour
                 }
             }
 
-            // If the sphere didn't touch anything, this shelf is completely empty!
-            if (!isFull) return i; 
+            if (!isFull) return i;
         }
-        return -1; 
+        return -1;
     }
+}
+
+// Helper class to group duplicate parts together
+public class PartGroup
+{
+    public StartingPCComponent part;
+    public int amount;
 }

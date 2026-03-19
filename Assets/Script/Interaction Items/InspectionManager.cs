@@ -770,9 +770,37 @@ public class InspectionManager : MonoBehaviour
         float   cableLen = Vector3.Distance(startWorld, endWorld);
         float   sag      = Mathf.Max(cableLen * cableSag, 0.05f);
 
+        // ── Default push: toward the camera so the preview stays readable ────
         Vector3 pushDir = inspectionCamera.transform.position - startWorld;
         pushDir.y = 0f;
         if (pushDir.sqrMagnitude > 0.001f) pushDir.Normalize();
+
+        // ── Obstacle override (one cheap SphereCast per frame) ───────────────
+        // If there is a PC component in the straight line between the two ports,
+        // redirect the drag preview to arc over/around it instead of through it.
+        // This uses the same layer mask and radius as the committed-wire solver,
+        // so the preview closely matches where the final wire will actually land.
+        if (CableRouteManager.Instance != null
+            && CableRouteManager.Instance.enableObstacleAvoidance
+            && CableRouteManager.Instance.obstacleMask != 0
+            && cableLen > 0.001f)
+        {
+            Vector3    segDir = (endWorld - startWorld).normalized;
+            RaycastHit hit;
+            if (Physics.SphereCast(
+                    startWorld,
+                    CableRouteManager.Instance.cableRadius,
+                    segDir,
+                    out hit,
+                    cableLen,
+                    CableRouteManager.Instance.obstacleMask,
+                    QueryTriggerInteraction.Ignore))
+            {
+                // Push away from the obstacle surface, biased upward —
+                // this matches the direction CablePathSolver would detour.
+                pushDir = (hit.normal + Vector3.up * 0.4f).normalized;
+            }
+        }
 
         Vector3 mid1 = Vector3.Lerp(startWorld, endWorld, 0.33f)
                      + pushDir * (cableLen * 0.35f) + Vector3.down * sag;

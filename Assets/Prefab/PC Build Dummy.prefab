@@ -2350,7 +2350,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CableRoute
   connectorType: 20Pins
   waypoints:
-  - {fileID: 0}
   - {fileID: 1797732470936736246}
   - {fileID: 7848518833766496001}
   - {fileID: 6433789395010856970}
@@ -2402,6 +2401,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CableRouteManager
   routes:
   - {fileID: 3832225037820930401}
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 16384
+  cableRadius: 0.01
+  clearance: 0.015
+  solverDepth: 4
+  enableObstacleAvoidance: 1
+  showSolvedPath: 1
+  debugStart: {fileID: 0}
+  debugEnd: {fileID: 0}
+  debugConnectorType: 24pin
 --- !u!1 &1551658234412114240
 GameObject:
   m_ObjectHideFlags: 0
@@ -3203,7 +3213,7 @@ GameObject:
   - component: {fileID: 8837454197563035176}
   - component: {fileID: 5736460008075381836}
   m_Layer: 0
-  m_Name: Slot_Power Supply
+  m_Name: Slot_PSU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3378,7 +3388,7 @@ Transform:
   m_GameObject: {fileID: 2308372507715908718}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0020462065, y: -0.000118902695, z: 0.00016907643}
+  m_LocalPosition: {x: -0.0020462065, y: 0.000295, z: 0.000169}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4207,7 +4217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Power Supply Outlet
-  partCategory: Generic
+  partCategory: PSU
   itemDescription: No description available.
   isMainObject: 0
   isRemovable: 0
@@ -6508,7 +6518,7 @@ Transform:
   m_GameObject: {fileID: 3989461669007185964}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0020469313, y: -0.00027942515, z: 0.0001683254}
+  m_LocalPosition: {x: -0.0020469313, y: -0.000105, z: 0.000168}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7978,7 +7988,7 @@ Transform:
   m_GameObject: {fileID: 4609764953773446406}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.001007083, y: -0.00011066294, z: 0}
+  m_LocalPosition: {x: -0.0008, y: -0.00011066294, z: 0}
   m_LocalScale: {x: 0.95638984, y: 0.95638984, z: 0.95638984}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8972,8 +8982,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.2802773, y: 1.5751617, z: 1}
-  m_Center: {x: 0.6197262, y: 0.28758085, z: 0}
+  m_Size: {x: 1.6556702, y: 0.9844911, z: 1.8942089}
+  m_Center: {x: -0.06149885, y: 0.58291614, z: -0.07887268}
 --- !u!64 &8659894682264109394
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -13265,7 +13275,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CableRoute
   connectorType: 8Pins
   waypoints:
-  - {fileID: 0}
   - {fileID: 3066529148077460024}
   - {fileID: 6600903945187083883}
   - {fileID: 478311850573212217}

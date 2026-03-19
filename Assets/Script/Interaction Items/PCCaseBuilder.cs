@@ -8,6 +8,7 @@ public class PCCaseBuilder : MonoBehaviour
         Transform[] allChildren = GetComponentsInChildren<Transform>(true);
         List<Transform> dummySlots = new List<Transform>();
         
+        // 1. Gather all valid dummy slots
         foreach (Transform child in allChildren)
         {
             // We look for any object starting with "Slot_"
@@ -17,12 +18,21 @@ public class PCCaseBuilder : MonoBehaviour
             }
         }
 
+        // 2. Attempt to place each part
         foreach (StartingPCComponent part in partsToInstall)
         {
-            if (part.partPrefab == null) continue;
+            Debug.Log($"[PC Builder] Trying to place: {part.partCategory} | prefab null? {part.partPrefab == null}");
+
+            if (part.partPrefab == null) 
+            {
+                Debug.LogWarning($"[PC Builder] Skipping {part.partCategory} because its prefab is missing in the data file!");
+                continue;
+            }
 
             // Find a dummy that contains the EXACT category name (e.g., "RAM")
             Transform matchingDummy = dummySlots.Find(d => d.name.Contains(part.partCategory));
+
+            Debug.Log($"[PC Builder]   → Slot found: {(matchingDummy != null ? matchingDummy.name : "NONE")}");
 
             if (matchingDummy != null)
             {
@@ -31,16 +41,23 @@ public class PCCaseBuilder : MonoBehaviour
                 realPart.transform.localPosition = matchingDummy.localPosition;
                 realPart.transform.localRotation = matchingDummy.localRotation;
                 
-                // FIX: Put internal parts on the "Ignore Raycast" layer!
+                // Put internal parts on the "Ignore Raycast" layer!
                 // This makes them invisible to your interaction laser so they don't block clicks.
                 SetLayerRecursively(realPart, LayerMask.NameToLayer("Ignore Raycast"));
                 
+                // Remove from our list and destroy the dummy so it isn't used again
                 dummySlots.Remove(matchingDummy);
                 Destroy(matchingDummy.gameObject);
+                
+                Debug.Log($"[PC Builder] Successfully placed {part.partCategory} into {matchingDummy.name}.");
+            }
+            else
+            {
+                Debug.LogWarning($"[PC Builder] Failed to place {part.partCategory}. No available slot starting with 'Slot_' containing that name was found.");
             }
         }
 
-        // Clean up any dummies that weren't requested in the email
+        // 3. Clean up any dummies that weren't requested in the email
         foreach (Transform leftoverDummy in dummySlots)
         {
             if (leftoverDummy != null)

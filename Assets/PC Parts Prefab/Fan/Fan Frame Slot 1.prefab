@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2248145486669548054}
   - component: {fileID: 8905954962175778541}
   - component: {fileID: 4273197444758156852}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fan Frame Slot 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ GameObject:
   - component: {fileID: 814992505373147483}
   - component: {fileID: 662234184078735803}
   - component: {fileID: 3035706562828519696}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fan Blade 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

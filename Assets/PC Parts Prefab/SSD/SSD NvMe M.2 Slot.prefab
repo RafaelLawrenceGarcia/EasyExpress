@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7830483434150916461}
   - component: {fileID: 313552187654570553}
   - component: {fileID: 6431501173262859727}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SSD NvMe M.2 Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
