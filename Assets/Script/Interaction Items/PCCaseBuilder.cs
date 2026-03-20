@@ -8,72 +8,90 @@ public class PCCaseBuilder : MonoBehaviour
         Transform[] allChildren = GetComponentsInChildren<Transform>(true);
         List<Transform> dummySlots = new List<Transform>();
         
-        // 1. Gather all valid dummy slots
         foreach (Transform child in allChildren)
         {
-            // We look for any object starting with "Slot_"
             if (child.name.StartsWith("Slot_"))
-            {
                 dummySlots.Add(child);
-            }
         }
 
-        // 2. Attempt to place each part
         foreach (StartingPCComponent part in partsToInstall)
         {
-            Debug.Log($"[PC Builder] Trying to place: {part.partCategory} | prefab null? {part.partPrefab == null}");
-
             if (part.partPrefab == null) 
             {
-                Debug.LogWarning($"[PC Builder] Skipping {part.partCategory} because its prefab is missing in the data file!");
+                Debug.LogWarning($"[PC Builder] Skipping {part.partCategory} - prefab missing!");
                 continue;
             }
 
-            // Find a dummy that contains the EXACT category name (e.g., "RAM")
             Transform matchingDummy = dummySlots.Find(d => d.name.Contains(part.partCategory));
-
-            Debug.Log($"[PC Builder]   → Slot found: {(matchingDummy != null ? matchingDummy.name : "NONE")}");
-
             if (matchingDummy != null)
             {
                 GameObject realPart = Instantiate(part.partPrefab, matchingDummy.parent);
-                
                 realPart.transform.localPosition = matchingDummy.localPosition;
                 realPart.transform.localRotation = matchingDummy.localRotation;
                 
-                // Put internal parts on the "Ignore Raycast" layer!
-                // This makes them invisible to your interaction laser so they don't block clicks.
-                SetLayerRecursively(realPart, LayerMask.NameToLayer("Ignore Raycast"));
+                // Set category on the root part
+                InspectableItem partScript = realPart.GetComponent<InspectableItem>();
+                if (partScript != null)
+                {
+                    partScript.partCategory = part.partCategory;
+                    partScript.itemName     = part.partName;
+
+                    // --- THE FIX: Transfer the blocking rules to the real part ---
+                    InspectableItem dummyScript = matchingDummy.GetComponent<InspectableItem>();
+                    if (dummyScript != null && dummyScript.blockingParts != null)
+                    {
+                        partScript.blockingParts = new List<InspectableItem>(dummyScript.blockingParts);
+                    }
+                    // -------------------------------------------------------------
+                }
+
+                // Also set category on ALL child InspectableItems
+                foreach (InspectableItem childScript in realPart.GetComponentsInChildren<InspectableItem>(true))
+                {
+                    if (string.IsNullOrEmpty(childScript.partCategory) || childScript.partCategory == "Generic")
+                    {
+                        childScript.partCategory = part.partCategory;
+                    }
+                }
                 
-                // Remove from our list and destroy the dummy so it isn't used again
+                SetLayerRecursively(realPart, LayerMask.NameToLayer("Ignore Raycast"));
                 dummySlots.Remove(matchingDummy);
                 Destroy(matchingDummy.gameObject);
                 
-                Debug.Log($"[PC Builder] Successfully placed {part.partCategory} into {matchingDummy.name}.");
+                Debug.Log($"[PC Builder] Placed {part.partCategory} into {matchingDummy.name}.");
             }
             else
             {
-                Debug.LogWarning($"[PC Builder] Failed to place {part.partCategory}. No available slot starting with 'Slot_' containing that name was found.");
+                Debug.LogWarning($"[PC Builder] No slot found for {part.partCategory}.");
             }
         }
 
-        // 3. Clean up any dummies that weren't requested in the email
+        // Turn leftover Slot_ dummies into proper ghost slots
         foreach (Transform leftoverDummy in dummySlots)
         {
-            if (leftoverDummy != null)
-            {
-                Destroy(leftoverDummy.gameObject);
-            }
+            if (leftoverDummy == null) continue;
+            string category = leftoverDummy.name.Replace("Slot_", "").Trim();
+            InspectableItem ghostScript = leftoverDummy.gameObject.GetComponent<InspectableItem>();
+            if (ghostScript == null)
+                ghostScript = leftoverDummy.gameObject.AddComponent<InspectableItem>();
+            ghostScript.partCategory   = category;
+            ghostScript.itemName       = category + " Slot";
+            ghostScript.itemDescription = "Install a " + category + " here.";
+            ghostScript.isInventorySlot = true;
+            ghostScript.isRemovable     = false;
+            
+            foreach (Renderer r in leftoverDummy.GetComponentsInChildren<Renderer>())
+                r.enabled = false;
+            foreach (Collider col in leftoverDummy.GetComponentsInChildren<Collider>())
+                col.enabled = false;
+            Debug.Log($"[PC Builder] Created ghost slot for: {category}");
         }
     }
 
-    // Helper method to change the layer of the part and all its pieces
     private void SetLayerRecursively(GameObject obj, int newLayer)
     {
         obj.layer = newLayer;
         foreach (Transform child in obj.transform)
-        {
             SetLayerRecursively(child.gameObject, newLayer);
-        }
     }
 }

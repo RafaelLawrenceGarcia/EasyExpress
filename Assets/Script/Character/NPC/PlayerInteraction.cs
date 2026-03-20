@@ -48,11 +48,20 @@ public class PlayerInteract : MonoBehaviour
 
  void Update()
     {
+        // --- NEW: THE GLOBAL LOCK ---
+        // If we are currently inspecting a PC, stop all shop-world interactions immediately
+        // This ensures the "Whole PC" highlight and "Press E" prompt disappear instantly.
+        if (inspectionManager != null && inspectionManager.isInspecting) 
+        {
+            if (pressEPrompt != null) pressEPrompt.SetActive(false);
+            return; 
+        }
+
         if (computerOS != null && computerOS.gameObject.activeSelf)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                PauseManager.BlockPause = true; 
+                PauseManager.BlockPause = true;
 
                 if (computerOS.HandleEscapeInput())
                 {
@@ -94,7 +103,6 @@ public class PlayerInteract : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    
                     if (cityNPC) StartCityInteraction(cityNPC);
                     else if (shopPC) OpenShopComputer(); 
                     else if (readyShopCustomer) StartShopInteraction(shopCustomer);

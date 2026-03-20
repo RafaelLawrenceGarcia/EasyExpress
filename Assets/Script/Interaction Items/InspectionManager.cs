@@ -8,16 +8,14 @@ using System.Collections;
 
 public class InspectionManager : MonoBehaviour
 {
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  INSPECTOR REFERENCES
-    // ─────────────────────────────────────────────────────────────────────────────
     [Header("UI Reference")]
     public GameObject controlsUI;
     public GameObject infoPanel;
     public GameObject gameplayUI;
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI descText;
-
+    public InspectionInventoryUI inventoryUI;
+    public GameObject partPendingInstallation = null;
     [Header("Tooltip Reference")]
     public GameObject tooltipPanel;
     public TextMeshProUGUI tooltipTitle;
@@ -26,9 +24,8 @@ public class InspectionManager : MonoBehaviour
     public Material validPortMaterial;
     public Material invalidPortMaterial;
     public Material ghostMaterial;
-
+    
     [Header("Player Storage (Inventory)")]
-    [Tooltip("Parts you remove will be placed in here so you can install them elsewhere.")]
     public List<GameObject> playerStorage = new List<GameObject>();
 
     [Header("Cameras")]
@@ -37,7 +34,7 @@ public class InspectionManager : MonoBehaviour
 
     [Header("Blur Settings")]
     public Volume blurVolume;
-
+    
     [Header("Scripts & Animators to Disable")]
     public GTAMovement playerMovement;
     public OrbitCamera cameraScript;
@@ -59,9 +56,11 @@ public class InspectionManager : MonoBehaviour
     [Range(0f, 2f)] public float sagLengthScale = 0.6f;
     public int cableResolution = 20;
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  PRIVATE STATE
-    // ─────────────────────────────────────────────────────────────────────────────
+    [Header("Screwdriver / Hold-to-Remove & Install")]
+    public ScrewdriverInteraction screwdriverSystem;
+
+    private bool isConfirmingRemoval = false;
+
     private List<LineRenderer> activeWireLines       = new List<LineRenderer>();
     private string             activeWireConnectorType = "";
     private LineRenderer       activeWireLine;
@@ -76,10 +75,11 @@ public class InspectionManager : MonoBehaviour
 
     private GameObject currentClone;
     private GameObject voidAnchor;
-    private bool isInspecting = false;
+    private bool isPlacingFromInventory = false;
+    public bool isInspecting = false;
     private bool isWiring     = false;
     private bool isPCOn       = false;
-
+    
     private Vector3 focusPoint;
     private Vector3 targetFocusPoint;
     private float   currentDistance;
@@ -92,16 +92,12 @@ public class InspectionManager : MonoBehaviour
     private float optimalDistance;
     private List<InspectableItem> allPorts = new List<InspectableItem>();
 
-    // --- State Tracking for the Real Object ---
-    private Vector3 savedOriginalPosition;
+    private Vector3    savedOriginalPosition;
     private Quaternion savedOriginalRotation;
-    private Transform savedOriginalParent;
-    private bool savedRbKinematic;
+    private Transform  savedOriginalParent;
+    private bool       savedRbKinematic;
     private Dictionary<GameObject, int> originalLayerCache = new Dictionary<GameObject, int>();
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  UNITY LIFECYCLE
-    // ─────────────────────────────────────────────────────────────────────────────
     void Start()
     {
         if (blurVolume != null) blurVolume.weight = 0;
@@ -130,11 +126,16 @@ public class InspectionManager : MonoBehaviour
         if (controlsUI)   controlsUI.SetActive(false);
         if (infoPanel)    infoPanel.SetActive(false);
         if (tooltipPanel) tooltipPanel.SetActive(false);
+
+        if (screwdriverSystem != null && inspectionCamera != null)
+            screwdriverSystem.inspectionCamera = inspectionCamera;
     }
 
     void Update()
     {
         if (!isInspecting || currentClone == null) return;
+
+        if (isConfirmingRemoval) return;
 
         HandleInput();
         ApplyCameraMovement();
@@ -145,11 +146,12 @@ public class InspectionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R)) ResetView();
         if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.X))
             StopInspection();
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            if (inventoryUI != null) inventoryUI.ToggleInventory();
+        }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  INSPECTION ENTRY / EXIT
-    // ─────────────────────────────────────────────────────────────────────────────
     public void Inspect(InspectableItem originalItem)
     {
         isInspecting = true;
@@ -164,6 +166,9 @@ public class InspectionManager : MonoBehaviour
 
         if (mainCamera)       mainCamera.gameObject.SetActive(true);
         if (inspectionCamera) inspectionCamera.gameObject.SetActive(true);
+
+        if (screwdriverSystem != null && inspectionCamera != null)
+            screwdriverSystem.inspectionCamera = inspectionCamera;
 
         if (playerMovement) playerMovement.enabled = false;
         if (cameraScript)   cameraScript.enabled   = false;
@@ -182,19 +187,14 @@ public class InspectionManager : MonoBehaviour
 
         currentClone = originalItem.gameObject;
 
-        // Save its real-world position and properties so we can put it back later
         savedOriginalPosition = currentClone.transform.position;
         savedOriginalRotation = currentClone.transform.rotation;
-        savedOriginalParent = currentClone.transform.parent;
+        savedOriginalParent   = currentClone.transform.parent;
 
-        // Move the real object to the black void
         currentClone.transform.SetParent(voidAnchor.transform);
         currentClone.transform.localPosition = Vector3.zero;
-        
-        // --- ROTATE 180 DEGREES SO THE GLASS FACES THE CAMERA IMMEDIATELY ---
         currentClone.transform.localRotation = Quaternion.Euler(0, 180f, 0);
 
-        // Turn off physics while inspecting
         Rigidbody rb = currentClone.GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -202,13 +202,29 @@ public class InspectionManager : MonoBehaviour
             rb.isKinematic = true;
         }
 
+        originalItem.enabled = false;
         InspectableItem rootScript = currentClone.GetComponent<InspectableItem>();
         if (rootScript != null) rootScript.enabled = false;
 
-        Collider mainCollider = currentClone.GetComponent<Collider>();
-        if (mainCollider != null) mainCollider.enabled = false;
+        PCCaseBuilder builderScript = currentClone.GetComponent<PCCaseBuilder>();
+        if (builderScript != null) builderScript.enabled = false;
 
-        // Save original layers and move to InspectLayer
+        foreach (Collider col in currentClone.GetComponents<Collider>())
+            col.enabled = false;
+
+        string[] caseChildNames = { "case", "case.001", "case.003", "psucase" };
+        foreach (string childName in caseChildNames)
+        {
+            foreach (Transform t in currentClone.GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == childName)
+                {
+                    SetLayerRecursively(t.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
+                    break;
+                }
+            }
+        }
+
         SaveAndSetLayers(currentClone, LayerMask.NameToLayer("InspectLayer"));
 
         Bounds bounds = new Bounds(currentClone.transform.position, Vector3.zero);
@@ -216,14 +232,7 @@ public class InspectionManager : MonoBehaviour
             bounds.Encapsulate(r.bounds);
         currentClone.transform.position += voidAnchor.transform.position - bounds.center;
 
-        // If there are any ghost slots from a previous session, turn them visible again!
-        foreach (InspectableItem item in currentClone.GetComponentsInChildren<InspectableItem>(true))
-        {
-            if (item.isInventorySlot)
-            {
-                foreach(Renderer r in item.GetComponentsInChildren<Renderer>()) r.enabled = true;
-            }
-        }
+        HideAllGhostSlots();
 
         float objectSize = bounds.extents.magnitude;
         if (objectSize == 0) objectSize = 1f;
@@ -245,9 +254,74 @@ public class InspectionManager : MonoBehaviour
         Cursor.visible   = true;
     }
 
+    public void PrepareInstallationFromUI(GameObject partObj, InspectableItem partData)
+    {
+        if (currentClone == null) return;
+        
+        partPendingInstallation = partObj;
+        isPlacingFromInventory = true;
+
+        foreach (Collider col in currentClone.GetComponentsInChildren<Collider>(true))
+            col.enabled = false;
+
+        InspectableItem[] allItems = currentClone.GetComponentsInChildren<InspectableItem>(true);
+        foreach (var item in allItems)
+        {
+            if (item.isInventorySlot)
+            {
+                if (item.partCategory == partData.partCategory)
+                {
+                    foreach (Renderer rend in item.GetComponentsInChildren<Renderer>(true)) rend.enabled = true;
+                    foreach (Collider col in item.GetComponentsInChildren<Collider>(true)) col.enabled = true;
+                }
+                else
+                {
+                    foreach (Renderer rend in item.GetComponentsInChildren<Renderer>(true)) rend.enabled = false;
+                }
+            }
+        }
+    }
+
+    public void HideAllGhostSlots()
+    {
+        if (currentClone == null) return;
+        
+        partPendingInstallation = null;
+        isPlacingFromInventory = false;
+
+        InspectableItem[] allItems = currentClone.GetComponentsInChildren<InspectableItem>(true);
+        
+        foreach (var item in allItems)
+        {
+            if (!item.isInventorySlot)
+            {
+                if (item.gameObject == currentClone || IsCaseShellObject(item.gameObject)) continue;
+                foreach (Collider col in item.GetComponentsInChildren<Collider>(true)) 
+                    col.enabled = true;
+            }
+        }
+
+        foreach (var item in allItems)
+        {
+            if (item.isInventorySlot)
+            {
+                foreach (Renderer rend in item.GetComponentsInChildren<Renderer>(true)) rend.enabled = false;
+                foreach (Collider col in item.GetComponentsInChildren<Collider>(true)) col.enabled = false;
+            }
+        }
+    }
+
     public void StopInspection()
     {
+        if (screwdriverSystem != null) screwdriverSystem.CancelUnscrewing();
+        isConfirmingRemoval = false;
+
         isInspecting = false;
+
+        HideAllGhostSlots();
+
+        if (inventoryUI != null && inventoryUI.inventoryPanel != null)
+            inventoryUI.inventoryPanel.SetActive(false);
 
         CancelWiring();
         ClearPortHighlights();
@@ -257,18 +331,8 @@ public class InspectionManager : MonoBehaviour
 
         if (currentClone != null)
         {
-            // Turn all ghost slots invisible before putting the PC back on the desk
-            foreach (InspectableItem item in currentClone.GetComponentsInChildren<InspectableItem>(true))
-            {
-                if (item.isInventorySlot)
-                {
-                    foreach (Renderer r in item.GetComponentsInChildren<Renderer>()) r.enabled = false;
-                }
-            }
-
-            // Restore the object's normal layers
             RestoreLayers(currentClone);
-            originalLayerCache.Clear(); // Empty cache for next time
+            originalLayerCache.Clear();
 
             InspectableItem rootScript = currentClone.GetComponent<InspectableItem>();
             if (rootScript != null) rootScript.enabled = true;
@@ -276,22 +340,33 @@ public class InspectionManager : MonoBehaviour
             Collider mainCollider = currentClone.GetComponent<Collider>();
             if (mainCollider != null) mainCollider.enabled = true;
 
+            string[] caseChildNames = { "case", "case.001", "case.003", "psucase" };
+            foreach (string childName in caseChildNames)
+            {
+                Transform caseChild = null;
+                foreach (Transform t in currentClone.GetComponentsInChildren<Transform>(true))
+                    if (t.name == childName) { caseChild = t; break; }
+
+                if (caseChild != null)
+                    foreach (Collider col in caseChild.GetComponentsInChildren<Collider>())
+                        col.enabled = true;
+            }
+
             Rigidbody rb = currentClone.GetComponent<Rigidbody>();
             if (rb != null) rb.isKinematic = savedRbKinematic;
 
-            // Put the real object back exactly where we found it!
             currentClone.transform.SetParent(savedOriginalParent);
             currentClone.transform.position = savedOriginalPosition;
             currentClone.transform.rotation = savedOriginalRotation;
         }
-        
-        currentClone = null; // Detach reference
+
+        currentClone = null;
         allPorts.Clear();
 
-        if (infoPanel)    infoPanel.SetActive(false);
-        if (tooltipPanel) tooltipPanel.SetActive(false);
-        if (controlsUI)   controlsUI.SetActive(false);
-        if (gameplayUI)   gameplayUI.SetActive(true);
+        if (infoPanel)     infoPanel.SetActive(false);
+        if (tooltipPanel)  tooltipPanel.SetActive(false);
+        if (controlsUI)    controlsUI.SetActive(false);
+        if (gameplayUI)    gameplayUI.SetActive(true);
 
         if (inspectionCamera) inspectionCamera.gameObject.SetActive(false);
 
@@ -308,22 +383,153 @@ public class InspectionManager : MonoBehaviour
         Cursor.visible   = false;
     }
 
+    bool IsCaseShellObject(GameObject obj)
+    {
+        string[] caseNames = { "case", "case.001", "case.003", "psucase" };
+        Transform current = obj.transform;
+        while (current != null)
+        {
+            foreach (string name in caseNames)
+                if (current.name == name) return true;
+            current = current.parent;
+        }
+        return false;
+    }
+
     // ─────────────────────────────────────────────────────────────────────────────
     //  CLICK INTERACTIONS
     // ─────────────────────────────────────────────────────────────────────────────
     void HandleClickInteractions()
     {
+        if (inventoryUI != null && inventoryUI.inventoryPanel.activeSelf) return;
         if (isWiring && Input.GetMouseButtonDown(1)) { CancelWiring(); return; }
         if (!Input.GetMouseButtonDown(0)) return;
-        if (lastHitObject == null) return;
 
-        InspectableItem part = lastHitObject.GetComponent<InspectableItem>();
+        Ray ray = inspectionCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits = Physics.RaycastAll(ray, 100f, ~0);
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        InspectableItem part = null;
+        foreach (RaycastHit hit in hits)
+        {
+            InspectableItem candidate = hit.collider.gameObject.GetComponent<InspectableItem>();
+            if (candidate == null) continue;
+            if (candidate.isMainObject) continue;
+            if (isPlacingFromInventory && !candidate.isInventorySlot) continue;
+            part = candidate;
+            break;
+        }
+
         if (part == null) return;
+        if (isPlacingFromInventory && !part.isInventorySlot) return;
 
-        if      (part.isInventorySlot) TryInstallPart(part); 
-        else if (part.isRemovable)     TryRemovePart(part);
+        // ── CHANGED: ghost slot click now goes through hold-to-install ──
+        if      (part.isInventorySlot) BeginInstallConfirmation(part);
+        else if (part.isRemovable)     BeginRemovalConfirmation(part);
         else if (part.isPowerButton)   TogglePCPower();
         else if (part.isWirePort)      HandleWirePort(part);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    //  HOLD-TO-INSTALL  (NEW)
+    // ─────────────────────────────────────────────────────────────────────────────
+    void BeginInstallConfirmation(InspectableItem slot)
+    {
+        // Make sure there's actually a matching part to install
+        GameObject partToInstall = null;
+
+        if (partPendingInstallation != null)
+        {
+            InspectableItem pending = partPendingInstallation.GetComponent<InspectableItem>();
+            if (pending == null || pending.partCategory != slot.partCategory)
+            {
+                if (tooltipPanel)
+                {
+                    tooltipPanel.SetActive(true);
+                    if (tooltipTitle) tooltipTitle.text = "Wrong Slot!";
+                    if (tooltipBody)  tooltipBody.text  = $"This slot is for: {slot.partCategory}";
+                }
+                return;
+            }
+            partToInstall = partPendingInstallation;
+        }
+        else
+        {
+            foreach (GameObject item in playerStorage)
+            {
+                InspectableItem stored = item.GetComponent<InspectableItem>();
+                if (stored != null && stored.partCategory == slot.partCategory)
+                {
+                    partToInstall = item;
+                    break;
+                }
+            }
+        }
+
+        if (partToInstall == null) return;
+
+        if (screwdriverSystem != null)
+        {
+            isConfirmingRemoval = true;
+
+            screwdriverSystem.onCancelled = () =>
+            {
+                isConfirmingRemoval = false;
+            };
+
+            // Aim screwdriver at the ghost slot position, install when hold completes
+            screwdriverSystem.BeginUnscrewing(slot.transform, () =>
+            {
+                isConfirmingRemoval = false;
+                TryInstallPart(slot);
+            });
+        }
+        else
+        {
+            // Fallback: no screwdriver assigned, install immediately
+            TryInstallPart(slot);
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────────
+    //  HOLD-TO-REMOVE
+    // ─────────────────────────────────────────────────────────────────────────────
+    void BeginRemovalConfirmation(InspectableItem part)
+    {
+        foreach (InspectableItem blocker in part.blockingParts)
+        {
+            if (blocker != null && !blocker.isInventorySlot)
+            {
+                Debug.Log($"Cannot remove {part.itemName} - blocked by {blocker.itemName}.");
+                if (tooltipPanel)
+                {
+                    tooltipPanel.SetActive(true);
+                    if (tooltipTitle) tooltipTitle.text = "Blocked!";
+                    if (tooltipBody)  tooltipBody.text  = $"Remove {blocker.itemName} first.";
+                }
+                return;
+            }
+        }
+
+        if (screwdriverSystem != null)
+        {
+            isConfirmingRemoval = true;
+
+            screwdriverSystem.onCancelled = () =>
+            {
+                isConfirmingRemoval = false;
+            };
+
+            screwdriverSystem.BeginUnscrewing(part.transform, () =>
+            {
+                isConfirmingRemoval = false;
+                TryRemovePart(part);
+            });
+        }
+        else
+        {
+            TryRemovePart(part);
+        }
     }
 
     void TryRemovePart(InspectableItem part)
@@ -339,7 +545,6 @@ public class InspectionManager : MonoBehaviour
         
         Debug.Log($"Removing {part.itemName}");
 
-        // --- TUTORIAL TRIGGER COMPLETE REMOVE ---
         if (TutorialManager.Instance != null) TutorialManager.Instance.CompleteRemoveTask();
 
         ClearHighlight();
@@ -348,7 +553,6 @@ public class InspectionManager : MonoBehaviour
         storedPart.SetActive(false);
         SetLayerRecursively(storedPart, LayerMask.NameToLayer("Default")); 
         playerStorage.Add(storedPart);
-        Debug.Log($"Added {part.itemName} to Storage!");
 
         GameObject flyingCopy = Instantiate(part.gameObject, part.transform.position, part.transform.rotation, voidAnchor.transform);
         Destroy(flyingCopy.GetComponent<InspectableItem>()); 
@@ -367,43 +571,63 @@ public class InspectionManager : MonoBehaviour
             Material[] ghostMats = new Material[rend.sharedMaterials.Length];
             for (int i = 0; i < ghostMats.Length; i++) ghostMats[i] = ghostMaterial;
             rend.sharedMaterials = ghostMats;
+            rend.enabled = false;
         }
+        
+        foreach (Collider col in part.GetComponentsInChildren<Collider>())
+            col.enabled = false;
     }
 
     void TryInstallPart(InspectableItem slot)
     {
         GameObject partToInstall = null;
-        foreach (GameObject item in playerStorage)
+        if (partPendingInstallation != null)
         {
-            InspectableItem storedScript = item.GetComponent<InspectableItem>();
-            if (storedScript != null && storedScript.partCategory == slot.partCategory)
+            InspectableItem pendingScript = partPendingInstallation.GetComponent<InspectableItem>();
+            if (pendingScript == null || pendingScript.partCategory != slot.partCategory)
             {
-                partToInstall = item;
-                break; 
+                if (tooltipPanel)
+                {
+                    tooltipPanel.SetActive(true);
+                    if (tooltipTitle) tooltipTitle.text = "Wrong Slot!";
+                    if (tooltipBody)  tooltipBody.text  = $"This slot is for: {slot.partCategory}";
+                }
+                return;
+            }
+            partToInstall = partPendingInstallation;
+        }
+        else
+        {
+            foreach (GameObject item in playerStorage)
+            {
+                InspectableItem storedScript = item.GetComponent<InspectableItem>();
+                if (storedScript != null && storedScript.partCategory == slot.partCategory)
+                {
+                    partToInstall = item;
+                    break; 
+                }
             }
         }
 
-        if (partToInstall == null)
-        {
-            Debug.Log($"You don't have any '{slot.partCategory}' components in your storage to install here!");
-            return;
-        }
-
-        Debug.Log($"Installing {partToInstall.GetComponent<InspectableItem>().itemName} from storage");
+        if (partToInstall == null) return;
+        Debug.Log($"Installing {partToInstall.GetComponent<InspectableItem>().itemName}");
         ClearHighlight();
         playerStorage.Remove(partToInstall);
 
         partToInstall.transform.SetParent(slot.transform.parent, false);
         partToInstall.transform.localPosition = slot.transform.localPosition;
         partToInstall.transform.localRotation = slot.transform.localRotation;
-        partToInstall.transform.localScale = slot.transform.localScale;
+        partToInstall.transform.localScale    = slot.transform.localScale;
         
         SetLayerRecursively(partToInstall, currentClone.layer);
         partToInstall.SetActive(true);
 
         InspectableItem newPartScript = partToInstall.GetComponent<InspectableItem>();
-        newPartScript.isRemovable = true;
+        newPartScript.isRemovable     = true;
         newPartScript.isInventorySlot = false;
+
+        if (slot.blockingParts != null)
+            newPartScript.blockingParts = new List<InspectableItem>(slot.blockingParts);
 
         InspectableItem[] allItems = currentClone.GetComponentsInChildren<InspectableItem>(true);
         foreach (var item in allItems)
@@ -422,26 +646,80 @@ public class InspectionManager : MonoBehaviour
         }
 
         Destroy(slot.gameObject);
+        HideAllGhostSlots();
         StartCoroutine(AnimateInstall(partToInstall));
     }
 
+    // ─────────────────────────────────────────────────────────────────────────────
+    //  INSTALLATION ANIMATION
+    // ─────────────────────────────────────────────────────────────────────────────
     private IEnumerator AnimateInstall(GameObject obj)
     {
-        float duration = 0.2f;
-        float elapsed = 0f;
-        Vector3 finalScale = obj.transform.localScale;
-        obj.transform.localScale = finalScale * 0.8f; 
+        Vector3    finalPos   = obj.transform.position;
+        Vector3    finalScale = obj.transform.localScale;
+        Quaternion finalRot   = obj.transform.rotation;
 
-        while (elapsed < duration)
+        Vector3 startPos = inspectionCamera.ViewportToWorldPoint(new Vector3(0.1f, 0.1f, 0.3f));
+        Vector3 arcMid   = Vector3.Lerp(startPos, finalPos, 0.6f)
+                        + inspectionCamera.transform.up * 0.25f;
+
+        obj.transform.position   = startPos;
+        obj.transform.localScale = finalScale * 0.3f;
+        obj.transform.rotation   = finalRot;
+
+        foreach (Collider c in obj.GetComponentsInChildren<Collider>()) c.enabled = false;
+
+        float glideDuration = 0.4f;
+        float elapsed = 0f;
+
+        while (elapsed < glideDuration)
         {
-            if (obj == null) break;
+            if (obj == null) yield break;
             elapsed += Time.deltaTime;
-            float easeT = elapsed / duration;
-            float bounce = Mathf.Sin(easeT * Mathf.PI) * 0.15f; 
-            obj.transform.localScale = Vector3.Lerp(finalScale * 0.8f, finalScale, easeT) + (finalScale * bounce);
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / glideDuration);
+
+            Vector3 pos = (1 - t) * (1 - t) * startPos
+                        + 2 * (1 - t) * t   * arcMid
+                        + t * t             * finalPos;
+
+            obj.transform.position   = pos;
+            obj.transform.localScale = Vector3.Lerp(finalScale * 0.3f, finalScale * 1.1f, t);
+            obj.transform.rotation   = Quaternion.Slerp(obj.transform.rotation, finalRot, t * 3f);
+
             yield return null;
         }
-        if (obj != null) obj.transform.localScale = finalScale;
+
+        float snapDuration = 0.18f;
+        elapsed = 0f;
+
+        while (elapsed < snapDuration)
+        {
+            if (obj == null) yield break;
+            elapsed += Time.deltaTime;
+            float t = elapsed / snapDuration;
+
+            float scaleX = 1f + Mathf.Sin(t * Mathf.PI) * -0.1f;
+            float scaleY = 1f + Mathf.Sin(t * Mathf.PI) *  0.15f;
+            float scaleZ = 1f + Mathf.Sin(t * Mathf.PI) * -0.1f;
+
+            obj.transform.localScale = new Vector3(
+                finalScale.x * scaleX,
+                finalScale.y * scaleY,
+                finalScale.z * scaleZ);
+
+            obj.transform.position = finalPos;
+            obj.transform.rotation = Quaternion.Lerp(obj.transform.rotation, finalRot, t * 10f);
+
+            yield return null;
+        }
+
+        if (obj != null)
+        {
+            obj.transform.position   = finalPos;
+            obj.transform.localScale = finalScale;
+            obj.transform.rotation   = finalRot;
+            foreach (Collider c in obj.GetComponentsInChildren<Collider>()) c.enabled = true;
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────────
@@ -459,9 +737,7 @@ public class InspectionManager : MonoBehaviour
             activeWireConnectorType = clickedPort.connectorType;
 
             if (wireHeadPrefab != null)
-            {
                 activeWireHead = SpawnWireHead(clickedPort.transform, currentClone.transform);
-            }
             else
             {
                 activeWireHead = new GameObject("DynamicCable_Head");
@@ -518,17 +794,12 @@ public class InspectionManager : MonoBehaviour
 
             activeWireLine = activeWireLines.Count > 0 ? activeWireLines[0] : null;
             HighlightCompatiblePorts(clickedPort.connectorType, clickedPort.isPSUPort);
-            Debug.Log($"Wiring started from [{clickedPort.connectorType}] port: {clickedPort.itemName}");
         }
         else
         {
             if (clickedPort == wireStartPortItem) { CancelWiring(); return; }
-            if (!IsCompatible(wireStartPortItem, clickedPort))
-            {
-                Debug.Log($"Incompatible ports: [{wireStartPortItem.connectorType}] -> [{clickedPort.connectorType}].");
-                return;
-            }
-            if (clickedPort.isOccupied) { Debug.Log($"{clickedPort.itemName} is already connected."); return; }
+            if (!IsCompatible(wireStartPortItem, clickedPort)) return;
+            if (clickedPort.isOccupied) return;
             CommitWire(wireStartPortItem, clickedPort);
         }
     }
@@ -549,24 +820,14 @@ public class InspectionManager : MonoBehaviour
         InspectableItem psuPort;
 
         if (startPort.placeHeadHere && !endPort.placeHeadHere)
-        {
-            devicePort = startPort;
-            psuPort    = endPort;
-        }
+        { devicePort = startPort; psuPort = endPort; }
         else if (endPort.placeHeadHere && !startPort.placeHeadHere)
-        {
-            devicePort = endPort;
-            psuPort    = startPort;
-        }
+        { devicePort = endPort; psuPort = startPort; }
         else
-        {
-            devicePort = startPort.isPSUPort ? endPort   : startPort;
-            psuPort    = startPort.isPSUPort ? startPort : endPort;
-        }
+        { devicePort = startPort.isPSUPort ? endPort : startPort; psuPort = startPort.isPSUPort ? startPort : endPort; }
 
         activeRibbonDir = devicePort.ribbonAxis.normalized;
         if (activeRibbonDir.sqrMagnitude < 0.001f) activeRibbonDir = Vector3.up;
-
         activeEndRibbonDir = psuPort.ribbonAxis.normalized;
         if (activeEndRibbonDir.sqrMagnitude < 0.001f) activeEndRibbonDir = Vector3.right;
 
@@ -577,14 +838,12 @@ public class InspectionManager : MonoBehaviour
 
         Vector3[] finalPath;
         if (CableRouteManager.Instance != null)
-        {
             finalPath = CableRouteManager.Instance.GetRoute(startPort.connectorType, startPos, endPos);
-        }
         else
         {
             Vector3 behindBoard = startPos - devicePort.transform.forward * (cLen * 0.25f);
-            behindBoard.y       = startPos.y - sag * 0.5f;
-            Vector3 risePoint   = new Vector3(endPos.x, endPos.y - cLen * 0.25f, endPos.z);
+            behindBoard.y = startPos.y - sag * 0.5f;
+            Vector3 risePoint = new Vector3(endPos.x, endPos.y - cLen * 0.25f, endPos.z);
             finalPath = new Vector3[] { startPos, behindBoard, risePoint, endPos };
         }
 
@@ -596,23 +855,11 @@ public class InspectionManager : MonoBehaviour
 
         if (activeWireHead != null) { Destroy(activeWireHead); activeWireHead = null; }
 
-        if (devicePort.wireHead != null)
-        {
-            devicePort.wireHead.SetActive(true);
-        }
-        else
-        {
-            devicePort.wireHead = SpawnWireHead(devicePort.transform, currentClone.transform);
-        }
+        if (devicePort.wireHead != null) devicePort.wireHead.SetActive(true);
+        else devicePort.wireHead = SpawnWireHead(devicePort.transform, currentClone.transform);
 
-        if (psuPort.wireHead != null)
-        {
-            psuPort.wireHead.SetActive(true);
-        }
-        else
-        {
-            psuPort.wireHead = SpawnWireHead(psuPort.transform, currentClone.transform);
-        }
+        if (psuPort.wireHead != null) psuPort.wireHead.SetActive(true);
+        else psuPort.wireHead = SpawnWireHead(psuPort.transform, currentClone.transform);
 
         GameObject wireColliderGO = new GameObject("WireCollider");
         wireColliderGO.transform.SetParent(currentClone.transform);
@@ -623,40 +870,28 @@ public class InspectionManager : MonoBehaviour
         BoxCollider lineCol = wireColliderGO.AddComponent<BoxCollider>();
         lineCol.size = new Vector3(0.06f, 0.06f, Vector3.Distance(startPos, endPos));
 
-        InspectableItem wireItem     = wireColliderGO.AddComponent<InspectableItem>();
-        wireItem.itemName            = $"{startPort.connectorType} Cable";
-        wireItem.itemDescription     = $"Connects {startPort.itemName} to {endPort.itemName}";
-        wireItem.isRemovable         = true;
+        InspectableItem wireItem = wireColliderGO.AddComponent<InspectableItem>();
+        wireItem.itemName        = $"{startPort.connectorType} Cable";
+        wireItem.itemDescription = $"Connects {startPort.itemName} to {endPort.itemName}";
+        wireItem.isRemovable     = true;
 
-        startPort.isOccupied   = true;
-        startPort.connectedTo  = endPort;
-        startPort.attachedWire = wireColliderGO;
-
-        endPort.isOccupied   = true;
-        endPort.connectedTo  = startPort;
-        endPort.attachedWire = wireColliderGO;
+        startPort.isOccupied = true; startPort.connectedTo = endPort; startPort.attachedWire = wireColliderGO;
+        endPort.isOccupied   = true; endPort.connectedTo   = startPort; endPort.attachedWire  = wireColliderGO;
 
         AddWireBlocker(startPort, wireItem);
         AddWireBlocker(endPort,   wireItem);
 
-        var wireCleaner   = wireColliderGO.AddComponent<WireCleanup>();
+        var wireCleaner = wireColliderGO.AddComponent<WireCleanup>();
         wireCleaner.portA = startPort;
         wireCleaner.portB = endPort;
 
-        DrawCommittedCurve(lrSnapshot, snapConnType, startPos, endPos, sag,
-                           activeRibbonDir, activeEndRibbonDir);
+        DrawCommittedCurve(lrSnapshot, snapConnType, startPos, endPos, sag, activeRibbonDir, activeEndRibbonDir);
 
         if (activeSnapCoroutine != null) StopCoroutine(activeSnapCoroutine);
-        activeSnapCoroutine = StartCoroutine(
-            AnimateCableSnap(lrSnapshot, snapConnType, finalPath, 0.4f,
-                             activeRibbonDir, activeEndRibbonDir));
+        activeSnapCoroutine = StartCoroutine(AnimateCableSnap(lrSnapshot, snapConnType, finalPath, 0.4f, activeRibbonDir, activeEndRibbonDir));
 
-        activeWireTail          = null;
-        activeWireLine          = null;
-        activeWireLines.Clear();
-        wireStartPortItem       = null;
-        wireStartTransform      = null;
-        activeWireConnectorType = "";
+        activeWireTail = null; activeWireLine = null; activeWireLines.Clear();
+        wireStartPortItem = null; wireStartTransform = null; activeWireConnectorType = "";
     }
 
     void AddWireBlocker(InspectableItem port, InspectableItem wireItem)
@@ -673,16 +908,9 @@ public class InspectionManager : MonoBehaviour
         ClearPortHighlights();
         if (activeWireHead != null) { Destroy(activeWireHead); activeWireHead = null; }
         activeWireLines.Clear();
-        activeWireLine          = null;
-        wireStartPortItem       = null;
-        wireStartTransform      = null;
-        activeWireConnectorType = "";
-        Debug.Log("Wiring cancelled.");
+        activeWireLine = null; wireStartPortItem = null; wireStartTransform = null; activeWireConnectorType = "";
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  PORT HIGHLIGHT
-    // ─────────────────────────────────────────────────────────────────────────────
     void HighlightCompatiblePorts(string connType, bool startIsPSU)
     {
         foreach (InspectableItem port in allPorts)
@@ -690,16 +918,11 @@ public class InspectionManager : MonoBehaviour
             if (port == wireStartPortItem) continue;
             Renderer rend = port.GetComponentInChildren<Renderer>();
             if (rend == null) continue;
-
-            bool compatible = port.connectorType == connType
-                           && port.isPSUPort     != startIsPSU
-                           && !port.isOccupied;
-
+            bool compatible = port.connectorType == connType && port.isPSUPort != startIsPSU && !port.isOccupied;
             Material mat = compatible ? validPortMaterial : invalidPortMaterial;
             if (mat != null)
             {
-                if (!originalMaterialCache.ContainsKey(rend))
-                    originalMaterialCache.Add(rend, rend.sharedMaterials);
+                if (!originalMaterialCache.ContainsKey(rend)) originalMaterialCache.Add(rend, rend.sharedMaterials);
                 rend.sharedMaterials = new Material[] { mat };
             }
         }
@@ -713,15 +936,11 @@ public class InspectionManager : MonoBehaviour
         lastHitObject = null;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  LIVE WIRE DRAWING (while dragging)
-    // ─────────────────────────────────────────────────────────────────────────────
     void HandleWireDrawing()
     {
         if (!isWiring || activeWireLines.Count == 0 || wireStartTransform == null) return;
 
-        InspectableItem hoveredPort = lastHitObject != null
-            ? lastHitObject.GetComponent<InspectableItem>() : null;
+        InspectableItem hoveredPort = lastHitObject != null ? lastHitObject.GetComponent<InspectableItem>() : null;
 
         if (hoveredPort != null && hoveredPort.isWirePort && hoveredPort != wireStartPortItem)
             DrawDragSpline(wireStartTransform.position, hoveredPort.transform.position);
@@ -732,9 +951,6 @@ public class InspectionManager : MonoBehaviour
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  SPLINE HELPERS
-    // ─────────────────────────────────────────────────────────────────────────────
     Spline BuildSpline(Vector3[] waypoints)
     {
         var spline = new Spline();
@@ -760,68 +976,37 @@ public class InspectionManager : MonoBehaviour
         return ribbonDir * (t * totalWidth);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  DRAG PREVIEW
-    // ─────────────────────────────────────────────────────────────────────────────
     void DrawDragSpline(Vector3 startWorld, Vector3 endWorld)
     {
         if (activeWireLines == null || activeWireLines.Count == 0) return;
 
-        float   cableLen = Vector3.Distance(startWorld, endWorld);
-        float   sag      = Mathf.Max(cableLen * cableSag, 0.05f);
+        float cableLen = Vector3.Distance(startWorld, endWorld);
+        float sag      = Mathf.Max(cableLen * cableSag, 0.05f);
 
-        // ── Default push: toward the camera so the preview stays readable ────
         Vector3 pushDir = inspectionCamera.transform.position - startWorld;
         pushDir.y = 0f;
         if (pushDir.sqrMagnitude > 0.001f) pushDir.Normalize();
 
-        // ── Obstacle override (one cheap SphereCast per frame) ───────────────
-        // If there is a PC component in the straight line between the two ports,
-        // redirect the drag preview to arc over/around it instead of through it.
-        // This uses the same layer mask and radius as the committed-wire solver,
-        // so the preview closely matches where the final wire will actually land.
-        if (CableRouteManager.Instance != null
-            && CableRouteManager.Instance.enableObstacleAvoidance
-            && CableRouteManager.Instance.obstacleMask != 0
-            && cableLen > 0.001f)
+        if (CableRouteManager.Instance != null && CableRouteManager.Instance.enableObstacleAvoidance
+            && CableRouteManager.Instance.obstacleMask != 0 && cableLen > 0.001f)
         {
-            Vector3    segDir = (endWorld - startWorld).normalized;
             RaycastHit hit;
-            if (Physics.SphereCast(
-                    startWorld,
-                    CableRouteManager.Instance.cableRadius,
-                    segDir,
-                    out hit,
-                    cableLen,
-                    CableRouteManager.Instance.obstacleMask,
-                    QueryTriggerInteraction.Ignore))
-            {
-                // Push away from the obstacle surface, biased upward —
-                // this matches the direction CablePathSolver would detour.
+            if (Physics.SphereCast(startWorld, CableRouteManager.Instance.cableRadius,
+                    (endWorld - startWorld).normalized, out hit, cableLen,
+                    CableRouteManager.Instance.obstacleMask, QueryTriggerInteraction.Ignore))
                 pushDir = (hit.normal + Vector3.up * 0.4f).normalized;
-            }
         }
 
-        Vector3 mid1 = Vector3.Lerp(startWorld, endWorld, 0.33f)
-                     + pushDir * (cableLen * 0.35f) + Vector3.down * sag;
-        Vector3 mid2 = Vector3.Lerp(startWorld, endWorld, 0.66f)
-                     + pushDir * (cableLen * 0.35f) + Vector3.down * sag;
+        Vector3 mid1 = Vector3.Lerp(startWorld, endWorld, 0.33f) + pushDir * (cableLen * 0.35f) + Vector3.down * sag;
+        Vector3 mid2 = Vector3.Lerp(startWorld, endWorld, 0.66f) + pushDir * (cableLen * 0.35f) + Vector3.down * sag;
 
         CableTypeProfile profile = CableProfile.Instance?.Get(activeWireConnectorType);
         int   strandCount   = activeWireLines.Count;
         float strandSpacing = profile != null ? profile.strandSpacing : 0.003f;
         float totalWidth    = strandSpacing * (strandCount - 1);
 
-        Vector3 startRibbonDir = Vector3.up;
-        if (wireStartPortItem != null)
-        {
-            startRibbonDir = wireStartPortItem.ribbonAxis.normalized;
-            if (startRibbonDir.sqrMagnitude < 0.001f) startRibbonDir = Vector3.up;
-        }
-        else
-        {
-            startRibbonDir = inspectionCamera.transform.up;
-        }
+        Vector3 startRibbonDir = wireStartPortItem != null ? wireStartPortItem.ribbonAxis.normalized : inspectionCamera.transform.up;
+        if (startRibbonDir.sqrMagnitude < 0.001f) startRibbonDir = Vector3.up;
 
         Vector3 endRibbonDir = startRibbonDir;
         if (lastHitObject != null)
@@ -843,23 +1028,17 @@ public class InspectionManager : MonoBehaviour
             if (lr == null) continue;
             lr.useWorldSpace = true;
             lr.positionCount = cableResolution;
-
             for (int i = 0; i < cableResolution; i++)
             {
                 float   t         = i / (float)(cableResolution - 1);
                 Vector3 ribbonDir = Vector3.Slerp(startRibbonDir, endRibbonDir, t).normalized;
-                Vector3 off       = StrandOffset(s, strandCount, totalWidth, ribbonDir);
-                lr.SetPosition(i, basePts[i] + off);
+                lr.SetPosition(i, basePts[i] + StrandOffset(s, strandCount, totalWidth, ribbonDir));
             }
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  COMMITTED WIRE
-    // ─────────────────────────────────────────────────────────────────────────────
-    void DrawCommittedCurve(List<LineRenderer> lines, string connType,
-                            Vector3 startPos, Vector3 endPos, float sag,
-                            Vector3 startRibbonDir, Vector3 endRibbonDir)
+    void DrawCommittedCurve(List<LineRenderer> lines, string connType, Vector3 startPos, Vector3 endPos,
+                            float sag, Vector3 startRibbonDir, Vector3 endRibbonDir)
     {
         if (lines == null || lines.Count == 0) return;
 
@@ -867,15 +1046,10 @@ public class InspectionManager : MonoBehaviour
         int   strandCount   = lines.Count;
         float strandSpacing = profile != null ? profile.strandSpacing : 0.003f;
         float totalWidth    = strandSpacing * (strandCount - 1);
+        float cableLen      = Vector3.Distance(startPos, endPos);
+        float useSag        = Mathf.Max(cableLen * cableSag, sag);
 
-        float cableLen = Vector3.Distance(startPos, endPos);
-        float useSag   = Mathf.Max(cableLen * cableSag, sag);
-
-        Vector3 mid = new Vector3(
-            Mathf.Lerp(startPos.x, endPos.x, 0.3f),
-            startPos.y - useSag,
-            Mathf.Lerp(startPos.z, endPos.z, 0.3f));
-
+        Vector3 mid = new Vector3(Mathf.Lerp(startPos.x, endPos.x, 0.3f), startPos.y - useSag, Mathf.Lerp(startPos.z, endPos.z, 0.3f));
         Spline   baseSpline = BuildSpline(new Vector3[] { startPos, mid, endPos });
         Vector3[] basePts   = SampleSpline(baseSpline, cableResolution);
 
@@ -885,32 +1059,21 @@ public class InspectionManager : MonoBehaviour
             if (lr == null) continue;
             lr.useWorldSpace = true;
             lr.positionCount = cableResolution;
-
             for (int i = 0; i < cableResolution; i++)
             {
                 float   t         = i / (float)(cableResolution - 1);
                 Vector3 ribbonDir = Vector3.Slerp(startRibbonDir, endRibbonDir, t).normalized;
-                Vector3 off       = StrandOffset(s, strandCount, totalWidth, ribbonDir);
-                lr.SetPosition(i, basePts[i] + off);
+                lr.SetPosition(i, basePts[i] + StrandOffset(s, strandCount, totalWidth, ribbonDir));
             }
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  CABLE SNAP ANIMATION 
-    // ─────────────────────────────────────────────────────────────────────────────
-    private IEnumerator AnimateCableSnap(
-        List<LineRenderer> lrSnapshot,
-        string             connType,
-        Vector3[]          routePositions,
-        float              duration,
-        Vector3            startRibbonDir,
-        Vector3            endRibbonDir)
+    private IEnumerator AnimateCableSnap(List<LineRenderer> lrSnapshot, string connType,
+        Vector3[] routePositions, float duration, Vector3 startRibbonDir, Vector3 endRibbonDir)
     {
         if (lrSnapshot == null || lrSnapshot.Count == 0) yield break;
 
         int res = cableResolution;
-
         CableTypeProfile profile = CableProfile.Instance?.Get(connType);
         int   strandCount   = lrSnapshot.Count;
         float strandSpacing = profile != null ? profile.strandSpacing : 0.003f;
@@ -921,10 +1084,8 @@ public class InspectionManager : MonoBehaviour
         {
             fromPositions[s] = new Vector3[res];
             LineRenderer lr = lrSnapshot[s];
-            if (lr != null && lr.positionCount == res)
-                lr.GetPositions(fromPositions[s]);
-            else if (lr != null)
-                for (int i = 0; i < res; i++) fromPositions[s][i] = lr.transform.position;
+            if (lr != null && lr.positionCount == res) lr.GetPositions(fromPositions[s]);
+            else if (lr != null) for (int i = 0; i < res; i++) fromPositions[s][i] = lr.transform.position;
         }
 
         Spline   baseRouteSpline = BuildSpline(routePositions);
@@ -938,8 +1099,7 @@ public class InspectionManager : MonoBehaviour
             {
                 float   t         = i / (float)(res - 1);
                 Vector3 ribbonDir = Vector3.Slerp(startRibbonDir, endRibbonDir, t).normalized;
-                Vector3 off       = StrandOffset(s, strandCount, totalWidth, ribbonDir);
-                targetPositions[s][i] = baseRoutePts[i] + off;
+                targetPositions[s][i] = baseRoutePts[i] + StrandOffset(s, strandCount, totalWidth, ribbonDir);
             }
         }
 
@@ -948,7 +1108,6 @@ public class InspectionManager : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float eased = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(elapsed / duration));
-
             for (int s = 0; s < strandCount; s++)
             {
                 LineRenderer lr = lrSnapshot[s];
@@ -965,30 +1124,22 @@ public class InspectionManager : MonoBehaviour
             LineRenderer lr = lrSnapshot[s];
             if (lr == null) continue;
             lr.positionCount = res;
-            for (int i = 0; i < res; i++)
-                lr.SetPosition(i, targetPositions[s][i]);
+            for (int i = 0; i < res; i++) lr.SetPosition(i, targetPositions[s][i]);
         }
     }
 
     GameObject SpawnWireHead(Transform port, Transform parent)
     {
         if (wireHeadPrefab == null) return null;
-        
         GameObject head = Instantiate(wireHeadPrefab, port.position, port.rotation, parent);
         head.transform.Translate(wireHeadOffset, Space.Self);
-        
         SetLayerRecursively(head, parent.gameObject.layer);
         return head;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  PC POWER
-    // ─────────────────────────────────────────────────────────────────────────────
     void TogglePCPower()
     {
         isPCOn = !isPCOn;
-        Debug.Log("PC Power: " + (isPCOn ? "ON" : "OFF"));
-
         foreach (PCFanController fan in currentClone.GetComponentsInChildren<PCFanController>())
         {
             fan.enabled = isPCOn;
@@ -1000,44 +1151,40 @@ public class InspectionManager : MonoBehaviour
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  HOVER / HIGHLIGHT
-    // ─────────────────────────────────────────────────────────────────────────────
     void HandleHover()
     {
         Ray ray = inspectionCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        RaycastHit[] hits = Physics.RaycastAll(ray, 100f, ~0);
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
-        if (Physics.Raycast(ray, out hit, 100f, ~0))
+        GameObject hitObj = null;
+        InspectableItem part = null;
+
+        foreach (RaycastHit hit in hits)
         {
-            GameObject hitObj = hit.collider.gameObject;
+            InspectableItem candidate = hit.collider.gameObject.GetComponent<InspectableItem>();
+            if (candidate == null) continue;
+            if (candidate.isMainObject) continue;
+            if (isPlacingFromInventory && !candidate.isInventorySlot) continue;
+            hitObj = hit.collider.gameObject;
+            part = candidate;
+            break;
+        }
 
-            InspectableItem part = hitObj.GetComponent<InspectableItem>();
-            if (part == null)
+        if (part != null)
+        {
+            if (hitObj != lastHitObject)
             {
-                part = hitObj.GetComponentInParent<InspectableItem>();
-                if (part != null) hitObj = part.gameObject;
+                if (!isWiring) ClearHighlight();
+                HighlightObject(hitObj);
+                ShowTooltip(part);
             }
-
-            if (part != null)
-            {
-                // --- TUTORIAL TRIGGER ADDED HERE ---
-                if (TutorialManager.Instance != null) TutorialManager.Instance.CompleteHoverTask();
-
-                if (hitObj != lastHitObject)
-                {
-                    if (!isWiring) ClearHighlight();
-                    HighlightObject(hitObj);
-                    ShowTooltip(part);
-                }
-                MoveTooltip();
-                return;
-            }
+            MoveTooltip();
+            return;
         }
 
         if (!isWiring) ClearHighlight();
         else lastHitObject = null;
-
         if (tooltipPanel) tooltipPanel.SetActive(false);
     }
 
@@ -1069,9 +1216,13 @@ public class InspectionManager : MonoBehaviour
         if (part.isWirePort)
         {
             string side = part.isPSUPort ? "PSU" : "Device";
-            extra = $"\n<size=80%>[{part.connectorType}] {side} port"
-                  + (part.isOccupied ? " - CONNECTED" : " - empty") + "</size>";
+            extra = $"\n<size=80%>[{part.connectorType}] {side} port" + (part.isOccupied ? " - CONNECTED" : " - empty") + "</size>";
         }
+        else if (part.isRemovable)
+            extra = "\n<size=75%><color=#FFD84A>Hold to remove</color></size>";
+        else if (part.isInventorySlot)
+            extra = "\n<size=75%><color=#4AE0FF>Hold to install</color></size>";
+
         tooltipPanel.SetActive(true);
         if (tooltipTitle) tooltipTitle.text = part.itemName;
         if (tooltipBody)  tooltipBody.text  = part.itemDescription + extra;
@@ -1083,42 +1234,65 @@ public class InspectionManager : MonoBehaviour
             tooltipPanel.transform.position = Input.mousePosition + new Vector3(20, -20, 0);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  REMOVAL ANIMATION
-    // ─────────────────────────────────────────────────────────────────────────────
     private IEnumerator AnimateRemovalAndDestroy(GameObject obj)
     {
         foreach (Collider c in obj.GetComponentsInChildren<Collider>()) c.enabled = false;
 
-        float   duration   = 0.4f;
-        float   elapsed    = 0f;
-        Vector3 startScale = obj.transform.localScale;
         Vector3 startPos   = obj.transform.position;
-        Vector3 spin       = new Vector3(Random.Range(180f, 360f),
-                                         Random.Range(180f, 360f),
-                                         Random.Range(180f, 360f));
+        Vector3 startScale = obj.transform.localScale;
 
-        while (elapsed < duration)
+        Dictionary<Renderer, Material[]> originalMats = new Dictionary<Renderer, Material[]>();
+        foreach (Renderer r in obj.GetComponentsInChildren<Renderer>())
+            originalMats[r] = r.materials;
+
+        float pullDuration = 0.3f;
+        float elapsed = 0f;
+        Vector3 pullDir    = (inspectionCamera.transform.position - startPos).normalized;
+        Vector3 pullTarget = startPos + pullDir * 0.25f;
+
+        while (elapsed < pullDuration)
         {
-            if (obj == null) break;
+            if (obj == null) yield break;
             elapsed += Time.deltaTime;
-            float   easeT  = Mathf.Pow(elapsed / duration, 3f);
-            Vector3 target = inspectionCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0.2f));
-            obj.transform.position   = Vector3.Lerp(startPos, target, easeT);
-            obj.transform.localScale = Vector3.Lerp(startScale, Vector3.zero, easeT);
-            obj.transform.Rotate(spin * Time.deltaTime, Space.Self);
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / pullDuration);
+            obj.transform.position   = Vector3.Lerp(startPos, pullTarget, t);
+            obj.transform.localScale = startScale * (1f + Mathf.Sin(t * Mathf.PI) * 0.08f);
+            foreach (var kv in originalMats)
+            {
+                if (kv.Key == null) continue;
+                foreach (Material mat in kv.Key.materials)
+                    if (mat.HasProperty("_EmissionColor")) { mat.EnableKeyword("_EMISSION"); mat.SetColor("_EmissionColor", Color.white * t * 1.5f); }
+            }
+            yield return null;
+        }
+
+        float flyDuration = 0.35f;
+        elapsed = 0f;
+        Vector3 flyStart  = obj.transform.position;
+        Vector3 flyTarget = inspectionCamera.ViewportToWorldPoint(new Vector3(0.1f, 0.1f, 0.3f));
+        Vector3 arcMid    = Vector3.Lerp(flyStart, flyTarget, 0.5f) + inspectionCamera.transform.up * 0.3f;
+
+        while (elapsed < flyDuration)
+        {
+            if (obj == null) yield break;
+            elapsed += Time.deltaTime;
+            float t = Mathf.SmoothStep(0f, 1f, elapsed / flyDuration);
+            obj.transform.position   = (1-t)*(1-t)*flyStart + 2*(1-t)*t*arcMid + t*t*flyTarget;
+            obj.transform.localScale = Vector3.Lerp(startScale, Vector3.zero, t*t);
+            foreach (var kv in originalMats)
+            {
+                if (kv.Key == null) continue;
+                foreach (Material mat in kv.Key.materials)
+                    if (mat.HasProperty("_EmissionColor")) mat.SetColor("_EmissionColor", Color.white * (1f - t) * 1.5f);
+            }
             yield return null;
         }
 
         if (obj != null) Destroy(obj);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  INPUT & CAMERA
-    // ─────────────────────────────────────────────────────────────────────────────
     void HandleInput()
     {
-        // --- 1. Right Click - Rotate Object (Orbit Camera) ---
         if (Input.GetMouseButton(1) && !isWiring)
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -1127,23 +1301,14 @@ public class InspectionManager : MonoBehaviour
             targetOrbitAngles.x -= Input.GetAxis("Mouse Y") * orbitSpeed;
             targetOrbitAngles.x  = Mathf.Clamp(targetOrbitAngles.x, -89f, 89f);
         }
-        else 
-        { 
-            Cursor.lockState = CursorLockMode.None; 
-            Cursor.visible   = true; 
-        }
+        else { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
 
-        // --- 2. Middle Mouse - Move (Pan Camera) ---
-        if (Input.GetMouseButton(2)) 
+        if (Input.GetMouseButton(2))
         {
-            float inputX = -Input.GetAxis("Mouse X");
-            float inputY = -Input.GetAxis("Mouse Y");
-            
             Quaternion camRot = Quaternion.Euler(targetOrbitAngles.x, targetOrbitAngles.y, 0);
-            targetFocusPoint += (camRot * Vector3.right * inputX + camRot * Vector3.up * inputY) * panSpeed * 0.5f;
+            targetFocusPoint += (camRot * Vector3.right * -Input.GetAxis("Mouse X") + camRot * Vector3.up * -Input.GetAxis("Mouse Y")) * panSpeed * 0.5f;
         }
 
-        // --- 3. Scroll - Zoom ---
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll != 0)
         {
@@ -1160,15 +1325,10 @@ public class InspectionManager : MonoBehaviour
         focusPoint      = Vector3.Lerp(focusPoint,     targetFocusPoint,  dt);
 
         Quaternion rotation = Quaternion.Euler(orbitAngles.x, orbitAngles.y, 0);
-        Vector3    position = rotation * new Vector3(0, 0, -currentDistance) + focusPoint;
-
-        inspectionCamera.transform.position = voidAnchor.transform.position + position;
+        inspectionCamera.transform.position = voidAnchor.transform.position + rotation * new Vector3(0, 0, -currentDistance) + focusPoint;
         inspectionCamera.transform.rotation = rotation;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  HELPERS
-    // ─────────────────────────────────────────────────────────────────────────────
     public void ResetView()
     {
         targetFocusPoint  = Vector3.zero;
@@ -1179,28 +1339,19 @@ public class InspectionManager : MonoBehaviour
     void SetLayerRecursively(GameObject obj, int newLayer)
     {
         obj.layer = newLayer;
-        foreach (Transform child in obj.transform)
-            SetLayerRecursively(child.gameObject, newLayer);
+        foreach (Transform child in obj.transform) SetLayerRecursively(child.gameObject, newLayer);
     }
 
     void SaveAndSetLayers(GameObject obj, int newLayer)
     {
-        if (!originalLayerCache.ContainsKey(obj))
-            originalLayerCache[obj] = obj.layer;
-        
+        if (!originalLayerCache.ContainsKey(obj)) originalLayerCache[obj] = obj.layer;
         obj.layer = newLayer;
-        foreach (Transform child in obj.transform)
-            SaveAndSetLayers(child.gameObject, newLayer);
+        foreach (Transform child in obj.transform) SaveAndSetLayers(child.gameObject, newLayer);
     }
 
     void RestoreLayers(GameObject obj)
     {
-        if (originalLayerCache.ContainsKey(obj))
-            obj.layer = originalLayerCache[obj];
-        else
-            obj.layer = LayerMask.NameToLayer("Default");
-
-        foreach (Transform child in obj.transform)
-            RestoreLayers(child.gameObject);
+        obj.layer = originalLayerCache.ContainsKey(obj) ? originalLayerCache[obj] : LayerMask.NameToLayer("Default");
+        foreach (Transform child in obj.transform) RestoreLayers(child.gameObject);
     }
 }

@@ -129,6 +129,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -522,6 +523,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -667,6 +669,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -711,12 +714,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 411806326066081190}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0010779258, y: -0.000063319356, z: -0.0011437362}
-  m_LocalScale: {x: -0.0021194264, y: -0.0021194264, z: -0.0021194264}
+  m_LocalRotation: {x: -0, y: -0, z: 5.3099185e-11, w: 1}
+  m_LocalPosition: {x: -0.0010934726, y: -0.00013807323, z: -0.00085702975}
+  m_LocalScale: {x: -0.0021194266, y: -0.0021194264, z: -0.0021194264}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2108129090527757979}
+  m_Father: {fileID: 4758189059949279384}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2150561930572860142
 MeshFilter:
@@ -812,6 +815,7 @@ MonoBehaviour:
   itemName: pipelocker
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -963,6 +967,7 @@ MonoBehaviour:
   itemName: RAM 4
   partCategory: RAM4
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -1230,6 +1235,7 @@ MonoBehaviour:
   itemName: 20 Pins PSU
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1396,6 +1402,7 @@ MonoBehaviour:
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1559,6 +1566,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1704,6 +1712,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1849,6 +1858,7 @@ MonoBehaviour:
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1994,6 +2004,7 @@ MonoBehaviour:
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -2039,9 +2050,9 @@ Transform:
   m_GameObject: {fileID: 1362409408431335226}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.21769899}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.2216968}
+  m_LocalScale: {x: 100.299995, y: 100.299995, z: 100.299995}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2115,8 +2126,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 6179879131375536253, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -2285,6 +2297,7 @@ MonoBehaviour:
   itemName: Power Button
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 1
@@ -2402,6 +2415,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CableRouteManager
   routes:
   - {fileID: 3832225037820930401}
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 0
+  cableRadius: 0.01
+  clearance: 0.015
+  solverDepth: 4
+  enableObstacleAvoidance: 1
+  showSolvedPath: 1
+  debugStart: {fileID: 0}
+  debugEnd: {fileID: 0}
+  debugConnectorType: 24pin
 --- !u!1 &1551658234412114240
 GameObject:
   m_ObjectHideFlags: 0
@@ -2531,6 +2555,7 @@ MonoBehaviour:
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -2678,6 +2703,7 @@ MonoBehaviour:
   itemName: USB 3.0 & Ethernet
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -2722,12 +2748,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1971961415137099334}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00001555711, y: 0.00007492516, z: -0.00028670725}
+  m_LocalRotation: {x: 0.0000020861626, y: -0.000025453046, z: -0.020940885, w: 0.9997808}
+  m_LocalPosition: {x: 0.001450882, y: -0.000115967094, z: 0.002001612}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2108129090527757979}
+  m_Children:
+  - {fileID: 7751178651226240990}
+  - {fileID: 8353598373494752599}
+  m_Father: {fileID: 4444192517517676225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &127948074907773352
 MeshFilter:
@@ -2824,6 +2852,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3028,6 +3057,7 @@ MonoBehaviour:
   itemName: HDMI Port
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3073,9 +3103,9 @@ Transform:
   m_GameObject: {fileID: 2167249155686259201}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000053385076, y: 0.7071068, z: 0.70710677, w: -0.00000005338508}
-  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: -0.3080122}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: -0.355}
+  m_LocalScale: {x: 100.299995, y: 100.299995, z: 100.299995}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3149,8 +3179,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 6179879131375536253, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -3333,6 +3364,7 @@ MonoBehaviour:
   itemName: Power Supply
   partCategory: PSU
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -3478,6 +3510,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3623,6 +3656,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3768,6 +3802,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3919,6 +3954,7 @@ MonoBehaviour:
   itemName: RAM 4
   partCategory: RAM1
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -3964,9 +4000,9 @@ Transform:
   m_GameObject: {fileID: 2427137562440947398}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000053385076, y: 0.7071068, z: 0.70710677, w: -0.00000005338508}
-  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: -0.308}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: -0.358}
+  m_LocalScale: {x: 100.299995, y: 100.299995, z: 100.299995}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4040,8 +4076,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 6179879131375536253, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -4209,6 +4246,7 @@ MonoBehaviour:
   itemName: Power Supply Outlet
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4225,151 +4263,6 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
---- !u!1 &2625642472155752381
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7523568168833213935}
-  - component: {fileID: 8635466629449133613}
-  - component: {fileID: 3957805912487848621}
-  - component: {fileID: 4784082909654702888}
-  - component: {fileID: 8385083441405444818}
-  m_Layer: 0
-  m_Name: Screws
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7523568168833213935
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2625642472155752381}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.216}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6064928310581888633}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8635466629449133613
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2625642472155752381}
-  m_Mesh: {fileID: -3978569672750779382, guid: a88b32a66291db745aa0fccef3281176, type: 3}
---- !u!23 &3957805912487848621
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2625642472155752381}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: e77394f99f108474d8f39a48aac1bdfc, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4784082909654702888
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2625642472155752381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: Screws
-  partCategory: Generic
-  itemDescription: No description available.
-  isMainObject: 0
-  isRemovable: 1
-  isPowerButton: 0
-  isWirePort: 0
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts: []
-  isInventorySlot: 0
-  inventoryEntryId: 
---- !u!64 &8385083441405444818
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2625642472155752381}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -3978569672750779382, guid: a88b32a66291db745aa0fccef3281176, type: 3}
 --- !u!1 &2632118528007647723
 GameObject:
   m_ObjectHideFlags: 0
@@ -4399,9 +4292,9 @@ Transform:
   m_GameObject: {fileID: 2632118528007647723}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.21769899}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.2216968}
+  m_LocalScale: {x: 100.299995, y: 100.299995, z: 100.299995}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4475,8 +4368,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 6179879131375536253, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -4644,6 +4538,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4789,6 +4684,7 @@ MonoBehaviour:
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4935,6 +4831,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5080,6 +4977,7 @@ MonoBehaviour:
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5225,6 +5123,7 @@ MonoBehaviour:
   itemName: SSD Slot
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5239,155 +5138,6 @@ MonoBehaviour:
   placeHeadHere: 0
   wireHead: {fileID: 0}
   blockingParts: []
-  isInventorySlot: 0
-  inventoryEntryId: 
---- !u!1 &3253660226613904616
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7150946031653089051}
-  - component: {fileID: 6849664973247688141}
-  - component: {fileID: 141131296426529336}
-  - component: {fileID: 4478645218303129940}
-  - component: {fileID: 8438427073443380351}
-  m_Layer: 0
-  m_Name: case.003
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7150946031653089051
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3253660226613904616}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.45353508, y: 0.5442408, z: -0.363}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6064928310581888633}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6849664973247688141
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3253660226613904616}
-  m_Mesh: {fileID: -788207188637898162, guid: a88b32a66291db745aa0fccef3281176, type: 3}
---- !u!23 &141131296426529336
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3253660226613904616}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: ced7e9c1f80344b48a7bcd41c72cf557, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4478645218303129940
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3253660226613904616}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -788207188637898162, guid: a88b32a66291db745aa0fccef3281176, type: 3}
---- !u!114 &8438427073443380351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3253660226613904616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: PC Case
-  partCategory: Generic
-  itemDescription: No description available.
-  isMainObject: 0
-  isRemovable: 1
-  isPowerButton: 0
-  isWirePort: 0
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts:
-  - {fileID: 1085836721470571693}
-  - {fileID: 2780064413948429581}
-  - {fileID: 4972662159503089668}
-  - {fileID: 1367657453106219401}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &3278236087933468716
@@ -5519,6 +5269,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5664,6 +5415,7 @@ MonoBehaviour:
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5846,6 +5598,7 @@ MonoBehaviour:
   itemName: RAM 4
   partCategory: RAM2
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -5992,6 +5745,7 @@ MonoBehaviour:
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6155,6 +5909,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -6318,6 +6073,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6463,6 +6219,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6608,6 +6365,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6754,6 +6512,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Fan
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -6899,6 +6658,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7188,6 +6948,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7233,9 +6994,9 @@ Transform:
   m_GameObject: {fileID: 4384793362122979745}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000053385076, y: 0.7071068, z: 0.70710677, w: -0.00000005338508}
-  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: -0.38957822}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: -0.371}
+  m_LocalScale: {x: 100.299995, y: 100.299995, z: 100.299995}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7309,8 +7070,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 6179879131375536253, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -7480,6 +7242,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7643,6 +7406,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7789,6 +7553,7 @@ MonoBehaviour:
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7934,6 +7699,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8063,187 +7829,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4469274581185408394, guid: a88b32a66291db745aa0fccef3281176, type: 3}
---- !u!1 &4756653017542691568
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3843925215795916330}
-  - component: {fileID: 8953757449839414276}
-  - component: {fileID: 6731914293842852379}
-  - component: {fileID: 7158608650276242272}
-  - component: {fileID: 871299444713994689}
-  - component: {fileID: 2860332096555466102}
-  m_Layer: 0
-  m_Name: case.001
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3843925215795916330
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4756653017542691568}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.45353508, y: 0.5442408, z: 0.214}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6064928310581888633}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &8953757449839414276
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4756653017542691568}
-  m_Mesh: {fileID: 841191967350496874, guid: a88b32a66291db745aa0fccef3281176, type: 3}
---- !u!23 &6731914293842852379
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4756653017542691568}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: c22588195448fd14d8a9589d125f8ac3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7158608650276242272
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4756653017542691568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: PC Case
-  partCategory: Generic
-  itemDescription: No description available.
-  isMainObject: 0
-  isRemovable: 1
-  isPowerButton: 0
-  isWirePort: 0
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts:
-  - {fileID: 4784082909654702888}
-  - {fileID: 3798839777782720532}
-  - {fileID: 3107557061664548801}
-  - {fileID: 2102195006370420549}
-  isInventorySlot: 0
-  inventoryEntryId: 
---- !u!64 &871299444713994689
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4756653017542691568}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 841191967350496874, guid: a88b32a66291db745aa0fccef3281176, type: 3}
---- !u!114 &2860332096555466102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4756653017542691568}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: Unknown Item
-  partCategory: Generic
-  itemDescription: No description available.
-  isMainObject: 0
-  isRemovable: 0
-  isPowerButton: 0
-  isWirePort: 0
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts: []
-  isInventorySlot: 0
-  inventoryEntryId: 
 --- !u!1 &4760063446915575339
 GameObject:
   m_ObjectHideFlags: 0
@@ -8373,6 +7958,7 @@ MonoBehaviour:
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8401,7 +7987,6 @@ GameObject:
   - component: {fileID: 3368814609221035409}
   - component: {fileID: 8251729736938255950}
   - component: {fileID: 4985190630360066542}
-  - component: {fileID: 7359630360253610845}
   m_Layer: 0
   m_Name: CPU Cover
   m_TagString: Untagged
@@ -8503,37 +8088,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 2522795928661360507, guid: a88b32a66291db745aa0fccef3281176, type: 3}
---- !u!114 &7359630360253610845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4765519881419693557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: Unknown Item
-  partCategory: Generic
-  itemDescription: No description available.
-  isMainObject: 0
-  isRemovable: 0
-  isPowerButton: 0
-  isWirePort: 0
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts: []
-  isInventorySlot: 0
-  inventoryEntryId: 
 --- !u!1 &4771738223543513484
 GameObject:
   m_ObjectHideFlags: 0
@@ -8663,6 +8217,7 @@ MonoBehaviour:
   itemName: SATA
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8809,6 +8364,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8867,7 +8423,6 @@ GameObject:
   - component: {fileID: 6064928310581888633}
   - component: {fileID: 8902105681143248262}
   - component: {fileID: 2202130169765135966}
-  - component: {fileID: 8659894682264109394}
   - component: {fileID: 289462205756052853}
   m_Layer: 6
   m_Name: PC Build Dummy
@@ -8937,6 +8492,7 @@ MonoBehaviour:
   itemName: PC
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 1
   isRemovable: 0
   isPowerButton: 0
@@ -8974,28 +8530,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.114254, y: 1.5751617, z: 2.484314}
   m_Center: {x: 0.012788773, y: 0.28758085, z: 0.67276}
---- !u!64 &8659894682264109394
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5178879464572469348}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!114 &289462205756052853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9141,6 +8675,7 @@ MonoBehaviour:
   itemName: SSD NvMe M.2
   partCategory: SSD
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -9287,6 +8822,7 @@ MonoBehaviour:
   itemName: 20 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9453,6 +8989,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9598,6 +9135,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9743,6 +9281,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9920,6 +9459,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10065,6 +9605,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10242,6 +9783,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10388,6 +9930,7 @@ MonoBehaviour:
   itemName: USB 3.0
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10533,6 +10076,7 @@ MonoBehaviour:
   itemName: 2 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10586,6 +10130,7 @@ Transform:
   - {fileID: 7819112482261141543}
   - {fileID: 3618022669116001925}
   - {fileID: 6453514940690748706}
+  - {fileID: 4758189059949279384}
   - {fileID: 2108129090527757979}
   - {fileID: 2147036544522638390}
   - {fileID: 331197119528754338}
@@ -10867,6 +10412,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Fan
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -10912,9 +10458,9 @@ Transform:
   m_GameObject: {fileID: 6492491972131890741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000053385076, y: 0.7071068, z: 0.70710677, w: -0.00000005338508}
-  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: -0.38957822}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: -0.38558042}
+  m_LocalScale: {x: 100.299995, y: 100.299995, z: 100.299995}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10988,8 +10534,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 6179879131375536253, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -11168,12 +10715,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6810242004919343476}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0010779258, y: -0.000063319356, z: -0.0011437362}
-  m_LocalScale: {x: -0.0021194264, y: -0.0021194264, z: -0.0021194264}
+  m_LocalRotation: {x: -0, y: -0, z: 5.3099185e-11, w: 1}
+  m_LocalPosition: {x: -0.0010934726, y: -0.00013807323, z: -0.00085702975}
+  m_LocalScale: {x: -0.0021194266, y: -0.0021194264, z: -0.0021194264}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2108129090527757979}
+  m_Father: {fileID: 4758189059949279384}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4043313520673370295
 MeshFilter:
@@ -11313,16 +10860,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7433016113230171414}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.001432181, y: -0.00019022911, z: 0.0022883175}
+  m_LocalRotation: {x: 0.0000020861626, y: -0.000025452115, z: -0.020940885, w: 0.9997808}
+  m_LocalPosition: {x: 0.00143219, y: -0.0001901248, z: 0.0022883175}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7751178651226240990}
-  - {fileID: 4758189059949279384}
-  - {fileID: 8353598373494752599}
+  m_Children: []
   m_Father: {fileID: 4444192517517676225}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -0.003, z: -2.4}
 --- !u!33 &5903777812334553074
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -11421,6 +10965,7 @@ MonoBehaviour:
   itemName: Intel CPU
   partCategory: CPU
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -11567,6 +11112,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -11714,6 +11260,7 @@ MonoBehaviour:
   itemName: 20 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -11881,6 +11428,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Fan
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -12030,6 +11578,7 @@ MonoBehaviour:
   itemName: USB 2.0 w/ PS/2 Port
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12178,6 +11727,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12324,6 +11874,7 @@ MonoBehaviour:
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12469,6 +12020,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12615,6 +12167,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Fan
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -12761,6 +12314,7 @@ MonoBehaviour:
   itemName: 14 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12906,6 +12460,7 @@ MonoBehaviour:
   itemName: SATA
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13052,6 +12607,7 @@ MonoBehaviour:
   itemName: 5 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13198,6 +12754,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13401,6 +12958,7 @@ MonoBehaviour:
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13547,6 +13105,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13592,9 +13151,9 @@ Transform:
   m_GameObject: {fileID: 8826494922869444816}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.21601307}
-  m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.22001088}
+  m_LocalScale: {x: 100.299995, y: 100.299995, z: 100.299995}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13668,8 +13227,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 6179879131375536253, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -13849,6 +13409,7 @@ MonoBehaviour:
   itemName: GPU
   partCategory: GPU
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -14000,6 +13561,7 @@ MonoBehaviour:
   itemName: RAM 4
   partCategory: RAM3
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -14161,6 +13723,88 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fa0519e14dcccce42b6af538e475680b, type: 3}
   m_PrefabInstance: {fileID: 1855245760628508848}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4569485685718240164
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6064928310581888633}
+    m_Modifications:
+    - target: {fileID: 1318782531202731852, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_Name
+      value: case.003
+      objectReference: {fileID: 0}
+    - target: {fileID: 5364143070220023771, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: itemIconPrefab
+      value: 
+      objectReference: {fileID: 1318782531202731852, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+    - target: {fileID: 5364143070220023771, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: 'blockingParts.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1085836721470571693}
+    - target: {fileID: 5364143070220023771, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: 'blockingParts.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2780064413948429581}
+    - target: {fileID: 5364143070220023771, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: 'blockingParts.Array.data[2]'
+      value: 
+      objectReference: {fileID: 4972662159503089668}
+    - target: {fileID: 5364143070220023771, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: 'blockingParts.Array.data[3]'
+      value: 
+      objectReference: {fileID: 1367657453106219401}
+    - target: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.45353508
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5442408
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.363
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+--- !u!4 &7150946031653089051 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6653875494139471039, guid: f31a588b61dcd9349b7c55ab95275502, type: 3}
+  m_PrefabInstance: {fileID: 4569485685718240164}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4757777918014378307
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14310,4 +13954,179 @@ GameObject:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: fa0519e14dcccce42b6af538e475680b, type: 3}
   m_PrefabInstance: {fileID: 6365450816842671690}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8193016087264669632
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6064928310581888633}
+    m_Modifications:
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 100.299995
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 100.299995
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 100.299995
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.030797388
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5530174
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3735466193625347304, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: itemIconPrefab
+      value: 
+      objectReference: {fileID: 6179879131375536253, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+    - target: {fileID: 6179879131375536253, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+      propertyPath: m_Name
+      value: Screws
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+--- !u!114 &4784082909654702888 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3735466193625347304, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+  m_PrefabInstance: {fileID: 8193016087264669632}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+--- !u!4 &7523568168833213935 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1862913383968655919, guid: b5366729138df564eb3bc9197cd893f5, type: 3}
+  m_PrefabInstance: {fileID: 8193016087264669632}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &8708419196023646786
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6064928310581888633}
+    m_Modifications:
+    - target: {fileID: 1982421376877701410, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: itemIconPrefab
+      value: 
+      objectReference: {fileID: 4240565286694199474, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+    - target: {fileID: 1982421376877701410, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: 'blockingParts.Array.data[0]'
+      value: 
+      objectReference: {fileID: 4784082909654702888}
+    - target: {fileID: 1982421376877701410, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: 'blockingParts.Array.data[1]'
+      value: 
+      objectReference: {fileID: 3798839777782720532}
+    - target: {fileID: 1982421376877701410, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: 'blockingParts.Array.data[2]'
+      value: 
+      objectReference: {fileID: 3107557061664548801}
+    - target: {fileID: 1982421376877701410, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: 'blockingParts.Array.data[3]'
+      value: 
+      objectReference: {fileID: 2102195006370420549}
+    - target: {fileID: 4240565286694199474, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_Name
+      value: case.001
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.45353508
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.5442408
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.214
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+--- !u!4 &3843925215795916330 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5585264535255647336, guid: cf5f33d32152954498c759cb29992cc0, type: 3}
+  m_PrefabInstance: {fileID: 8708419196023646786}
   m_PrefabAsset: {fileID: 0}

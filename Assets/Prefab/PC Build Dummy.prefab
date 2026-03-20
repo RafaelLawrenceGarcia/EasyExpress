@@ -129,6 +129,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -522,6 +523,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -667,6 +669,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -712,11 +715,11 @@ Transform:
   m_GameObject: {fileID: 411806326066081190}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0010779258, y: -0.000063319356, z: -0.0011437362}
+  m_LocalPosition: {x: 0.00035425514, y: -0.00025354847, z: 0.0011445812}
   m_LocalScale: {x: -0.0021194264, y: -0.0021194264, z: -0.0021194264}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2108129090527757979}
+  m_Father: {fileID: 4444192517517676225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2150561930572860142
 MeshFilter:
@@ -812,6 +815,7 @@ MonoBehaviour:
   itemName: pipelocker
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -963,6 +967,7 @@ MonoBehaviour:
   itemName: RAM 4
   partCategory: RAM
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -976,7 +981,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &822863261297365375
@@ -1230,6 +1236,7 @@ MonoBehaviour:
   itemName: 20 Pins PSU
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1396,6 +1403,7 @@ MonoBehaviour:
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1559,6 +1567,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1704,6 +1713,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1849,6 +1859,7 @@ MonoBehaviour:
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1994,6 +2005,7 @@ MonoBehaviour:
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -2041,7 +2053,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.21769899}
   m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2115,8 +2127,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws4
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 2625642472155752381}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -2285,6 +2298,7 @@ MonoBehaviour:
   itemName: Power Button
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 1
@@ -2541,6 +2555,7 @@ MonoBehaviour:
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -2688,6 +2703,7 @@ MonoBehaviour:
   itemName: USB 3.0 & Ethernet
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -2733,11 +2749,11 @@ Transform:
   m_GameObject: {fileID: 1971961415137099334}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00001555711, y: 0.00007492516, z: -0.00028670725}
+  m_LocalPosition: {x: 0.001447738, y: -0.00011530399, z: 0.0020016101}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2108129090527757979}
+  m_Father: {fileID: 4444192517517676225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &127948074907773352
 MeshFilter:
@@ -2834,6 +2850,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3038,6 +3055,7 @@ MonoBehaviour:
   itemName: HDMI Port
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3159,8 +3177,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws2
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 2625642472155752381}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -3343,6 +3362,7 @@ MonoBehaviour:
   itemName: Power Supply
   partCategory: PSU
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -3356,7 +3376,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &2308372507715908718
@@ -3488,6 +3509,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3633,6 +3655,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3778,6 +3801,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3929,6 +3953,7 @@ MonoBehaviour:
   itemName: RAM 4
   partCategory: RAM
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -3942,7 +3967,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &2427137562440947398
@@ -4050,8 +4076,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws1
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 2625642472155752381}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -4219,6 +4246,7 @@ MonoBehaviour:
   itemName: Power Supply Outlet
   partCategory: PSU
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4264,9 +4292,9 @@ Transform:
   m_GameObject: {fileID: 2625642472155752381}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.216}
+  m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.223}
   m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4340,8 +4368,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws1
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 2625642472155752381}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -4411,7 +4440,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.21769899}
   m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4485,8 +4514,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws3
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 2625642472155752381}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -4651,9 +4681,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: Unknown Item
+  itemName: Heat Sink
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4799,6 +4830,7 @@ MonoBehaviour:
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4945,6 +4977,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5090,6 +5123,7 @@ MonoBehaviour:
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5233,8 +5267,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: SSD Slot
-  partCategory: Generic
+  partCategory: SSD
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5378,8 +5413,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: PC Case
-  partCategory: Generic
+  partCategory: Case
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -5529,6 +5565,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5674,6 +5711,7 @@ MonoBehaviour:
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5856,6 +5894,7 @@ MonoBehaviour:
   itemName: RAM 4
   partCategory: RAM
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -5869,7 +5908,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &3643749282560958432
@@ -6002,6 +6042,7 @@ MonoBehaviour:
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6165,6 +6206,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -6328,6 +6370,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6473,6 +6516,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6618,6 +6662,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6761,9 +6806,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: Unknown Item
+  itemName: Fan
   partCategory: Fan
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -6777,7 +6823,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &4068600543024155911
@@ -6909,6 +6956,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7198,6 +7246,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7319,8 +7368,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws3
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 2625642472155752381}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -7490,6 +7540,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7653,6 +7704,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7799,6 +7851,7 @@ MonoBehaviour:
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7944,6 +7997,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8179,8 +8233,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: PC Case
-  partCategory: Generic
+  partCategory: Case
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -8235,9 +8290,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: Unknown Item
-  partCategory: Generic
+  itemName: PC Case
+  partCategory: Case
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8383,6 +8439,7 @@ MonoBehaviour:
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8528,6 +8585,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8671,8 +8729,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: SATA
-  partCategory: Generic
+  partCategory: SATA
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8819,6 +8878,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8947,6 +9007,7 @@ MonoBehaviour:
   itemName: PC
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 1
   isRemovable: 0
   isPowerButton: 0
@@ -9151,6 +9212,7 @@ MonoBehaviour:
   itemName: SSD NvMe M.2
   partCategory: SSD
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -9164,7 +9226,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &5385379256963151212
@@ -9297,6 +9360,7 @@ MonoBehaviour:
   itemName: 20 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9463,6 +9527,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9608,6 +9673,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9750,9 +9816,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: Unknown Item
+  itemName: Heat Sink
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9930,6 +9997,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10075,6 +10143,7 @@ MonoBehaviour:
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10252,6 +10321,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10398,6 +10468,7 @@ MonoBehaviour:
   itemName: USB 3.0
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10543,6 +10614,7 @@ MonoBehaviour:
   itemName: 2 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10596,6 +10668,9 @@ Transform:
   - {fileID: 7819112482261141543}
   - {fileID: 3618022669116001925}
   - {fileID: 6453514940690748706}
+  - {fileID: 7751178651226240990}
+  - {fileID: 4758189059949279384}
+  - {fileID: 8353598373494752599}
   - {fileID: 2108129090527757979}
   - {fileID: 2147036544522638390}
   - {fileID: 331197119528754338}
@@ -10874,9 +10949,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: Unknown Item
+  itemName: Fan
   partCategory: Fan
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -10890,7 +10966,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &6492491972131890741
@@ -10998,8 +11075,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws4
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 2625642472155752381}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -11179,11 +11257,11 @@ Transform:
   m_GameObject: {fileID: 6810242004919343476}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0010779258, y: -0.000063319356, z: -0.0011437362}
+  m_LocalPosition: {x: 0.00035425514, y: -0.00025354847, z: 0.0011445812}
   m_LocalScale: {x: -0.0021194264, y: -0.0021194264, z: -0.0021194264}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2108129090527757979}
+  m_Father: {fileID: 4444192517517676225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4043313520673370295
 MeshFilter:
@@ -11327,10 +11405,7 @@ Transform:
   m_LocalPosition: {x: 0.001432181, y: -0.00019022911, z: 0.0022883175}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7751178651226240990}
-  - {fileID: 4758189059949279384}
-  - {fileID: 8353598373494752599}
+  m_Children: []
   m_Father: {fileID: 4444192517517676225}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5903777812334553074
@@ -11431,6 +11506,7 @@ MonoBehaviour:
   itemName: Intel CPU
   partCategory: CPU
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -11444,7 +11520,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &7574965793184717440
@@ -11577,6 +11654,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -11724,6 +11802,7 @@ MonoBehaviour:
   itemName: 20 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -11888,9 +11967,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: Unknown Item
+  itemName: Fan
   partCategory: Fan
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -11904,7 +11984,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &7806750153748574703
@@ -12040,6 +12121,7 @@ MonoBehaviour:
   itemName: USB 2.0 w/ PS/2 Port
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12188,6 +12270,7 @@ MonoBehaviour:
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12334,6 +12417,7 @@ MonoBehaviour:
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12479,6 +12563,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12622,9 +12707,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  itemName: Unknown Item
+  itemName: Fan
   partCategory: Fan
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -12638,7 +12724,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &8226083603268367267
@@ -12771,6 +12858,7 @@ MonoBehaviour:
   itemName: 14 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12914,8 +13002,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: SATA
-  partCategory: Generic
+  partCategory: SATA
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13062,6 +13151,7 @@ MonoBehaviour:
   itemName: 5 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13208,6 +13298,7 @@ MonoBehaviour:
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13410,6 +13501,7 @@ MonoBehaviour:
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13556,6 +13648,7 @@ MonoBehaviour:
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13603,7 +13696,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0.030797388, y: 0.5530174, z: 0.21601307}
   m_LocalScale: {x: 100, y: 100, z: 100}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13677,8 +13770,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
   itemName: Screws
-  partCategory: Generic
+  partCategory: Screws2
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 2625642472155752381}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -13858,8 +13952,9 @@ MonoBehaviour:
   itemName: GPU
   partCategory: GPU
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
-  isRemovable: 1
+  isRemovable: 0
   isPowerButton: 0
   isWirePort: 0
   parentComponent: {fileID: 0}
@@ -13871,7 +13966,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1 &8865399802845517623
@@ -14009,6 +14105,7 @@ MonoBehaviour:
   itemName: RAM 4
   partCategory: RAM
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -14022,7 +14119,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
 --- !u!1001 &1453271907532398376

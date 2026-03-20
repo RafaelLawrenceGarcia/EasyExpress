@@ -180,7 +180,6 @@ public class CustomerInside : MonoBehaviour
         
         if (assignedJob != null && EmailManager.Instance != null)
         {
-            // Send the job to the EmailManager to spawn the box AND add the email
             EmailManager.Instance.ReceiveWalkInJob(assignedJob, npcName);
         }
         else
@@ -202,7 +201,6 @@ public class CustomerInside : MonoBehaviour
     {
         if (mySpawner != null) mySpawner.CustomerLeft(this);
         
-        // Start the smart leaving routine instead of a hardcoded timer
         StartCoroutine(LeaveRoutine());
     }
 
@@ -213,7 +211,6 @@ public class CustomerInside : MonoBehaviour
             agent.isStopped = false;
             agent.SetDestination(exitPos.position);
 
-            // Wait until the NPC is very close to the door
             while (Vector3.Distance(transform.position, exitPos.position) > 1.5f)
             {
                 yield return null; 
@@ -229,32 +226,20 @@ public class CustomerInside : MonoBehaviour
 
     void GenerateRandomJob()
     {
-        // SCENARIO 1: The player didn't assign a specific EmailData, so we build one randomly!
         if (assignedJob == null && possibleCases != null && possibleCases.Length > 0)
         {
             Debug.Log("Generating a completely random PC for walk-in customer!");
             
-            // 1. Create a brand new, temporary EmailData file in the computer's memory
             assignedJob = ScriptableObject.CreateInstance<EmailData>();
-            
-            // 2. Pick a random PC Case
             assignedJob.basePCCasePrefab = possibleCases[Random.Range(0, possibleCases.Length)];
             assignedJob.startingParts = new List<StartingPCComponent>();
 
-            // 3. Roll the dice and add random parts to the PC!
-            if (possibleMotherboards != null && possibleMotherboards.Length > 0) 
-                assignedJob.startingParts.Add(possibleMotherboards[Random.Range(0, possibleMotherboards.Length)]);
-            
-            if (possibleRAMs != null && possibleRAMs.Length > 0) 
-                assignedJob.startingParts.Add(possibleRAMs[Random.Range(0, possibleRAMs.Length)]);
-                
-            if (possibleGPUs != null && possibleGPUs.Length > 0) 
-                assignedJob.startingParts.Add(possibleGPUs[Random.Range(0, possibleGPUs.Length)]);
-                
-            if (possiblePSUs != null && possiblePSUs.Length > 0) 
-                assignedJob.startingParts.Add(possiblePSUs[Random.Range(0, possiblePSUs.Length)]);
+            // --- FIXED: Using Helper to ensure category data is saved correctly ---
+            AddRandomPartToJob(possibleMotherboards);
+            AddRandomPartToJob(possibleRAMs);
+            AddRandomPartToJob(possibleGPUs);
+            AddRandomPartToJob(possiblePSUs);
 
-            // 4. Generate Random Pay and Problems
             assignedJob.labourCost = Random.Range(100, 500);
             assignedJob.partsBudget = Random.Range(500, 3000);
             budget = (int)assignedJob.partsBudget;
@@ -263,21 +248,36 @@ public class CustomerInside : MonoBehaviour
             assignedJob.pcProblems = new string[] { problems[Random.Range(0, problems.Length)] };
             assignedJob.objectives = new string[] { "Diagnose Issue", "Replace Broken Part", "Boot to Desktop" };
 
-            // 5. Generate Random Dialogue
             assignedJob.bodyText = "Hey, my PC is acting up. I think the issue is: " + assignedJob.pcProblems[0] + ". Can you take a look?";
             jobRequest = assignedJob.bodyText + "\n\nBudget: ₱" + budget;
         }
-        // SCENARIO 2: You manually dragged an EmailData into the slot, so it uses that specific one.
         else if (assignedJob != null)
         {
             budget = (int)assignedJob.partsBudget;
             jobRequest = assignedJob.bodyText + "\n\nBudget: ₱" + budget;
         }
-        // SCENARIO 3: Fallback if everything is empty
         else
         {
             budget = Random.Range(100, 1000);
             jobRequest = "Can you fix my PC? My budget is ₱" + budget + ".";
+        }
+    }
+
+    // --- NEW HELPER FUNCTION: Prevents data loss during random generation ---
+    void AddRandomPartToJob(StartingPCComponent[] partPool)
+    {
+        if (partPool != null && partPool.Length > 0)
+        {
+            StartingPCComponent selected = partPool[Random.Range(0, partPool.Length)];
+            
+            // Create a fresh copy so we don't overwrite categories on other NPCs
+            StartingPCComponent copy = new StartingPCComponent();
+            copy.partCategory = selected.partCategory;
+            copy.partName = selected.partName;
+            copy.partPrefab = selected.partPrefab;
+            copy.partIcon = selected.partIcon;
+            
+            assignedJob.startingParts.Add(copy);
         }
     }
 }

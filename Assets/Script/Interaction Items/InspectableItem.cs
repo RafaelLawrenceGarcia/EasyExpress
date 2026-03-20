@@ -11,7 +11,7 @@ public class InspectableItem : MonoBehaviour
     
     [TextArea(3, 5)]
     public string itemDescription = "No description available.";
-
+    public GameObject itemIconPrefab;
     [Header("Interaction Rules")]
     public bool isMainObject = false;
 
