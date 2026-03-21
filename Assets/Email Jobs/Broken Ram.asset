@@ -29,39 +29,52 @@ MonoBehaviour:
   - partCategory: RAM
     partName: RAM 1
     partPrefab: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: Motherboard
     partName: MSI Motherboard
     partPrefab: {fileID: 7402668134811180990, guid: e9560bebbc2cd9442a1a6dc6acc88c6e, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: RAM
     partName: RAM 2
     partPrefab: {fileID: 611883677828862588, guid: ef39ed9db4ea6ff41ae424412ceda4c2, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: RAM
     partName: RAM 3
     partPrefab: {fileID: 4318764074237770179, guid: 9079e0ca59de7f54a8b062d388eeb96a, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: RAM
     partName: RAM 4
     partPrefab: {fileID: 1205316677405593970, guid: 62293427be80faf4bac86f98da257a69, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: SSD
     partName: SSD NvMe
     partPrefab: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: CPU
     partName: Intel CPU
     partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: Fan
     partName: Fan 1
     partPrefab: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: Fan
     partName: Fan 2
     partPrefab: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: Fan
     partName: Fan 1
     partPrefab: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: Fan
     partName: Fan 1
     partPrefab: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: GPU
     partName: GPU
     partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+    partIcon: {fileID: 0}
   - partCategory: PSU
     partName: Power Supply
     partPrefab: {fileID: 9167510366309624687, guid: c4da24ededcfbcc47b85626d08e195aa, type: 3}
+    partIcon: {fileID: 0}
