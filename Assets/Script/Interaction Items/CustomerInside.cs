@@ -181,6 +181,21 @@ public class CustomerInside : MonoBehaviour
         if (assignedJob != null && EmailManager.Instance != null)
         {
             EmailManager.Instance.ReceiveWalkInJob(assignedJob, npcName);
+            
+            // 40% chance the PC is dusty, or 100% if the problem mentions dust
+            bool makeDusty = Random.Range(0f, 100f) < 40f;
+            if (assignedJob.pcProblems != null && assignedJob.pcProblems.Length > 0)
+            {
+                foreach (string problem in assignedJob.pcProblems)
+                {
+                    if (problem.ToLower().Contains("dust")) { makeDusty = true; break; }
+                }
+            }
+            
+            if (makeDusty)
+            {
+                PlayerPrefs.SetInt("NextPCDusty", 1);
+            }
         }
         else
         {
@@ -234,7 +249,6 @@ public class CustomerInside : MonoBehaviour
             assignedJob.basePCCasePrefab = possibleCases[Random.Range(0, possibleCases.Length)];
             assignedJob.startingParts = new List<StartingPCComponent>();
 
-            // --- FIXED: Using Helper to ensure category data is saved correctly ---
             AddRandomPartToJob(possibleMotherboards);
             AddRandomPartToJob(possibleRAMs);
             AddRandomPartToJob(possibleGPUs);
@@ -244,7 +258,7 @@ public class CustomerInside : MonoBehaviour
             assignedJob.partsBudget = Random.Range(500, 3000);
             budget = (int)assignedJob.partsBudget;
 
-            string[] problems = { "Blue Screen of Death", "No Display on Monitor", "PC Keeps Overheating", "Won't Turn On" };
+            string[] problems = { "Blue Screen of Death", "No Display on Monitor", "PC Keeps Overheating", "Won't Turn On", "Full of Dust" };
             assignedJob.pcProblems = new string[] { problems[Random.Range(0, problems.Length)] };
             assignedJob.objectives = new string[] { "Diagnose Issue", "Replace Broken Part", "Boot to Desktop" };
 

@@ -1,30 +1,39 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
+/// <summary>
+/// TutorialManager — NOW FULLY USES TaskListUI
+/// 
+/// The old taskCanvas / taskBackgroundImage / taskText fields are GONE.
+/// Everything goes through TaskListUI.Instance now.
+/// 
+/// Movement task uses 4 individual completable tasks
+/// that complete one by one as each key hits 100%.
+/// </summary>
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance;
 
     [Header("Managers")]
     public IntroDialogueManager dialogueManager;
-    
-    [Header("Task UI")]
-    public GameObject taskUIPanel;
-    public TextMeshProUGUI taskText;
+    public DayTransitionManager dayTransitionManager;
 
     [Header("Dialogue Files")]
     public DialogueSequence part1_MoveDialogue;
-    public DialogueSequence part2_CustomerDialogue; // NEW: Talk to customer to get the box
-    public DialogueSequence part3_PickupBoxDialogue;// NEW: Go to the shelf and pick up the box
-    public DialogueSequence part4_PlaceBoxDialogue; // NEW: Put the box on the workstation
-    public DialogueSequence part5_PCDialogue;       // Inspect the PC
-    public DialogueSequence part6_HoverDialogue;    // Hover over a part
-    public DialogueSequence part7_RemoveDialogue;   // Remove a part
+    public DialogueSequence part2_CustomerDialogue;
+    public DialogueSequence part3_PickupBoxDialogue;
+    public DialogueSequence part4_PlaceBoxDialogue;
+    public DialogueSequence part5_PCDialogue;
+    public DialogueSequence part6_HoverDialogue;
+    public DialogueSequence part7_RemoveDialogue;
 
     [Header("Movement Task Settings")]
-    public float requiredHoldTime = 2.0f; 
+    public float requiredHoldTime = 2.0f;
     private float wTimer, aTimer, sTimer, dTimer;
+    private bool wDone, aDone, sDone, dDone;
 
+    // --- STATE ---
     private int tutorialStep = 0;
 
     void Awake()
@@ -34,20 +43,74 @@ public class TutorialManager : MonoBehaviour
 
     void Start()
     {
-        taskUIPanel.SetActive(false);
-
-        if (PlayerPrefs.GetInt("IsLoadingGame", 0) == 0)
+        if (PlayerPrefs.GetInt("IsLoadingGame", 0) == 0 && PlayerPrefs.GetInt("TutorialDone", 0) == 0)
         {
             tutorialStep = 0;
-            dialogueManager.PlaySequence(part1_MoveDialogue, StartMovementTask);
+            if (dayTransitionManager != null)
+            {
+                dayTransitionManager.PlayDayIntro(() =>
+                {
+                    StartCoroutine(DelayedStart());
+                });
+            }
+            else
+            {
+                dialogueManager.PlaySequence(part1_MoveDialogue, StartMovementTask);
+            }
+        }
+        else
+        {
+            if (dayTransitionManager != null)
+            {
+                dayTransitionManager.PlayDayIntro(null);
+            }
         }
     }
 
-    // --- 1. MOVEMENT TASK ---
+    IEnumerator DelayedStart()
+    {
+        yield return new WaitForSeconds(1.0f);
+        dialogueManager.PlaySequence(part1_MoveDialogue, StartMovementTask);
+    }
+
+    IEnumerator DelayThenDialogue(float delay, DialogueSequence seq, System.Action callback)
+    {
+        yield return new WaitForSeconds(delay);
+        dialogueManager.PlaySequence(seq, callback);
+    }
+
+    // =============================================
+    //  TASK VISIBILITY (delegates to TaskListUI)
+    // =============================================
+
+    public void HideTaskTemporarily()
+    {
+        if (TaskListUI.Instance != null) TaskListUI.Instance.HideTemporarily();
+    }
+
+    public void RestoreTaskIfNeeded()
+    {
+        if (TaskListUI.Instance != null) TaskListUI.Instance.RestoreIfNeeded();
+    }
+
+    // =============================================
+    //  1. MOVEMENT TASK
+    // =============================================
     void StartMovementTask()
     {
-        taskUIPanel.SetActive(true);
-        tutorialStep = 1; 
+        wDone = false; aDone = false; sDone = false; dDone = false;
+
+        if (TaskListUI.Instance != null)
+        {
+            TaskListUI.Instance.SetTitle("CALIBRATION");
+            TaskListUI.Instance.SetTasks(new string[] {
+                "Hold W to move forward",
+                "Hold A to move left",
+                "Hold S to move backward",
+                "Hold D to move right"
+            });
+        }
+        tutorialStep = 1;
     }
 
     void Update()
@@ -64,45 +127,70 @@ public class TutorialManager : MonoBehaviour
             sTimer = Mathf.Clamp(sTimer, 0, requiredHoldTime);
             dTimer = Mathf.Clamp(dTimer, 0, requiredHoldTime);
 
-            taskText.text = "System Check - Calibrating Movement:\n" +
-                            $"Hold W: {(wTimer / requiredHoldTime) * 100:0}%\n" +
-                            $"Hold A: {(aTimer / requiredHoldTime) * 100:0}%\n" +
-                            $"Hold S: {(sTimer / requiredHoldTime) * 100:0}%\n" +
-                            $"Hold D: {(dTimer / requiredHoldTime) * 100:0}%";
+            // Complete each key individually when it hits 100%
+            if (TaskListUI.Instance != null)
+            {
+                if (!wDone && wTimer >= requiredHoldTime) { wDone = true; TaskListUI.Instance.CompleteTask(0); }
+                if (!aDone && aTimer >= requiredHoldTime) { aDone = true; TaskListUI.Instance.CompleteTask(1); }
+                if (!sDone && sTimer >= requiredHoldTime) { sDone = true; TaskListUI.Instance.CompleteTask(2); }
+                if (!dDone && dTimer >= requiredHoldTime) { dDone = true; TaskListUI.Instance.CompleteTask(3); }
+            }
 
-            if (wTimer >= requiredHoldTime && aTimer >= requiredHoldTime && 
+            if (wTimer >= requiredHoldTime && aTimer >= requiredHoldTime &&
                 sTimer >= requiredHoldTime && dTimer >= requiredHoldTime)
             {
-                tutorialStep = 2; 
-                taskUIPanel.SetActive(false); 
-                dialogueManager.PlaySequence(part2_CustomerDialogue, StartCustomerTask);
+                tutorialStep = 2;
+                StartCoroutine(DelayedHideAndDialogue(1.0f, part2_CustomerDialogue, StartCustomerTask));
             }
         }
     }
 
-    // --- 2. CUSTOMER TASK ---
+    // =============================================
+    //  2. CUSTOMER TASK
+    // =============================================
     void StartCustomerTask()
     {
-        taskUIPanel.SetActive(true);
-        taskText.text = "- Approach the waiting customer\n- Press E to talk\n- Click 'Accept' to take the job";
-        tutorialStep = 3; 
+        if (TaskListUI.Instance != null)
+        {
+            TaskListUI.Instance.SetTitle("OBJECTIVES");
+            TaskListUI.Instance.SetTasks(new string[] {
+                "Approach the customer",
+                "Press E to talk",
+                "Accept the job"
+            });
+        }
+        tutorialStep = 3;
     }
 
     public void CompleteCustomerTask()
     {
         if (tutorialStep == 3)
         {
+            if (TaskListUI.Instance != null)
+            {
+                TaskListUI.Instance.CompleteTask(0);
+                TaskListUI.Instance.CompleteTask(1);
+                TaskListUI.Instance.CompleteTask(2);
+            }
+
             tutorialStep = 4;
-            taskUIPanel.SetActive(false);
-            dialogueManager.PlaySequence(part3_PickupBoxDialogue, StartPickupBoxTask);
+            StartCoroutine(DelayedHideAndDialogue(1.0f, part3_PickupBoxDialogue, StartPickupBoxTask));
         }
     }
 
-    // --- 3. PICK UP BOX TASK ---
+    // =============================================
+    //  3. PICK UP BOX TASK
+    // =============================================
     void StartPickupBoxTask()
     {
-        taskUIPanel.SetActive(true);
-        taskText.text = "- Find the customer's PC Box on the shelf\n- Press Q to pick it up";
+        if (TaskListUI.Instance != null)
+        {
+            TaskListUI.Instance.SetTitle("OBJECTIVES");
+            TaskListUI.Instance.SetTasks(new string[] {
+                "Find the PC box on the shelf",
+                "Press Q to pick it up"
+            });
+        }
         tutorialStep = 5;
     }
 
@@ -110,17 +198,30 @@ public class TutorialManager : MonoBehaviour
     {
         if (tutorialStep == 5)
         {
+            if (TaskListUI.Instance != null)
+            {
+                TaskListUI.Instance.CompleteTask(0);
+                TaskListUI.Instance.CompleteTask(1);
+            }
+
             tutorialStep = 6;
-            taskUIPanel.SetActive(false);
-            dialogueManager.PlaySequence(part4_PlaceBoxDialogue, StartPlaceBoxTask);
+            StartCoroutine(DelayedHideAndDialogue(1.0f, part4_PlaceBoxDialogue, StartPlaceBoxTask));
         }
     }
 
-    // --- 4. PLACE BOX TASK ---
+    // =============================================
+    //  4. PLACE BOX TASK
+    // =============================================
     void StartPlaceBoxTask()
     {
-        taskUIPanel.SetActive(true);
-        taskText.text = "- Look at the empty Workstation desk\n- Click Left Mouse Button to place and unpack the box";
+        if (TaskListUI.Instance != null)
+        {
+            TaskListUI.Instance.SetTitle("OBJECTIVES");
+            TaskListUI.Instance.SetTasks(new string[] {
+                "Look at the workstation desk",
+                "Left-click to place the box"
+            });
+        }
         tutorialStep = 7;
     }
 
@@ -128,35 +229,56 @@ public class TutorialManager : MonoBehaviour
     {
         if (tutorialStep == 7)
         {
+            if (TaskListUI.Instance != null)
+            {
+                TaskListUI.Instance.CompleteTask(0);
+                TaskListUI.Instance.CompleteTask(1);
+            }
+
             tutorialStep = 8;
-            taskUIPanel.SetActive(false);
-            dialogueManager.PlaySequence(part5_PCDialogue, StartPCTask);
+            StartCoroutine(DelayedHideAndDialogue(1.0f, part5_PCDialogue, StartPCTask));
         }
     }
 
-    // --- 5. PC INTERACT TASK ---
+    // =============================================
+    //  5. PC INTERACT TASK
+    // =============================================
     void StartPCTask()
     {
-        taskUIPanel.SetActive(true);
-        taskText.text = "- Press E on the Unpacked PC to inspect it";
-        tutorialStep = 9; 
+        if (TaskListUI.Instance != null)
+        {
+            TaskListUI.Instance.SetTitle("OBJECTIVES");
+            TaskListUI.Instance.SetTasks(new string[] {
+                "Inspect the unpacked PC"
+            });
+        }
+        tutorialStep = 9;
     }
 
     public void CompletePCTask()
     {
         if (tutorialStep == 9)
         {
+            if (TaskListUI.Instance != null)
+                TaskListUI.Instance.CompleteTask(0);
+
             tutorialStep = 10;
-            taskUIPanel.SetActive(false);
-            dialogueManager.PlaySequence(part6_HoverDialogue, StartHoverTask);
+            StartCoroutine(DelayedHideAndDialogue(1.0f, part6_HoverDialogue, StartHoverTask));
         }
     }
 
-    // --- 6. HOVER TASK ---
+    // =============================================
+    //  6. HOVER TASK
+    // =============================================
     void StartHoverTask()
     {
-        taskUIPanel.SetActive(true);
-        taskText.text = "- Move your mouse over a PC component to highlight it";
+        if (TaskListUI.Instance != null)
+        {
+            TaskListUI.Instance.SetTitle("OBJECTIVES");
+            TaskListUI.Instance.SetTasks(new string[] {
+                "Hover over a PC component"
+            });
+        }
         tutorialStep = 11;
     }
 
@@ -164,17 +286,26 @@ public class TutorialManager : MonoBehaviour
     {
         if (tutorialStep == 11)
         {
+            if (TaskListUI.Instance != null)
+                TaskListUI.Instance.CompleteTask(0);
+
             tutorialStep = 12;
-            taskUIPanel.SetActive(false);
-            dialogueManager.PlaySequence(part7_RemoveDialogue, StartRemoveTask);
+            StartCoroutine(DelayedHideAndDialogue(1.0f, part7_RemoveDialogue, StartRemoveTask));
         }
     }
 
-    // --- 7. REMOVE TASK ---
+    // =============================================
+    //  7. REMOVE TASK
+    // =============================================
     void StartRemoveTask()
     {
-        taskUIPanel.SetActive(true);
-        taskText.text = "- Left-click on the highlighted component to remove it";
+        if (TaskListUI.Instance != null)
+        {
+            TaskListUI.Instance.SetTitle("OBJECTIVES");
+            TaskListUI.Instance.SetTasks(new string[] {
+                "Left-click to remove the part"
+            });
+        }
         tutorialStep = 13;
     }
 
@@ -182,9 +313,38 @@ public class TutorialManager : MonoBehaviour
     {
         if (tutorialStep == 13)
         {
+            if (TaskListUI.Instance != null)
+                TaskListUI.Instance.CompleteTask(0);
+
             tutorialStep = 14;
-            taskUIPanel.SetActive(false);
-            Debug.Log("Tutorial Fully Complete! You are now ready to run EasyExpress.");
+            StartCoroutine(FinalCleanup());
         }
     }
+
+    IEnumerator FinalCleanup()
+    {
+        yield return new WaitForSeconds(1.5f);
+        if (TaskListUI.Instance != null) TaskListUI.Instance.HidePanel();
+
+        PlayerPrefs.SetInt("TutorialDone", 1);
+        PlayerPrefs.Save();
+        Debug.Log("Tutorial Fully Complete!");
+    }
+
+    // =============================================
+    //  HELPER: Complete animation → hide → next dialogue
+    // =============================================
+    IEnumerator DelayedHideAndDialogue(float delay, DialogueSequence seq, System.Action callback)
+    {
+        yield return new WaitForSeconds(delay);
+        if (TaskListUI.Instance != null) TaskListUI.Instance.HidePanel();
+        yield return new WaitForSeconds(0.3f);
+        dialogueManager.PlaySequence(seq, callback);
+    }
+
+    // =============================================
+    //  HELPERS
+    // =============================================
+    public int GetCurrentStep() { return tutorialStep; }
+    public bool IsTutorialActive() { return tutorialStep > 0 && tutorialStep < 14; }
 }

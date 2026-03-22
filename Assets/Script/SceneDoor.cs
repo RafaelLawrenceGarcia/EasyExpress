@@ -57,9 +57,9 @@ public class SceneDoor : MonoBehaviour
 
         // Safely hide the prompt if it exists
         // (We search for the specific interaction script to find its UI, rather than guessing names)
-        if (interactScript != null && interactScript.pressEPrompt != null)
+        if (interactScript != null && interactScript.interactionPrompt != null)
         {
-            interactScript.pressEPrompt.SetActive(false);
+            interactScript.interactionPrompt.Hide();
         }
 
         // 5. Show Loading Screen

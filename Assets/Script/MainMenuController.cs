@@ -106,6 +106,8 @@ public class MainMenu : MonoBehaviour
     void NewGame()
     {
         PlayerPrefs.SetInt("IsLoadingGame", 0);
+        PlayerPrefs.SetInt("TutorialDone", 0);
+        PlayerPrefs.SetInt("CurrentDay", 1);
         SceneManager.LoadScene(gameplaySceneName);
     }
 

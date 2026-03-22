@@ -126,6 +126,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -520,6 +525,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -666,6 +676,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
@@ -812,6 +827,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: pipelocker
   partCategory: Generic
   itemDescription: No description available.
@@ -964,6 +984,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: RAM 4
   partCategory: RAM
   itemDescription: No description available.
@@ -1233,6 +1258,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 20 Pins PSU
   partCategory: Generic
   itemDescription: No description available.
@@ -1400,6 +1430,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
@@ -1564,6 +1599,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -1710,6 +1750,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
@@ -1856,6 +1901,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -2002,6 +2052,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -2126,6 +2181,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws4
   itemDescription: No description available.
@@ -2295,6 +2355,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Power Button
   partCategory: Generic
   itemDescription: No description available.
@@ -2552,6 +2617,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -2700,6 +2770,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: USB 3.0 & Ethernet
   partCategory: Generic
   itemDescription: No description available.
@@ -2847,6 +2922,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -3052,6 +3132,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: HDMI Port
   partCategory: Generic
   itemDescription: No description available.
@@ -3176,6 +3261,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws2
   itemDescription: No description available.
@@ -3359,6 +3449,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Power Supply
   partCategory: PSU
   itemDescription: No description available.
@@ -3506,6 +3601,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -3652,6 +3752,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -3798,6 +3903,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
@@ -3950,6 +4060,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: RAM 4
   partCategory: RAM
   itemDescription: No description available.
@@ -4075,6 +4190,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws1
   itemDescription: No description available.
@@ -4243,6 +4363,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Power Supply Outlet
   partCategory: PSU
   itemDescription: No description available.
@@ -4367,6 +4492,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws1
   itemDescription: No description available.
@@ -4513,6 +4643,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws3
   itemDescription: No description available.
@@ -4681,6 +4816,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Heat Sink
   partCategory: Generic
   itemDescription: No description available.
@@ -4827,6 +4967,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
@@ -4974,6 +5119,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -5120,6 +5270,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
@@ -5266,6 +5421,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: SSD Slot
   partCategory: SSD
   itemDescription: No description available.
@@ -5299,6 +5459,7 @@ GameObject:
   - component: {fileID: 141131296426529336}
   - component: {fileID: 4478645218303129940}
   - component: {fileID: 8438427073443380351}
+  - component: {fileID: 7941065386629443170}
   m_Layer: 0
   m_Name: case.003
   m_TagString: Untagged
@@ -5412,6 +5573,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: PC Case
   partCategory: Case
   itemDescription: No description available.
@@ -5436,6 +5602,24 @@ MonoBehaviour:
   - {fileID: 1367657453106219401}
   isInventorySlot: 0
   inventoryEntryId: 
+--- !u!114 &7941065386629443170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3253660226613904616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e10b768ebae4f0c44b5461d575b0b1b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DustSystem
+  isDusty: 0
+  dustOverlayMaterial: {fileID: 2100000, guid: c14ebc2d7d6eb514a8643a603c0308f8, type: 2}
+  dustParticlesPrefab: {fileID: 0}
+  dustTint: {r: 0.6, g: 0.5, b: 0.35, a: 0.3}
+  cleanDuration: 2
+  cleanProgress: 0
 --- !u!1 &3278236087933468716
 GameObject:
   m_ObjectHideFlags: 0
@@ -5562,6 +5746,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
@@ -5708,6 +5897,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 6 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -5891,6 +6085,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: RAM 4
   partCategory: RAM
   itemDescription: No description available.
@@ -6039,6 +6238,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -6203,6 +6407,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -6367,6 +6576,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -6513,6 +6727,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -6659,6 +6878,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -6806,6 +7030,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Fan
   partCategory: Fan
   itemDescription: No description available.
@@ -6953,6 +7182,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
@@ -7243,6 +7477,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -7367,6 +7606,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws3
   itemDescription: No description available.
@@ -7537,6 +7781,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -7701,6 +7950,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -7848,6 +8102,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -7994,6 +8253,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
@@ -8232,6 +8496,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: PC Case
   partCategory: Case
   itemDescription: No description available.
@@ -8290,6 +8559,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: PC Case
   partCategory: Case
   itemDescription: No description available.
@@ -8436,6 +8710,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot
   partCategory: Generic
   itemDescription: No description available.
@@ -8582,6 +8861,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -8728,6 +9012,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: SATA
   partCategory: SATA
   itemDescription: No description available.
@@ -8875,6 +9164,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -8940,7 +9234,7 @@ GameObject:
   - component: {fileID: 8659894682264109394}
   - component: {fileID: 289462205756052853}
   m_Layer: 6
-  m_Name: PC Build Dummy
+  m_Name: PC Build Dummy MAIN
   m_TagString: PickupPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9004,6 +9298,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: PC
   partCategory: Generic
   itemDescription: No description available.
@@ -9209,6 +9508,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: SSD NvMe M.2
   partCategory: SSD
   itemDescription: No description available.
@@ -9357,6 +9661,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 20 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -9524,6 +9833,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -9670,6 +9984,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
@@ -9816,6 +10135,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Heat Sink
   partCategory: Generic
   itemDescription: No description available.
@@ -9994,6 +10318,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -10140,6 +10469,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
   itemDescription: No description available.
@@ -10318,6 +10652,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -10465,6 +10804,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: USB 3.0
   partCategory: Generic
   itemDescription: No description available.
@@ -10611,6 +10955,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 2 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -10949,6 +11298,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Fan
   partCategory: Fan
   itemDescription: No description available.
@@ -11074,6 +11428,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws4
   itemDescription: No description available.
@@ -11503,6 +11862,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Intel CPU
   partCategory: CPU
   itemDescription: No description available.
@@ -11651,6 +12015,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -11799,6 +12168,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 20 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -11967,6 +12341,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Fan
   partCategory: Fan
   itemDescription: No description available.
@@ -12118,6 +12497,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: USB 2.0 w/ PS/2 Port
   partCategory: Generic
   itemDescription: No description available.
@@ -12267,6 +12651,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
@@ -12414,6 +12803,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -12560,6 +12954,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -12707,6 +13106,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Fan
   partCategory: Fan
   itemDescription: No description available.
@@ -12855,6 +13259,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 14 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -13001,6 +13410,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: SATA
   partCategory: SATA
   itemDescription: No description available.
@@ -13148,6 +13562,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 5 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -13295,6 +13714,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -13498,6 +13922,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 4 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -13645,6 +14074,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
   itemDescription: No description available.
@@ -13769,6 +14203,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws2
   itemDescription: No description available.
@@ -13949,6 +14388,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: GPU
   partCategory: GPU
   itemDescription: No description available.
@@ -14102,6 +14546,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: RAM 4
   partCategory: RAM
   itemDescription: No description available.

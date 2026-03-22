@@ -35,7 +35,9 @@ public class PCCaseBuilder : MonoBehaviour
                 {
                     partScript.partCategory = part.partCategory;
                     partScript.itemName     = part.partName;
-
+                    partScript.compatTags = part.compatTags;
+                    partScript.powerDraw = part.powerDraw;
+                    partScript.maxWattage = part.maxWattage;
                     // --- THE FIX: Transfer the blocking rules to the real part ---
                     InspectableItem dummyScript = matchingDummy.GetComponent<InspectableItem>();
                     if (dummyScript != null && dummyScript.blockingParts != null)
@@ -85,6 +87,20 @@ public class PCCaseBuilder : MonoBehaviour
             foreach (Collider col in leftoverDummy.GetComponentsInChildren<Collider>())
                 col.enabled = false;
             Debug.Log($"[PC Builder] Created ghost slot for: {category}");
+        }
+        // Apply dust if any part flagged it
+        bool shouldBeDusty = false;
+        foreach (StartingPCComponent part in partsToInstall)
+        {
+            if (part.isDusty) { shouldBeDusty = true; break; }
+        }
+        
+        if (shouldBeDusty)
+        {
+            DustSystem dust = GetComponent<DustSystem>();
+            if (dust == null) dust = gameObject.AddComponent<DustSystem>();
+            dust.isDusty = true;
+            // Don't call ApplyDust() yet — InspectionManager will do it when inspecting
         }
     }
 

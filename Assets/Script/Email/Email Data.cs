@@ -33,10 +33,21 @@ public class EmailData : ScriptableObject
 [System.Serializable]
 public class StartingPCComponent
 {
-    public string partCategory;   // e.g., "RAM", "GPU", "CaseFan"
-    public string partName;       // e.g., "8GB DDR4 FuryX"
-    public GameObject partPrefab; // The 3D model to spawn
-
-    [Tooltip("The icon that will display in the PC Status UI menu.")]
-    public Sprite partIcon;       // NEW: The image to show in the UI!
+    public string partCategory;
+    public string partName;
+    public GameObject partPrefab;
+    public Sprite partIcon;
+    
+    // NEW: Compatibility
+    [Tooltip("e.g. DDR4, LGA1700, PCIe4")]
+    public string[] compatTags;
+    
+    [Tooltip("Watts this part draws")]
+    public float powerDraw = 0f;
+    
+    [Tooltip("For PSU: max wattage output")]
+    public float maxWattage = 0f;
+    
+    [Tooltip("Is this PC dusty?")]
+    public bool isDusty = false;
 }

@@ -25,6 +25,11 @@ public class InspectionManager : MonoBehaviour
     public Material invalidPortMaterial;
     public Material ghostMaterial;
     
+    [Header("HUD References")]
+    public GameObject goldHUD;
+    [Header("Dust System")]
+    public Material dustMaterial;
+
     [Header("Player Storage (Inventory)")]
     public List<GameObject> playerStorage = new List<GameObject>();
 
@@ -77,9 +82,10 @@ public class InspectionManager : MonoBehaviour
     private GameObject voidAnchor;
     private bool isPlacingFromInventory = false;
     public bool isInspecting = false;
+    private float inspectCooldown = 0f;
     private bool isWiring     = false;
     private bool isPCOn       = false;
-    
+    private bool tutorialHoverDone = false;
     private Vector3 focusPoint;
     private Vector3 targetFocusPoint;
     private float   currentDistance;
@@ -136,6 +142,7 @@ public class InspectionManager : MonoBehaviour
         if (!isInspecting || currentClone == null) return;
 
         if (isConfirmingRemoval) return;
+        if (InspectionToolbarUI.Instance != null) InspectionToolbarUI.Instance.HandleInput();
 
         HandleInput();
         ApplyCameraMovement();
@@ -143,17 +150,31 @@ public class InspectionManager : MonoBehaviour
         HandleClickInteractions();
         HandleWireDrawing();
 
-        if (Input.GetKeyDown(KeyCode.R)) ResetView();
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.X))
-            StopInspection();
+        if (inspectCooldown > 0f)
+        {
+            inspectCooldown -= Time.deltaTime;
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.R)) ResetView();
+            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.X))
+                StopInspection();
+        }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             if (inventoryUI != null) inventoryUI.ToggleInventory();
         }
+        // Tool switching (1=Screwdriver, 2=Air Can, 3=Bare hands)
+        if (ToolBelt.Instance != null)
+            ToolBelt.Instance.HandleToolInput();
+        
+        // Dust cleaning with compressed air
+        HandleDustCleaning();
     }
 
     public void Inspect(InspectableItem originalItem)
     {
+        inspectCooldown = 0.3f;
         isInspecting = true;
 
         if (blurVolume != null) blurVolume.weight = 1;
@@ -161,6 +182,8 @@ public class InspectionManager : MonoBehaviour
         if (controlsUI)   controlsUI.SetActive(true);
         if (infoPanel)    infoPanel.SetActive(true);
         if (gameplayUI)   gameplayUI.SetActive(false);
+        if (goldHUD != null) goldHUD.SetActive(false);
+        if (TaskListUI.Instance != null) TaskListUI.Instance.HideTemporarily();
         if (nameText)     nameText.text = originalItem.itemName;
         if (descText)     descText.text = originalItem.itemDescription;
 
@@ -250,8 +273,50 @@ public class InspectionManager : MonoBehaviour
         foreach (var item in currentClone.GetComponentsInChildren<InspectableItem>())
             if (item.isWirePort) allPorts.Add(item);
 
+        if (InspectionToolbarUI.Instance != null) InspectionToolbarUI.Instance.Show();
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible   = true;
+        
+        // --- DUST INITIALIZATION LOGIC MOVED HERE ---
+        DustSystem dust = currentClone.GetComponent<DustSystem>();
+        
+        if (dust == null && PlayerPrefs.GetInt("NextPCDusty", 0) == 1)
+        {
+            dust = currentClone.AddComponent<DustSystem>();
+            dust.isDusty = true;
+            PlayerPrefs.SetInt("NextPCDusty", 0);
+            PlayerPrefs.Save();
+        }
+
+        if (dust != null && dust.isDusty)
+        {
+            if (dust.dustOverlayMaterial == null && dustMaterial != null)
+                dust.dustOverlayMaterial = dustMaterial;
+            dust.ApplyDust();
+        }
+    }
+
+    void HandleDustCleaning()
+    {
+        if (currentClone == null) return;
+        
+        DustSystem dust = currentClone.GetComponent<DustSystem>();
+        if (dust == null || !dust.isDusty) return;
+        
+        // Check if player has AIR CAN selected (press 2)
+        if (InspectionToolbarUI.Instance == null) return;
+        if (!InspectionToolbarUI.Instance.IsAirCanSelected()) return;
+        
+        if (Input.GetMouseButton(0))
+        {
+            bool cleaned = dust.CleanTick(Time.deltaTime);
+            
+            if (cleaned)
+            {
+                Debug.Log("PC is now clean!");
+            }
+        }
     }
 
     public void PrepareInstallationFromUI(GameObject partObj, InspectableItem partData)
@@ -366,10 +431,14 @@ public class InspectionManager : MonoBehaviour
         if (infoPanel)     infoPanel.SetActive(false);
         if (tooltipPanel)  tooltipPanel.SetActive(false);
         if (controlsUI)    controlsUI.SetActive(false);
+        
+        if (InspectionToolbarUI.Instance != null) InspectionToolbarUI.Instance.Hide();
+        
         if (gameplayUI)    gameplayUI.SetActive(true);
 
         if (inspectionCamera) inspectionCamera.gameObject.SetActive(false);
-
+        if (goldHUD != null) goldHUD.SetActive(true);
+        if (TaskListUI.Instance != null) TaskListUI.Instance.RestoreIfNeeded();
         if (playerMovement) playerMovement.enabled = true;
         if (cameraScript)   cameraScript.enabled   = true;
         if (interactScript) interactScript.enabled = true;
@@ -378,7 +447,10 @@ public class InspectionManager : MonoBehaviour
         if (playerRootObject)
             foreach (Renderer r in playerRootObject.GetComponentsInChildren<Renderer>())
                 r.enabled = true;
-
+        if (TutorialManager.Instance != null && TutorialManager.Instance.GetCurrentStep() == 11)
+        {
+            if (TutorialManager.Instance != null) TutorialManager.Instance.CompleteHoverTask();
+        }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible   = false;
     }
@@ -401,6 +473,23 @@ public class InspectionManager : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────────
     void HandleClickInteractions()
     {
+        // Block interactions if PC is dusty (except air can cleaning)
+        DustSystem dust = currentClone != null ? currentClone.GetComponent<DustSystem>() : null;
+        if (dust != null && dust.isDusty)
+        {
+            if (Input.GetMouseButtonDown(0) && tooltipPanel)
+            {
+                // Only show warning if NOT using air can 
+                if (InspectionToolbarUI.Instance == null || !InspectionToolbarUI.Instance.IsAirCanSelected())
+                {
+                    tooltipPanel.SetActive(true);
+                    if (tooltipTitle) tooltipTitle.text = "Too Dusty!";
+                    if (tooltipBody) tooltipBody.text = "Clean the PC with compressed air first.\nPress 2 to equip air can.";
+                }
+            }
+            return;
+        }
+
         if (inventoryUI != null && inventoryUI.inventoryPanel.activeSelf) return;
         if (isWiring && Input.GetMouseButtonDown(1)) { CancelWiring(); return; }
         if (!Input.GetMouseButtonDown(0)) return;
@@ -423,19 +512,28 @@ public class InspectionManager : MonoBehaviour
         if (part == null) return;
         if (isPlacingFromInventory && !part.isInventorySlot) return;
 
-        // ── CHANGED: ghost slot click now goes through hold-to-install ──
         if      (part.isInventorySlot) BeginInstallConfirmation(part);
         else if (part.isRemovable)     BeginRemovalConfirmation(part);
         else if (part.isPowerButton)   TogglePCPower();
         else if (part.isWirePort)      HandleWirePort(part);
     }
-
+    
     // ─────────────────────────────────────────────────────────────────────────────
-    //  HOLD-TO-INSTALL  (NEW)
+    //  HOLD-TO-INSTALL  
     // ─────────────────────────────────────────────────────────────────────────────
     void BeginInstallConfirmation(InspectableItem slot)
     {
-        // Make sure there's actually a matching part to install
+        if (InspectionToolbarUI.Instance != null && !InspectionToolbarUI.Instance.IsScrewdriverSelected())
+        {
+            if (tooltipPanel)
+            {
+                tooltipPanel.SetActive(true);
+                if (tooltipTitle) tooltipTitle.text = "Tool Required";
+                if (tooltipBody) tooltipBody.text = "Select the Screwdriver first.\nPress 1 to equip.";
+            }
+            return;
+        }
+
         GameObject partToInstall = null;
 
         if (partPendingInstallation != null)
@@ -477,7 +575,6 @@ public class InspectionManager : MonoBehaviour
                 isConfirmingRemoval = false;
             };
 
-            // Aim screwdriver at the ghost slot position, install when hold completes
             screwdriverSystem.BeginUnscrewing(slot.transform, () =>
             {
                 isConfirmingRemoval = false;
@@ -486,16 +583,27 @@ public class InspectionManager : MonoBehaviour
         }
         else
         {
-            // Fallback: no screwdriver assigned, install immediately
             TryInstallPart(slot);
         }
     }
+    
 
     // ─────────────────────────────────────────────────────────────────────────────
     //  HOLD-TO-REMOVE
     // ─────────────────────────────────────────────────────────────────────────────
     void BeginRemovalConfirmation(InspectableItem part)
     {
+        if (InspectionToolbarUI.Instance != null && !InspectionToolbarUI.Instance.IsScrewdriverSelected())
+        {
+            if (tooltipPanel)
+            {
+                tooltipPanel.SetActive(true);
+                if (tooltipTitle) tooltipTitle.text = "Tool Required";
+                if (tooltipBody) tooltipBody.text = "Select the Screwdriver first.\nPress 1 to equip.";
+            }
+            return; 
+        }
+
         foreach (InspectableItem blocker in part.blockingParts)
         {
             if (blocker != null && !blocker.isInventorySlot)
@@ -514,12 +622,10 @@ public class InspectionManager : MonoBehaviour
         if (screwdriverSystem != null)
         {
             isConfirmingRemoval = true;
-
             screwdriverSystem.onCancelled = () =>
             {
                 isConfirmingRemoval = false;
             };
-
             screwdriverSystem.BeginUnscrewing(part.transform, () =>
             {
                 isConfirmingRemoval = false;
@@ -699,7 +805,7 @@ public class InspectionManager : MonoBehaviour
             float t = elapsed / snapDuration;
 
             float scaleX = 1f + Mathf.Sin(t * Mathf.PI) * -0.1f;
-            float scaleY = 1f + Mathf.Sin(t * Mathf.PI) *  0.15f;
+            float scaleY = 1f + Mathf.Sin(t * Mathf.PI) * 0.15f;
             float scaleZ = 1f + Mathf.Sin(t * Mathf.PI) * -0.1f;
 
             obj.transform.localScale = new Vector3(
@@ -1153,6 +1259,8 @@ public class InspectionManager : MonoBehaviour
 
     void HandleHover()
     {
+        // Removed the dust check that was stopping the highlights from appearing!
+
         Ray ray = inspectionCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits = Physics.RaycastAll(ray, 100f, ~0);
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
@@ -1185,6 +1293,7 @@ public class InspectionManager : MonoBehaviour
 
         if (!isWiring) ClearHighlight();
         else lastHitObject = null;
+        
         if (tooltipPanel) tooltipPanel.SetActive(false);
     }
 
@@ -1297,6 +1406,8 @@ public class InspectionManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible   = false;
+            
+            // Camera rotation ONLY happens here now!
             targetOrbitAngles.y += Input.GetAxis("Mouse X") * orbitSpeed;
             targetOrbitAngles.x -= Input.GetAxis("Mouse Y") * orbitSpeed;
             targetOrbitAngles.x  = Mathf.Clamp(targetOrbitAngles.x, -89f, 89f);

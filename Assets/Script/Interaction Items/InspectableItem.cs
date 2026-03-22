@@ -3,6 +3,23 @@ using UnityEngine;
 
 public class InspectableItem : MonoBehaviour
 {
+    [Header("Compatibility System")]
+    [Tooltip("Tags like DDR4, DDR5, LGA1700, AM5, ATX, etc.")]
+    public string[] compatTags;
+    
+    [Tooltip("For SLOTS: what tags must a part have to fit here?")]
+    public string[] requiredTags;
+    
+    [Tooltip("Watts this component draws (GPU=250, CPU=125, RAM=5, etc.)")]
+    public float powerDraw = 0f;
+    
+    [Tooltip("For PSU only: max watts it can supply")]
+    public float maxWattage = 0f;
+    
+    [Header("Screw System")]
+    [Tooltip("Does this part require a screwdriver to remove/install?")]
+    public bool requiresScrewdriver = true;
+
     [Header("Item Info")]
     public string itemName = "Unknown Item";
     
