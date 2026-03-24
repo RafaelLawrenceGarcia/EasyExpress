@@ -514,6 +514,7 @@ public class ShopManager : MonoBehaviour
             finalCheckoutTotal += (cartEntry.item.price * cartEntry.amount);
         }
 
+        // 1. Try to spend the gold
         if (playerWallet.SpendGold(finalCheckoutTotal))
         {
             Debug.Log("Order successfully placed!");
@@ -521,9 +522,35 @@ public class ShopManager : MonoBehaviour
             if (activeNotification != null) StopCoroutine(activeNotification);
             activeNotification = StartCoroutine(SlideNotificationCoroutine("Order Placed Successfully!"));
 
+            // 2. Register each purchased item as a delivery order
             foreach (CartItem boughtItem in itemsToBuy)
             {
+                if (DeliveryManager.Instance != null)
+                {
+                    DeliveryManager.Instance.PlaceOrder(
+                        boughtItem.item,
+                        boughtItem.amount,
+                        boughtItem.deliveryDays
+                    );
+                }
+                else
+                {
+                    Debug.LogError("DeliveryManager not found! Did you add it to the scene?");
+                }
+
                 shoppingCart.Remove(boughtItem);
+            }
+
+            // ==========================================
+            // NEW: SAVE TO CLOUD SO MONEY STAYS DEDUCTED
+            // ==========================================
+            if (CloudDataHandler.Instance != null)
+            {
+                CloudDataHandler.Instance.SaveGameData();
+            }
+            else
+            {
+                Debug.LogWarning("CloudDataHandler not found, wallet changes might not be saved!");
             }
 
             RefreshCartUI();
@@ -532,10 +559,9 @@ public class ShopManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Checkout failed. Player doesn't have enough money.");
-
+            // Optional: Tell the player they are broke!
             if (activeNotification != null) StopCoroutine(activeNotification);
-            activeNotification = StartCoroutine(SlideNotificationCoroutine("Checkout Failed: Not Enough Funds!"));
+            activeNotification = StartCoroutine(SlideNotificationCoroutine("Not enough money!"));
         }
     }
 

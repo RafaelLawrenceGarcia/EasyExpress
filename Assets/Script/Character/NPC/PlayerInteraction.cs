@@ -3,18 +3,6 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections;
 
-/// <summary>
-/// UPDATED PlayerInteract — Now with:
-/// 1. Styled [Key] + Action prompts for each interaction type
-/// 2. PC scroll menu (Inspect / Grab) that shows automatically when looking at a PC
-/// 3. Unique text: "Talk to Citizen", "Talk to Customer", "Use Computer", etc.
-/// 4. Door still uses DoorInteractionMenu scroll system
-/// 
-/// NEW INSPECTOR SLOTS:
-/// - interactionPrompt: The new styled prompt UI
-/// - pcMenu: The PC scroll menu (Inspect/Grab)
-/// - You can DELETE the old pressEPrompt and pressEText references
-/// </summary>
 public class PlayerInteract : MonoBehaviour
 {
     [Header("Settings")]
@@ -30,8 +18,8 @@ public class PlayerInteract : MonoBehaviour
     public DayTransitionManager dayTransitionManager;
 
     [Header("NEW UI")]
-    public InteractionPromptUI interactionPrompt;  // The styled [E] Action prompt
-    public PCInteractionMenu pcMenu;               // Scroll menu for PCs
+    public InteractionPromptUI interactionPrompt;
+    public PCInteractionMenu pcMenu;
 
     [Header("Legacy UI (keep for dialogue)")]
     public GameObject goldHUD;
@@ -40,19 +28,16 @@ public class PlayerInteract : MonoBehaviour
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogueText;
 
-    // UI Buttons
     public Button option1Button;
     public Button option2Button;
     public Button exitButton;
 
-    // State Variables
     private NPCWalker currentCityNPC;
     private CustomerInside currentShopNPC;
     private bool isInteracting = false;
     private DoorInteractionMenu activeDoorMenu = null;
     private bool menuJustClosed = false;
 
-    // Track what we're currently looking at (for PC menu)
     private GameObject currentLookTarget = null;
     private InspectableItem storedInspectItem = null;
     private GameObject storedPickupTarget = null;
@@ -61,69 +46,39 @@ public class PlayerInteract : MonoBehaviour
     {
         if (mainCam == null) mainCam = Camera.main;
         if (placementManager == null) placementManager = FindObjectOfType<PlacementManager>();
-
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
         if (computerOS != null) computerOS.gameObject.SetActive(false);
         if (goldHUD != null) goldHUD.SetActive(true);
-
         if (interactionPrompt != null) interactionPrompt.Hide();
         if (pcMenu != null) pcMenu.Hide();
     }
 
     void Update()
     {
-        // --- Block during day transition ---
         if (dayTransitionManager != null && dayTransitionManager.IsTransitioning())
-        {
-            HideAllPrompts();
-            return;
-        }
+        { HideAllPrompts(); return; }
 
-        // --- Eat one frame after menu closes ---
-        if (menuJustClosed)
-        {
-            menuJustClosed = false;
-            return;
-        }
+        if (menuJustClosed) { menuJustClosed = false; return; }
+        if (inspectionManager != null && inspectionManager.isInspecting) { HideAllPrompts(); return; }
+        if (activeDoorMenu != null && activeDoorMenu.IsOpen()) { HideAllPrompts(); return; }
 
-        // --- GLOBAL LOCK: Inspecting PC case ---
-        if (inspectionManager != null && inspectionManager.isInspecting)
-        {
-            HideAllPrompts();
-            return;
-        }
-
-        // --- DOOR MENU OPEN ---
-        if (activeDoorMenu != null && activeDoorMenu.IsOpen())
-        {
-            HideAllPrompts();
-            return;
-        }
-
-        // --- PC MENU: If open, let it handle E input, hide regular prompt ---
-       // --- PC MENU: If open, let it handle ALL input ---
         if (pcMenu != null && pcMenu.IsOpen())
         {
             if (interactionPrompt != null) interactionPrompt.Hide();
-            return; // BLOCK everything else while PC menu is open
+            return;
         }
 
-        // --- COMPUTER OS OPEN ---
         if (computerOS != null && computerOS.gameObject.activeSelf)
         {
             HideAllPrompts();
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 PauseManager.BlockPause = true;
-                if (computerOS.HandleEscapeInput())
-                {
-                    CloseShopComputer();
-                }
+                if (computerOS.HandleEscapeInput()) CloseShopComputer();
             }
             return;
         }
 
-        // --- TALKING TO NPC ---
         if (isInteracting)
         {
             HideAllPrompts();
@@ -132,9 +87,6 @@ public class PlayerInteract : MonoBehaviour
             return;
         }
 
-        // =============================================
-        //  RAYCAST FOR INTERACTABLES
-        // =============================================
         Ray ray = mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
@@ -143,39 +95,86 @@ public class PlayerInteract : MonoBehaviour
             NPCWalker cityNPC = hit.collider.GetComponent<NPCWalker>();
             CustomerInside shopCustomer = hit.collider.GetComponent<CustomerInside>();
             ShopTrigger shopPC = hit.collider.GetComponent<ShopTrigger>();
-            ShopDoor shopDoor = hit.collider.GetComponent<ShopDoor>();
-            SceneDoor sceneDoor = hit.collider.GetComponent<SceneDoor>();
             InspectableItem item = hit.collider.GetComponent<InspectableItem>();
-            DoorInteractionMenu doorMenu = hit.collider.GetComponent<DoorInteractionMenu>();
 
+            // THE FIX: Use GetComponentInParent so it finds the scripts even if the collider is on a child!
+            DoorInteractionMenu doorMenu = hit.collider.GetComponentInParent<DoorInteractionMenu>();
+            ShopDoor shopDoor = hit.collider.GetComponentInParent<ShopDoor>();
+            SceneDoor sceneDoor = hit.collider.GetComponentInParent<SceneDoor>();
+
+            // BUGFIX: If the DoorInteractionMenu is a child of ShopDoor (not a parent of the collider),
+            // GetComponentInParent won't find it. Fall back to searching children of ShopDoor.
+            if (doorMenu == null && shopDoor != null)
+                doorMenu = shopDoor.GetComponentInChildren<DoorInteractionMenu>();
+            // ADD THIS LINE:
+            if (doorMenu == null && sceneDoor != null)
+                doorMenu = sceneDoor.GetComponentInChildren<DoorInteractionMenu>();
             bool isPickupBox = hit.collider.CompareTag("PickupBox");
             bool isPickupPC = hit.collider.CompareTag("PickupPC");
             bool canInspectInWorld = (item != null && item.isMainObject);
             bool readyShopCustomer = (shopCustomer != null && shopCustomer.isAtSpot);
 
             // =============================================
-            //  DOOR WITH SCROLL MENU
+            //  DOOR WITH SCROLL MENU (Inside Shop)
             // =============================================
             if (doorMenu != null)
             {
+                Debug.Log("DOOR HIT: doorMenu found!"); // TEMP DEBUG
+
+                if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
+                {
+                    ShowPrompt("X", "Finish your tasks first!");
+                    return;
+                }
+
+                if (pcMenu != null) pcMenu.Hide();
+                ShowPrompt("E", "Open Door");
+
+                if (Input.GetKeyDown(KeyCode.E)) OpenDoorMenu(doorMenu);
+            }
+            // =============================================
+            //  RAW SCENE DOOR (Outside City)
+            // =============================================
+            else if (sceneDoor != null)
+            {
+                Debug.Log("DOOR HIT: sceneDoor only, no doorMenu!"); // TEMP DEBUG
+
                 if (pcMenu != null) pcMenu.Hide();
                 ShowPrompt("E", "Open Door");
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    OpenDoorMenu(doorMenu);
+                    DoorInteractionMenu childMenu = sceneDoor.GetComponentInChildren<DoorInteractionMenu>();
+                    if (childMenu != null)
+                    {
+                        Debug.Log("DOOR HIT: Found childMenu as fallback!");
+                        OpenDoorMenu(childMenu);
+                    }
+                    else
+                    {
+                        sceneDoor.EnterDoor();
+                    }
                 }
             }
             // =============================================
-            //  PC ON WORKSTATION — SCROLL MENU (auto-visible)
+            //  RAW SHOP DOOR (Alternative teleport)
             // =============================================
-           else if (canInspectInWorld && isPickupPC)
+            else if (shopDoor != null)
+            {
+                if (pcMenu != null) pcMenu.Hide();
+                ShowPrompt("E", "Enter Room");
+
+                if (Input.GetKeyDown(KeyCode.E)) shopDoor.EnterShop(transform.root.gameObject);
+            }
+            // =============================================
+            //  PC ON WORKSTATION
+            // =============================================
+            else if (canInspectInWorld && isPickupPC)
             {
                 if (interactionPrompt != null) interactionPrompt.Hide();
 
                 if (pcMenu != null && !pcMenu.IsOpen())
                 {
-                    // STORE references so the callback has them later
                     storedInspectItem = item;
                     storedPickupTarget = hit.collider.gameObject;
 
@@ -183,14 +182,12 @@ public class PlayerInteract : MonoBehaviour
                     {
                         if (choice == 0 && storedInspectItem != null)
                         {
-                            // Inspect
                             pcMenu.Hide();
                             if (TutorialManager.Instance != null) TutorialManager.Instance.CompletePCTask();
                             if (inspectionManager != null) inspectionManager.Inspect(storedInspectItem);
                         }
                         else if (choice == 1 && storedPickupTarget != null)
                         {
-                            // Grab
                             pcMenu.Hide();
                             PickUpItem(storedPickupTarget);
                         }
@@ -201,7 +198,7 @@ public class PlayerInteract : MonoBehaviour
                 }
             }
             // =============================================
-            //  INSPECTABLE ITEM (PC that can only be inspected, not grabbed)
+            //  INSPECTABLE ITEM
             // =============================================
             else if (canInspectInWorld)
             {
@@ -223,8 +220,7 @@ public class PlayerInteract : MonoBehaviour
                 if (pcMenu != null) pcMenu.Hide();
                 ShowPrompt("E", "Talk to Citizen");
 
-                if (Input.GetKeyDown(KeyCode.E))
-                    StartCityInteraction(cityNPC);
+                if (Input.GetKeyDown(KeyCode.E)) StartCityInteraction(cityNPC);
             }
             // =============================================
             //  SHOP CUSTOMER
@@ -234,41 +230,17 @@ public class PlayerInteract : MonoBehaviour
                 if (pcMenu != null) pcMenu.Hide();
                 ShowPrompt("E", "Talk to Customer");
 
-                if (Input.GetKeyDown(KeyCode.E))
-                    StartShopInteraction(shopCustomer);
+                if (Input.GetKeyDown(KeyCode.E)) StartShopInteraction(shopCustomer);
             }
             // =============================================
-            //  SHOP COMPUTER (monitor)
+            //  SHOP COMPUTER
             // =============================================
             else if (shopPC)
             {
                 if (pcMenu != null) pcMenu.Hide();
                 ShowPrompt("E", "Use Computer");
 
-                if (Input.GetKeyDown(KeyCode.E))
-                    OpenShopComputer();
-            }
-            // =============================================
-            //  SHOP DOOR (without DoorInteractionMenu)
-            // =============================================
-            else if (shopDoor)
-            {
-                if (pcMenu != null) pcMenu.Hide();
-                ShowPrompt("E", "Enter Shop");
-
-                if (Input.GetKeyDown(KeyCode.E))
-                    shopDoor.EnterShop(transform.root.gameObject);
-            }
-            // =============================================
-            //  SCENE DOOR (without DoorInteractionMenu)
-            // =============================================
-            else if (sceneDoor)
-            {
-                if (pcMenu != null) pcMenu.Hide();
-                ShowPrompt("E", "Go Outside");
-
-                if (Input.GetKeyDown(KeyCode.E))
-                    sceneDoor.EnterDoor();
+                if (Input.GetKeyDown(KeyCode.E)) OpenShopComputer();
             }
             // =============================================
             //  PICKUP BOX
@@ -276,57 +248,33 @@ public class PlayerInteract : MonoBehaviour
             else if (isPickupBox)
             {
                 if (pcMenu != null) pcMenu.Hide();
-                ShowPrompt("Q", "Pick Up Box");
+                ShowPrompt("E / Q", "E: Inventory | Q: Carry");
 
-                if (Input.GetKeyDown(KeyCode.Q))
-                    PickUpItem(hit.collider.gameObject);
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    DeliveryBox dBox = hit.collider.GetComponentInParent<DeliveryBox>();
+                    if (dBox != null) { dBox.InteractUnpack(); HideAllPrompts(); }
+                }
+                else if (Input.GetKeyDown(KeyCode.Q))
+                { PickUpItem(hit.collider.gameObject); }
             }
             // =============================================
-            //  PICKUP PC (not inspectable, just grab)
+            //  PICKUP PC
             // =============================================
             else if (isPickupPC)
             {
                 if (pcMenu != null) pcMenu.Hide();
                 ShowPrompt("Q", "Pick Up PC");
 
-                if (Input.GetKeyDown(KeyCode.Q))
-                    PickUpItem(hit.collider.gameObject);
+                if (Input.GetKeyDown(KeyCode.Q)) PickUpItem(hit.collider.gameObject);
             }
-            // =============================================
-            //  NOTHING INTERACTABLE
-            // =============================================
-            else
-            {
-                HideAllPrompts();
-            }
+            else { HideAllPrompts(); }
         }
-        else
-        {
-            // Not looking at anything
-            HideAllPrompts();
-            currentLookTarget = null;
-        }
+        else { HideAllPrompts(); currentLookTarget = null; }
     }
 
-    // =============================================
-    //  PROMPT HELPERS
-    // =============================================
-
-    void ShowPrompt(string key, string action)
-    {
-        if (interactionPrompt != null)
-            interactionPrompt.Show(key, action);
-    }
-
-    void HideAllPrompts()
-    {
-        if (interactionPrompt != null) interactionPrompt.Hide();
-        if (pcMenu != null) pcMenu.Hide();
-    }
-
-    // =============================================
-    //  DOOR SCROLL MENU
-    // =============================================
+    void ShowPrompt(string key, string action) { if (interactionPrompt != null) interactionPrompt.Show(key, action); }
+    void HideAllPrompts() { if (interactionPrompt != null) interactionPrompt.Hide(); if (pcMenu != null) pcMenu.Hide(); }
 
     void OpenDoorMenu(DoorInteractionMenu doorMenu)
     {
@@ -343,14 +291,13 @@ public class PlayerInteract : MonoBehaviour
         FreezePlayer(false);
     }
 
-    // =============================================
-    //  PICKUP
-    // =============================================
-
     void PickUpItem(GameObject itemObj)
     {
         if (placementManager != null && !placementManager.isHoldingItem)
         {
+            DeliveryBox deliveryScript = itemObj.GetComponentInParent<DeliveryBox>();
+            if (deliveryScript != null) itemObj = deliveryScript.gameObject;
+
             JobBox boxScript = itemObj.GetComponentInParent<JobBox>();
             if (boxScript != null) itemObj = boxScript.gameObject;
 
@@ -361,10 +308,6 @@ public class PlayerInteract : MonoBehaviour
             HideAllPrompts();
         }
     }
-
-    // =============================================
-    //  NPC INTERACTIONS
-    // =============================================
 
     void StartCityInteraction(NPCWalker npc)
     {
@@ -415,10 +358,7 @@ public class PlayerInteract : MonoBehaviour
 
     public void OnOption1Click()
     {
-        if (currentCityNPC != null)
-        {
-            dialogueText.text = currentCityNPC.TryInviteToShop();
-        }
+        if (currentCityNPC != null) dialogueText.text = currentCityNPC.TryInviteToShop();
         else if (currentShopNPC != null)
         {
             dialogueText.text = "Deal! I'll take a look.";
@@ -431,10 +371,7 @@ public class PlayerInteract : MonoBehaviour
 
     public void OnOption2Click()
     {
-        if (currentCityNPC != null)
-        {
-            dialogueText.text = currentCityNPC.option2Response;
-        }
+        if (currentCityNPC != null) dialogueText.text = currentCityNPC.option2Response;
         else if (currentShopNPC != null)
         {
             dialogueText.text = "Sorry, I can't help you.";
@@ -464,27 +401,15 @@ public class PlayerInteract : MonoBehaviour
             TutorialManager.Instance.CompleteCustomerTask();
     }
 
-    // =============================================
-    //  SHOP COMPUTER
-    // =============================================
-
     void OpenShopComputer()
     {
         isInteracting = true;
-
-        if (computerOS != null)
-        {
-            computerOS.gameObject.SetActive(true);
-            computerOS.ShowDesktop();
-        }
-
+        if (computerOS != null) { computerOS.gameObject.SetActive(true); computerOS.ShowDesktop(); }
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
         HideAllPrompts();
         if (goldHUD != null) goldHUD.SetActive(false);
         FreezePlayer(true);
-
-        if (TutorialManager.Instance != null)
-            TutorialManager.Instance.HideTaskTemporarily();
+        if (TutorialManager.Instance != null) TutorialManager.Instance.HideTaskTemporarily();
     }
 
     public void CloseShopComputer()
@@ -493,8 +418,6 @@ public class PlayerInteract : MonoBehaviour
         if (computerOS != null) computerOS.gameObject.SetActive(false);
         if (goldHUD != null) goldHUD.SetActive(true);
         FreezePlayer(false);
-
-        if (TutorialManager.Instance != null)
-            TutorialManager.Instance.RestoreTaskIfNeeded();
+        if (TutorialManager.Instance != null) TutorialManager.Instance.RestoreTaskIfNeeded();
     }
 }

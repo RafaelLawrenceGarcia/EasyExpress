@@ -8,8 +8,8 @@ public class DayTransitionManager : MonoBehaviour
     public static DayTransitionManager Instance;
 
     [Header("UI References")]
-    public Canvas transitionCanvas;     // <-- CHANGED: Replaced CanvasGroup with Canvas
-    public Image transitionImage;       // <-- NEW: We use this to fade the black background!
+    public Canvas transitionCanvas;
+    public Image transitionImage;
     public TextMeshProUGUI dayText;
     public TextMeshProUGUI hudDayText;
 
@@ -31,12 +31,9 @@ public class DayTransitionManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-    }
 
-    void Start()
-    {
-        // Load saved day
-        if (PlayerPrefs.GetInt("IsLoadingGame", 0) == 1)
+        // THE FIX: Load the Day immediately so it never accidentally defaults to Day 1!
+        if (PlayerPrefs.GetInt("IsLoadingGame", 0) == 1 || PlayerPrefs.GetInt("TutorialDone", 0) == 1)
         {
             currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
         }
@@ -44,11 +41,35 @@ public class DayTransitionManager : MonoBehaviour
         {
             currentDay = 1;
         }
+    }
 
+    void Start()
+    {
         // Setup initial screen state
         if (transitionCanvas != null) transitionCanvas.enabled = true;
         if (transitionImage != null) SetImageAlpha(1f);
         if (dayText != null) dayText.alpha = 0f;
+
+        // THE FIX: Let DayTransitionManager handle itself!
+        bool isChangingRooms = PlayerPrefs.GetInt("ChangingRooms", 0) == 1;
+
+        if (isChangingRooms)
+        {
+            // We just walked through a door. Instantly remove black screen!
+            PlayerPrefs.SetInt("ChangingRooms", 0);
+            PlayerPrefs.Save();
+            SkipDayIntro();
+        }
+        else
+        {
+            // We are waking up in the morning.
+            // If there is no tutorial, or the tutorial is already finished, play the normal morning fade!
+            if (TutorialManager.Instance == null || PlayerPrefs.GetInt("TutorialDone", 0) == 1 || PlayerPrefs.GetInt("IsLoadingGame", 0) == 1)
+            {
+                PlayDayIntro(null);
+            }
+            // (If the tutorial IS running, we just wait. The TutorialManager will trigger the fade-in manually.)
+        }
     }
 
     public void PlayDayIntro(System.Action onComplete)
@@ -64,6 +85,20 @@ public class DayTransitionManager : MonoBehaviour
 
     public int GetCurrentDay() { return currentDay; }
     public bool IsTransitioning() { return isTransitioning; }
+
+    // --- THE FIX: Instantly clears the black screen without playing the morning animation ---
+    public void SkipDayIntro()
+    {
+        if (transitionCanvas != null) transitionCanvas.enabled = false;
+        if (transitionImage != null) SetImageAlpha(0f);
+        if (dayText != null) dayText.alpha = 0f;
+        if (hudDayText != null) hudDayText.text = "Day " + currentDay;
+
+        FreezePlayer(false);
+        isTransitioning = false;
+
+        OnNewDayStarted?.Invoke(currentDay);
+    }
 
     // =============================================
     //  INTRO SEQUENCE
@@ -83,10 +118,10 @@ public class DayTransitionManager : MonoBehaviour
         yield return StartCoroutine(FadeText(0f, 1f, 0.6f));
         yield return new WaitForSecondsRealtime(holdDuration);
         yield return StartCoroutine(FadeText(1f, 0f, 0.4f));
-        
+
         // Fade the black image out
         yield return StartCoroutine(FadePanel(1f, 0f, fadeOutDuration));
-        
+
         // Disable the Canvas so it doesn't block clicks
         if (transitionCanvas != null) transitionCanvas.enabled = false;
 
@@ -132,7 +167,7 @@ public class DayTransitionManager : MonoBehaviour
 
         // Fade black image out
         yield return StartCoroutine(FadePanel(1f, 0f, fadeOutDuration));
-        
+
         if (transitionCanvas != null) transitionCanvas.enabled = false;
 
         FreezePlayer(false);
@@ -148,7 +183,7 @@ public class DayTransitionManager : MonoBehaviour
     IEnumerator FadePanel(float from, float to, float duration)
     {
         if (transitionImage == null) yield break;
-        
+
         float elapsed = 0f;
         while (elapsed < duration)
         {
@@ -173,7 +208,7 @@ public class DayTransitionManager : MonoBehaviour
     IEnumerator FadeText(float from, float to, float duration)
     {
         if (dayText == null) yield break;
-        
+
         float elapsed = 0f;
         while (elapsed < duration)
         {

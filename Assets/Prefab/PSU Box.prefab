@@ -282,8 +282,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5171498677203854668}
   - component: {fileID: 3774518981811557313}
+  - component: {fileID: -1227822326331442038}
   m_Layer: 6
-  m_Name: cardboard_Scan (8) 1 (1)
+  m_Name: PSU Box
   m_TagString: PickupBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -298,8 +299,8 @@ Transform:
   m_GameObject: {fileID: 7783733196365189470}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -27.693, y: 1.568, z: 338.732}
-  m_LocalScale: {x: 0.6473044, y: 0.67801976, z: 1}
+  m_LocalPosition: {x: -27.693, y: 2.9949, z: 338.88}
+  m_LocalScale: {x: 0.3240801, y: 0.27176127, z: 0.72002375}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 49168651423200175}
@@ -326,5 +327,20 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.83, y: 6.463081, z: 2.38}
-  m_Center: {x: 0, y: 1.244267, z: 0.33}
+  m_Size: {x: 3.8299997, y: 2.2467873, z: 1.849184}
+  m_Center: {x: 0, y: 1.0900897, z: 0.06459094}
+--- !u!114 &-1227822326331442038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7783733196365189470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc273b4cc6ad0c47ba970c7dffa77a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeliveryBox
+  containedItem: {fileID: 0}
+  spawnPrefabOnPlace: 1
+  addToInventoryOnUnpack: 1

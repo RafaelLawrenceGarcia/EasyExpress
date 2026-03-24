@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4acf12c8453c514298be3922e99cb26, type: 3}
+  m_Name: Corsair CV650 650W 80+ Bronze
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  id: psu_cv650
+  itemName: Corsair CV650 650W 80+ Bronze
+  icon: {fileID: 0}
+  category: PSU
+  description: A solid budget power supply for entry-level and mid-range PCs.
+  specs: 'Max Wattage: 650W | Rating: 80+ Bronze | Form Factor: ATX'
+  price: 3200
+  itemType: 0
+  prefabToPlace: {fileID: 9167510366309624687, guid: c4da24ededcfbcc47b85626d08e195aa, type: 3}
+  isTool: 0
+  deliveryBoxPrefab: {fileID: 7783733196365189470, guid: bdc4bb08a7c99d246b661b86eb9c514a, type: 3}

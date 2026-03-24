@@ -2,15 +2,6 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
-/// <summary>
-/// TutorialManager — NOW FULLY USES TaskListUI
-/// 
-/// The old taskCanvas / taskBackgroundImage / taskText fields are GONE.
-/// Everything goes through TaskListUI.Instance now.
-/// 
-/// Movement task uses 4 individual completable tasks
-/// that complete one by one as each key hits 100%.
-/// </summary>
 public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance;
@@ -43,30 +34,24 @@ public class TutorialManager : MonoBehaviour
 
     void Start()
     {
-        if (PlayerPrefs.GetInt("IsLoadingGame", 0) == 0 && PlayerPrefs.GetInt("TutorialDone", 0) == 0)
+        if (PlayerPrefs.GetInt("TutorialDone", 0) == 1 || PlayerPrefs.GetInt("IsLoadingGame", 0) == 1)
         {
-            tutorialStep = 0;
-            if (dayTransitionManager != null)
+            tutorialStep = 14;
+
+            // FIX: Persist TutorialDone so it survives after IsLoadingGame gets reset
+            if (PlayerPrefs.GetInt("TutorialDone", 0) != 1)
             {
-                dayTransitionManager.PlayDayIntro(() =>
-                {
-                    StartCoroutine(DelayedStart());
-                });
-            }
-            else
-            {
-                dialogueManager.PlaySequence(part1_MoveDialogue, StartMovementTask);
+                PlayerPrefs.SetInt("TutorialDone", 1);
+                PlayerPrefs.Save();
             }
         }
         else
         {
-            if (dayTransitionManager != null)
-            {
-                dayTransitionManager.PlayDayIntro(null);
-            }
+            // Brand new game, start the tutorial!
+            tutorialStep = 0;
+            // ... rest stays the same
         }
     }
-
     IEnumerator DelayedStart()
     {
         yield return new WaitForSeconds(1.0f);
@@ -79,10 +64,6 @@ public class TutorialManager : MonoBehaviour
         dialogueManager.PlaySequence(seq, callback);
     }
 
-    // =============================================
-    //  TASK VISIBILITY (delegates to TaskListUI)
-    // =============================================
-
     public void HideTaskTemporarily()
     {
         if (TaskListUI.Instance != null) TaskListUI.Instance.HideTemporarily();
@@ -93,9 +74,6 @@ public class TutorialManager : MonoBehaviour
         if (TaskListUI.Instance != null) TaskListUI.Instance.RestoreIfNeeded();
     }
 
-    // =============================================
-    //  1. MOVEMENT TASK
-    // =============================================
     void StartMovementTask()
     {
         wDone = false; aDone = false; sDone = false; dDone = false;
@@ -127,7 +105,6 @@ public class TutorialManager : MonoBehaviour
             sTimer = Mathf.Clamp(sTimer, 0, requiredHoldTime);
             dTimer = Mathf.Clamp(dTimer, 0, requiredHoldTime);
 
-            // Complete each key individually when it hits 100%
             if (TaskListUI.Instance != null)
             {
                 if (!wDone && wTimer >= requiredHoldTime) { wDone = true; TaskListUI.Instance.CompleteTask(0); }
@@ -145,9 +122,6 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    // =============================================
-    //  2. CUSTOMER TASK
-    // =============================================
     void StartCustomerTask()
     {
         if (TaskListUI.Instance != null)
@@ -178,9 +152,6 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    // =============================================
-    //  3. PICK UP BOX TASK
-    // =============================================
     void StartPickupBoxTask()
     {
         if (TaskListUI.Instance != null)
@@ -209,9 +180,6 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    // =============================================
-    //  4. PLACE BOX TASK
-    // =============================================
     void StartPlaceBoxTask()
     {
         if (TaskListUI.Instance != null)
@@ -240,9 +208,6 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    // =============================================
-    //  5. PC INTERACT TASK
-    // =============================================
     void StartPCTask()
     {
         if (TaskListUI.Instance != null)
@@ -267,9 +232,6 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    // =============================================
-    //  6. HOVER TASK
-    // =============================================
     void StartHoverTask()
     {
         if (TaskListUI.Instance != null)
@@ -294,9 +256,6 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    // =============================================
-    //  7. REMOVE TASK
-    // =============================================
     void StartRemoveTask()
     {
         if (TaskListUI.Instance != null)
@@ -331,9 +290,6 @@ public class TutorialManager : MonoBehaviour
         Debug.Log("Tutorial Fully Complete!");
     }
 
-    // =============================================
-    //  HELPER: Complete animation → hide → next dialogue
-    // =============================================
     IEnumerator DelayedHideAndDialogue(float delay, DialogueSequence seq, System.Action callback)
     {
         yield return new WaitForSeconds(delay);
@@ -342,9 +298,11 @@ public class TutorialManager : MonoBehaviour
         dialogueManager.PlaySequence(seq, callback);
     }
 
-    // =============================================
-    //  HELPERS
-    // =============================================
     public int GetCurrentStep() { return tutorialStep; }
-    public bool IsTutorialActive() { return tutorialStep > 0 && tutorialStep < 14; }
+
+    public bool IsTutorialActive()
+    {
+        if (PlayerPrefs.GetInt("TutorialDone", 0) == 1) return false;
+        return tutorialStep > 0 && tutorialStep < 14;
+    }
 }

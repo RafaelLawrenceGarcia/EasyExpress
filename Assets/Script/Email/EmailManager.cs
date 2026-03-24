@@ -25,7 +25,9 @@ public class EmailManager : MonoBehaviour
     public GameObject pcStatusPanel;
     public TextMeshProUGUI pcProblemsText;
 
-    // NEW: Container and Prefab for individual PC Specs
+    [Header("Build Request Panel UI")]
+    public TextMeshProUGUI requestedPartsText;
+
     public Transform pcSpecsContentContainer;
     public GameObject pcSpecItemPrefab;
 
@@ -47,15 +49,21 @@ public class EmailManager : MonoBehaviour
     public Transform shippingZone;
     public float shippingRadius = 2.0f;
 
-    void Awake()
-    {
-        Instance = this;
-    }
+    [Header("Completion Popup UI")]
+    public GameObject completionPanel;
+    public TextMeshProUGUI completionTitle;
+    public TextMeshProUGUI completionDetails;
+    public TextMeshProUGUI completionPay;
+    public TextMeshProUGUI completionRating;
+    public Button completionOKButton;
+
+    void Awake() { Instance = this; }
 
     void Start()
     {
         if (detailPanel != null) detailPanel.SetActive(false);
         if (pcStatusPanel != null) pcStatusPanel.SetActive(false);
+        if (completionPanel != null) completionPanel.SetActive(false);
         RefreshInboxUI();
     }
 
@@ -81,16 +89,8 @@ public class EmailManager : MonoBehaviour
     public void RefreshInboxUI()
     {
         foreach (Transform child in inboxContentContainer) Destroy(child.gameObject);
-
-        foreach (EmailData email in activeEmails)
-        {
-            CreateInboxButton(email, "PENDING");
-        }
-
-        foreach (EmailData email in acceptedJobs)
-        {
-            CreateInboxButton(email, "IN PROGRESS");
-        }
+        foreach (EmailData email in activeEmails) CreateInboxButton(email, "PENDING");
+        foreach (EmailData email in acceptedJobs) CreateInboxButton(email, "IN PROGRESS");
     }
 
     private Transform FindChildRecursive(Transform parent, string targetName)
@@ -98,7 +98,6 @@ public class EmailManager : MonoBehaviour
         foreach (Transform child in parent)
         {
             if (child.name == targetName) return child;
-
             Transform result = FindChildRecursive(child, targetName);
             if (result != null) return result;
         }
@@ -120,10 +119,7 @@ public class EmailManager : MonoBehaviour
         if (profileImageTransform != null && email.profilePic != null) profileImageTransform.GetComponent<Image>().sprite = email.profilePic;
 
         Button btn = newEmailBtn.GetComponent<Button>();
-        if (btn != null)
-        {
-            btn.onClick.AddListener(() => SelectEmail(email));
-        }
+        if (btn != null) btn.onClick.AddListener(() => SelectEmail(email));
     }
 
     public void SelectEmail(EmailData email)
@@ -137,46 +133,25 @@ public class EmailManager : MonoBehaviour
         if (subjectText != null) subjectText.text = email.subjectLine;
         if (bodyText != null) bodyText.text = email.bodyText;
 
-        // ---------------------------------------------------------
-        // --- NEW: DYNAMIC PC SPECS GROUPING & SPAWNING ---
-        // ---------------------------------------------------------
         if (pcSpecsContentContainer != null)
         {
-            // 1. Clear out old specs from the previous email
-            foreach (Transform child in pcSpecsContentContainer)
-            {
-                Destroy(child.gameObject);
-            }
+            foreach (Transform child in pcSpecsContentContainer) Destroy(child.gameObject);
 
             if (email.startingParts != null && pcSpecItemPrefab != null)
             {
-                // 2. Count and group identical parts
                 Dictionary<string, PartGroup> groupedParts = new Dictionary<string, PartGroup>();
-
                 foreach (StartingPCComponent part in email.startingParts)
                 {
-                    if (groupedParts.ContainsKey(part.partName))
-                    {
-                        groupedParts[part.partName].amount++; // Found a duplicate, add to the count!
-                    }
-                    else
-                    {
-                        PartGroup newGroup = new PartGroup();
-                        newGroup.part = part;
-                        newGroup.amount = 1;
-                        groupedParts.Add(part.partName, newGroup); // First time seeing this part
-                    }
+                    if (groupedParts.ContainsKey(part.partName)) groupedParts[part.partName].amount++;
+                    else { PartGroup newGroup = new PartGroup(); newGroup.part = part; newGroup.amount = 1; groupedParts.Add(part.partName, newGroup); }
                 }
 
-                // 3. Spawn a prefab for each unique group
                 foreach (KeyValuePair<string, PartGroup> kvp in groupedParts)
                 {
                     PartGroup group = kvp.Value;
-
                     GameObject newSpecObj = Instantiate(pcSpecItemPrefab, pcSpecsContentContainer);
                     Transform t = newSpecObj.transform;
 
-                    // Apply the grouped text (e.g., "RAM: 8GB DDR4 x4")
                     Transform textObj = FindChildRecursive(t, "Spec Text");
                     if (textObj != null)
                     {
@@ -184,26 +159,18 @@ public class EmailManager : MonoBehaviour
                         textObj.GetComponent<TextMeshProUGUI>().text = $"<b>{group.part.partCategory}:</b> {group.part.partName}{amountString}";
                     }
 
-                    // Apply the icon
                     Transform imgObj = FindChildRecursive(t, "Spec Image");
-                    if (imgObj != null && group.part.partIcon != null)
-                    {
-                        imgObj.GetComponent<Image>().sprite = group.part.partIcon;
-                    }
+                    if (imgObj != null && group.part.partIcon != null) imgObj.GetComponent<Image>().sprite = group.part.partIcon;
                 }
             }
         }
-        // ---------------------------------------------------------
 
         if (labourText != null) labourText.text = "Labour: ₱" + email.labourCost.ToString("N0");
         if (budgetText != null) budgetText.text = "Budget: ₱" + email.partsBudget.ToString("N0");
         if (detailProfilePic != null && email.profilePic != null) detailProfilePic.sprite = email.profilePic;
 
         string combinedObjectives = "";
-        if (email.objectives != null)
-        {
-            foreach (string obj in email.objectives) combinedObjectives += "• " + obj + "\n";
-        }
+        if (email.objectives != null) foreach (string obj in email.objectives) combinedObjectives += "• " + obj + "\n";
         if (objectivesText != null) objectivesText.text = combinedObjectives;
 
         string combinedProblems = "";
@@ -213,39 +180,46 @@ public class EmailManager : MonoBehaviour
         }
         if (pcProblemsText != null) pcProblemsText.text = combinedProblems;
 
+        if (requestedPartsText != null)
+        {
+            if (email.jobType == JobType.Build && email.requestedParts != null)
+            {
+                string buildList = "<color=#4AE0FF>■</color> <b>BUILD REQUEST</b>\n\n";
+                Dictionary<string, int> grouped = new Dictionary<string, int>();
+                foreach (var part in email.requestedParts)
+                {
+                    string key = part.partCategory + ": " + part.partName;
+                    if (grouped.ContainsKey(key)) grouped[key]++;
+                    else grouped[key] = 1;
+                }
+                foreach (var kvp in grouped)
+                {
+                    string amount = kvp.Value > 1 ? $" x{kvp.Value}" : "";
+                    buildList += $"  • {kvp.Key}{amount}\n";
+                }
+                requestedPartsText.text = buildList;
+            }
+            else
+            {
+                requestedPartsText.text = "";
+            }
+        }
+
         if (activeEmails.Contains(email))
         {
-            if (acceptButton != null) acceptButton.gameObject.SetActive(true);
-            if (rejectButton != null) rejectButton.gameObject.SetActive(true);
+            if (acceptButton != null) { acceptButton.gameObject.SetActive(true); acceptButton.onClick.RemoveAllListeners(); acceptButton.onClick.AddListener(() => AcceptJob(email)); }
+            if (rejectButton != null) { rejectButton.gameObject.SetActive(true); rejectButton.onClick.RemoveAllListeners(); rejectButton.onClick.AddListener(() => RejectJob(email)); }
             if (completeButton != null) completeButton.gameObject.SetActive(false);
-
-            if (acceptButton != null)
-            {
-                acceptButton.onClick.RemoveAllListeners();
-                acceptButton.onClick.AddListener(() => AcceptJob(email));
-            }
-
-            if (rejectButton != null)
-            {
-                rejectButton.onClick.RemoveAllListeners();
-                rejectButton.onClick.AddListener(() => RejectJob(email));
-            }
         }
         else if (acceptedJobs.Contains(email))
         {
             if (acceptButton != null) acceptButton.gameObject.SetActive(false);
             if (rejectButton != null) rejectButton.gameObject.SetActive(false);
-            if (completeButton != null) completeButton.gameObject.SetActive(true);
-
-            if (completeButton != null)
-            {
-                completeButton.onClick.RemoveAllListeners();
-                completeButton.onClick.AddListener(() => CompleteJob(email));
-            }
+            if (completeButton != null) { completeButton.gameObject.SetActive(true); completeButton.onClick.RemoveAllListeners(); completeButton.onClick.AddListener(() => CompleteJob(email)); }
         }
     }
 
-    public bool SpawnBoxFromData(GameObject casePrefab, List<StartingPCComponent> parts)
+    public bool SpawnBoxFromData(GameObject casePrefab, List<StartingPCComponent> parts, EmailData email = null)
     {
         int emptySlot = GetEmptyShelfSpot();
         if (emptySlot == -1) return false;
@@ -256,14 +230,14 @@ public class EmailManager : MonoBehaviour
         {
             GameObject newBox = Instantiate(deliveryBoxPrefab, spot.position, spot.rotation);
             JobBox boxScript = newBox.GetComponent<JobBox>();
-            if (boxScript != null) boxScript.SetupBox(casePrefab, parts);
+            if (boxScript != null) boxScript.SetupBox(casePrefab, parts, email);
         }
         return true;
     }
 
     public void AcceptJob(EmailData email)
     {
-        bool success = SpawnBoxFromData(email.basePCCasePrefab, email.startingParts);
+        bool success = SpawnBoxFromData(email.basePCCasePrefab, email.startingParts, email);
 
         if (success)
         {
@@ -305,39 +279,283 @@ public class EmailManager : MonoBehaviour
             }
         }
 
-        if (pcToShip != null)
+        if (pcToShip == null)
         {
-            Destroy(pcToShip.gameObject);
+            Debug.LogWarning("Put the finished PC in the Shipping Zone first!");
+            return;
+        }
 
-            float totalPay = email.labourCost + email.partsBudget;
-            PlayerWallet wallet = FindObjectOfType<PlayerWallet>();
-            if (wallet != null) wallet.AddGold(totalPay);
+        JobCompletionResult result = EvaluateRepair(pcToShip, email);
 
-            acceptedJobs.Remove(email);
-            if (detailPanel != null) detailPanel.SetActive(false);
-            RefreshInboxUI();
+        PlayerWallet wallet = FindObjectOfType<PlayerWallet>();
+        if (wallet != null) wallet.AddGold(result.totalPay);
 
-            Debug.Log("PC Shipped! Paid ₱" + totalPay);
+        ShowCompletionPopup(result);
+
+        Destroy(pcToShip.gameObject);
+        acceptedJobs.Remove(email);
+        if (detailPanel != null) detailPanel.SetActive(false);
+        RefreshInboxUI();
+
+        Debug.Log($"Job Complete! Rating: {result.starRating}★ | Pay: ₱{result.totalPay:N0}");
+    }
+
+    // =============================================
+    //  REPAIR & BUILD EVALUATION SYSTEM
+    // =============================================
+    JobCompletionResult EvaluateRepair(PCCaseBuilder pc, EmailData email)
+    {
+        JobCompletionResult result = new JobCompletionResult();
+        result.customerName = email.senderName;
+        result.jobType = email.jobType;
+
+        if (email.jobType == JobType.Build)
+        {
+            result.problemDescription = "New PC Build";
+            EvaluateBuildJob(pc, email, result);
         }
         else
         {
-            Debug.LogWarning("Put the finished PC in the Shipping Zone first!");
+            result.problemDescription = (email.pcProblems != null && email.pcProblems.Length > 0)
+                ? email.pcProblems[0] : "General Repair";
+            EvaluateRepairJob(pc, email, result);
+        }
+
+        return result;
+    }
+
+    void EvaluateRepairJob(PCCaseBuilder pc, EmailData email, JobCompletionResult result)
+    {
+        InspectableItem[] allParts = pc.GetComponentsInChildren<InspectableItem>(true);
+        int remainingFaults = 0;
+        List<string> unfixedIssues = new List<string>();
+
+        foreach (InspectableItem part in allParts)
+        {
+            if (part.isInventorySlot) continue;
+            if (part.IsFaulty())
+            {
+                remainingFaults++;
+                unfixedIssues.Add($"{part.itemName}: {part.faultDescription}");
+            }
+        }
+
+        DustSystem dust = pc.GetComponent<DustSystem>();
+        bool stillDusty = (dust != null && dust.isDusty);
+        if (stillDusty) unfixedIssues.Add("PC is still dusty");
+
+        int emptyEssentialSlots = 0;
+        string[] essentialCategories = { "Motherboard", "PSU", "CPU" };
+        foreach (InspectableItem part in allParts)
+        {
+            if (!part.isInventorySlot) continue;
+            foreach (string essential in essentialCategories)
+            {
+                if (part.partCategory == essential)
+                {
+                    emptyEssentialSlots++;
+                    unfixedIssues.Add($"Missing {essential}!");
+                    break;
+                }
+            }
+        }
+
+        result.unfixedIssues = unfixedIssues;
+        result.remainingFaults = remainingFaults;
+        result.originalFaultCount = email.originalFaultCount;
+
+        float score = 1.0f;
+        if (email.originalFaultCount > 0)
+        {
+            float faultPenalty = (float)remainingFaults / email.originalFaultCount;
+            score -= faultPenalty * 0.6f;
+        }
+        if (stillDusty) score -= 0.15f;
+        score -= emptyEssentialSlots * 0.2f;
+        score = Mathf.Clamp01(score);
+
+        CalculatePayment(score, email, result);
+    }
+
+    void EvaluateBuildJob(PCCaseBuilder pc, EmailData email, JobCompletionResult result)
+    {
+        if (email.requestedParts == null || email.requestedParts.Count == 0)
+        {
+            result.score = 1f;
+            CalculatePayment(1f, email, result);
+            return;
+        }
+
+        InspectableItem[] allParts = pc.GetComponentsInChildren<InspectableItem>(true);
+        List<string> unfixedIssues = new List<string>();
+
+        Dictionary<string, int> requestedCounts = new Dictionary<string, int>();
+        foreach (var req in email.requestedParts)
+        {
+            if (requestedCounts.ContainsKey(req.partCategory)) requestedCounts[req.partCategory]++;
+            else requestedCounts[req.partCategory] = 1;
+        }
+
+        Dictionary<string, int> installedCounts = new Dictionary<string, int>();
+        foreach (InspectableItem part in allParts)
+        {
+            if (part.isInventorySlot) continue;
+            if (part.isMainObject) continue;
+
+            if (installedCounts.ContainsKey(part.partCategory)) installedCounts[part.partCategory]++;
+            else installedCounts[part.partCategory] = 1;
+        }
+
+        int totalRequested = email.requestedParts.Count;
+        int totalFulfilled = 0;
+
+        foreach (var kvp in requestedCounts)
+        {
+            string category = kvp.Key;
+            int needed = kvp.Value;
+            int installed = installedCounts.ContainsKey(category) ? installedCounts[category] : 0;
+
+            int fulfilled = Mathf.Min(installed, needed);
+            totalFulfilled += fulfilled;
+
+            int missing = needed - fulfilled;
+            if (missing > 0)
+            {
+                string label = missing > 1 ? $"Missing {category} x{missing}" : $"Missing {category}";
+                unfixedIssues.Add(label);
+            }
+        }
+
+        result.unfixedIssues = unfixedIssues;
+        result.originalFaultCount = totalRequested;
+        result.remainingFaults = totalRequested - totalFulfilled;
+
+        float score = (totalRequested > 0) ? (float)totalFulfilled / totalRequested : 1f;
+
+        score = Mathf.Clamp01(score);
+        CalculatePayment(score, email, result);
+    }
+
+    void CalculatePayment(float score, EmailData email, JobCompletionResult result)
+    {
+        result.score = score;
+
+        if (score >= 0.95f) result.starRating = 5;
+        else if (score >= 0.80f) result.starRating = 4;
+        else if (score >= 0.60f) result.starRating = 3;
+        else if (score >= 0.40f) result.starRating = 2;
+        else result.starRating = 1;
+
+        float basePay = email.labourCost;
+        float earnedLabour = basePay * score;
+
+        float tipBonus = 0f;
+        if (result.starRating == 5) tipBonus = basePay * 0.25f;
+        else if (result.starRating == 4) tipBonus = basePay * 0.10f;
+
+        result.basePay = basePay;
+        result.earnedLabour = Mathf.Round(earnedLabour);
+        result.tipBonus = Mathf.Round(tipBonus);
+        result.totalPay = Mathf.Round(earnedLabour + tipBonus);
+    }
+
+    void ShowCompletionPopup(JobCompletionResult result)
+    {
+        if (completionPanel == null) return;
+
+        completionPanel.SetActive(true);
+
+        if (completionTitle != null)
+        {
+            string prefix = (result.jobType == JobType.Build) ? "Build" : "Repair";
+
+            string[] titles5 = { $"Perfect {prefix}!", $"Flawless Work!", "Master Technician!" };
+            string[] titles4 = { "Great Job!", $"Solid {prefix}!", "Well Done!" };
+            string[] titles3 = { "Job Done", "Acceptable Work", "Could Be Better" };
+            string[] titles2 = { "Sloppy Work...", "Customer Unhappy", "Needs Improvement" };
+            string[] titles1 = { "Terrible Job!", "Customer Furious!", "What Happened?!" };
+
+            string[] pool;
+            switch (result.starRating)
+            {
+                case 5: pool = titles5; break;
+                case 4: pool = titles4; break;
+                case 3: pool = titles3; break;
+                case 2: pool = titles2; break;
+                default: pool = titles1; break;
+            }
+            completionTitle.text = pool[Random.Range(0, pool.Length)];
+        }
+
+        if (completionRating != null)
+        {
+            string stars = "";
+            for (int i = 0; i < 5; i++)
+            {
+                if (i < result.starRating) stars += "<color=#FFD700>★</color>";
+                else stars += "<color=#555555>★</color>";
+            }
+            completionRating.text = stars;
+        }
+
+        if (completionDetails != null)
+        {
+            string details = $"<b>Customer:</b> {result.customerName}\n";
+            details += $"<b>Job:</b> {result.problemDescription}\n\n";
+
+            if (result.unfixedIssues.Count == 0)
+            {
+                string doneMsg = (result.jobType == JobType.Build)
+                    ? "All requested parts installed!"
+                    : "All issues resolved!";
+                details += $"<color=#4AFF4A>{doneMsg}</color>";
+            }
+            else
+            {
+                string issueLabel = (result.jobType == JobType.Build)
+                    ? "Missing parts:"
+                    : "Unfixed issues:";
+                details += $"<color=#FF6B6B>{issueLabel}</color>\n";
+                foreach (string issue in result.unfixedIssues)
+                {
+                    details += $"  <color=#FF8888>• {issue}</color>\n";
+                }
+            }
+
+            if (result.starRating == 5)
+                details += "\n\n<color=#FFD700>Customer left a tip!</color>";
+
+            completionDetails.text = details;
+        }
+
+        if (completionPay != null)
+        {
+            string payText = $"Labour: ₱{result.earnedLabour:N0}";
+            if (result.tipBonus > 0) payText += $"\n<color=#FFD700>Tip: +₱{result.tipBonus:N0}</color>";
+            payText += $"\n\n<b><size=120%>Total: ₱{result.totalPay:N0}</size></b>";
+            completionPay.text = payText;
+        }
+
+        if (completionOKButton != null)
+        {
+            completionOKButton.onClick.RemoveAllListeners();
+            completionOKButton.onClick.AddListener(() => { completionPanel.SetActive(false); });
         }
     }
 
     public void ReceiveWalkInJob(EmailData emailTemplate, string customerName)
     {
-        bool success = SpawnBoxFromData(emailTemplate.basePCCasePrefab, emailTemplate.startingParts);
+        EmailData newJob = Instantiate(emailTemplate);
+        newJob.senderName = customerName + " (Walk-In)";
+        newJob.subjectLine = "In-Store Repair Drop-off";
+
+        bool success = SpawnBoxFromData(newJob.basePCCasePrefab, newJob.startingParts, newJob);
 
         if (!success)
         {
             Debug.LogWarning("Shelves are full! Cannot accept walk-in.");
             return;
         }
-
-        EmailData newJob = Instantiate(emailTemplate);
-        newJob.senderName = customerName + " (Walk-In)";
-        newJob.subjectLine = "In-Store Repair Drop-off";
 
         acceptedJobs.Add(newJob);
         RefreshInboxUI();
@@ -348,10 +566,8 @@ public class EmailManager : MonoBehaviour
         for (int i = 0; i < shelfLocations.Length; i++)
         {
             Transform spot = shelfLocations[i];
-
             Collider[] itemsOnShelf = Physics.OverlapSphere(spot.position, 0.2f);
             bool isFull = false;
-
             foreach (Collider item in itemsOnShelf)
             {
                 if (item.GetComponentInParent<JobBox>() != null || item.GetComponentInParent<PCCaseBuilder>() != null)
@@ -360,16 +576,35 @@ public class EmailManager : MonoBehaviour
                     break;
                 }
             }
-
             if (!isFull) return i;
         }
         return -1;
     }
 }
 
-// Helper class to group duplicate parts together
 public class PartGroup
 {
     public StartingPCComponent part;
     public int amount;
+}
+
+public class JobCompletionResult
+{
+    public string customerName;
+    public string problemDescription;
+    public JobType jobType;
+
+    public int originalFaultCount;
+    public int remainingFaults;
+    public bool wasDustCleaned;
+    public int missingEssentialParts;
+    public List<string> unfixedIssues = new List<string>();
+
+    public float score;
+    public int starRating;
+
+    public float basePay;
+    public float earnedLabour;
+    public float tipBonus;
+    public float totalPay;
 }

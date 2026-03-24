@@ -7,132 +7,99 @@ public class CustomerInside : MonoBehaviour
 {
     [Header("Details")]
     public string npcName = "Customer";
-    public string jobRequest; 
+    public string jobRequest;
     public int budget;
-    
+
     [Tooltip("If you leave this empty, the game will automatically generate a random PC using the lists below!")]
-    public EmailData assignedJob; 
+    public EmailData assignedJob;
 
-    [Header("Dynamic Job Generator (Random Parts)")]
-    public GameObject[] possibleCases;
-    public StartingPCComponent[] possibleMotherboards;
-    public StartingPCComponent[] possibleRAMs;
-    public StartingPCComponent[] possibleGPUs;
-    public StartingPCComponent[] possiblePSUs;
-
+    [Header("Dynamic Job Generator")]
+    [Tooltip("Drag the shared PC Part Database asset here. If assigned, random jobs use this instead of manual arrays.")]
+    public PCPartDatabase partDatabase;
     [Header("Browsing System")]
     public bool willBrowseFirst = true;
-    public float browseTime = 3f;       // How long they look at EACH shelf
-    [Range(0f, 100f)] public float buyChance = 60f; 
-    
-    public int minItemsToBrowse = 1;    
-    public int maxItemsToBrowse = 4;    
+    public float browseTime = 3f;
+    [Range(0f, 100f)] public float buyChance = 60f;
+
+    public int minItemsToBrowse = 1;
+    public int maxItemsToBrowse = 4;
     private Transform currentBrowseSpot;
 
     [Header("State")]
     public bool isBrowsing = false;
     public bool isServed = false;
     public bool isAtSpot = false;
-    public ShopCustomerSpawner mySpawner; 
+    public ShopCustomerSpawner mySpawner;
 
     private NavMeshAgent agent;
     private Transform myQueueSpot;
     private Transform exitPos;
 
-    void Awake() 
+    void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        
-        // Generate the random job BEFORE they start walking!
         GenerateRandomJob();
     }
 
-    void Start()
+    public void Initialize(Transform assignedSpot, Transform exitLocation)
     {
-        GameObject exitObj = GameObject.FindGameObjectWithTag("ShopInsideDoor");
-        if (exitObj != null) exitPos = exitObj.transform;
+        myQueueSpot = assignedSpot;
+        exitPos = exitLocation;
 
-        // Start the browsing phase right when they walk in
-        if (willBrowseFirst)
-        {
-            StartCoroutine(BrowseRoutine());
-        }
+        if (willBrowseFirst) StartCoroutine(BrowseStoreRoutine());
+        else WalkToCounter();
     }
 
-    IEnumerator BrowseRoutine()
+    IEnumerator BrowseStoreRoutine()
     {
         isBrowsing = true;
 
+        // THE FIX: Find the spots using the Unity Tag system like you had originally!
         GameObject[] spots = GameObject.FindGameObjectsWithTag("BrowseSpot");
-        
+
         if (spots.Length > 0)
         {
-            int itemsToLookAt = Random.Range(minItemsToBrowse, maxItemsToBrowse + 1);
-            
-            for (int i = 0; i < itemsToLookAt; i++)
-            {
-                Transform targetShelf = spots[Random.Range(0, spots.Length)].transform;
-                
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(targetShelf.position, out hit, 2.5f, NavMesh.AllAreas))
-                {
-                    if (agent.isOnNavMesh)
-                    {
-                        agent.isStopped = false;
-                        agent.SetDestination(hit.position);
-                    }
+            int itemsToBrowse = Random.Range(minItemsToBrowse, maxItemsToBrowse + 1);
 
-                    while (Vector3.Distance(transform.position, hit.position) > 1.5f || agent.velocity.sqrMagnitude > 0.1f)
+            for (int i = 0; i < itemsToBrowse; i++)
+            {
+                // Pick a random shelf from the array
+                currentBrowseSpot = spots[Random.Range(0, spots.Length)].transform;
+
+                if (currentBrowseSpot != null && agent.isOnNavMesh)
+                {
+                    agent.SetDestination(currentBrowseSpot.position);
+
+                    while (Vector3.Distance(transform.position, currentBrowseSpot.position) > agent.stoppingDistance + 0.5f)
                     {
                         yield return null;
                     }
-
-                    Vector3 lookPos = targetShelf.position;
-                    lookPos.y = transform.position.y; 
-                    transform.LookAt(lookPos);
-
                     yield return new WaitForSeconds(browseTime);
                 }
             }
         }
         else
         {
-            Vector3 randomWander = transform.position + Random.insideUnitSphere * 4f;
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(randomWander, out hit, 4.0f, NavMesh.AllAreas))
-            {
-                if (agent.isOnNavMesh)
-                {
-                    agent.isStopped = false;
-                    agent.SetDestination(hit.position);
-                }
-                yield return new WaitForSeconds(browseTime);
-            }
+            Debug.LogWarning("No BrowseSpots found! Make sure your shelves have the 'BrowseSpot' tag.");
+            yield return new WaitForSeconds(1f); // Brief pause if no spots exist
         }
 
-        float roll = Random.Range(0f, 100f);
-        if (roll <= buyChance)
-        {
-            Debug.Log(npcName + " finished browsing and decided to buy something!");
-            isBrowsing = false;
-            if (myQueueSpot != null) AssignQueueSpot(myQueueSpot);
-        }
-        else
-        {
-            Debug.Log(npcName + " finished browsing but didn't find anything to buy.");
-            isBrowsing = false;
-            LeaveShop();
-        }
+        isBrowsing = false;
+        WalkToCounter();
+    }
+    void WalkToCounter()
+    {
+        if (myQueueSpot != null) agent.SetDestination(myQueueSpot.position);
     }
 
     void Update()
     {
-        if (!isBrowsing && myQueueSpot != null && !isServed)
+        if (!isServed && !isBrowsing && myQueueSpot != null)
         {
-            float dist = Vector3.Distance(transform.position, myQueueSpot.position);
-            if (dist < 1.5f && agent.velocity.sqrMagnitude < 0.1f)
+            if (Vector3.Distance(transform.position, myQueueSpot.position) <= agent.stoppingDistance + 0.2f)
             {
                 isAtSpot = true;
+                RotateTowards(myQueueSpot.forward);
             }
             else
             {
@@ -140,11 +107,10 @@ public class CustomerInside : MonoBehaviour
             }
         }
     }
-
     public void AssignQueueSpot(Transform spot)
     {
         myQueueSpot = spot;
-        isAtSpot = false; 
+        isAtSpot = false;
 
         if (!isBrowsing && agent != null && agent.isOnNavMesh)
         {
@@ -152,87 +118,61 @@ public class CustomerInside : MonoBehaviour
             agent.SetDestination(myQueueSpot.position);
         }
     }
+    void RotateTowards(Vector3 direction)
+    {
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
+        }
+    }
 
     public void StartShopConversation()
     {
-        if (agent.isOnNavMesh) agent.isStopped = true;
-        GameObject player = GameObject.FindWithTag("Player");
-        if (player != null)
-        {
-            Vector3 lookPos = player.transform.position;
-            lookPos.y = transform.position.y; 
-            transform.LookAt(lookPos);
-        }
+        // Add conversation opening logic if any
     }
 
     public void EndShopConversation()
     {
-        if (!isServed && agent.isOnNavMesh) 
-        {
-            agent.isStopped = false;
-            if (myQueueSpot != null) agent.SetDestination(myQueueSpot.position);
-        }
+        // Add conversation closing logic if any
     }
 
     public void AcceptJob()
     {
-        isServed = true;
-        
-        if (assignedJob != null && EmailManager.Instance != null)
+        if (EmailManager.Instance != null && assignedJob != null)
         {
             EmailManager.Instance.ReceiveWalkInJob(assignedJob, npcName);
-            
-            // 40% chance the PC is dusty, or 100% if the problem mentions dust
-            bool makeDusty = Random.Range(0f, 100f) < 40f;
-            if (assignedJob.pcProblems != null && assignedJob.pcProblems.Length > 0)
-            {
-                foreach (string problem in assignedJob.pcProblems)
-                {
-                    if (problem.ToLower().Contains("dust")) { makeDusty = true; break; }
-                }
-            }
-            
-            if (makeDusty)
-            {
-                PlayerPrefs.SetInt("NextPCDusty", 1);
-            }
         }
-        else
-        {
-            Debug.LogWarning("WARNING: Either this NPC has no 'Assigned Job' in the Inspector, or EmailManager is missing!");
-        }
-
-        Debug.Log("Job Accepted in person!");
-        LeaveShop();
+        LeaveStore();
     }
 
     public void RejectJob()
     {
+        LeaveStore();
+    }
+
+    public void LeaveStore()
+    {
         isServed = true;
-        LeaveShop();
-    }
+        isAtSpot = false;
 
-    public void LeaveShop()
-    {
+        // THE FIX: Use the correct method name from your spawner script!
         if (mySpawner != null) mySpawner.CustomerLeft(this);
-        
-        StartCoroutine(LeaveRoutine());
+
+        if (exitPos != null) agent.SetDestination(exitPos.position);
+        StartCoroutine(DestroyWhenOutside());
     }
 
-    IEnumerator LeaveRoutine()
+    IEnumerator DestroyWhenOutside()
     {
-        if (exitPos != null && agent.isOnNavMesh)
+        while (exitPos != null && Vector3.Distance(transform.position, exitPos.position) > agent.stoppingDistance + 1f)
         {
-            agent.isStopped = false;
-            agent.SetDestination(exitPos.position);
-
-            while (Vector3.Distance(transform.position, exitPos.position) > 1.5f)
-            {
-                yield return null; 
-            }
+            yield return new WaitForSeconds(1f);
         }
-        else
+
+        if (exitPos != null)
         {
+            agent.SetDestination(exitPos.position + (exitPos.forward * 5f));
             yield return new WaitForSeconds(3f);
         }
 
@@ -241,57 +181,38 @@ public class CustomerInside : MonoBehaviour
 
     void GenerateRandomJob()
     {
-        if (assignedJob == null && possibleCases != null && possibleCases.Length > 0)
-        {
-            Debug.Log("Generating a completely random PC for walk-in customer!");
-            
-            assignedJob = ScriptableObject.CreateInstance<EmailData>();
-            assignedJob.basePCCasePrefab = possibleCases[Random.Range(0, possibleCases.Length)];
-            assignedJob.startingParts = new List<StartingPCComponent>();
-
-            AddRandomPartToJob(possibleMotherboards);
-            AddRandomPartToJob(possibleRAMs);
-            AddRandomPartToJob(possibleGPUs);
-            AddRandomPartToJob(possiblePSUs);
-
-            assignedJob.labourCost = Random.Range(100, 500);
-            assignedJob.partsBudget = Random.Range(500, 3000);
-            budget = (int)assignedJob.partsBudget;
-
-            string[] problems = { "Blue Screen of Death", "No Display on Monitor", "PC Keeps Overheating", "Won't Turn On", "Full of Dust" };
-            assignedJob.pcProblems = new string[] { problems[Random.Range(0, problems.Length)] };
-            assignedJob.objectives = new string[] { "Diagnose Issue", "Replace Broken Part", "Boot to Desktop" };
-
-            assignedJob.bodyText = "Hey, my PC is acting up. I think the issue is: " + assignedJob.pcProblems[0] + ". Can you take a look?";
-            jobRequest = assignedJob.bodyText + "\n\nBudget: ₱" + budget;
-        }
-        else if (assignedJob != null)
+        if (assignedJob != null)
         {
             budget = (int)assignedJob.partsBudget;
             jobRequest = assignedJob.bodyText + "\n\nBudget: ₱" + budget;
+            return;
         }
-        else
-        {
-            budget = Random.Range(100, 1000);
-            jobRequest = "Can you fix my PC? My budget is ₱" + budget + ".";
-        }
-    }
 
-    // --- NEW HELPER FUNCTION: Prevents data loss during random generation ---
-    void AddRandomPartToJob(StartingPCComponent[] partPool)
-    {
-        if (partPool != null && partPool.Length > 0)
+        if (partDatabase != null)
         {
-            StartingPCComponent selected = partPool[Random.Range(0, partPool.Length)];
-            
-            // Create a fresh copy so we don't overwrite categories on other NPCs
-            StartingPCComponent copy = new StartingPCComponent();
-            copy.partCategory = selected.partCategory;
-            copy.partName = selected.partName;
-            copy.partPrefab = selected.partPrefab;
-            copy.partIcon = selected.partIcon;
-            
-            assignedJob.startingParts.Add(copy);
+            Debug.Log($"[{npcName}] Generating random job from PCPartDatabase...");
+
+            // CHANGED: Now randomly picks Repair or Build
+            assignedJob = partDatabase.GenerateRandomJob();
+            assignedJob.senderName = npcName;
+
+            budget = (int)assignedJob.partsBudget;
+            jobRequest = assignedJob.bodyText + "\n\nBudget: ₱" + budget;
+
+            string jobLabel = assignedJob.jobType == JobType.Build ? "BUILD" : "REPAIR";
+            Debug.Log($"[{npcName}] {jobLabel} job generated.");
+
+            if (assignedJob.requestedParts != null && assignedJob.jobType == JobType.Build)
+            {
+                Debug.Log($"[{npcName}] Customer wants {assignedJob.requestedParts.Count} parts installed:");
+                foreach (StartingPCComponent part in assignedJob.requestedParts)
+                    Debug.Log($"  - Requested: {part.partCategory}: {part.partName}");
+            }
+            return;
         }
+
+        Debug.LogWarning($"[{npcName}] No assignedJob AND no partDatabase! Giving generic text.");
+        budget = Random.Range(50, 300);
+        jobRequest = "Hello, I need someone to take a look at my PC. It's been acting up lately.\n\nBudget: ₱" + budget;
     }
 }

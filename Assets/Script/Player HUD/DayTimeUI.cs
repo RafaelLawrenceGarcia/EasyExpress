@@ -17,10 +17,25 @@ public class DayTimeUI : MonoBehaviour
     private float currentTime;
     private int currentDay = 1;
 
+    // BUGFIX: Public getter so SceneDoor can read and save the time
+    public float GetCurrentTime() { return currentTime; }
+
     void Start()
     {
         currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
-        currentTime = 6f;
+
+        // BUGFIX: If we are coming back from a room change, restore the saved time
+        // instead of always resetting to 6 AM.
+        if (PlayerPrefs.HasKey("SavedGameTime"))
+        {
+            currentTime = PlayerPrefs.GetFloat("SavedGameTime");
+            PlayerPrefs.DeleteKey("SavedGameTime");
+            PlayerPrefs.Save();
+        }
+        else
+        {
+            currentTime = 6f; // Fresh game or new day — start at 6 AM
+        }
     }
 
     void OnEnable()
@@ -36,7 +51,7 @@ public class DayTimeUI : MonoBehaviour
     void SetDay(int newDay)
     {
         currentDay = newDay;
-        currentTime = 6f;
+        currentTime = 6f; // New day always starts at 6 AM — correct behavior
     }
 
     void Update()

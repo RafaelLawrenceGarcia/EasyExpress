@@ -6,26 +6,26 @@ public class InspectableItem : MonoBehaviour
     [Header("Compatibility System")]
     [Tooltip("Tags like DDR4, DDR5, LGA1700, AM5, ATX, etc.")]
     public string[] compatTags;
-    
+
     [Tooltip("For SLOTS: what tags must a part have to fit here?")]
     public string[] requiredTags;
-    
+
     [Tooltip("Watts this component draws (GPU=250, CPU=125, RAM=5, etc.)")]
     public float powerDraw = 0f;
-    
+
     [Tooltip("For PSU only: max watts it can supply")]
     public float maxWattage = 0f;
-    
+
     [Header("Screw System")]
     [Tooltip("Does this part require a screwdriver to remove/install?")]
     public bool requiresScrewdriver = true;
 
     [Header("Item Info")]
     public string itemName = "Unknown Item";
-    
+
     // NEW: Categorizes the part so the storage knows what slot it fits into!
-    public string partCategory = "Generic"; 
-    
+    public string partCategory = "Generic";
+
     [TextArea(3, 5)]
     public string itemDescription = "No description available.";
     public GameObject itemIconPrefab;
@@ -71,6 +71,19 @@ public class InspectableItem : MonoBehaviour
     public List<InspectableItem> blockingParts = new List<InspectableItem>();
 
     // Set at runtime when this object is a ghost placeholder for a removed part
-    [HideInInspector] public bool   isInventorySlot  = false;
+    [HideInInspector] public bool isInventorySlot = false;
     [HideInInspector] public string inventoryEntryId = "";
+
+    // --- FAULT DIAGNOSIS SYSTEM ---
+    [Header("Diagnosis")]
+    [HideInInspector] public PartFault fault = PartFault.None;
+    [HideInInspector] public string faultDescription = "";
+
+    /// <summary>
+    /// Returns true if this part has any fault.
+    /// </summary>
+    public bool IsFaulty()
+    {
+        return fault != PartFault.None;
+    }
 }

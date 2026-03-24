@@ -3,11 +3,14 @@ using System.Collections.Generic;
 
 public class PCCaseBuilder : MonoBehaviour
 {
+    // NEW: Link this PC back to the email job it came from
+    [HideInInspector] public EmailData linkedEmail;
+
     public void BuildFromData(List<StartingPCComponent> partsToInstall)
     {
         Transform[] allChildren = GetComponentsInChildren<Transform>(true);
         List<Transform> dummySlots = new List<Transform>();
-        
+
         foreach (Transform child in allChildren)
         {
             if (child.name.StartsWith("Slot_"))
@@ -16,7 +19,7 @@ public class PCCaseBuilder : MonoBehaviour
 
         foreach (StartingPCComponent part in partsToInstall)
         {
-            if (part.partPrefab == null) 
+            if (part.partPrefab == null)
             {
                 Debug.LogWarning($"[PC Builder] Skipping {part.partCategory} - prefab missing!");
                 continue;
@@ -28,23 +31,27 @@ public class PCCaseBuilder : MonoBehaviour
                 GameObject realPart = Instantiate(part.partPrefab, matchingDummy.parent);
                 realPart.transform.localPosition = matchingDummy.localPosition;
                 realPart.transform.localRotation = matchingDummy.localRotation;
-                
+
                 // Set category on the root part
                 InspectableItem partScript = realPart.GetComponent<InspectableItem>();
                 if (partScript != null)
                 {
                     partScript.partCategory = part.partCategory;
-                    partScript.itemName     = part.partName;
+                    partScript.itemName = part.partName;
                     partScript.compatTags = part.compatTags;
                     partScript.powerDraw = part.powerDraw;
                     partScript.maxWattage = part.maxWattage;
-                    // --- THE FIX: Transfer the blocking rules to the real part ---
+
+                    // Transfer fault data
+                    partScript.fault = part.fault;
+                    partScript.faultDescription = part.faultDescription;
+
+                    // Transfer the blocking rules to the real part
                     InspectableItem dummyScript = matchingDummy.GetComponent<InspectableItem>();
                     if (dummyScript != null && dummyScript.blockingParts != null)
                     {
                         partScript.blockingParts = new List<InspectableItem>(dummyScript.blockingParts);
                     }
-                    // -------------------------------------------------------------
                 }
 
                 // Also set category on ALL child InspectableItems
@@ -55,11 +62,11 @@ public class PCCaseBuilder : MonoBehaviour
                         childScript.partCategory = part.partCategory;
                     }
                 }
-                
+
                 SetLayerRecursively(realPart, LayerMask.NameToLayer("Ignore Raycast"));
                 dummySlots.Remove(matchingDummy);
                 Destroy(matchingDummy.gameObject);
-                
+
                 Debug.Log($"[PC Builder] Placed {part.partCategory} into {matchingDummy.name}.");
             }
             else
@@ -76,12 +83,12 @@ public class PCCaseBuilder : MonoBehaviour
             InspectableItem ghostScript = leftoverDummy.gameObject.GetComponent<InspectableItem>();
             if (ghostScript == null)
                 ghostScript = leftoverDummy.gameObject.AddComponent<InspectableItem>();
-            ghostScript.partCategory   = category;
-            ghostScript.itemName       = category + " Slot";
+            ghostScript.partCategory = category;
+            ghostScript.itemName = category + " Slot";
             ghostScript.itemDescription = "Install a " + category + " here.";
             ghostScript.isInventorySlot = true;
-            ghostScript.isRemovable     = false;
-            
+            ghostScript.isRemovable = false;
+
             foreach (Renderer r in leftoverDummy.GetComponentsInChildren<Renderer>())
                 r.enabled = false;
             foreach (Collider col in leftoverDummy.GetComponentsInChildren<Collider>())
@@ -94,13 +101,12 @@ public class PCCaseBuilder : MonoBehaviour
         {
             if (part.isDusty) { shouldBeDusty = true; break; }
         }
-        
+
         if (shouldBeDusty)
         {
             DustSystem dust = GetComponent<DustSystem>();
             if (dust == null) dust = gameObject.AddComponent<DustSystem>();
             dust.isDusty = true;
-            // Don't call ApplyDust() yet — InspectionManager will do it when inspecting
         }
     }
 

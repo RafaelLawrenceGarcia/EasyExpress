@@ -126,9 +126,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: pipelocker
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -279,9 +285,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Intel CPU
-  partCategory: Generic
+  partCategory: CPU
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -425,9 +437,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -570,9 +588,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0

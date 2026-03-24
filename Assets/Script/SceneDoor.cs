@@ -6,15 +6,15 @@ using UnityEngine.UI;
 public class SceneDoor : MonoBehaviour
 {
     [Header("Settings")]
-    public string sceneName; 
+    public string sceneName;
     [Range(0, 10)] public float minLoadingTime = 3.0f;
 
     [Header("Drag Your Loading Screen Here")]
-        public GameObject loadingScreenPanel; 
-        public Slider progressBar; 
+    public GameObject loadingScreenPanel;
+    public Slider progressBar;
 
     // Prevent player from spamming the E button
-    private bool isAlreadyLoading = false; 
+    private bool isAlreadyLoading = false;
 
     public void EnterDoor()
     {
@@ -50,40 +50,50 @@ public class SceneDoor : MonoBehaviour
             PlayerPrefs.SetFloat("SavedGold", wallet.currentGold);
             PlayerPrefs.Save();
         }
+        // Save current game time so DayTimeUI can restore it in the next scene
+        DayTimeUI dayTimeUI = FindObjectOfType<DayTimeUI>();
+        if (dayTimeUI != null)
+        {
+            PlayerPrefs.SetFloat("SavedGameTime", dayTimeUI.GetCurrentTime());
+        }
 
         // 4. Hide UI Elements (Cleanup)
         GameObject hud = GameObject.Find("Gold HUD");
         if (hud != null) hud.SetActive(false);
 
         // Safely hide the prompt if it exists
-        // (We search for the specific interaction script to find its UI, rather than guessing names)
         if (interactScript != null && interactScript.interactionPrompt != null)
         {
             interactScript.interactionPrompt.Hide();
         }
+
+        // --- THE FIX: Tell the next scene we are just walking through a door! ---
+        PlayerPrefs.SetInt("ChangingRooms", 1);
+        PlayerPrefs.Save();
+        // ------------------------------------------------------------------------
 
         // 5. Show Loading Screen
         loadingScreenPanel.SetActive(true);
 
         // 6. Start Loading
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
-        operation.allowSceneActivation = false; 
+        operation.allowSceneActivation = false;
 
         float timer = 0f;
 
         while (!operation.isDone)
         {
             timer += Time.deltaTime;
-            
+
             float progress = Mathf.Clamp01(operation.progress / 0.9f);
             if (progressBar != null) progressBar.value = progress;
 
             if (operation.progress >= 0.9f && timer >= minLoadingTime)
             {
-                operation.allowSceneActivation = true; 
+                operation.allowSceneActivation = true;
             }
 
-            yield return null; 
+            yield return null;
         }
     }
 }

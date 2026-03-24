@@ -40,6 +40,9 @@ public class DoorInteractionMenu : MonoBehaviour
     private int selectedIndex = 0; // 0 = Exit Store, 1 = End Day, 2 = Cancel
     private const int OPTION_COUNT = 3;
 
+    // NEW: Record when menu opened to prevent double-click
+    private float openTime = 0f;
+
     // Store references in arrays for cleaner code
     private Image[] backgrounds;
     private TextMeshProUGUI[] texts;
@@ -55,6 +58,10 @@ public class DoorInteractionMenu : MonoBehaviour
     void Update()
     {
         if (!isOpen) return;
+
+        // ADDED: Ignore input for a short time after opening to prevent
+        // the same E press from immediately confirming
+        if (Time.time - openTime < 0.2f) return;
 
         // --- SCROLL WHEEL ---
         float scroll = Input.GetAxis("Mouse ScrollWheel");
@@ -97,6 +104,7 @@ public class DoorInteractionMenu : MonoBehaviour
 
         isOpen = true;
         selectedIndex = 0;
+        openTime = Time.time; // ADDED: Record when menu opened
 
         if (menuPanel != null) menuPanel.SetActive(true);
 

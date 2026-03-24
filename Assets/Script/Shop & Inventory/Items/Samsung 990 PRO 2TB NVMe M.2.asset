@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4acf12c8453c514298be3922e99cb26, type: 3}
+  m_Name: Samsung 990 PRO 2TB NVMe M.2
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  id: ssd_990_m2
+  itemName: Samsung 990 PRO 2TB NVMe M.2
+  icon: {fileID: 0}
+  category: SSD
+  description: Blistering fast storage that completely eliminates loading screens.
+  specs: 'Type: NVMe M.2 Gen4 | Speed: 7450 MB/s Read | Capacity: 2TB | Power Draw:
+    8W'
+  price: 10500
+  itemType: 0
+  prefabToPlace: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
+  isTool: 0
+  deliveryBoxPrefab: {fileID: 7783733196365189470, guid: 6ac2167ccbcc89a469b947b3d80c891d, type: 3}

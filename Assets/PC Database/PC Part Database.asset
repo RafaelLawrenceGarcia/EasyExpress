@@ -1,0 +1,271 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0be08b6d12ba7e047accfb5db70b3a76, type: 3}
+  m_Name: PC Part Database
+  m_EditorClassIdentifier: Assembly-CSharp::PCPartDatabase
+  cases:
+  - {fileID: 5178879464572469348, guid: 5a2627d8cb2e87a4694ca3d738875dc7, type: 3}
+  motherboards:
+  - partCategory: Motherboard
+    partName: B550M Aorus Pro (AMD)
+    partPrefab: {fileID: 7402668134811180990, guid: e9560bebbc2cd9442a1a6dc6acc88c6e, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - AM4
+    - DDR4
+    - PCIe_x16
+    - SATA
+    - M.2
+    powerDraw: 15
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: Motherboard
+    partName: X670E ROG Hero (AMD)
+    partPrefab: {fileID: 7402668134811180990, guid: e9560bebbc2cd9442a1a6dc6acc88c6e, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - AM5
+    - DDR5
+    - PCIe_x16
+    - SATA
+    - M.2
+    powerDraw: 20
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: Motherboard
+    partName: Z790 Tomahawk (Intel)
+    partPrefab: {fileID: 7402668134811180990, guid: e9560bebbc2cd9442a1a6dc6acc88c6e, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - LGA1700
+    - DDR5
+    - PCIe_x16
+    - SATA
+    - M.2
+    powerDraw: 20
+    maxWattage: 0
+    isDusty: 0
+  psus:
+  - partCategory: PSU
+    partName: 850W 80+ Gold PSU
+    partPrefab: {fileID: 9167510366309624687, guid: c4da24ededcfbcc47b85626d08e195aa, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - ATX_Power
+    powerDraw: 0
+    maxWattage: 850
+    isDusty: 0
+  - partCategory: PSU
+    partName: 650W 80+ Bronze PSU
+    partPrefab: {fileID: 9167510366309624687, guid: c4da24ededcfbcc47b85626d08e195aa, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - ATX_Power
+    powerDraw: 0
+    maxWattage: 650
+    isDusty: 0
+  - partCategory: PSU
+    partName: 1000W 80+ Platinum PSU
+    partPrefab: {fileID: 9167510366309624687, guid: c4da24ededcfbcc47b85626d08e195aa, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - ATX_Power
+    powerDraw: 0
+    maxWattage: 1000
+    isDusty: 0
+  cpus:
+  - partCategory: CPU
+    partName: Intel Core i5-12600K
+    partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - LGA1700
+    powerDraw: 150
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: CPU
+    partName: Intel Core i7-13700K
+    partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - LGA1700
+    powerDraw: 253
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: CPU
+    partName: Intel Core i9-14900K
+    partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - LGA1700
+    powerDraw: 253
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: CPU
+    partName: AMD Ryzen 5 5600X
+    partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - AM4
+    powerDraw: 65
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: CPU
+    partName: AMD Ryzen 5 7600X
+    partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - AM5
+    powerDraw: 105
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: CPU
+    partName: AMD Ryzen 7 7800X3D
+    partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - AM5
+    powerDraw: 120
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: CPU
+    partName: AMD Ryzen 9 5900X
+    partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - AM4
+    powerDraw: 105
+    maxWattage: 0
+    isDusty: 0
+  gpus:
+  - partCategory: GPU
+    partName: GTX 1660 Super 6GB
+    partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - PCIe_x16
+    powerDraw: 125
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: GPU
+    partName: RTX 3060 12GB
+    partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - PCIe_x16
+    powerDraw: 170
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: GPU
+    partName: RX 6700 XT 12GB
+    partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - PCIe_x16
+    powerDraw: 230
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: GPU
+    partName: RTX 4070 12GB
+    partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - PCIe_x16
+    powerDraw: 200
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: GPU
+    partName: RTX 4070 12GB
+    partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - PCIe_x16
+    powerDraw: 200
+    maxWattage: 0
+    isDusty: 0
+  rams:
+  - partCategory: RAM
+    partName: 16GB (2x8GB) DDR4-3200
+    partPrefab: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - DDR4
+    powerDraw: 6
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: RAM
+    partName: 32GB (2x16GB) DDR4-3600
+    partPrefab: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - DDR4
+    powerDraw: 8
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: RAM
+    partName: 32GB (2x16GB) DDR5-6000
+    partPrefab: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - DDR5
+    powerDraw: 10
+    maxWattage: 0
+    isDusty: 0
+  storage:
+  - partCategory: SSD
+    partName: 1TB NVMe M.2 Gen4
+    partPrefab: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - M.2
+    powerDraw: 8
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: SSD
+    partName: 2TB NVMe M.2 Gen4
+    partPrefab: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
+    partIcon: {fileID: 0}
+    compatTags:
+    - M.2
+    powerDraw: 8
+    maxWattage: 0
+    isDusty: 0
+  coolers: []
+  fans:
+  - partCategory: Case Fan
+    partName: 120mm RGB Case Fan
+    partPrefab: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
+    partIcon: {fileID: 0}
+    compatTags: []
+    powerDraw: 3
+    maxWattage: 0
+    isDusty: 0
+  - partCategory: Case Fan
+    partName: 140mm High Airflow Fan
+    partPrefab: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
+    partIcon: {fileID: 0}
+    compatTags: []
+    powerDraw: 4
+    maxWattage: 0
+    isDusty: 0
+  cpuChance: 90
+  gpuChance: 75
+  ramChance: 95
+  storageChance: 70
+  coolerChance: 80
+  fanChance: 40
+  minRAMSticks: 1
+  maxRAMSticks: 4
+  minLabourCost: 100
+  maxLabourCost: 500
+  minPartsBudget: 500
+  maxPartsBudget: 5000

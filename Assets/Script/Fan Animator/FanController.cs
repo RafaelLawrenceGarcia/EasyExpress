@@ -12,17 +12,17 @@ public class PCFanController : MonoBehaviour
     public float glowIntensity = 2.5f;
 
     private Material fanMaterial;
-    private float currentHue;
-    private Renderer fanRenderer; 
+    private Renderer fanRenderer;
+    // REMOVED: private float currentHue; (We don't need personal stopwatches anymore!)
 
     void Start()
     {
         // Save the renderer so we can find the physical center of the model later
-        fanRenderer = GetComponentInChildren<Renderer>(); 
+        fanRenderer = GetComponentInChildren<Renderer>();
         if (fanRenderer != null)
         {
-            fanMaterial = fanRenderer.material; 
-            fanMaterial.EnableKeyword("_EMISSION"); 
+            fanMaterial = fanRenderer.material;
+            fanMaterial.EnableKeyword("_EMISSION");
         }
     }
 
@@ -34,20 +34,20 @@ public class PCFanController : MonoBehaviour
         {
             // Convert your local axis (0,0,1) into a world direction
             Vector3 worldAxis = transform.TransformDirection(spinAxis);
-            
+
             // Spin around the visual center, completely ignoring the broken pivot point
             transform.RotateAround(fanRenderer.bounds.center, worldAxis, spinSpeed * Time.deltaTime);
         }
 
-        // 2. Cycle the RGB Rainbow Glow
+        // 2. Cycle the RGB Rainbow Glow (NOW SYNCED!)
         if (enableRainbowRGB && fanMaterial != null)
         {
-            currentHue += colorCycleSpeed * Time.deltaTime;
-            if (currentHue > 1f) currentHue -= 1f;
+            // THE FIX: Use Time.time so every single fan calculates the exact same color at the exact same moment!
+            float syncedHue = Mathf.Repeat(Time.time * colorCycleSpeed, 1f);
 
-            Color neonColor = Color.HSVToRGB(currentHue, 1f, 1f);
-            Color finalGlow = neonColor * Mathf.Pow(2, glowIntensity);
-            
+            Color neonColor = Color.HSVToRGB(syncedHue, 1f, 1f);
+            Color finalGlow = neonColor * Mathf.Pow(2, glowIntensity); // Keeps your awesome HDR glow math
+
             fanMaterial.SetColor("_EmissionColor", finalGlow);
         }
     }

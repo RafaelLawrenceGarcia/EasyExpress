@@ -7,63 +7,59 @@ public class JobBox : MonoBehaviour
     public GameObject pcCasePrefabToSpawn;
     public List<StartingPCComponent> partsToBuild;
 
+    // NEW: The email job this box was created from
+    [HideInInspector] public EmailData sourceEmail;
+
     [Header("Saved State")]
     [Tooltip("If we packed up an already-built PC, it is stored secretly in here!")]
-    public GameObject existingPC; 
+    public GameObject existingPC;
 
-    // EmailManager calls this to inject the email data into the box (First Time)
-    public void SetupBox(GameObject casePrefab, List<StartingPCComponent> parts)
+    // UPDATED: Now accepts the email reference
+    public void SetupBox(GameObject casePrefab, List<StartingPCComponent> parts, EmailData email = null)
     {
         pcCasePrefabToSpawn = casePrefab;
         partsToBuild = parts;
+        sourceEmail = email;
     }
 
-    // --- NEW: This hides an active, half-built PC inside the box! ---
     public void PackExistingPC(GameObject activePC)
     {
         existingPC = activePC;
-        
-        // Parent the PC to the box so it moves with the box!
-        existingPC.transform.SetParent(this.transform); 
-        existingPC.transform.localPosition = Vector3.zero; 
+        existingPC.transform.SetParent(this.transform);
+        existingPC.transform.localPosition = Vector3.zero;
         existingPC.transform.localRotation = Quaternion.identity;
-        
-        // Hide the 3D PC so we only see the cardboard box exterior
-        existingPC.SetActive(false); 
+        existingPC.SetActive(false);
     }
 
-    // PlacementManager calls this when you put the box on the desk
     public GameObject UnpackPC(Transform workstationSpot)
     {
-        // SCENARIO 1: Unpacking a PC we previously saved and boxed back up!
+        // SCENARIO 1: Unpacking a PC we previously saved and boxed back up
         if (existingPC != null)
         {
-            existingPC.SetActive(true); // Unhide the PC
+            existingPC.SetActive(true);
             existingPC.transform.position = workstationSpot.position;
             existingPC.transform.rotation = workstationSpot.rotation;
-            existingPC.transform.SetParent(null); // Detach it from the box
-            
-            Destroy(gameObject); // Destroy the cardboard box
-            return existingPC;   // Return the exact same PC with all saved progress!
+            existingPC.transform.SetParent(null);
+
+            Destroy(gameObject);
+            return existingPC;
         }
 
         // SCENARIO 2: Normal unpacking (First time from the Email)
         if (pcCasePrefabToSpawn == null) return null;
-        
-        // 1. Spawn the real PC case on the desk
+
         GameObject newPC = Instantiate(pcCasePrefabToSpawn, workstationSpot.position, workstationSpot.rotation);
-        
-        // 2. Build the customer's parts inside it
+
         PCCaseBuilder builder = newPC.GetComponent<PCCaseBuilder>();
         if (builder != null)
         {
             builder.BuildFromData(partsToBuild);
+
+            // NEW: Link the built PC back to its email job
+            builder.linkedEmail = sourceEmail;
         }
 
-        // 3. Destroy this cardboard box
         Destroy(gameObject);
-
-        // 4. Return the new PC so the desk knows what's sitting on it
         return newPC;
     }
 }

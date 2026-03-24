@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4acf12c8453c514298be3922e99cb26, type: 3}
+  m_Name: Corsair LL120 RGB 120mm Case Fan
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  id: case_fan_corsair_ll120
+  itemName: Corsair LL120 RGB 120mm Case Fan
+  icon: {fileID: 0}
+  category: Case Fan
+  description: Adds a premium pop of customizable color and steady airflow to any
+    gaming chassis.
+  specs: 'Size: 120mm | RPM: 1500 | Power Draw: 3W'
+  price: 800
+  itemType: 0
+  prefabToPlace: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
+  isTool: 0
+  deliveryBoxPrefab: {fileID: 7783733196365189470, guid: b7cd2f9fae1bb434197e5c33b01796bb, type: 3}

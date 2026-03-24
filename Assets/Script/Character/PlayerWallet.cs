@@ -4,23 +4,23 @@ using TMPro;
 public class PlayerWallet : MonoBehaviour
 {
     [Header("Settings")]
-    public float currentGold = 0.00f; 
+    public float currentGold = 0.00f;
     public float currentDebt = 0.00f;       // Tracks how much the player owes
     public float maxLoanLimit = 50000.00f;  // The maximum debt they are allowed to have
 
     [Header("UI Reference")]
-    public TextMeshProUGUI goldText; 
+    public TextMeshProUGUI goldText;
     public TextMeshProUGUI debtText; // Optional: A UI text to show their current debt
-    
+
     // NEW: Reference to an input field if you want to type an amount to add/borrow via UI
-    public TMP_InputField customAmountInput; 
+    public TMP_InputField customAmountInput;
 
     void Start()
     {
         // Load the money and debt we saved earlier
         currentGold = PlayerPrefs.GetFloat("SavedGold", 0);
         currentDebt = PlayerPrefs.GetFloat("SavedDebt", 0);
-        
+
         UpdateUI();
     }
 
@@ -57,10 +57,10 @@ public class PlayerWallet : MonoBehaviour
         {
             currentGold -= amount;
             currentDebt -= amount;
-            
+
             // Safety check so debt doesn't go below 0
-            if (currentDebt < 0) currentDebt = 0; 
-            
+            if (currentDebt < 0) currentDebt = 0;
+
             UpdateUI();
             SaveData();
         }
@@ -87,7 +87,7 @@ public class PlayerWallet : MonoBehaviour
             float remainingCost = amount - currentGold; // Calculate what we are short
             currentGold = 0;                            // Drain whatever cash we had
             currentDebt += remainingCost;               // Put the rest on the tab
-            
+
             Debug.Log("Bought with a loan! Added ₱" + remainingCost + " to debt.");
             UpdateUI();
             SaveData();
@@ -126,7 +126,7 @@ public class PlayerWallet : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.M))
         {
-            AddGold(100.50f); 
+            AddGold(10000f);
         }
     }
 }

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4acf12c8453c514298be3922e99cb26, type: 3}
+  m_Name: Kingston FURY Beast 32GB (2x16GB) DDR4-3600
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  id: ram_kingston_32gb
+  itemName: Kingston FURY Beast 32GB (2x16GB) DDR4-3600
+  icon: {fileID: 0}
+  category: RAM
+  description: High-capacity, fast DDR4 memory perfect for heavy multitasking and
+    video editing.
+  specs: 'Type: DDR4 | Speed: 3600 MHz | Capacity: 32GB | Power Draw: 8W'
+  price: 4500
+  itemType: 0
+  prefabToPlace: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
+  isTool: 0
+  deliveryBoxPrefab: {fileID: 7783733196365189470, guid: e66ce747bcebc384684c9ef3d2994bd2, type: 3}
