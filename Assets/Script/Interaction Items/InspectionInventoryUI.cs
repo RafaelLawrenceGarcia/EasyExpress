@@ -56,108 +56,215 @@ public class InspectionInventoryUI : MonoBehaviour
     {
         // 0. Clear old slots
         foreach (Transform child in slotsContainer)
-        {
             Destroy(child.gameObject);
-        }
 
         // ==========================================
-        // 1. LOAD REMOVED PARTS (From PC Inspection)
+        // STEP 1 — Group playerStorage by itemName
         // ==========================================
+        // Key = itemName, Value = list of GameObjects with that name
+        Dictionary<string, List<GameObject>> storageGroups = new Dictionary<string, List<GameObject>>();
+
         foreach (GameObject itemObj in inspectManager.playerStorage)
         {
             InspectableItem itemData = itemObj.GetComponent<InspectableItem>();
-            if (itemData != null)
+            if (itemData == null) continue;
+
+            string key = itemData.itemName;
+            if (!storageGroups.ContainsKey(key))
+                storageGroups[key] = new List<GameObject>();
+
+            storageGroups[key].Add(itemObj);
+        }
+
+        // Sort groups: GPU first, then RAM, CPU, etc. alphabetically
+        List<string> storageKeys = new List<string>(storageGroups.Keys);
+        storageKeys.Sort((a, b) =>
+        {
+            string catA = storageGroups[a][0].GetComponent<InspectableItem>().partCategory;
+            string catB = storageGroups[b][0].GetComponent<InspectableItem>().partCategory;
+            int catCompare = string.Compare(catA, catB, System.StringComparison.OrdinalIgnoreCase);
+            return catCompare != 0 ? catCompare : string.Compare(a, b, System.StringComparison.OrdinalIgnoreCase);
+        });
+
+        foreach (string key in storageKeys)
+        {
+            List<GameObject> group = storageGroups[key];
+            GameObject firstObj = group[0];
+            InspectableItem itemData = firstObj.GetComponent<InspectableItem>();
+
+            GameObject newSlot = Instantiate(slotPrefab, slotsContainer);
+
+            // Icon
+            Transform iconParent = newSlot.transform.Find("Icon");
+            if (iconParent != null)
             {
-                GameObject newSlot = Instantiate(slotPrefab, slotsContainer);
+                Image img = iconParent.GetComponent<Image>();
 
-                Transform iconParent = newSlot.transform.Find("Icon");
-                if (iconParent != null && itemData.itemIconPrefab != null)
+                if (itemData.cachedShopIcon != null && img != null)
                 {
-                    if (iconParent.GetComponent<Image>() != null)
-                        iconParent.GetComponent<Image>().enabled = false;
-
+                    img.sprite = itemData.cachedShopIcon;
+                    img.enabled = true;
+                }
+                else if (itemData.itemIconPrefab != null)
+                {
+                    if (img != null) img.enabled = false;
                     GameObject spawnedIcon = Instantiate(itemData.itemIconPrefab, iconParent);
                     RectTransform rect = spawnedIcon.GetComponent<RectTransform>();
-                    if (rect != null)
-                    {
-                        rect.anchoredPosition = Vector2.zero;
-                        rect.localScale = Vector3.one;
-                    }
+                    if (rect != null) { rect.anchoredPosition = Vector2.zero; rect.localScale = Vector3.one; }
                 }
-
-                Transform nameTransform = newSlot.transform.Find("NameText");
-                if (nameTransform != null)
+                else if (img != null)
                 {
-                    TextMeshProUGUI slotNameText = nameTransform.GetComponent<TextMeshProUGUI>();
-                    if (slotNameText != null) slotNameText.text = itemData.itemName;
+                    img.enabled = false; // hide blank white box
                 }
-
-                Button btn = newSlot.GetComponent<Button>();
-                btn.onClick.AddListener(() => SelectItem(itemObj, itemData));
             }
+
+            // Name
+            Transform nameTransform = newSlot.transform.Find("NameText");
+            if (nameTransform != null)
+            {
+                TextMeshProUGUI slotNameText = nameTransform.GetComponent<TextMeshProUGUI>();
+                if (slotNameText != null) slotNameText.text = itemData.itemName;
+            }
+
+            // Stack count badge (add if > 1)
+            AddCountBadge(newSlot, group.Count);
+
+            // Click → select the first item in the group
+            GameObject capturedObj = firstObj;
+            InspectableItem capturedData = itemData;
+            Button btn = newSlot.GetComponent<Button>();
+            btn.onClick.AddListener(() => SelectItem(capturedObj, capturedData));
         }
 
         // ==========================================
-        // 2. LOAD BOUGHT PARTS (From Shop System)
+        // STEP 2 — Group shop inventory by item ID
         // ==========================================
         if (ShopSystem.Instance != null)
         {
             List<string> shopItemIDs = ShopSystem.Instance.GetInventoryIDs();
 
+            // Count duplicates
+            Dictionary<string, int> idCounts = new Dictionary<string, int>();
             foreach (string id in shopItemIDs)
             {
+                if (!idCounts.ContainsKey(id)) idCounts[id] = 0;
+                idCounts[id]++;
+            }
+
+            // Sort by category then name
+            List<string> uniqueIDs = new List<string>(idCounts.Keys);
+            uniqueIDs.Sort((a, b) =>
+            {
+                ItemData ia = ShopSystem.Instance.allAvailableItems.Find(x => x.id == a);
+                ItemData ib = ShopSystem.Instance.allAvailableItems.Find(x => x.id == b);
+                string catA = ia != null ? ia.category : "";
+                string catB = ib != null ? ib.category : "";
+                int catCompare = string.Compare(catA, catB, System.StringComparison.OrdinalIgnoreCase);
+                if (catCompare != 0) return catCompare;
+                string nameA = ia != null ? ia.itemName : a;
+                string nameB = ib != null ? ib.itemName : b;
+                return string.Compare(nameA, nameB, System.StringComparison.OrdinalIgnoreCase);
+            });
+
+            foreach (string id in uniqueIDs)
+            {
                 ItemData shopItem = ShopSystem.Instance.allAvailableItems.Find(x => x.id == id);
+                if (shopItem == null || shopItem.prefabToPlace == null) continue;
 
-                // Make sure the shop item actually has a 3D physical counterpart we can install
-                if (shopItem != null && shopItem.prefabToPlace != null)
+                InspectableItem prefabData = shopItem.prefabToPlace.GetComponent<InspectableItem>();
+                if (prefabData == null) continue;
+
+                GameObject newSlot = Instantiate(slotPrefab, slotsContainer);
+
+                // Icon
+                Transform iconParent = newSlot.transform.Find("Icon");
+                if (iconParent != null)
                 {
-                    InspectableItem prefabData = shopItem.prefabToPlace.GetComponent<InspectableItem>();
-                    if (prefabData == null) continue;
+                    Image img = iconParent.GetComponent<Image>();
 
-                    GameObject newSlot = Instantiate(slotPrefab, slotsContainer);
-
-                    Transform iconParent = newSlot.transform.Find("Icon");
-                    if (iconParent != null)
+                    if (shopItem.icon != null && img != null)
                     {
-                        Image img = iconParent.GetComponent<Image>();
-
-                        // Use the 2D Shop Sprite if it has one!
-                        if (shopItem.icon != null && img != null)
-                        {
-                            img.sprite = shopItem.icon;
-                            img.enabled = true;
-                        }
-                        // Fallback to the 3D icon prefab if no sprite exists
-                        else if (prefabData.itemIconPrefab != null)
-                        {
-                            if (img != null) img.enabled = false;
-                            GameObject spawnedIcon = Instantiate(prefabData.itemIconPrefab, iconParent);
-                            RectTransform rect = spawnedIcon.GetComponent<RectTransform>();
-                            if (rect != null) { rect.anchoredPosition = Vector2.zero; rect.localScale = Vector3.one; }
-                        }
+                        img.sprite = shopItem.icon;
+                        img.enabled = true;
                     }
-
-                    Transform nameTransform = newSlot.transform.Find("NameText");
-                    if (nameTransform != null)
+                    else if (prefabData.itemIconPrefab != null)
                     {
-                        TextMeshProUGUI slotNameText = nameTransform.GetComponent<TextMeshProUGUI>();
-                        if (slotNameText != null) slotNameText.text = shopItem.itemName;
+                        if (img != null) img.enabled = false;
+                        GameObject spawnedIcon = Instantiate(prefabData.itemIconPrefab, iconParent);
+                        RectTransform rect = spawnedIcon.GetComponent<RectTransform>();
+                        if (rect != null) { rect.anchoredPosition = Vector2.zero; rect.localScale = Vector3.one; }
                     }
-
-                    Button btn = newSlot.GetComponent<Button>();
-                    // Route this click to our new Shop Item setup!
-                    btn.onClick.AddListener(() => SelectShopItem(shopItem, prefabData));
+                    else if (img != null)
+                    {
+                        img.enabled = false; // hide blank white box
+                    }
                 }
+
+                // Name — use full shop item name so "6GB" is never lost
+                Transform nameTransform = newSlot.transform.Find("NameText");
+                if (nameTransform != null)
+                {
+                    TextMeshProUGUI slotNameText = nameTransform.GetComponent<TextMeshProUGUI>();
+                    if (slotNameText != null) slotNameText.text = shopItem.itemName;
+                }
+
+                // Stack count badge
+                AddCountBadge(newSlot, idCounts[id]);
+
+                // Click — capture loop variables properly
+                ItemData capturedShopItem = shopItem;
+                InspectableItem capturedPrefabData = prefabData;
+                Button btn = newSlot.GetComponent<Button>();
+                btn.onClick.AddListener(() => SelectShopItem(capturedShopItem, capturedPrefabData));
             }
         }
     }
 
+    // ==========================================
+    //  HELPER — Adds a count badge dynamically
+    // ==========================================
+    void AddCountBadge(GameObject slot, int count)
+    {
+        if (count <= 1) return; // no badge needed for single items
+
+        // Create the badge GO on the slot
+        GameObject badge = new GameObject("CountBadge");
+        badge.transform.SetParent(slot.transform, false);
+
+        // Background circle image
+        Image badgeBG = badge.AddComponent<Image>();
+        badgeBG.color = new Color(0.1f, 0.1f, 0.1f, 0.85f);
+
+        RectTransform badgeRect = badge.GetComponent<RectTransform>();
+        badgeRect.sizeDelta = new Vector2(22, 22);
+        badgeRect.anchorMin = new Vector2(1f, 0f); // bottom-right corner
+        badgeRect.anchorMax = new Vector2(1f, 0f);
+        badgeRect.pivot = new Vector2(1f, 0f);
+        badgeRect.anchoredPosition = new Vector2(-2f, 2f);
+
+        // Count text inside the badge
+        GameObject textGO = new GameObject("BadgeText");
+        textGO.transform.SetParent(badge.transform, false);
+
+        TextMeshProUGUI badgeText = textGO.AddComponent<TextMeshProUGUI>();
+        badgeText.text = "x" + count;
+        badgeText.fontSize = 10;
+        badgeText.fontStyle = FontStyles.Bold;
+        badgeText.color = Color.white;
+        badgeText.alignment = TextAlignmentOptions.Center;
+
+        RectTransform textRect = textGO.GetComponent<RectTransform>();
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = Vector2.zero;
+        textRect.offsetMax = Vector2.zero;
+    }
     // --- FOR PHYSICAL ITEMS ALREADY REMOVED FROM THE PC ---
-    public void SelectItem(GameObject itemObj, InspectableItem itemData)
+   public void SelectItem(GameObject itemObj, InspectableItem itemData)
     {
         currentlySelectedItemObj = itemObj;
         currentlySelectedItemData = itemData;
-        currentlySelectedShopItem = null; // Clear out the shop item memory!
+        currentlySelectedShopItem = null;
 
         detailPanel.SetActive(true);
         detailCategoryText.text = itemData.partCategory;
@@ -168,13 +275,23 @@ public class InspectionInventoryUI : MonoBehaviour
         {
             foreach (Transform child in detailIcon.transform) Destroy(child.gameObject);
 
-            if (itemData.itemIconPrefab != null)
+            if (itemData.cachedShopIcon != null)
+            {
+                // Use the 2D shop sprite that was cached when it was bought
+                detailIcon.sprite = itemData.cachedShopIcon;
+                detailIcon.enabled = true;
+            }
+            else if (itemData.itemIconPrefab != null)
             {
                 detailIcon.enabled = false;
                 GameObject detailIconObj = Instantiate(itemData.itemIconPrefab, detailIcon.transform);
-
                 RectTransform rect = detailIconObj.GetComponent<RectTransform>();
                 if (rect != null) { rect.anchoredPosition = Vector2.zero; rect.localScale = Vector3.one; }
+            }
+            else
+            {
+                // No icon at all — hide the Image so it doesn't show as a white box
+                detailIcon.enabled = false;
             }
         }
 
@@ -232,11 +349,12 @@ public class InspectionInventoryUI : MonoBehaviour
 
         InspectableItem newPartData = newPartObj.GetComponent<InspectableItem>();
 
-        // --- NEW FIX: Force the 3D part to inherit the Shop Category! ---
         if (newPartData.partCategory == "Generic" || string.IsNullOrEmpty(newPartData.partCategory))
-        {
             newPartData.partCategory = currentlySelectedShopItem.category;
-        }
+
+        newPartData.itemName        = currentlySelectedShopItem.itemName;
+        newPartData.itemDescription = currentlySelectedShopItem.description;
+        newPartData.cachedShopIcon  = currentlySelectedShopItem.icon;
 
         inspectManager.playerStorage.Add(newPartObj);
         ShopSystem.Instance.GetInventoryIDs().Remove(currentlySelectedShopItem.id);

@@ -45,30 +45,21 @@ public class DayTransitionManager : MonoBehaviour
 
     void Start()
     {
-        // Setup initial screen state
         if (transitionCanvas != null) transitionCanvas.enabled = true;
         if (transitionImage != null) SetImageAlpha(1f);
         if (dayText != null) dayText.alpha = 0f;
 
-        // THE FIX: Let DayTransitionManager handle itself!
         bool isChangingRooms = PlayerPrefs.GetInt("ChangingRooms", 0) == 1;
 
         if (isChangingRooms)
         {
-            // We just walked through a door. Instantly remove black screen!
             PlayerPrefs.SetInt("ChangingRooms", 0);
             PlayerPrefs.Save();
             SkipDayIntro();
         }
         else
         {
-            // We are waking up in the morning.
-            // If there is no tutorial, or the tutorial is already finished, play the normal morning fade!
-            if (TutorialManager.Instance == null || PlayerPrefs.GetInt("TutorialDone", 0) == 1 || PlayerPrefs.GetInt("IsLoadingGame", 0) == 1)
-            {
-                PlayDayIntro(null);
-            }
-            // (If the tutorial IS running, we just wait. The TutorialManager will trigger the fade-in manually.)
+            PlayDayIntro(null);
         }
     }
 
@@ -229,6 +220,15 @@ public class DayTransitionManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+        else
+        {
+            // Re-lock cursor for normal gameplay
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            // CRITICAL: fully disable the canvas so it never blocks UI clicks
+            if (transitionCanvas != null) transitionCanvas.enabled = false;
         }
     }
 }

@@ -135,6 +135,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -151,6 +152,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &32900897624437088
 GameObject:
   m_ObjectHideFlags: 0
@@ -534,6 +537,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -550,6 +554,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &363183656591968017
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,6 +691,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -701,6 +708,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &785282135439694767
 GameObject:
   m_ObjectHideFlags: 0
@@ -842,6 +851,7 @@ MonoBehaviour:
   partCategory: RAM
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -859,6 +869,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &822863261297365375
 GameObject:
   m_ObjectHideFlags: 0
@@ -1116,6 +1128,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1132,6 +1145,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!65 &292845526239156420
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1288,6 +1303,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1304,6 +1320,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &1287952446651097672
 GameObject:
   m_ObjectHideFlags: 0
@@ -1457,6 +1475,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1473,6 +1492,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &1316736337288081427
 GameObject:
   m_ObjectHideFlags: 0
@@ -1608,6 +1629,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1624,6 +1646,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &1349342068086561732
 GameObject:
   m_ObjectHideFlags: 0
@@ -1759,6 +1783,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1775,6 +1800,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &1357206739422631613
 GameObject:
   m_ObjectHideFlags: 0
@@ -1910,6 +1937,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -1926,6 +1954,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &1362409408431335226
 GameObject:
   m_ObjectHideFlags: 0
@@ -2039,6 +2069,7 @@ MonoBehaviour:
   partCategory: Screws4
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -2055,6 +2086,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!64 &8755885375097047325
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2213,6 +2246,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 1
@@ -2229,6 +2263,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &1415080288090520160
 GameObject:
   m_ObjectHideFlags: 0
@@ -2475,6 +2511,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -2491,6 +2528,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &1797429534187238366
 GameObject:
   m_ObjectHideFlags: 0
@@ -2628,6 +2667,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -2644,6 +2684,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &2004290335765063689
 GameObject:
   m_ObjectHideFlags: 0
@@ -2838,6 +2880,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -2854,6 +2897,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &2167249155686259201
 GameObject:
   m_ObjectHideFlags: 0
@@ -2967,6 +3012,7 @@ MonoBehaviour:
   partCategory: Screws2
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -2983,6 +3029,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!64 &473121144686088835
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3155,6 +3203,7 @@ MonoBehaviour:
   partCategory: PSU
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -3172,6 +3221,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &2308372507715908718
 GameObject:
   m_ObjectHideFlags: 0
@@ -3307,6 +3358,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3323,6 +3375,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &2403118965943215718
 GameObject:
   m_ObjectHideFlags: 0
@@ -3458,6 +3512,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3474,6 +3529,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &2424372353830391511
 GameObject:
   m_ObjectHideFlags: 0
@@ -3615,6 +3672,7 @@ MonoBehaviour:
   partCategory: RAM
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -3632,6 +3690,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &2427137562440947398
 GameObject:
   m_ObjectHideFlags: 0
@@ -3745,6 +3805,7 @@ MonoBehaviour:
   partCategory: Screws1
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -3761,6 +3822,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!64 &1354924618258318253
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3918,6 +3981,7 @@ MonoBehaviour:
   partCategory: PSU
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -3934,6 +3998,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &2625642472155752381
 GameObject:
   m_ObjectHideFlags: 0
@@ -4047,6 +4113,7 @@ MonoBehaviour:
   partCategory: Screws1
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -4063,6 +4130,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!64 &8385083441405444818
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4198,6 +4267,7 @@ MonoBehaviour:
   partCategory: Screws3
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -4214,6 +4284,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!64 &2565227732535734128
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4371,6 +4443,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4387,6 +4460,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3014030350099827035
 GameObject:
   m_ObjectHideFlags: 0
@@ -4522,6 +4597,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4538,6 +4614,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3050264660481501585
 GameObject:
   m_ObjectHideFlags: 0
@@ -4674,6 +4752,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4690,6 +4769,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3052698560457054225
 GameObject:
   m_ObjectHideFlags: 0
@@ -4825,6 +4906,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4841,6 +4923,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3242323782920837684
 GameObject:
   m_ObjectHideFlags: 0
@@ -4976,6 +5060,7 @@ MonoBehaviour:
   partCategory: SSD
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -4992,6 +5077,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3253660226613904616
 GameObject:
   m_ObjectHideFlags: 0
@@ -5128,6 +5215,7 @@ MonoBehaviour:
   partCategory: Case
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -5148,6 +5236,8 @@ MonoBehaviour:
   - {fileID: 1367657453106219401}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!114 &7941065386629443170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5301,6 +5391,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5317,6 +5408,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3376705303839664559
 GameObject:
   m_ObjectHideFlags: 0
@@ -5452,6 +5545,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5468,6 +5562,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3528492363628226588
 GameObject:
   m_ObjectHideFlags: 0
@@ -5640,6 +5736,7 @@ MonoBehaviour:
   partCategory: RAM
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -5657,6 +5754,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3643749282560958432
 GameObject:
   m_ObjectHideFlags: 0
@@ -5793,6 +5892,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -5809,6 +5909,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3711121564830187493
 GameObject:
   m_ObjectHideFlags: 0
@@ -5962,6 +6064,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -5978,6 +6081,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3725519465906160566
 GameObject:
   m_ObjectHideFlags: 0
@@ -6131,6 +6236,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6147,6 +6253,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &3989461669007185964
 GameObject:
   m_ObjectHideFlags: 0
@@ -6282,6 +6390,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6298,6 +6407,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &4026668048900849885
 GameObject:
   m_ObjectHideFlags: 0
@@ -6434,6 +6545,7 @@ MonoBehaviour:
   partCategory: Fan
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -6451,6 +6563,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &4068600543024155911
 GameObject:
   m_ObjectHideFlags: 0
@@ -6586,6 +6700,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -6602,6 +6717,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &4107785063438436211
 GameObject:
   m_ObjectHideFlags: 0
@@ -6859,6 +6976,7 @@ MonoBehaviour:
   partCategory: Screws3
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -6875,6 +6993,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!64 &8363764054886689855
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -7050,6 +7170,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7066,6 +7187,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &4540051610597851195
 GameObject:
   m_ObjectHideFlags: 0
@@ -7202,6 +7325,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7218,6 +7342,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &4607968955327258365
 GameObject:
   m_ObjectHideFlags: 0
@@ -7353,6 +7479,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7369,6 +7496,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &4609764953773446406
 GameObject:
   m_ObjectHideFlags: 0
@@ -7596,6 +7725,7 @@ MonoBehaviour:
   partCategory: Case
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -7616,6 +7746,8 @@ MonoBehaviour:
   - {fileID: 2102195006370420549}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!64 &871299444713994689
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -7659,6 +7791,7 @@ MonoBehaviour:
   partCategory: Case
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7675,6 +7808,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &4760063446915575339
 GameObject:
   m_ObjectHideFlags: 0
@@ -7810,6 +7945,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7826,6 +7962,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &4771738223543513484
 GameObject:
   m_ObjectHideFlags: 0
@@ -7961,6 +8099,7 @@ MonoBehaviour:
   partCategory: SATA
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -7977,6 +8116,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &5059844598190678721
 GameObject:
   m_ObjectHideFlags: 0
@@ -8113,6 +8254,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8129,6 +8271,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &5088758758369100133
 GameObject:
   m_ObjectHideFlags: 0
@@ -8247,6 +8391,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 1
   isRemovable: 0
   isPowerButton: 0
@@ -8263,6 +8408,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!65 &2202130169765135966
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8318,6 +8465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b95aba4f9278564cb56912295b67b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PCCaseBuilder
+  linkedEmail: {fileID: 0}
 --- !u!1 &5323593287482091735
 GameObject:
   m_ObjectHideFlags: 0
@@ -8457,6 +8605,7 @@ MonoBehaviour:
   partCategory: SSD
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -8474,6 +8623,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &5385379256963151212
 GameObject:
   m_ObjectHideFlags: 0
@@ -8610,6 +8761,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8626,6 +8778,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!65 &4077319682326173297
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8782,6 +8936,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8798,6 +8953,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &5498892576330759332
 GameObject:
   m_ObjectHideFlags: 0
@@ -8933,6 +9090,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -8949,6 +9107,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &5606097544342092801
 GameObject:
   m_ObjectHideFlags: 0
@@ -9084,6 +9244,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9100,6 +9261,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &5740152736708407093
 GameObject:
   m_ObjectHideFlags: 0
@@ -9267,6 +9430,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9283,6 +9447,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &5892676564962425213
 GameObject:
   m_ObjectHideFlags: 0
@@ -9418,6 +9584,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9434,6 +9601,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &6054201310284501425
 GameObject:
   m_ObjectHideFlags: 0
@@ -9601,6 +9770,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9617,6 +9787,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &6161028882302069793
 GameObject:
   m_ObjectHideFlags: 0
@@ -9753,6 +9925,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9769,6 +9942,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &6175703862544558878
 GameObject:
   m_ObjectHideFlags: 0
@@ -9904,6 +10079,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -9920,6 +10096,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &6260501370895775780
 GameObject:
   m_ObjectHideFlags: 0
@@ -9932,6 +10110,7 @@ GameObject:
   - component: {fileID: 4073674415813087713}
   - component: {fileID: 2258669943646129268}
   - component: {fileID: 4314359648466619518}
+  - component: {fileID: 4304868444661981639}
   m_Layer: 0
   m_Name: Slot_Motherboard Frame
   m_TagString: Untagged
@@ -10072,6 +10251,46 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 727835362553056736, guid: a88b32a66291db745aa0fccef3281176, type: 3}
+--- !u!114 &4304868444661981639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6260501370895775780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
+  itemName: MotherBoard
+  partCategory: MotherBoard
+  itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
+  isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  ribbonAxis: {x: 0, y: 1, z: 0}
+  placeHeadHere: 0
+  wireHead: {fileID: 0}
+  blockingParts: []
+  isInventorySlot: 0
+  inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &6385016403728163797
 GameObject:
   m_ObjectHideFlags: 0
@@ -10239,6 +10458,7 @@ MonoBehaviour:
   partCategory: Fan
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -10256,6 +10476,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &6492491972131890741
 GameObject:
   m_ObjectHideFlags: 0
@@ -10369,6 +10591,7 @@ MonoBehaviour:
   partCategory: Screws4
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -10385,6 +10608,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!64 &519956220748479509
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -10690,6 +10915,7 @@ MonoBehaviour:
   partCategory: CPU
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -10707,6 +10933,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &7574965793184717440
 GameObject:
   m_ObjectHideFlags: 0
@@ -10843,6 +11071,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -10859,6 +11088,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &7710152512572630207
 GameObject:
   m_ObjectHideFlags: 0
@@ -10996,6 +11227,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -11012,6 +11244,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!65 &537040405051088834
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11169,6 +11403,7 @@ MonoBehaviour:
   partCategory: Fan
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -11186,6 +11421,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &7806750153748574703
 GameObject:
   m_ObjectHideFlags: 0
@@ -11325,6 +11562,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -11341,6 +11579,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &7820086930267221185
 GameObject:
   m_ObjectHideFlags: 0
@@ -11479,6 +11719,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -11495,6 +11736,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &7954023480475493982
 GameObject:
   m_ObjectHideFlags: 0
@@ -11631,6 +11874,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -11647,6 +11891,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8035995206989191622
 GameObject:
   m_ObjectHideFlags: 0
@@ -11782,6 +12028,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -11798,6 +12045,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8062750070656145795
 GameObject:
   m_ObjectHideFlags: 0
@@ -11934,6 +12183,7 @@ MonoBehaviour:
   partCategory: Fan
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -11951,6 +12201,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8226083603268367267
 GameObject:
   m_ObjectHideFlags: 0
@@ -12087,6 +12339,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12103,6 +12356,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8389663485220319080
 GameObject:
   m_ObjectHideFlags: 0
@@ -12238,6 +12493,7 @@ MonoBehaviour:
   partCategory: SATA
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12254,6 +12510,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8518496988949228407
 GameObject:
   m_ObjectHideFlags: 0
@@ -12390,6 +12648,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12406,6 +12665,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8651276187815708676
 GameObject:
   m_ObjectHideFlags: 0
@@ -12542,6 +12803,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12558,6 +12820,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8682133583835262368
 GameObject:
   m_ObjectHideFlags: 0
@@ -12750,6 +13014,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12766,6 +13031,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8743195070391710412
 GameObject:
   m_ObjectHideFlags: 0
@@ -12902,6 +13169,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -12918,6 +13186,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8826494922869444816
 GameObject:
   m_ObjectHideFlags: 0
@@ -13031,6 +13301,7 @@ MonoBehaviour:
   partCategory: Screws2
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -13047,6 +13318,8 @@ MonoBehaviour:
   blockingParts: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!64 &5724530542898822482
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -13216,6 +13489,7 @@ MonoBehaviour:
   partCategory: GPU
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -13233,6 +13507,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8865399802845517623
 GameObject:
   m_ObjectHideFlags: 0
@@ -13374,6 +13650,7 @@ MonoBehaviour:
   partCategory: RAM
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -13391,6 +13668,8 @@ MonoBehaviour:
   - {fileID: 7158608650276242272}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1001 &1453271907532398376
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -46,6 +46,8 @@ public class DeliveryManager : MonoBehaviour
 
     // ---- Internal state ----
     private int nextSpawnIndex = 0; // Cycles through spawn points
+    private int[] boxCountPerPoint; // tracks how many boxes are at each spawn point
+    public int maxBoxesPerSpawnPoint = 3; // set this in Inspector — how many boxes fit per zone
 
     // =============================================
     //  SETUP
@@ -138,18 +140,16 @@ public class DeliveryManager : MonoBehaviour
 
     void SpawnDeliveryBox(DeliveryOrder order)
     {
-        // Use the item-specific box prefab, fall back to the universal default
         GameObject prefabToUse = order.boxPrefab != null ? order.boxPrefab : fragileBoxPrefab;
 
-        // DEBUG: Tell us exactly which prefab path was chosen
         if (order.boxPrefab != null)
             Debug.Log($"[DeliveryManager] Using ITEM-SPECIFIC box '{order.boxPrefab.name}' for '{order.item.itemName}'");
         else
-            Debug.LogWarning($"[DeliveryManager] '{order.item.itemName}' has NO deliveryBoxPrefab assigned on its ItemData! Using default fallback.");
+            Debug.LogWarning($"[DeliveryManager] '{order.item.itemName}' has NO deliveryBoxPrefab assigned! Using default.");
 
         if (prefabToUse == null)
         {
-            Debug.LogError($"[DeliveryManager] No box prefab for '{order.item.itemName}'! Assign one on the ItemData or set a default on DeliveryManager.");
+            Debug.LogError($"[DeliveryManager] No box prefab for '{order.item.itemName}'!");
             return;
         }
 
@@ -159,40 +159,50 @@ public class DeliveryManager : MonoBehaviour
             return;
         }
 
-        // Pick the next spawn point (cycles so multiple orders don't stack)
-        Transform spawnPoint = deliverySpawnPoints[nextSpawnIndex % deliverySpawnPoints.Length];
-        nextSpawnIndex++;
+        // Init the per-point counter array if needed
+        if (boxCountPerPoint == null || boxCountPerPoint.Length != deliverySpawnPoints.Length)
+            boxCountPerPoint = new int[deliverySpawnPoints.Length];
 
-        // Spawn one box per quantity unit (each box = 1 item, like your JobBox system)
+        // Spawn each box individually, picking the best available spawn point
         for (int i = 0; i < order.quantity; i++)
         {
-            // Offset each box slightly so they don't overlap
-            Vector3 offset = new Vector3(0.4f * i, 0f, 0f);
-            GameObject newBox = Instantiate(prefabToUse, spawnPoint.position + offset, spawnPoint.rotation);
+            // Find the spawn point with the fewest boxes (spread the load)
+            int chosenIndex = 0;
+            for (int p = 0; p < deliverySpawnPoints.Length; p++)
+            {
+                if (boxCountPerPoint[p] < maxBoxesPerSpawnPoint)
+                {
+                    chosenIndex = p;
+                    break; // use the FIRST point that still has room
+                }
 
-            // SAFETY: Force the tag to PickupBox so PlayerInteraction can detect it
+            }
+
+            Transform spawnPoint = deliverySpawnPoints[chosenIndex];
+
+            // Grid offset within that spawn point: 3 columns, rows going back in Z
+            int localIndex = boxCountPerPoint[chosenIndex];
+            int col = localIndex % 3;
+            int row = localIndex / 3;
+            Vector3 offset = new Vector3(0.55f * col, 0f, 0.55f * row);
+            
+
+            GameObject newBox = Instantiate(prefabToUse, spawnPoint.position + offset, spawnPoint.rotation);
             newBox.tag = "PickupBox";
 
-            // SAFETY: Match the layer of existing interactable objects so the raycast hits it.
-            // Uses interactableLayer if set, otherwise keeps the prefab's own layer.
             if (interactableLayer != -1)
-            {
                 SetLayerRecursive(newBox, interactableLayer);
-            }
 
-            // Setup the DeliveryBox component with the item data
             DeliveryBox boxScript = newBox.GetComponent<DeliveryBox>();
             if (boxScript != null)
-            {
                 boxScript.Setup(order.item);
-            }
             else
-            {
-                Debug.LogWarning("[DeliveryManager] The box prefab is missing a DeliveryBox component!");
-            }
+                Debug.LogWarning("[DeliveryManager] Box prefab missing DeliveryBox component!");
+
+            boxCountPerPoint[chosenIndex]++;
+            Debug.Log($"[DeliveryManager] Spawned box {i+1}/{order.quantity} at SpawnPoint[{chosenIndex}] slot {localIndex}");
         }
     }
-
     /// <summary>
     /// Recursively sets the layer on a GameObject and all its children.
     /// </summary>

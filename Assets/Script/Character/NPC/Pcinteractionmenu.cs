@@ -107,11 +107,16 @@ public class PCInteractionMenu : MonoBehaviour
     /// Show the menu. It appears immediately (no press E to open).
     /// onSelected: 0 = Inspect, 1 = Grab
     /// </summary>
+    // In PCInteractionMenu.cs — add these 2 lines inside Show()
     public void Show(System.Action<int> onSelected)
     {
         isOpen = true;
         selectedIndex = 0;
         onConfirmed = onSelected;
+
+        // ADD THESE:
+        if (option1Text != null) option1Text.text = "Inspect PC";
+        if (option2Text != null) option2Text.text = "Grab PC";
 
         if (menuPanel != null) menuPanel.SetActive(true);
         UpdateVisuals();

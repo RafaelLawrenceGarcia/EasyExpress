@@ -32,13 +32,29 @@ public class TutorialManager : MonoBehaviour
         Instance = this;
     }
 
+    void OnEnable()
+    {
+        DayTransitionManager.OnNewDayStarted += OnDayStarted;
+    }
+
+    void OnDisable()
+    {
+        DayTransitionManager.OnNewDayStarted -= OnDayStarted;
+    }
+
+    void OnDayStarted(int day)
+    {
+        // Only fire tutorial on Day 1 when it hasn't been done yet
+        if (tutorialStep == 0 && day == 1)
+            StartCoroutine(DelayedStart());
+    }
+
     void Start()
     {
         if (PlayerPrefs.GetInt("TutorialDone", 0) == 1 || PlayerPrefs.GetInt("IsLoadingGame", 0) == 1)
         {
             tutorialStep = 14;
 
-            // FIX: Persist TutorialDone so it survives after IsLoadingGame gets reset
             if (PlayerPrefs.GetInt("TutorialDone", 0) != 1)
             {
                 PlayerPrefs.SetInt("TutorialDone", 1);
@@ -47,14 +63,22 @@ public class TutorialManager : MonoBehaviour
         }
         else
         {
-            // Brand new game, start the tutorial!
             tutorialStep = 0;
-            // ... rest stays the same
+            // Do nothing here — wait for OnDayStarted to fire after fade-in
         }
     }
+
     IEnumerator DelayedStart()
     {
         yield return new WaitForSeconds(1.0f);
+
+        if (dialogueManager == null || part1_MoveDialogue == null)
+        {
+            Debug.LogWarning("[TutorialManager] Dialogue assets not assigned — skipping tutorial.");
+            tutorialStep = 14;
+            yield break;
+        }
+
         dialogueManager.PlaySequence(part1_MoveDialogue, StartMovementTask);
     }
 

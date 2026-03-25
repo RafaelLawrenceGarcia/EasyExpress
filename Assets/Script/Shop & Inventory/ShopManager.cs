@@ -49,6 +49,9 @@ public class ShopManager : MonoBehaviour
     public Image detailImage;
     public Button detailAddToCartBtn;
 
+    [Header("Cart Button")]
+    public Button cartIconButton;
+
     [Header("Shopping Cart Data")]
     public List<CartItem> shoppingCart = new List<CartItem>();
 
@@ -80,7 +83,6 @@ public class ShopManager : MonoBehaviour
     private Coroutine activeNotification;
     private bool hasStarted = false;
 
-    // THE ULTIMATE MEMORY SYSTEM
     private enum LastScreen { CategoryScreen, ItemList, ProductDetails }
     private LastScreen lastActiveScreen = LastScreen.CategoryScreen;
     private ItemData currentViewedItem;
@@ -88,16 +90,23 @@ public class ShopManager : MonoBehaviour
     void Start()
     {
         if (notificationRect != null) notificationRect.anchoredPosition = hiddenPosition;
-        if (cartPanelRect != null) cartPanelRect.anchoredPosition = cartHiddenPosition;
+
+        if (cartPanelRect != null)
+        {
+            cartPanelRect.anchoredPosition = cartHiddenPosition;
+            cartPanelRect.gameObject.SetActive(false);
+        }
+
         if (productDetailsPanel != null) productDetailsPanel.SetActive(false);
         if (filterCategoriesPanel != null) filterCategoriesPanel.SetActive(false);
 
         if (playerWallet == null) playerWallet = FindFirstObjectByType<PlayerWallet>();
 
         if (searchInputField != null)
-        {
             searchInputField.onValueChanged.AddListener(UpdateSearchFilter);
-        }
+
+        if (cartIconButton != null)
+            cartIconButton.onClick.AddListener(ToggleCart);
 
         hasStarted = true;
         GenerateCategories();
@@ -109,7 +118,13 @@ public class ShopManager : MonoBehaviour
     {
         isCartOpen = false;
         if (activeCartAnimation != null) StopCoroutine(activeCartAnimation);
-        if (cartPanelRect != null) cartPanelRect.anchoredPosition = cartHiddenPosition;
+
+        if (cartPanelRect != null)
+        {
+            cartPanelRect.anchoredPosition = cartHiddenPosition;
+            cartPanelRect.gameObject.SetActive(false);
+        }
+
         if (filterCategoriesPanel != null) filterCategoriesPanel.SetActive(false);
 
         if (!hasStarted) return;
@@ -117,7 +132,6 @@ public class ShopManager : MonoBehaviour
         GenerateCategories();
         RefreshCartUI();
 
-        // Check our saved memory instead of relying on the UI objects!
         if (lastActiveScreen == LastScreen.ProductDetails && currentViewedItem != null)
         {
             OpenProductDetails(currentViewedItem);
@@ -151,23 +165,17 @@ public class ShopManager : MonoBehaviour
         if (previousShopPanel != null) previousShopPanel.SetActive(true);
     }
 
-    // --- CATEGORY NAVIGATION METHODS ---
-
     void GenerateCategories()
     {
         List<string> uniqueCategories = new List<string>();
         foreach (ItemData item in itemsForSale)
         {
             if (item != null && !uniqueCategories.Contains(item.category) && !string.IsNullOrEmpty(item.category))
-            {
                 uniqueCategories.Add(item.category);
-            }
         }
 
         foreach (Transform child in categoryContentContainer)
-        {
             Destroy(child.gameObject);
-        }
 
         foreach (string cat in uniqueCategories)
         {
@@ -176,9 +184,7 @@ public class ShopManager : MonoBehaviour
 
             Transform textObj = t.Find("ItemNamePanel/Text (TMP)");
             if (textObj != null)
-            {
                 textObj.GetComponent<TextMeshProUGUI>().text = cat;
-            }
 
             Transform imgObj = t.Find("ItemImage");
             if (imgObj != null)
@@ -207,16 +213,13 @@ public class ShopManager : MonoBehaviour
             string selectedCategory = cat;
             Button btnComponent = newCatBtn.GetComponent<Button>();
             if (btnComponent != null)
-            {
                 btnComponent.onClick.AddListener(() => OpenItemList(selectedCategory));
-            }
         }
     }
 
     public void OpenCategoryScreen()
     {
-        lastActiveScreen = LastScreen.CategoryScreen; // Writes it to memory
-
+        lastActiveScreen = LastScreen.CategoryScreen;
         categoryScreen.SetActive(true);
         itemListScreen.SetActive(false);
         if (productDetailsPanel != null) productDetailsPanel.SetActive(false);
@@ -224,19 +227,16 @@ public class ShopManager : MonoBehaviour
 
     public void OpenItemList(string categoryName)
     {
-        lastActiveScreen = LastScreen.ItemList; // Writes it to memory
-        currentCategory = categoryName; // Writes the specific category to memory
+        lastActiveScreen = LastScreen.ItemList;
+        currentCategory = categoryName;
 
         categoryScreen.SetActive(false);
         if (productDetailsPanel != null) productDetailsPanel.SetActive(false);
         itemListScreen.SetActive(true);
-
         if (filterCategoriesPanel != null) filterCategoriesPanel.SetActive(false);
 
         if (searchInputField != null)
-        {
             searchInputField.SetTextWithoutNotify("");
-        }
 
         UpdateSearchFilter("");
     }
@@ -273,14 +273,10 @@ public class ShopManager : MonoBehaviour
         return false;
     }
 
-    // --- DYNAMIC SEARCH FILTER ---
-
     public void UpdateSearchFilter(string searchTerm)
     {
         foreach (Transform child in contentContainer)
-        {
             Destroy(child.gameObject);
-        }
 
         string lowerSearchTerm = searchTerm.ToLower();
 
@@ -316,34 +312,30 @@ public class ShopManager : MonoBehaviour
 
                     Button mainPanelBtn = newProduct.GetComponent<Button>();
                     if (mainPanelBtn != null)
-                    {
                         mainPanelBtn.onClick.AddListener(() => OpenProductDetails(item));
-                    }
                 }
             }
         }
     }
 
-    // --- FULL PAGE PRODUCT DETAILS UPDATE ---
-
     public void OpenProductDetails(ItemData item)
     {
-        lastActiveScreen = LastScreen.ProductDetails; // Writes it to memory
-        currentViewedItem = item; // Writes the specific item to memory
+        lastActiveScreen = LastScreen.ProductDetails;
+        currentViewedItem = item;
 
         if (categoryScreen != null) categoryScreen.SetActive(false);
         if (itemListScreen != null) itemListScreen.SetActive(false);
-
         if (productDetailsPanel != null) productDetailsPanel.SetActive(true);
+
+        if (cartIconButton != null)
+            cartIconButton.transform.SetAsLastSibling();
 
         if (detailNameText != null) detailNameText.text = item.itemName;
         if (detailDescText != null) detailDescText.text = item.description;
         if (detailPriceText != null) detailPriceText.text = "₱" + item.price.ToString("N0");
 
         if (detailImage != null && item.icon != null)
-        {
             detailImage.sprite = item.icon;
-        }
 
         if (detailAddToCartBtn != null)
         {
@@ -354,19 +346,13 @@ public class ShopManager : MonoBehaviour
 
     public void CloseProductDetails()
     {
-        // Re-opening the item list automatically updates the memory for us!
         OpenItemList(currentCategory);
     }
 
     public void ReturnToCategoryList()
     {
-        // Re-opening the category screen automatically updates the memory for us!
         OpenCategoryScreen();
     }
-
-    // ------------------------------------
-    // --- ADVANCED CART SYSTEM ---
-    // ------------------------------------
 
     public void AddToCart(ItemData itemAdded)
     {
@@ -396,12 +382,7 @@ public class ShopManager : MonoBehaviour
     public void ChangeItemAmount(CartItem itemToChange, int amountChange)
     {
         itemToChange.amount += amountChange;
-
-        if (itemToChange.amount < 1)
-        {
-            itemToChange.amount = 1;
-        }
-
+        if (itemToChange.amount < 1) itemToChange.amount = 1;
         RefreshCartUI();
     }
 
@@ -418,15 +399,11 @@ public class ShopManager : MonoBehaviour
         foreach (CartItem cartEntry in shoppingCart)
         {
             if (cartEntry.isChecked)
-            {
                 finalTotal += (cartEntry.item.price * cartEntry.amount);
-            }
         }
 
         if (totalCostText != null)
-        {
             totalCostText.text = "Total: ₱" + finalTotal.ToString("N0");
-        }
     }
 
     public void RefreshCartUI()
@@ -434,9 +411,7 @@ public class ShopManager : MonoBehaviour
         if (cartItemPrefab == null || cartContentContainer == null) return;
 
         foreach (Transform child in cartContentContainer)
-        {
             Destroy(child.gameObject);
-        }
 
         foreach (CartItem cartEntry in shoppingCart)
         {
@@ -450,7 +425,6 @@ public class ShopManager : MonoBehaviour
                 Toggle itemToggle = toggleObj.GetComponent<Toggle>();
                 itemToggle.onValueChanged.RemoveAllListeners();
                 itemToggle.isOn = currentItem.isChecked;
-
                 itemToggle.onValueChanged.AddListener((bool isTicked) =>
                 {
                     currentItem.isChecked = isTicked;
@@ -460,9 +434,7 @@ public class ShopManager : MonoBehaviour
 
             Transform removeBtnObj = t.Find("Remove Button");
             if (removeBtnObj != null)
-            {
                 removeBtnObj.GetComponent<Button>().onClick.AddListener(() => RemoveFromCartCompletely(currentItem));
-            }
 
             Transform inputFieldObj = t.Find("InputField (TMP)");
             if (inputFieldObj != null)
@@ -510,11 +482,8 @@ public class ShopManager : MonoBehaviour
 
         float finalCheckoutTotal = 0f;
         foreach (CartItem cartEntry in itemsToBuy)
-        {
             finalCheckoutTotal += (cartEntry.item.price * cartEntry.amount);
-        }
 
-        // 1. Try to spend the gold
         if (playerWallet.SpendGold(finalCheckoutTotal))
         {
             Debug.Log("Order successfully placed!");
@@ -522,7 +491,6 @@ public class ShopManager : MonoBehaviour
             if (activeNotification != null) StopCoroutine(activeNotification);
             activeNotification = StartCoroutine(SlideNotificationCoroutine("Order Placed Successfully!"));
 
-            // 2. Register each purchased item as a delivery order
             foreach (CartItem boughtItem in itemsToBuy)
             {
                 if (DeliveryManager.Instance != null)
@@ -541,17 +509,10 @@ public class ShopManager : MonoBehaviour
                 shoppingCart.Remove(boughtItem);
             }
 
-            // ==========================================
-            // NEW: SAVE TO CLOUD SO MONEY STAYS DEDUCTED
-            // ==========================================
             if (CloudDataHandler.Instance != null)
-            {
                 CloudDataHandler.Instance.SaveGameData();
-            }
             else
-            {
                 Debug.LogWarning("CloudDataHandler not found, wallet changes might not be saved!");
-            }
 
             RefreshCartUI();
 
@@ -559,7 +520,6 @@ public class ShopManager : MonoBehaviour
         }
         else
         {
-            // Optional: Tell the player they are broke!
             if (activeNotification != null) StopCoroutine(activeNotification);
             activeNotification = StartCoroutine(SlideNotificationCoroutine("Not enough money!"));
         }
@@ -571,12 +531,18 @@ public class ShopManager : MonoBehaviour
 
         if (activeCartAnimation != null) StopCoroutine(activeCartAnimation);
 
-        Vector2 targetPos = isCartOpen ? cartVisiblePosition : cartHiddenPosition;
-
-        activeCartAnimation = StartCoroutine(SlideCartCoroutine(targetPos));
+        if (isCartOpen)
+        {
+            cartPanelRect.gameObject.SetActive(true);
+            activeCartAnimation = StartCoroutine(SlideCartCoroutine(cartVisiblePosition));
+        }
+        else
+        {
+            activeCartAnimation = StartCoroutine(SlideCartCoroutine(cartHiddenPosition, hideWhenDone: true));
+        }
     }
 
-    private IEnumerator SlideCartCoroutine(Vector2 targetPosition)
+    private IEnumerator SlideCartCoroutine(Vector2 targetPosition, bool hideWhenDone = false)
     {
         Vector2 startPosition = cartPanelRect.anchoredPosition;
         float timeElapsed = 0f;
@@ -589,6 +555,9 @@ public class ShopManager : MonoBehaviour
         }
 
         cartPanelRect.anchoredPosition = targetPosition;
+
+        if (hideWhenDone)
+            cartPanelRect.gameObject.SetActive(false);
     }
 
     private IEnumerator SlideNotificationCoroutine(string message)
@@ -619,7 +588,6 @@ public class ShopManager : MonoBehaviour
     }
 }
 
-// THE CART ITEM DATA
 [System.Serializable]
 public class CartItem
 {

@@ -180,39 +180,58 @@ public class CustomerInside : MonoBehaviour
     }
 
     void GenerateRandomJob()
+{
+    if (assignedJob != null)
     {
-        if (assignedJob != null)
+        budget = (int)assignedJob.partsBudget;
+        jobRequest = BuildSpokenDialogue(assignedJob);
+        return;
+    }
+
+    if (partDatabase != null)
+    {
+        assignedJob = partDatabase.GenerateRandomJob();
+        assignedJob.senderName = npcName;
+        budget = (int)assignedJob.partsBudget;
+        jobRequest = BuildSpokenDialogue(assignedJob);
+
+        string jobLabel = assignedJob.jobType == JobType.Build ? "BUILD" : "REPAIR";
+        Debug.Log($"[{npcName}] {jobLabel} job generated.");
+        return;
+    }
+
+    Debug.LogWarning($"[{npcName}] No assignedJob AND no partDatabase! Giving generic text.");
+    budget = Random.Range(50, 300);
+    jobRequest = "Hey, can you take a look at my PC? It's been acting up lately.\n\nBudget: ₱" + budget;
+}
+
+    string BuildSpokenDialogue(EmailData job)
+    {
+        string[] openers = { "Hey there!", "Excuse me!", "Hi!", "Good day!" };
+        string opener = openers[Random.Range(0, openers.Length)];
+
+        if (job.jobType == JobType.Build)
         {
-            budget = (int)assignedJob.partsBudget;
-            jobRequest = assignedJob.bodyText + "\n\nBudget: ₱" + budget;
-            return;
+            string[] buildLines = {
+                $"{opener} I need someone to build me a custom PC. Can you do it?\n\nBudget: ₱{job.partsBudget:N0}",
+                $"{opener} I'm looking to get a new PC assembled. I have the parts list ready!\n\nBudget: ₱{job.partsBudget:N0}",
+                $"{opener} Can you build a PC for me? I know exactly what I want.\n\nBudget: ₱{job.partsBudget:N0}"
+            };
+            return buildLines[Random.Range(0, buildLines.Length)];
         }
-
-        if (partDatabase != null)
+        else
         {
-            Debug.Log($"[{npcName}] Generating random job from PCPartDatabase...");
+            string problem = (job.pcProblems != null && job.pcProblems.Length > 0)
+                ? job.pcProblems[0]
+                : "some issue";
 
-            // CHANGED: Now randomly picks Repair or Build
-            assignedJob = partDatabase.GenerateRandomJob();
-            assignedJob.senderName = npcName;
-
-            budget = (int)assignedJob.partsBudget;
-            jobRequest = assignedJob.bodyText + "\n\nBudget: ₱" + budget;
-
-            string jobLabel = assignedJob.jobType == JobType.Build ? "BUILD" : "REPAIR";
-            Debug.Log($"[{npcName}] {jobLabel} job generated.");
-
-            if (assignedJob.requestedParts != null && assignedJob.jobType == JobType.Build)
-            {
-                Debug.Log($"[{npcName}] Customer wants {assignedJob.requestedParts.Count} parts installed:");
-                foreach (StartingPCComponent part in assignedJob.requestedParts)
-                    Debug.Log($"  - Requested: {part.partCategory}: {part.partName}");
-            }
-            return;
+            string[] repairLines = {
+                $"{opener} My PC has a problem — {problem}. Can you fix it?\n\nBudget: ₱{job.partsBudget:N0}",
+                $"{opener} I need help with my PC. It keeps having this issue: {problem}.\n\nBudget: ₱{job.partsBudget:N0}",
+                $"{opener} Something's wrong with my computer. The problem is {problem}. Think you can repair it?\n\nBudget: ₱{job.partsBudget:N0}",
+                $"{opener} My PC is broken! It's been {problem} for days now. Please help!\n\nBudget: ₱{job.partsBudget:N0}"
+            };
+            return repairLines[Random.Range(0, repairLines.Length)];
         }
-
-        Debug.LogWarning($"[{npcName}] No assignedJob AND no partDatabase! Giving generic text.");
-        budget = Random.Range(50, 300);
-        jobRequest = "Hello, I need someone to take a look at my PC. It's been acting up lately.\n\nBudget: ₱" + budget;
     }
 }

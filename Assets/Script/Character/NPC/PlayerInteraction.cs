@@ -62,8 +62,24 @@ public class PlayerInteract : MonoBehaviour
         if (inspectionManager != null && inspectionManager.isInspecting) { HideAllPrompts(); return; }
         if (activeDoorMenu != null && activeDoorMenu.IsOpen()) { HideAllPrompts(); return; }
 
+        // FIXED version
         if (pcMenu != null && pcMenu.IsOpen())
         {
+            Ray checkRay = mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            RaycastHit checkHit;
+            bool stillLookingAtPC = false;
+
+            if (Physics.Raycast(checkRay, out checkHit, interactRange, interactLayer))
+            {
+                InspectableItem checkItem = checkHit.collider.GetComponent<InspectableItem>();
+                stillLookingAtPC = checkItem != null
+                                && checkItem.isMainObject
+                                && checkHit.collider.CompareTag("PickupPC");
+            }
+
+            if (!stillLookingAtPC)
+                HideAllPrompts(); // ← player walked away, close the menu
+
             if (interactionPrompt != null) interactionPrompt.Hide();
             return;
         }
@@ -243,7 +259,7 @@ public class PlayerInteract : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E)) OpenShopComputer();
             }
             // =============================================
-            //  PICKUP BOX
+            //  PICKUP BOX & LOOSE COMPONENTS
             // =============================================
             else if (isPickupBox)
             {
@@ -253,10 +269,29 @@ public class PlayerInteract : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     DeliveryBox dBox = hit.collider.GetComponentInParent<DeliveryBox>();
-                    if (dBox != null) { dBox.InteractUnpack(); HideAllPrompts(); }
+                    
+                    // 1. Is it a Delivery Box? Unpack it!
+                    if (dBox != null) 
+                    { 
+                        dBox.InteractUnpack(); 
+                        HideAllPrompts(); 
+                    }
+                    // 2. Not a box? It's a loose component! Send it to Inventory!
+                    else 
+                    {
+                        InspectableItem looseItem = hit.collider.GetComponentInParent<InspectableItem>();
+                        if (looseItem != null)
+                        {
+                            // This sends it to your InventorySystem and makes the 3D model vanish
+                            InventorySystem.Instance.AddPart(hit.collider.gameObject, looseItem);
+                            HideAllPrompts();
+                        }
+                    }
                 }
                 else if (Input.GetKeyDown(KeyCode.Q))
-                { PickUpItem(hit.collider.gameObject); }
+                { 
+                    PickUpItem(hit.collider.gameObject);
+                }
             }
             // =============================================
             //  PICKUP PC
@@ -323,29 +358,41 @@ public class PlayerInteract : MonoBehaviour
         option1Button.interactable = true;
         option2Button.interactable = true;
 
+        // FIX: Restore city NPC button labels
+        var btn1Label = option1Button.GetComponentInChildren<TextMeshProUGUI>();
+        var btn2Label = option2Button.GetComponentInChildren<TextMeshProUGUI>();
+        if (btn1Label != null) btn1Label.text = "Wanna buy a Pc?";
+        if (btn2Label != null) btn2Label.text = npc.option2Response; // or your hardcoded fallback
+
         nameText.text = npc.npcName;
         dialogueText.text = npc.greeting;
         npc.StartConversation();
     }
 
     void StartShopInteraction(CustomerInside npc)
-    {
-        isInteracting = true;
-        currentShopNPC = npc;
-        currentCityNPC = null;
+{
+    isInteracting = true;
+    currentShopNPC = npc;
+    currentCityNPC = null;
 
-        FreezePlayer(true);
-        HideAllPrompts();
-        dialoguePanel.SetActive(true);
-        if (computerOS != null) computerOS.gameObject.SetActive(false);
+    FreezePlayer(true);
+    HideAllPrompts();
+    dialoguePanel.SetActive(true);
+    if (computerOS != null) computerOS.gameObject.SetActive(false);
 
-        option1Button.interactable = true;
-        option2Button.interactable = true;
+    option1Button.interactable = true;
+    option2Button.interactable = true;
 
-        nameText.text = npc.npcName;
-        dialogueText.text = npc.jobRequest;
-        npc.StartShopConversation();
-    }
+    // FIX: Update button labels for shop customer context
+    var btn1Label = option1Button.GetComponentInChildren<TextMeshProUGUI>();
+    var btn2Label = option2Button.GetComponentInChildren<TextMeshProUGUI>();
+    if (btn1Label != null) btn1Label.text = "Accept Job";
+    if (btn2Label != null) btn2Label.text = "Decline";
+
+    nameText.text = npc.npcName;
+    dialogueText.text = npc.jobRequest;
+    npc.StartShopConversation();
+}
 
     void FreezePlayer(bool freeze)
     {
