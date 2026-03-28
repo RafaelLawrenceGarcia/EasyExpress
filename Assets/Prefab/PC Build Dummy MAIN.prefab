@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4818951804462552247}
   - component: {fileID: 6796083342048964727}
   - component: {fileID: 1891047054932452570}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 8 Pins PSU.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 2331307125118106012}
   - component: {fileID: 6303368357503276261}
   - component: {fileID: 3384958240260983119}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PSU Fan.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -298,7 +298,7 @@ GameObject:
   - component: {fileID: 3397849466457410428}
   - component: {fileID: 5209144740702258224}
   - component: {fileID: 5666564775834269223}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: case
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -416,7 +416,7 @@ GameObject:
   - component: {fileID: 7239792814738123514}
   - component: {fileID: 3857040166033209887}
   - component: {fileID: 6287250445587685136}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 10Pins PSU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -571,7 +571,7 @@ GameObject:
   - component: {fileID: 839213829023206948}
   - component: {fileID: 6005294370278709347}
   - component: {fileID: 3529854142384328886}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 1.002Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -726,7 +726,7 @@ GameObject:
   - component: {fileID: 8426694383361254529}
   - component: {fileID: 3299595900961754581}
   - component: {fileID: 1310116330570820596}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Slot_RAM '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -917,7 +917,7 @@ GameObject:
   - component: {fileID: 4191511277364859552}
   - component: {fileID: 8364835602681777928}
   - component: {fileID: 991318401968339103}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: psucase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1010,7 +1010,7 @@ GameObject:
   - component: {fileID: 5209088440011974794}
   - component: {fileID: 1718137311502518298}
   - component: {fileID: 292845526239156420}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 20Pins PSU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1186,7 +1186,7 @@ GameObject:
   - component: {fileID: 1576204845899599188}
   - component: {fileID: 6147467165515368347}
   - component: {fileID: 1670841644767611072}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1342,7 +1342,7 @@ GameObject:
   - component: {fileID: 2850316500927261932}
   - component: {fileID: 9191163546935641609}
   - component: {fileID: 6528904894700474523}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fan Blade 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1514,7 +1514,7 @@ GameObject:
   - component: {fileID: 1186072369426712255}
   - component: {fileID: 4687214410975277965}
   - component: {fileID: 9131668929033647572}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 1.Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1669,7 +1669,7 @@ GameObject:
   - component: {fileID: 5149254117124680326}
   - component: {fileID: 7628636390298358989}
   - component: {fileID: 2151742552770065492}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 6 Pins PSU.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1824,7 +1824,7 @@ GameObject:
   - component: {fileID: 2985959515950614829}
   - component: {fileID: 5267275079126917440}
   - component: {fileID: 5938416715635536779}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 6 Pins PSU.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1979,7 +1979,7 @@ GameObject:
   - component: {fileID: 54680452463957307}
   - component: {fileID: 2102195006370420549}
   - component: {fileID: 8755885375097047325}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Screws4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2134,7 +2134,7 @@ GameObject:
   - component: {fileID: 2851940142177038701}
   - component: {fileID: 3790285935681204158}
   - component: {fileID: 1152579908237310234}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Power Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2401,7 +2401,7 @@ GameObject:
   - component: {fileID: 8131064563684238877}
   - component: {fileID: 5989996146016150326}
   - component: {fileID: 7141636425830738061}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 6 Pins PSU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2556,7 +2556,7 @@ GameObject:
   - component: {fileID: 8329866698977421320}
   - component: {fileID: 8364900243973737652}
   - component: {fileID: 6415427460585781641}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: USB 3.0 & Ethernet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2770,7 +2770,7 @@ GameObject:
   - component: {fileID: 2839527254478215745}
   - component: {fileID: 791045435814858013}
   - component: {fileID: 2110212729230839409}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HDMI Port
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2927,7 +2927,7 @@ GameObject:
   - component: {fileID: 5243621049157429437}
   - component: {fileID: 2780064413948429581}
   - component: {fileID: 473121144686088835}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Screws2.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3082,7 +3082,7 @@ GameObject:
   - component: {fileID: 6602291310433535698}
   - component: {fileID: 8837454197563035176}
   - component: {fileID: 5736460008075381836}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot_PSU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3254,7 +3254,7 @@ GameObject:
   - component: {fileID: 6589708267843688457}
   - component: {fileID: 6986444996822917462}
   - component: {fileID: 4006948070932241312}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 8 Pins PSU.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3409,7 +3409,7 @@ GameObject:
   - component: {fileID: 1806990307879616307}
   - component: {fileID: 3087117942848414338}
   - component: {fileID: 3450175817206090504}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 3.Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3564,7 +3564,7 @@ GameObject:
   - component: {fileID: 4415971581101531253}
   - component: {fileID: 2630459780561832272}
   - component: {fileID: 2923270729580806930}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Slot_RAM '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3726,7 +3726,7 @@ GameObject:
   - component: {fileID: 2949634527471810048}
   - component: {fileID: 1085836721470571693}
   - component: {fileID: 1354924618258318253}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Screws.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3881,7 +3881,7 @@ GameObject:
   - component: {fileID: 5543016084614556983}
   - component: {fileID: 8930087289757819197}
   - component: {fileID: 2775710194595008453}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Power Supply Outlet
   m_TagString: PowerCordSlot
   m_Icon: {fileID: 0}
@@ -4036,7 +4036,7 @@ GameObject:
   - component: {fileID: 3957805912487848621}
   - component: {fileID: 4784082909654702888}
   - component: {fileID: 8385083441405444818}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Screws
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4191,7 +4191,7 @@ GameObject:
   - component: {fileID: 1679276603203025935}
   - component: {fileID: 3107557061664548801}
   - component: {fileID: 2565227732535734128}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Screws3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4346,7 +4346,7 @@ GameObject:
   - component: {fileID: 4332335146221732145}
   - component: {fileID: 6104620550831630786}
   - component: {fileID: 6656110168013547357}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Heatsink 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4501,7 +4501,7 @@ GameObject:
   - component: {fileID: 3681654244315350590}
   - component: {fileID: 259851328044302942}
   - component: {fileID: 8866609598616876826}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4656,7 +4656,7 @@ GameObject:
   - component: {fileID: 984153537290554475}
   - component: {fileID: 4265691056057338926}
   - component: {fileID: 8894103466680282728}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 10 Pin(5th Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4812,7 +4812,7 @@ GameObject:
   - component: {fileID: 8836361978235647529}
   - component: {fileID: 2297983094846375790}
   - component: {fileID: 7384715562309272821}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4967,7 +4967,7 @@ GameObject:
   - component: {fileID: 5689356910258574725}
   - component: {fileID: 6191694912849895100}
   - component: {fileID: 3864670761130702552}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SSD Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5123,7 +5123,7 @@ GameObject:
   - component: {fileID: 4478645218303129940}
   - component: {fileID: 8438427073443380351}
   - component: {fileID: 7941065386629443170}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: case.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5300,7 +5300,7 @@ GameObject:
   - component: {fileID: 2884993422707407577}
   - component: {fileID: 5803743427684906933}
   - component: {fileID: 4230711895272350064}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 4.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5455,7 +5455,7 @@ GameObject:
   - component: {fileID: 54298276347333497}
   - component: {fileID: 2361765019233879547}
   - component: {fileID: 1232297304068766727}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 6 Pins PSU.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5641,7 +5641,7 @@ GameObject:
   - component: {fileID: 4278430769033988248}
   - component: {fileID: 5886290017391241316}
   - component: {fileID: 4648759258927214314}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Slot_RAM '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5803,7 +5803,7 @@ GameObject:
   - component: {fileID: 6580758833293670764}
   - component: {fileID: 1959743655236569634}
   - component: {fileID: 7119480809538625535}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 4 Pin (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5960,7 +5960,7 @@ GameObject:
   - component: {fileID: 554455953465708594}
   - component: {fileID: 2198957732313347911}
   - component: {fileID: 2813702487758880338}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fan Blade 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6133,7 +6133,7 @@ GameObject:
   - component: {fileID: 8134328483443363193}
   - component: {fileID: 8579389858520719850}
   - component: {fileID: 952418569994649470}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fan Blade 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6305,7 +6305,7 @@ GameObject:
   - component: {fileID: 5016239999244642675}
   - component: {fileID: 167441899180363146}
   - component: {fileID: 434267268160826565}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 8 Pins PSU.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6460,7 +6460,7 @@ GameObject:
   - component: {fileID: 5475344082611284240}
   - component: {fileID: 8482031721381046804}
   - component: {fileID: 537428702984319193}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Slot_Case Fan '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6617,7 +6617,7 @@ GameObject:
   - component: {fileID: 2220160970452385390}
   - component: {fileID: 7584274783714735342}
   - component: {fileID: 7506497296697839520}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 4.Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6824,7 +6824,7 @@ GameObject:
   - component: {fileID: 7383009317850228921}
   - component: {fileID: 1116214012419718940}
   - component: {fileID: 4330076191738850049}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PCIE Lane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6969,7 +6969,7 @@ GameObject:
   - component: {fileID: 8095266284724679833}
   - component: {fileID: 4972662159503089668}
   - component: {fileID: 8363764054886689855}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Screws3.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7125,7 +7125,7 @@ GameObject:
   - component: {fileID: 4337152985228017100}
   - component: {fileID: 6876899570418173060}
   - component: {fileID: 7713349589215065637}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fan Blade 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7297,7 +7297,7 @@ GameObject:
   - component: {fileID: 4662698872943331368}
   - component: {fileID: 6849514938150060057}
   - component: {fileID: 3254291722380258065}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 4 Pin (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7453,7 +7453,7 @@ GameObject:
   - component: {fileID: 3099878811592880128}
   - component: {fileID: 1146668273669088246}
   - component: {fileID: 4256834511803250685}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 2.Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7607,7 +7607,7 @@ GameObject:
   - component: {fileID: 2960488231075637853}
   - component: {fileID: 391855637192126448}
   - component: {fileID: 4405149126509301809}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PSU Fan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7722,7 +7722,7 @@ GameObject:
   - component: {fileID: 7158608650276242272}
   - component: {fileID: 871299444713994689}
   - component: {fileID: 2860332096555466102}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: case.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7922,7 +7922,7 @@ GameObject:
   - component: {fileID: 6023543253971786571}
   - component: {fileID: 6273302850274199086}
   - component: {fileID: 1987344106578943189}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8077,7 +8077,7 @@ GameObject:
   - component: {fileID: 5378420390550679896}
   - component: {fileID: 1617411785543234483}
   - component: {fileID: 4739406135008710357}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SATA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8232,7 +8232,7 @@ GameObject:
   - component: {fileID: 7865341515986591768}
   - component: {fileID: 7472355206563451145}
   - component: {fileID: 955387678761880088}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: '10 Pin (10th Missing) (2) '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8419,6 +8419,7 @@ GameObject:
   - component: {fileID: 2202130169765135966}
   - component: {fileID: 8659894682264109394}
   - component: {fileID: 289462205756052853}
+  - component: {fileID: -819016476123871855}
   m_Layer: 6
   m_Name: PC Build Dummy MAIN
   m_TagString: PickupPC
@@ -8568,6 +8569,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PCCaseBuilder
   linkedEmail: {fileID: 0}
+--- !u!114 &-819016476123871855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5178879464572469348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33a9b2af5bf810b4db40d1a2caae718c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  type: 2
 --- !u!1 &5323593287482091735
 GameObject:
   m_ObjectHideFlags: 0
@@ -8581,7 +8595,7 @@ GameObject:
   - component: {fileID: 6065448824991155727}
   - component: {fileID: 7399352978088220255}
   - component: {fileID: 3521608054602429236}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot_SSD NvMe M.2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8742,7 +8756,7 @@ GameObject:
   - component: {fileID: 2309019379844185635}
   - component: {fileID: 1711380553294655614}
   - component: {fileID: 4077319682326173297}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 24 Pins
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8918,7 +8932,7 @@ GameObject:
   - component: {fileID: 6752403970722203730}
   - component: {fileID: 7907543493929567535}
   - component: {fileID: 2161916892117022591}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 8 Pins PSU.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9073,7 +9087,7 @@ GameObject:
   - component: {fileID: 8573014512665063635}
   - component: {fileID: 5577253173423372133}
   - component: {fileID: 986285465995848169}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 3.002Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9228,7 +9242,7 @@ GameObject:
   - component: {fileID: 6757836976616925746}
   - component: {fileID: 5277685012691548998}
   - component: {fileID: 1834843419598214328}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Heatsink 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9414,7 +9428,7 @@ GameObject:
   - component: {fileID: 4214282167618060196}
   - component: {fileID: 2917103943363606057}
   - component: {fileID: 7397457666417541603}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 10 Pin(4th Pin Pin Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9570,7 +9584,7 @@ GameObject:
   - component: {fileID: 7108090304334362745}
   - component: {fileID: 393864059641835092}
   - component: {fileID: 5639292306624388984}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 2.002Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9756,7 +9770,7 @@ GameObject:
   - component: {fileID: 1004773757258293254}
   - component: {fileID: 5178288222648182358}
   - component: {fileID: 7465494990566136582}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 4 Pin (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9912,7 +9926,7 @@ GameObject:
   - component: {fileID: 1314406593420814335}
   - component: {fileID: 3809034093228511650}
   - component: {fileID: 6868072364592637927}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: USB 3.0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10068,7 +10082,7 @@ GameObject:
   - component: {fileID: 1554820948439129383}
   - component: {fileID: 3549102040564309429}
   - component: {fileID: 8412917294299263470}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 2 Pins PSU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10223,7 +10237,7 @@ GameObject:
   - component: {fileID: 2258669943646129268}
   - component: {fileID: 4314359648466619518}
   - component: {fileID: 4304868444661981639}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot_Motherboard Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10449,7 +10463,7 @@ GameObject:
   - component: {fileID: 8070976909018404704}
   - component: {fileID: 6375894732974083207}
   - component: {fileID: 8268212555712645539}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Slot_Case Fan '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10606,7 +10620,7 @@ GameObject:
   - component: {fileID: 2798835795920315960}
   - component: {fileID: 1367657453106219401}
   - component: {fileID: 519956220748479509}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Screws4.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10760,7 +10774,7 @@ GameObject:
   - component: {fileID: 6724265548742944601}
   - component: {fileID: 3716442665153478795}
   - component: {fileID: 147615487925010998}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PCIE Lane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10905,7 +10919,7 @@ GameObject:
   - component: {fileID: 1799533927229767880}
   - component: {fileID: 3418940872191480240}
   - component: {fileID: 3671853070891860351}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot_CPU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11065,7 +11079,7 @@ GameObject:
   - component: {fileID: 6913158954424279087}
   - component: {fileID: 5005889193579492178}
   - component: {fileID: 6639002780042620457}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 10 Pin (6th Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11222,7 +11236,7 @@ GameObject:
   - component: {fileID: 8504406930104033140}
   - component: {fileID: 8246836839120753665}
   - component: {fileID: 537040405051088834}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 20 Pin (10th Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11399,7 +11413,7 @@ GameObject:
   - component: {fileID: 950036669175975921}
   - component: {fileID: 941340344426137046}
   - component: {fileID: 4517871780904755090}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Slot_Case Fan '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11556,7 +11570,7 @@ GameObject:
   - component: {fileID: 4272038999391863923}
   - component: {fileID: 387934003344902520}
   - component: {fileID: 4662646613952030109}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: USB 2.0 w/ PS/2 Port
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11715,7 +11729,7 @@ GameObject:
   - component: {fileID: 8460409486625850142}
   - component: {fileID: 3815805673929350638}
   - component: {fileID: 2369177089109823539}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Audio/Mic  Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11873,7 +11887,7 @@ GameObject:
   - component: {fileID: 8305519419202937442}
   - component: {fileID: 8422603771575342743}
   - component: {fileID: 773272293551023114}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 4 Pin (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12029,7 +12043,7 @@ GameObject:
   - component: {fileID: 153744306301743632}
   - component: {fileID: 3525784459243690766}
   - component: {fileID: 1498759042466071507}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 8 Pins PSU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12184,7 +12198,7 @@ GameObject:
   - component: {fileID: 1724410146512735357}
   - component: {fileID: 3477056607476405124}
   - component: {fileID: 1561193279001760936}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Slot_Case Fan '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12341,7 +12355,7 @@ GameObject:
   - component: {fileID: 5199217914007857451}
   - component: {fileID: 5479609892201149239}
   - component: {fileID: 6782779363596316538}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 14 pin (1st Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12497,7 +12511,7 @@ GameObject:
   - component: {fileID: 6465815171631841816}
   - component: {fileID: 1540720806341733285}
   - component: {fileID: 626919609524385116}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'SATA '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12652,7 +12666,7 @@ GameObject:
   - component: {fileID: 3527975345888182608}
   - component: {fileID: 9088218907680350222}
   - component: {fileID: 7979162713784285296}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 5 Pin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12808,7 +12822,7 @@ GameObject:
   - component: {fileID: 3877567337091047310}
   - component: {fileID: 1976064551746774262}
   - component: {fileID: 3929674301932465349}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: '8 Pin '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13020,7 +13034,7 @@ GameObject:
   - component: {fileID: 2543955066171990721}
   - component: {fileID: 3604087664335870606}
   - component: {fileID: 6924080347384859146}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 4 Pin (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13176,7 +13190,7 @@ GameObject:
   - component: {fileID: 6052243536396054745}
   - component: {fileID: 138136150676177397}
   - component: {fileID: 7164083508906149874}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 10 Pin (10th Missing) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13332,7 +13346,7 @@ GameObject:
   - component: {fileID: 741833981861553338}
   - component: {fileID: 3798839777782720532}
   - component: {fileID: 5724530542898822482}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Screws2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13487,7 +13501,7 @@ GameObject:
   - component: {fileID: 850646935655627279}
   - component: {fileID: 4298451257968869172}
   - component: {fileID: 6985847963588308710}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot_GPU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13655,7 +13669,7 @@ GameObject:
   - component: {fileID: 981895638976202004}
   - component: {fileID: 2963459659590066360}
   - component: {fileID: 8221625373527685573}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Slot_RAM '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13860,6 +13874,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PIns20(PSU)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3991e52d445b1f64488ad48ea912950a, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13939,6 +13957,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 8Pins (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: fa0519e14dcccce42b6af538e475680b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14000,6 +14022,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 3991e52d445b1f64488ad48ea912950a, type: 3}
       propertyPath: m_Name
       value: Pins20
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3991e52d445b1f64488ad48ea912950a, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3991e52d445b1f64488ad48ea912950a, type: 3}
       propertyPath: m_IsActive
@@ -14083,6 +14109,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: fa0519e14dcccce42b6af538e475680b, type: 3}
       propertyPath: m_Name
       value: 8Pins
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: fa0519e14dcccce42b6af538e475680b, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

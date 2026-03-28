@@ -193,6 +193,7 @@ GameObject:
   - component: {fileID: 2515008098902322690}
   - component: {fileID: 5546512877805463018}
   - component: {fileID: 2263872169305648003}
+  - component: {fileID: -5225081585764485490}
   m_Layer: 6
   m_Name: cardboard_Scan (7)(Clone)
   m_TagString: PickupBox
@@ -253,7 +254,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JobBox
   pcCasePrefabToSpawn: {fileID: 5178879464572469348, guid: 5a2627d8cb2e87a4694ca3d738875dc7, type: 3}
   partsToBuild: []
+  sourceEmail: {fileID: 0}
   existingPC: {fileID: 0}
+--- !u!114 &-5225081585764485490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6385068922341469157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33a9b2af5bf810b4db40d1a2caae718c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  type: 1
 --- !u!1 &8195014231898295406
 GameObject:
   m_ObjectHideFlags: 0

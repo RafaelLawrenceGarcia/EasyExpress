@@ -1,0 +1,18 @@
+<svg width="100%" viewBox="0 0 680 680" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="outline">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="18" result="expanded"/>
+      <feFlood flood-color="#1a0a00" result="color"/>
+      <feComposite in="color" in2="expanded" operator="in" result="outline"/>
+      <feMerge><feMergeNode in="outline"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <g filter="url(#outline)" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
+    <polygon points="340,60  500,320  420,320  420,600  260,600  260,320  180,320" fill="#FFD84D" stroke="#CC8800" stroke-width="6" stroke-linejoin="round" style="fill:rgb(255, 216, 77);stroke:rgb(204, 136, 0);color:rgb(251, 251, 254);stroke-width:6px;stroke-linecap:butt;stroke-linejoin:round;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+    <line x1="340" y1="120" x2="340" y2="540" stroke="#FFF0A0" stroke-width="14" stroke-linecap="round" opacity="0.45" style="fill:rgb(0, 0, 0);stroke:rgb(255, 240, 160);color:rgb(251, 251, 254);stroke-width:14px;stroke-linecap:round;stroke-linejoin:miter;opacity:0.45;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+    <polygon points="340,80  460,300  380,300" fill="#FFEC90" opacity="0.55" style="fill:rgb(255, 236, 144);stroke:none;color:rgb(251, 251, 254);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.55;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  </g>
+</svg>

@@ -192,6 +192,14 @@ public class PlayerInteract : MonoBehaviour
             // =============================================
             else if (canInspectInWorld && isPickupPC)
             {
+                // Block during tutorial until step 9 (the inspect PC step)
+                if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive()
+                    && TutorialManager.Instance.GetCurrentStep() < 9)
+                {
+                    ShowPromptWithOutline("X", "Finish your tasks first!", hit.collider.gameObject);
+                    return;
+                }
+
                 if (interactionPrompt != null) interactionPrompt.Hide();
 
                 if (pcMenu != null && !pcMenu.IsOpen())
@@ -257,6 +265,13 @@ public class PlayerInteract : MonoBehaviour
             }
             else if (hit.collider.CompareTag("WorkstationMonitor"))
             {
+                // Block during tutorial
+                if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
+                {
+                    ShowPromptWithOutline("X", "Finish your tasks first!", hit.collider.gameObject);
+                    return;
+                }
+
                 WorkstationMonitor monitor = hit.collider.GetComponent<WorkstationMonitor>();
                 if (monitor == null) monitor = hit.collider.GetComponentInParent<WorkstationMonitor>();
 
@@ -264,7 +279,6 @@ public class PlayerInteract : MonoBehaviour
                 {
                     if (pcMenu != null) pcMenu.Hide();
 
-                    // FIX 1: Changed CanInteract() to CanUseMonitor()
                     if (monitor.CanUseMonitor())
                     {
                         ShowPromptWithOutline("E", "Use Monitor", hit.collider.gameObject);
@@ -288,6 +302,13 @@ public class PlayerInteract : MonoBehaviour
             // =============================================
             else if (shopPC)
             {
+                // Block during tutorial
+                if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
+                {
+                    ShowPromptWithOutline("X", "Finish your tasks first!", hit.collider.gameObject);
+                    return;
+                }
+
                 if (pcMenu != null) pcMenu.Hide();
                 ShowPromptWithOutline("E", "Use Computer", hit.collider.gameObject);
 

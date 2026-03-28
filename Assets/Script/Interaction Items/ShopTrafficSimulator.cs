@@ -3,14 +3,14 @@ using UnityEngine;
 public class ShopTrafficSimulator : MonoBehaviour
 {
     [Header("Foot Traffic Settings")]
-    public float checkInterval = 5f;   // Roll the dice every 5 seconds
-    [Range(0, 100)] public float walkInChance = 30f; // 30% chance someone enters
-    
+    public float checkInterval = 5f;
+    [Range(0, 100)] public float walkInChance = 30f;
+
     [Header("Limits")]
-    public int maxCustomersInside = 3; // Don't overcrowd the shop
+    public int maxCustomersInside = 3;
 
     private float timer = 0f;
-    private ShopCustomerSpawner mySpawner; // Reference to the spawner we made earlier
+    private ShopCustomerSpawner mySpawner;
 
     void Start()
     {
@@ -19,10 +19,15 @@ public class ShopTrafficSimulator : MonoBehaviour
 
     void Update()
     {
-        // 1. Check how many people are already here
+        // ── BLOCK DURING TUTORIAL ──────────────────────────────
+        // Don't let random walk-ins happen while the tutorial is running.
+        // Once tutorial is done this check costs almost nothing.
+        if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
+        return;
+        // ───────────────────────────────────────────────────────
+
         int peopleInShop = FindObjectsOfType<CustomerInside>().Length;
 
-        // 2. If we have room, run the timer
         if (peopleInShop < maxCustomersInside)
         {
             timer += Time.deltaTime;
@@ -37,18 +42,14 @@ public class ShopTrafficSimulator : MonoBehaviour
 
     void TrySpawnWalkIn()
     {
-        // Roll the dice!
         float roll = Random.Range(0f, 100f);
 
         if (roll <= walkInChance)
         {
             Debug.Log("A random customer just walked in from the street!");
-            
-            // We tell the spawner to do its job
+
             if (mySpawner != null)
-            {
-                mySpawner.SpawnCustomer(); 
-            }
+                mySpawner.SpawnCustomer();
         }
     }
 }
