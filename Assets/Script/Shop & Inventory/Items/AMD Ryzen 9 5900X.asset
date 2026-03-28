@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: amd_ryzen_5900
   itemName: AMD Ryzen 9 5900X
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 8b1e3e5cd9d204443b6f2f1f76ef8fcb, type: 3}
   category: CPU
   description: A massive 12-core processor perfect for streamers and video editors
     using the AM4 platform.

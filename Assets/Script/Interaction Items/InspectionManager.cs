@@ -20,7 +20,13 @@ public class InspectionManager : MonoBehaviour
     public GameObject tooltipPanel;
     public TextMeshProUGUI tooltipTitle;
     public TextMeshProUGUI tooltipBody;
+
+    [Tooltip("Outline material using Custom/OutlineEdge shader")]
+    public Material outlineMaterial;
+
+    [Tooltip("Subtle material for hovering over components inside Inspect Mode")]
     public Material highlightMaterial;
+
     public Material validPortMaterial;
     public Material invalidPortMaterial;
     public Material ghostMaterial;
@@ -313,20 +319,14 @@ public class InspectionManager : MonoBehaviour
         }
     }
 
-    // =========================================================================
-    //  NEW COMPATIBILITY CHECKER
-    // =========================================================================
     public bool IsPartCompatible(InspectableItem slot, InspectableItem part)
     {
-        // 1. Must be the exact same category (e.g., GPU to GPU)
         if (slot.partCategory != part.partCategory) return false;
 
-        // 2. Check for Compatibility Tags
         if (slot.requiredTags != null && slot.requiredTags.Length > 0)
         {
             if (part.compatTags == null || part.compatTags.Length == 0) return false;
 
-            // The part MUST have EVERY required tag the slot demands
             foreach (string reqTag in slot.requiredTags)
             {
                 bool hasTag = false;
@@ -338,7 +338,7 @@ public class InspectionManager : MonoBehaviour
                         break;
                     }
                 }
-                if (!hasTag) return false; // Missing a tag!
+                if (!hasTag) return false;
             }
         }
 
@@ -362,7 +362,6 @@ public class InspectionManager : MonoBehaviour
             {
                 if (IsPartCompatible(item, partData))
                 {
-                    // --- THE FIX: Force the blue ghost material onto the dummy meshes! ---
                     foreach (Renderer rend in item.GetComponentsInChildren<Renderer>(true))
                     {
                         if (ghostMaterial != null)
@@ -503,9 +502,6 @@ public class InspectionManager : MonoBehaviour
         return false;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  CLICK INTERACTIONS
-    // ─────────────────────────────────────────────────────────────────────────────
     void HandleClickInteractions()
     {
         DustSystem dust = currentClone != null ? currentClone.GetComponent<DustSystem>() : null;
@@ -551,9 +547,6 @@ public class InspectionManager : MonoBehaviour
         else if (part.isWirePort) HandleWirePort(part);
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  HOLD-TO-INSTALL  
-    // ─────────────────────────────────────────────────────────────────────────────
     void BeginInstallConfirmation(InspectableItem slot)
     {
         if (InspectionToolbarUI.Instance != null && !InspectionToolbarUI.Instance.IsScrewdriverSelected())
@@ -572,7 +565,6 @@ public class InspectionManager : MonoBehaviour
         if (partPendingInstallation != null)
         {
             InspectableItem pending = partPendingInstallation.GetComponent<InspectableItem>();
-            // NOW WE USE THE COMPATIBILITY CHECKER!
             if (pending == null || !IsPartCompatible(slot, pending))
             {
                 if (tooltipPanel)
@@ -621,10 +613,6 @@ public class InspectionManager : MonoBehaviour
         }
     }
 
-
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  HOLD-TO-REMOVE
-    // ─────────────────────────────────────────────────────────────────────────────
     void BeginRemovalConfirmation(InspectableItem part)
     {
         if (InspectionToolbarUI.Instance != null && !InspectionToolbarUI.Instance.IsScrewdriverSelected())
@@ -689,18 +677,44 @@ public class InspectionManager : MonoBehaviour
 
         ClearHighlight();
 
+        if (part.childPartsToDetach != null && part.childPartsToDetach.Count > 0)
+        {
+            Transform newParent = part.transform.parent;
+
+            foreach (GameObject childObj in part.childPartsToDetach)
+            {
+                if (childObj == null) continue;
+
+                Vector3 worldPos = childObj.transform.position;
+                Quaternion worldRot = childObj.transform.rotation;
+
+                childObj.transform.SetParent(newParent, true);
+                childObj.transform.position = worldPos;
+                childObj.transform.rotation = worldRot;
+
+                InspectableItem childItem = childObj.GetComponent<InspectableItem>();
+                if (childItem != null)
+                {
+                    childItem.isRemovable = true;
+
+                    foreach (Renderer rend in childObj.GetComponentsInChildren<Renderer>(true))
+                        rend.enabled = true;
+                    foreach (Collider col in childObj.GetComponentsInChildren<Collider>(true))
+                        col.enabled = true;
+
+                    Debug.Log($"[Detach] '{childItem.itemName}' detached from '{part.itemName}' — now independent.");
+                }
+            }
+            part.childPartsToDetach.Clear();
+        }
+
         GameObject storedPart = Instantiate(part.gameObject, voidAnchor.transform);
         storedPart.SetActive(false);
         SetLayerRecursively(storedPart, LayerMask.NameToLayer("Default"));
 
-        // =========================================================
-        // NEW: FIX "SEATING" FAULTS JUST BY REMOVING THE PART!
-        // =========================================================
         InspectableItem storedScript = storedPart.GetComponent<InspectableItem>();
         if (storedScript != null)
         {
-            // If the only issue was that it was loose or in the wrong slot, 
-            // pulling it out instantly fixes the physical problem!
             if (storedScript.fault == PartFault.NotSeated ||
                 storedScript.fault == PartFault.LooseConnection ||
                 storedScript.fault == PartFault.WrongSlot)
@@ -710,7 +724,6 @@ public class InspectionManager : MonoBehaviour
                 Debug.Log($"[Diagnosis] Fixed seating issue on {storedScript.itemName} by removing it!");
             }
         }
-        // =========================================================
 
         playerStorage.Add(storedPart);
 
@@ -726,6 +739,12 @@ public class InspectionManager : MonoBehaviour
         part.isRemovable = false;
         part.isInventorySlot = true;
 
+        foreach (InspectableItem childItem in part.GetComponentsInChildren<InspectableItem>(true))
+        {
+            childItem.isRemovable = false;
+            childItem.isInventorySlot = true;
+        }
+
         foreach (Renderer rend in part.GetComponentsInChildren<Renderer>())
         {
             Material[] ghostMats = new Material[rend.sharedMaterials.Length];
@@ -736,7 +755,47 @@ public class InspectionManager : MonoBehaviour
 
         foreach (Collider col in part.GetComponentsInChildren<Collider>())
             col.enabled = false;
+
+        Transform walkUp = part.transform.parent;
+        while (walkUp != null && walkUp.gameObject != currentClone)
+        {
+            InspectableItem parentItem = walkUp.GetComponent<InspectableItem>();
+
+            if (parentItem != null && !parentItem.isMainObject && !parentItem.isInventorySlot)
+            {
+                bool hasActiveChildren = false;
+                foreach (InspectableItem child in parentItem.GetComponentsInChildren<InspectableItem>(true))
+                {
+                    if (child == parentItem) continue;
+                    if (!child.isInventorySlot)
+                    {
+                        hasActiveChildren = true;
+                        break;
+                    }
+                }
+
+                if (!hasActiveChildren)
+                {
+                    parentItem.isInventorySlot = true;
+                    parentItem.isRemovable = false;
+
+                    foreach (Renderer rend in walkUp.GetComponents<Renderer>())
+                        rend.enabled = false;
+                    foreach (Collider col in walkUp.GetComponents<Collider>())
+                        col.enabled = false;
+
+                    Debug.Log($"[Remove] Parent '{parentItem.itemName}' auto-marked as removed (all children gone).");
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            walkUp = walkUp.parent;
+        }
     }
+
 
     void TryInstallPart(InspectableItem slot)
     {
@@ -744,7 +803,6 @@ public class InspectionManager : MonoBehaviour
         if (partPendingInstallation != null)
         {
             InspectableItem pendingScript = partPendingInstallation.GetComponent<InspectableItem>();
-            // NOW WE USE THE COMPATIBILITY CHECKER!
             if (pendingScript == null || !IsPartCompatible(slot, pendingScript))
             {
                 if (tooltipPanel)
@@ -811,9 +869,6 @@ public class InspectionManager : MonoBehaviour
         StartCoroutine(AnimateInstall(partToInstall));
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  INSTALLATION ANIMATION
-    // ─────────────────────────────────────────────────────────────────────────────
     private IEnumerator AnimateInstall(GameObject obj)
     {
         Vector3 finalPos = obj.transform.position;
@@ -883,9 +938,6 @@ public class InspectionManager : MonoBehaviour
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────────
-    //  PORT / WIRING LOGIC
-    // ─────────────────────────────────────────────────────────────────────────────
     void HandleWirePort(InspectableItem clickedPort)
     {
         if (!isWiring)
@@ -1079,12 +1131,23 @@ public class InspectionManager : MonoBehaviour
             if (port == wireStartPortItem) continue;
             Renderer rend = port.GetComponentInChildren<Renderer>();
             if (rend == null) continue;
-            bool compatible = port.connectorType == connType && port.isPSUPort != startIsPSU && !port.isOccupied;
+
+            bool compatible = port.connectorType == connType
+                           && port.isPSUPort != startIsPSU
+                           && !port.isOccupied;
+
             Material mat = compatible ? validPortMaterial : invalidPortMaterial;
             if (mat != null)
             {
-                if (!originalMaterialCache.ContainsKey(rend)) originalMaterialCache.Add(rend, rend.sharedMaterials);
-                rend.sharedMaterials = new Material[] { mat };
+                if (!originalMaterialCache.ContainsKey(rend))
+                    originalMaterialCache.Add(rend, rend.sharedMaterials);
+
+                Material[] currentMats = rend.sharedMaterials;
+                Material[] newMats = new Material[currentMats.Length + 1];
+                for (int i = 0; i < currentMats.Length; i++)
+                    newMats[i] = currentMats[i];
+                newMats[newMats.Length - 1] = mat;
+                rend.sharedMaterials = newMats;
             }
         }
     }
@@ -1300,6 +1363,27 @@ public class InspectionManager : MonoBehaviour
 
     void TogglePCPower()
     {
+        // === NEW: Check PCPowerSystem first ===
+        PCPowerSystem powerSystem = currentClone.GetComponent<PCPowerSystem>();
+
+        if (powerSystem != null)
+        {
+            string reason;
+            bool success = powerSystem.TryTogglePower(out reason);
+            isPCOn = powerSystem.isPoweredOn;
+
+            // Show feedback to the player
+            if (tooltipPanel != null)
+            {
+                tooltipPanel.SetActive(true);
+                if (tooltipTitle != null) tooltipTitle.text = success ? "Power" : "Cannot Power On";
+                if (tooltipBody != null) tooltipBody.text = reason;
+            }
+
+            return;
+        }
+
+        // === FALLBACK: Old behavior if no PCPowerSystem found ===
         isPCOn = !isPCOn;
         foreach (PCFanController fan in currentClone.GetComponentsInChildren<PCFanController>())
         {
@@ -1353,12 +1437,23 @@ public class InspectionManager : MonoBehaviour
     void HighlightObject(GameObject obj)
     {
         lastHitObject = obj;
+
+        if (highlightMaterial == null) return;
+
         foreach (Renderer rend in obj.GetComponentsInChildren<Renderer>())
         {
+            if (rend == null) continue;
+
             if (!originalMaterialCache.ContainsKey(rend))
                 originalMaterialCache.Add(rend, rend.sharedMaterials);
-            Material[] newMats = new Material[rend.sharedMaterials.Length];
-            for (int i = 0; i < newMats.Length; i++) newMats[i] = highlightMaterial;
+
+            Material[] currentMats = rend.sharedMaterials;
+            Material[] newMats = new Material[currentMats.Length + 1];
+
+            for (int i = 0; i < currentMats.Length; i++)
+                newMats[i] = currentMats[i];
+
+            newMats[newMats.Length - 1] = highlightMaterial;
             rend.sharedMaterials = newMats;
         }
     }
@@ -1366,7 +1461,10 @@ public class InspectionManager : MonoBehaviour
     void ClearHighlight()
     {
         foreach (var kv in originalMaterialCache)
-            if (kv.Key != null) kv.Key.sharedMaterials = kv.Value;
+        {
+            if (kv.Key != null)
+                kv.Key.sharedMaterials = kv.Value;
+        }
         originalMaterialCache.Clear();
         lastHitObject = null;
     }
@@ -1385,7 +1483,6 @@ public class InspectionManager : MonoBehaviour
         else if (part.isInventorySlot)
             extra = "\n<size=75%><color=#4AE0FF>Hold to install</color></size>";
 
-        // NEW: Show fault diagnosis info
         if (part.IsFaulty())
         {
             extra += "\n\n<size=80%><color=#FF4444>⚠ FAULT DETECTED</color></size>";

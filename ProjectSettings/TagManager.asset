@@ -15,6 +15,9 @@ TagManager:
   - ShopInsideDoor
   - NPC
   - BrowseSpot
+  - PowerCordSlot
+  - WorkstationMonitor
+  - PowerCord
   layers:
   - Default
   - TransparentFX

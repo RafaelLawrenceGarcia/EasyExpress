@@ -29,7 +29,8 @@ public class InspectableItem : MonoBehaviour
     [TextArea(3, 5)]
     public string itemDescription = "No description available.";
     public GameObject itemIconPrefab;
-    [HideInInspector] public Sprite cachedShopIcon; // ← ADD THIS LINE
+    [HideInInspector] public Sprite cachedShopIcon;
+
     [Header("Interaction Rules")]
     public bool isMainObject = false;
 
@@ -49,18 +50,11 @@ public class InspectableItem : MonoBehaviour
     [HideInInspector] public GameObject attachedWire = null;
 
     [Header("Wiring - Ribbon Spread")]
-    [Tooltip("World-space axis along which strands fan out. Ignores the port GameObject's rotation.\n" +
-             "• Motherboard / device ports → (0,1,0) = world UP   → vertical spread\n" +
-             "• PSU ports                  → (1,0,0) = world RIGHT → horizontal spread")]
+    [Tooltip("World-space axis along which strands fan out.")]
     public Vector3 ribbonAxis = Vector3.up;
 
     [Header("Wire Head Placement")]
-    [Tooltip("Tick this on the port that should receive the connector head mesh " +
-             "(e.g. the motherboard 24-pin socket).")]
     public bool placeHeadHere = false;
-
-    [Tooltip("Drag the already-placed connector head GameObject here. " +
-             "It will be hidden by default and shown when the wire is connected.")]
     public GameObject wireHead = null;
 
     void Awake()
@@ -71,6 +65,21 @@ public class InspectableItem : MonoBehaviour
     [Header("Removal Prerequisites")]
     public List<InspectableItem> blockingParts = new List<InspectableItem>();
 
+    // =============================================
+    //  NEW: CHILD DETACH SYSTEM
+    //  Drag child GameObjects here that should NOT
+    //  be removed when this part is removed.
+    //  Example: On your CPU, drag the Cooler, Pipes,
+    //  and Backplate here. When the CPU is removed,
+    //  these children get re-parented to the case
+    //  and stay behind as independent parts.
+    // =============================================
+    [Header("Child Detach (CPU Fix)")]
+    [Tooltip("Child objects that should stay behind when this part is removed.\n" +
+             "Example: On CPU, drag the Cooler, PipeLocker, and Backplate here.\n" +
+             "They will become independent parts instead of being removed with the CPU.")]
+    public List<GameObject> childPartsToDetach = new List<GameObject>();
+
     // Set at runtime when this object is a ghost placeholder for a removed part
     [HideInInspector] public bool isInventorySlot = false;
     [HideInInspector] public string inventoryEntryId = "";
@@ -80,9 +89,6 @@ public class InspectableItem : MonoBehaviour
     [HideInInspector] public PartFault fault = PartFault.None;
     [HideInInspector] public string faultDescription = "";
 
-    /// <summary>
-    /// Returns true if this part has any fault.
-    /// </summary>
     public bool IsFaulty()
     {
         return fault != PartFault.None;

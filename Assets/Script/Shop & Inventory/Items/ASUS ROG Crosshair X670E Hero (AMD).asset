@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: asus_rog_x670
   itemName: ASUS ROG Crosshair X670E Hero (AMD)
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 94cbfac0e6d546c45ada88ded4120688, type: 3}
   category: Motherboard
   description: An enthusiast-grade board built for extreme overclocking on the new
     AM5 platform.

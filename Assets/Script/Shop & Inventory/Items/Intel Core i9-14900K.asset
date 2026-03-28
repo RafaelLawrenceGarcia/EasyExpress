@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: cpu_i9_14900
   itemName: Intel Core i9-14900K
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 562b1719a5fa5574ab2e85b2dba065c2, type: 3}
   category: CPU
   description: A monstrous CPU that crushes any heavy workload or high-end game you
     throw at it.

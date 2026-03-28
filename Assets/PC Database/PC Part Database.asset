@@ -18,7 +18,7 @@ MonoBehaviour:
   - partCategory: Motherboard
     partName: B550M Aorus Pro (AMD)
     partPrefab: {fileID: 7402668134811180990, guid: e9560bebbc2cd9442a1a6dc6acc88c6e, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 94cbfac0e6d546c45ada88ded4120688, type: 3}
     compatTags:
     - AM4
     - DDR4
@@ -28,10 +28,12 @@ MonoBehaviour:
     powerDraw: 15
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: Motherboard
     partName: X670E ROG Hero (AMD)
     partPrefab: {fileID: 7402668134811180990, guid: e9560bebbc2cd9442a1a6dc6acc88c6e, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 94cbfac0e6d546c45ada88ded4120688, type: 3}
     compatTags:
     - AM5
     - DDR5
@@ -41,10 +43,12 @@ MonoBehaviour:
     powerDraw: 20
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: Motherboard
     partName: Z790 Tomahawk (Intel)
     partPrefab: {fileID: 7402668134811180990, guid: e9560bebbc2cd9442a1a6dc6acc88c6e, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 38f85c78622c60146980bf4fde2c6fa4, type: 3}
     compatTags:
     - LGA1700
     - DDR5
@@ -54,6 +58,8 @@ MonoBehaviour:
     powerDraw: 20
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   psus:
   - partCategory: PSU
     partName: 850W 80+ Gold PSU
@@ -64,6 +70,8 @@ MonoBehaviour:
     powerDraw: 0
     maxWattage: 850
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: PSU
     partName: 650W 80+ Bronze PSU
     partPrefab: {fileID: 9167510366309624687, guid: c4da24ededcfbcc47b85626d08e195aa, type: 3}
@@ -73,6 +81,8 @@ MonoBehaviour:
     powerDraw: 0
     maxWattage: 650
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: PSU
     partName: 1000W 80+ Platinum PSU
     partPrefab: {fileID: 9167510366309624687, guid: c4da24ededcfbcc47b85626d08e195aa, type: 3}
@@ -82,16 +92,20 @@ MonoBehaviour:
     powerDraw: 0
     maxWattage: 1000
     isDusty: 0
+    fault: 0
+    faultDescription: 
   cpus:
   - partCategory: CPU
     partName: Intel Core i5-12600K
     partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 562b1719a5fa5574ab2e85b2dba065c2, type: 3}
     compatTags:
     - LGA1700
     powerDraw: 150
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: CPU
     partName: Intel Core i7-13700K
     partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
@@ -101,144 +115,176 @@ MonoBehaviour:
     powerDraw: 253
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: CPU
     partName: Intel Core i9-14900K
     partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 562b1719a5fa5574ab2e85b2dba065c2, type: 3}
     compatTags:
     - LGA1700
     powerDraw: 253
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: CPU
     partName: AMD Ryzen 5 5600X
     partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 8b1e3e5cd9d204443b6f2f1f76ef8fcb, type: 3}
     compatTags:
     - AM4
     powerDraw: 65
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: CPU
     partName: AMD Ryzen 5 7600X
     partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 8b1e3e5cd9d204443b6f2f1f76ef8fcb, type: 3}
     compatTags:
     - AM5
     powerDraw: 105
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: CPU
     partName: AMD Ryzen 7 7800X3D
     partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 8b1e3e5cd9d204443b6f2f1f76ef8fcb, type: 3}
     compatTags:
     - AM5
     powerDraw: 120
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: CPU
     partName: AMD Ryzen 9 5900X
     partPrefab: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 562b1719a5fa5574ab2e85b2dba065c2, type: 3}
     compatTags:
     - AM4
     powerDraw: 105
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   gpus:
   - partCategory: GPU
     partName: GTX 1660 Super 6GB
     partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
     compatTags:
     - PCIe_x16
     powerDraw: 125
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: GPU
     partName: RTX 3060 12GB
     partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
     compatTags:
     - PCIe_x16
     powerDraw: 170
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: GPU
     partName: RX 6700 XT 12GB
     partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
     compatTags:
     - PCIe_x16
     powerDraw: 230
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: GPU
     partName: RTX 4070 12GB
     partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
     compatTags:
     - PCIe_x16
     powerDraw: 200
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: GPU
     partName: RTX 4070 12GB
     partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
     compatTags:
     - PCIe_x16
     powerDraw: 200
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   rams:
   - partCategory: RAM
     partName: 16GB (2x8GB) DDR4-3200
     partPrefab: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 97735e69c457eee44a68a2896cd43912, type: 3}
     compatTags:
     - DDR4
     powerDraw: 6
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: RAM
     partName: 32GB (2x16GB) DDR4-3600
     partPrefab: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 97735e69c457eee44a68a2896cd43912, type: 3}
     compatTags:
     - DDR4
     powerDraw: 8
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: RAM
     partName: 32GB (2x16GB) DDR5-6000
     partPrefab: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 97735e69c457eee44a68a2896cd43912, type: 3}
     compatTags:
     - DDR5
     powerDraw: 10
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   storage:
   - partCategory: SSD
     partName: 1TB NVMe M.2 Gen4
     partPrefab: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 5a690ea349d130142801e90f97aa4a9f, type: 3}
     compatTags:
     - M.2
     powerDraw: 8
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: SSD
     partName: 2TB NVMe M.2 Gen4
     partPrefab: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 5a690ea349d130142801e90f97aa4a9f, type: 3}
     compatTags:
     - M.2
     powerDraw: 8
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   coolers: []
   fans:
   - partCategory: Case Fan
@@ -249,6 +295,8 @@ MonoBehaviour:
     powerDraw: 3
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   - partCategory: Case Fan
     partName: 140mm High Airflow Fan
     partPrefab: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
@@ -257,12 +305,15 @@ MonoBehaviour:
     powerDraw: 4
     maxWattage: 0
     isDusty: 0
+    fault: 0
+    faultDescription: 
   cpuChance: 90
   gpuChance: 75
   ramChance: 95
   storageChance: 70
   coolerChance: 80
   fanChance: 40
+  buildJobChance: 35
   minRAMSticks: 1
   maxRAMSticks: 4
   minLabourCost: 100

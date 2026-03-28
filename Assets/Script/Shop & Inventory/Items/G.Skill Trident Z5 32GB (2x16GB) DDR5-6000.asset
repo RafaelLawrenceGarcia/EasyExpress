@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: ram_gskill
   itemName: G.Skill Trident Z5 32GB (2x16GB) DDR5-6000
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 97735e69c457eee44a68a2896cd43912, type: 3}
   category: RAM
   description: Lightning-fast next-generation memory for top-tier AM5 and LGA1700
     builds.

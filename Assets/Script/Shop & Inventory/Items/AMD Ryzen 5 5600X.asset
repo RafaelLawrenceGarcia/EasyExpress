@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: amd_ryzen_5600
   itemName: AMD Ryzen 5 5600X
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 8b1e3e5cd9d204443b6f2f1f76ef8fcb, type: 3}
   category: CPU
   description: The legendary price-to-performance king for budget AM4 builds.
   specs: 'Socket: AM4 | Cores: 6 | Base Clock: 3.7 GHz | Power Draw: 65W'

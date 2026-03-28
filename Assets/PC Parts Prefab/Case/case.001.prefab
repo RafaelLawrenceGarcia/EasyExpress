@@ -105,10 +105,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: PC Case
   partCategory: SidePanel
   itemDescription: No description available.
-  itemIconPrefab: {fileID: 0}
+  itemIconPrefab: {fileID: 4240565286694199474}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -127,8 +133,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!64 &8416663809128829827
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -163,10 +172,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -181,5 +196,8 @@ MonoBehaviour:
   placeHeadHere: 0
   wireHead: {fileID: 0}
   blockingParts: []
+  childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 

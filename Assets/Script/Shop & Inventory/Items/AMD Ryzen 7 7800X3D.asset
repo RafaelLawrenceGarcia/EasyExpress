@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: amd_ryzen_7800
   itemName: AMD Ryzen 7 7800X3D
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 8b1e3e5cd9d204443b6f2f1f76ef8fcb, type: 3}
   category: CPU
   description: The ultimate gaming CPU featuring cutting-edge 3D V-Cache technology.
   specs: 'Socket: AM5 | Cores: 8 | Base Clock: 4.2 GHz | Power Draw: 120W'

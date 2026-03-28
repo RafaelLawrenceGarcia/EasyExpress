@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: ram_kingston_32gb
   itemName: Kingston FURY Beast 32GB (2x16GB) DDR4-3600
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 97735e69c457eee44a68a2896cd43912, type: 3}
   category: RAM
   description: High-capacity, fast DDR4 memory perfect for heavy multitasking and
     video editing.

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: cpu_i7_13700
   itemName: Intel Core i7-13700K
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 562b1719a5fa5574ab2e85b2dba065c2, type: 3}
   category: CPU
   description: A hybrid-architecture powerhouse that dominates both high-end gaming
     and heavy productivity tasks.

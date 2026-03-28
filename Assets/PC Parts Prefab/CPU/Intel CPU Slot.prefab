@@ -135,6 +135,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -149,8 +150,11 @@ MonoBehaviour:
   placeHeadHere: 0
   wireHead: {fileID: 0}
   blockingParts: []
+  childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &2252500206942124367
 GameObject:
   m_ObjectHideFlags: 0
@@ -294,6 +298,7 @@ MonoBehaviour:
   partCategory: CPU
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -307,9 +312,16 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 8226398569718017810}
+  - {fileID: 1622945207964821549}
+  childPartsToDetach:
+  - {fileID: 6054807955232093515}
+  - {fileID: 1815271592048194995}
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &4929925901569787133
 GameObject:
   m_ObjectHideFlags: 0
@@ -446,6 +458,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -460,8 +473,11 @@ MonoBehaviour:
   placeHeadHere: 0
   wireHead: {fileID: 0}
   blockingParts: []
+  childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &6054807955232093515
 GameObject:
   m_ObjectHideFlags: 0
@@ -597,8 +613,9 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
-  isRemovable: 0
+  isRemovable: 1
   isPowerButton: 0
   isWirePort: 0
   parentComponent: {fileID: 0}
@@ -610,9 +627,13 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 8226398569718017810}
+  childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &8415642080068700037
 GameObject:
   m_ObjectHideFlags: 0

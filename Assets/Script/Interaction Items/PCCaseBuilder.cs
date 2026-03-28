@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class PCCaseBuilder : MonoBehaviour
 {
-    // NEW: Link this PC back to the email job it came from
+    // Link this PC back to the email job it came from
     [HideInInspector] public EmailData linkedEmail;
 
     public void BuildFromData(List<StartingPCComponent> partsToInstall)
@@ -16,6 +16,14 @@ public class PCCaseBuilder : MonoBehaviour
             if (child.name.StartsWith("Slot_"))
                 dummySlots.Add(child);
         }
+
+        // =============================================
+        //  TRACK INSTALLED PARTS FOR BLOCKING SYSTEM
+        // =============================================
+        // We need to remember which real parts were placed
+        // so we can set up the motherboard's blocking list.
+        InspectableItem motherboardScript = null;
+        List<InspectableItem> allInstalledParts = new List<InspectableItem>();
 
         foreach (StartingPCComponent part in partsToInstall)
         {
@@ -52,6 +60,22 @@ public class PCCaseBuilder : MonoBehaviour
                     {
                         partScript.blockingParts = new List<InspectableItem>(dummyScript.blockingParts);
                     }
+
+                    // =============================================
+                    //  NEW: MAKE MOTHERBOARD REMOVABLE
+                    // =============================================
+                    if (part.partCategory == "Motherboard")
+                    {
+                        partScript.isRemovable = true;
+                        motherboardScript = partScript;
+
+                        // Initialize blocking list (will be filled after all parts are placed)
+                        if (partScript.blockingParts == null)
+                            partScript.blockingParts = new List<InspectableItem>();
+                    }
+
+                    // Track all non-motherboard parts for blocking
+                    allInstalledParts.Add(partScript);
                 }
 
                 // Also set category on ALL child InspectableItems
@@ -75,6 +99,31 @@ public class PCCaseBuilder : MonoBehaviour
             }
         }
 
+        // =============================================
+        //  NEW: SET UP MOTHERBOARD BLOCKING
+        //  Every installed part blocks the motherboard
+        //  so you MUST remove all parts before you can
+        //  take out the motherboard.
+        // =============================================
+        if (motherboardScript != null)
+        {
+            foreach (InspectableItem installedPart in allInstalledParts)
+            {
+                // Don't add the motherboard as blocking itself!
+                if (installedPart == motherboardScript) continue;
+
+                // Don't add PSU (it's not ON the motherboard)
+                if (installedPart.partCategory == "PSU") continue;
+
+                if (!motherboardScript.blockingParts.Contains(installedPart))
+                {
+                    motherboardScript.blockingParts.Add(installedPart);
+                }
+            }
+
+            Debug.Log($"[PC Builder] Motherboard is removable. Blocked by {motherboardScript.blockingParts.Count} parts.");
+        }
+
         // Turn leftover Slot_ dummies into proper ghost slots
         foreach (Transform leftoverDummy in dummySlots)
         {
@@ -95,6 +144,7 @@ public class PCCaseBuilder : MonoBehaviour
                 col.enabled = false;
             Debug.Log($"[PC Builder] Created ghost slot for: {category}");
         }
+
         // Apply dust if any part flagged it
         bool shouldBeDusty = false;
         foreach (StartingPCComponent part in partsToInstall)
