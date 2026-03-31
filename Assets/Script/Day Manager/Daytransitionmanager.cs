@@ -32,7 +32,6 @@ public class DayTransitionManager : MonoBehaviour
     {
         Instance = this;
 
-        // THE FIX: Load the Day immediately so it never accidentally defaults to Day 1!
         if (PlayerPrefs.GetInt("IsLoadingGame", 0) == 1 || PlayerPrefs.GetInt("TutorialDone", 0) == 1)
         {
             currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
@@ -50,6 +49,12 @@ public class DayTransitionManager : MonoBehaviour
         if (dayText != null) dayText.alpha = 0f;
 
         bool isChangingRooms = PlayerPrefs.GetInt("ChangingRooms", 0) == 1;
+
+        // Auto-load cloud data if we have a saved day (not first time)
+        if (PlayerPrefs.GetInt("TutorialDone", 0) == 1 && CloudDataHandler.Instance != null)
+        {
+            CloudDataHandler.Instance.LoadGameData();
+        }
 
         if (isChangingRooms)
         {
@@ -77,7 +82,6 @@ public class DayTransitionManager : MonoBehaviour
     public int GetCurrentDay() { return currentDay; }
     public bool IsTransitioning() { return isTransitioning; }
 
-    // --- THE FIX: Instantly clears the black screen without playing the morning animation ---
     public void SkipDayIntro()
     {
         if (transitionCanvas != null) transitionCanvas.enabled = false;
@@ -110,15 +114,12 @@ public class DayTransitionManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(holdDuration);
         yield return StartCoroutine(FadeText(1f, 0f, 0.4f));
 
-        // Fade the black image out
         yield return StartCoroutine(FadePanel(1f, 0f, fadeOutDuration));
 
-        // Disable the Canvas so it doesn't block clicks
         if (transitionCanvas != null) transitionCanvas.enabled = false;
 
         FreezePlayer(false);
         isTransitioning = false;
-        // Update the HUD
         if (hudDayText != null) hudDayText.text = "Day " + currentDay;
         OnNewDayStarted?.Invoke(currentDay);
         onComplete?.Invoke();
@@ -139,6 +140,18 @@ public class DayTransitionManager : MonoBehaviour
         // Fade to black
         yield return StartCoroutine(FadePanel(0f, 1f, fadeInDuration));
 
+        // =============================================
+        //  SAVE GAME DATA TO CLOUD BEFORE ADVANCING
+        // =============================================
+        if (CloudDataHandler.Instance != null)
+        {
+            CloudDataHandler.Instance.SaveGameData();
+            Debug.Log("[DayTransition] Cloud save triggered.");
+        }
+
+        // Reset daily walk-in counter
+        WalkInLimiter.ResetDaily();
+
         currentDay++;
         PlayerPrefs.SetInt("CurrentDay", currentDay);
         PlayerPrefs.Save();
@@ -156,14 +169,12 @@ public class DayTransitionManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(0.3f);
 
-        // Fade black image out
         yield return StartCoroutine(FadePanel(1f, 0f, fadeOutDuration));
 
         if (transitionCanvas != null) transitionCanvas.enabled = false;
 
         FreezePlayer(false);
         isTransitioning = false;
-        // Update the HUD
         if (hudDayText != null) hudDayText.text = "Day " + currentDay;
         OnNewDayStarted?.Invoke(currentDay);
     }
@@ -223,11 +234,9 @@ public class DayTransitionManager : MonoBehaviour
         }
         else
         {
-            // Re-lock cursor for normal gameplay
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            // CRITICAL: fully disable the canvas so it never blocks UI clicks
             if (transitionCanvas != null) transitionCanvas.enabled = false;
         }
     }

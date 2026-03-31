@@ -79,7 +79,7 @@ public class InspectionManager : MonoBehaviour
     private InspectableItem wireStartPortItem;
     private Transform wireStartTransform;
     private GameObject activeWireHead;
-    private GameObject activeWireTail;
+
     private Coroutine activeSnapCoroutine;
     private Vector3 activeRibbonDir = Vector3.right;
     private Vector3 activeEndRibbonDir = Vector3.up;
@@ -109,6 +109,7 @@ public class InspectionManager : MonoBehaviour
     private Transform savedOriginalParent;
     private bool savedRbKinematic;
     private Dictionary<GameObject, int> originalLayerCache = new Dictionary<GameObject, int>();
+    private bool tooltipAnchored = false;
 
     void Start()
     {
@@ -465,6 +466,7 @@ public class InspectionManager : MonoBehaviour
         if (infoPanel) infoPanel.SetActive(false);
         if (tooltipPanel) tooltipPanel.SetActive(false);
         if (controlsUI) controlsUI.SetActive(false);
+        tooltipAnchored = false;
 
         if (InspectionToolbarUI.Instance != null) InspectionToolbarUI.Instance.Hide();
 
@@ -866,6 +868,47 @@ public class InspectionManager : MonoBehaviour
 
         Destroy(slot.gameObject);
         HideAllGhostSlots();
+
+        // Initialize any Slot_ children inside the newly installed part as ghost slots
+        // This allows parts like motherboards to accept sub-parts (CPU, RAM, etc.) after being installed
+        foreach (Transform child in partToInstall.GetComponentsInChildren<Transform>(true))
+        {
+            if (child.name.StartsWith("Slot_"))
+            {
+                InspectableItem ghostScript = child.GetComponent<InspectableItem>();
+                if (ghostScript == null)
+                    ghostScript = child.gameObject.AddComponent<InspectableItem>();
+
+                if (!ghostScript.isInventorySlot && !ghostScript.isRemovable)
+                {
+                    string category = child.name.Replace("Slot_", "").Trim();
+                    ghostScript.partCategory = category;
+                    ghostScript.itemName = category + " Slot";
+                    ghostScript.itemDescription = "Install a " + category + " here.";
+                    ghostScript.isInventorySlot = true;
+                    ghostScript.isRemovable = false;
+
+                    foreach (Renderer r in child.GetComponentsInChildren<Renderer>())
+                        r.enabled = false;
+                    foreach (Collider col in child.GetComponentsInChildren<Collider>())
+                        col.enabled = false;
+                }
+            }
+        }
+
+        // Disable fans if PC is not powered on — prevents fans spinning immediately on install
+        PCPowerSystem powerSystem = currentClone.GetComponent<PCPowerSystem>();
+        if (powerSystem == null || !powerSystem.isPoweredOn)
+        {
+            foreach (PCFanController fan in partToInstall.GetComponentsInChildren<PCFanController>())
+            {
+                fan.enabled = false;
+                Renderer fanRend = fan.GetComponentInChildren<Renderer>();
+                if (fanRend != null && fanRend.material.HasProperty("_EmissionColor"))
+                    fanRend.material.SetColor("_EmissionColor", Color.black);
+            }
+        }
+
         StartCoroutine(AnimateInstall(partToInstall));
     }
 
@@ -1103,7 +1146,7 @@ public class InspectionManager : MonoBehaviour
         if (activeSnapCoroutine != null) StopCoroutine(activeSnapCoroutine);
         activeSnapCoroutine = StartCoroutine(AnimateCableSnap(lrSnapshot, snapConnType, finalPath, 0.4f, activeRibbonDir, activeEndRibbonDir));
 
-        activeWireTail = null; activeWireLine = null; activeWireLines.Clear();
+
         wireStartPortItem = null; wireStartTransform = null; activeWireConnectorType = "";
     }
 
@@ -1496,8 +1539,24 @@ public class InspectionManager : MonoBehaviour
 
     void MoveTooltip()
     {
-        if (tooltipPanel)
-            tooltipPanel.transform.position = Input.mousePosition + new Vector3(20, -20, 0);
+        if (!tooltipPanel) return;
+
+        // Anchor the tooltip to the top-right corner once
+        if (!tooltipAnchored)
+        {
+            RectTransform rt = tooltipPanel.GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                rt.anchorMin = new Vector2(1, 1);
+                rt.anchorMax = new Vector2(1, 1);
+                rt.pivot = new Vector2(1, 1);
+                tooltipAnchored = true;
+            }
+        }
+
+        RectTransform rect = tooltipPanel.GetComponent<RectTransform>();
+        if (rect != null)
+            rect.anchoredPosition = new Vector2(-20, -20);
     }
 
     private IEnumerator AnimateRemovalAndDestroy(GameObject obj)

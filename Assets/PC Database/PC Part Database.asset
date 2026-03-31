@@ -175,7 +175,7 @@ MonoBehaviour:
   gpus:
   - partCategory: GPU
     partName: GTX 1660 Super 6GB
-    partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+    partPrefab: {fileID: 7569750174951828164, guid: 7ebc957d882542e43ad51c359cb56d1c, type: 3}
     partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
     compatTags:
     - PCIe_x16
@@ -186,7 +186,7 @@ MonoBehaviour:
     faultDescription: 
   - partCategory: GPU
     partName: RTX 3060 12GB
-    partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+    partPrefab: {fileID: 7569750174951828164, guid: efd2604512d860d4e929f8d060d9c5ae, type: 3}
     partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
     compatTags:
     - PCIe_x16
@@ -208,18 +208,7 @@ MonoBehaviour:
     faultDescription: 
   - partCategory: GPU
     partName: RTX 4070 12GB
-    partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
-    partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
-    compatTags:
-    - PCIe_x16
-    powerDraw: 200
-    maxWattage: 0
-    isDusty: 0
-    fault: 0
-    faultDescription: 
-  - partCategory: GPU
-    partName: RTX 4070 12GB
-    partPrefab: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+    partPrefab: {fileID: 7569750174951828164, guid: efd2604512d860d4e929f8d060d9c5ae, type: 3}
     partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
     compatTags:
     - PCIe_x16
@@ -290,7 +279,7 @@ MonoBehaviour:
   - partCategory: Case Fan
     partName: 120mm RGB Case Fan
     partPrefab: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 43386347a95a9af41be3c4a376003fa9, type: 3}
     compatTags: []
     powerDraw: 3
     maxWattage: 0
@@ -299,20 +288,20 @@ MonoBehaviour:
     faultDescription: 
   - partCategory: Case Fan
     partName: 140mm High Airflow Fan
-    partPrefab: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
-    partIcon: {fileID: 0}
+    partPrefab: {fileID: 2579925757013124890, guid: b1d30a72e4f22a3469d3f008fa0e914c, type: 3}
+    partIcon: {fileID: 21300000, guid: b375ac3ec2fc26f43a8fa02a5a36ddff, type: 3}
     compatTags: []
     powerDraw: 4
     maxWattage: 0
     isDusty: 0
     fault: 0
     faultDescription: 
-  cpuChance: 90
+  cpuChance: 100
   gpuChance: 75
   ramChance: 95
-  storageChance: 70
-  coolerChance: 80
-  fanChance: 40
+  storageChance: 90.6
+  coolerChance: 93
+  fanChance: 100
   buildJobChance: 35
   minRAMSticks: 1
   maxRAMSticks: 4

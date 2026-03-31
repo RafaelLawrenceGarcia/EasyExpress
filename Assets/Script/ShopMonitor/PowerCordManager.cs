@@ -1,35 +1,28 @@
 using UnityEngine;
 
 /// <summary>
-/// PowerCordManager — Manages picking up, carrying, and plugging in power cords.
+/// PowerCordManager — Manages picking up the power cord plug
+/// and connecting it to a PC's PSU port.
 ///
-/// This script integrates with your existing PlayerInteract system.
-/// It handles the "carrying a cord" state separately from PlacementManager
-/// so it doesn't conflict with box carrying.
+/// Attach to the Player (same object as PlayerInteract).
+///
+/// SIMPLIFIED FLOW (matches your prefab structure):
+///   1. Player looks at the PowerCord child (the plug end) → "E: Pick Up Power Cord"
+///   2. Press E → plug is hidden, player is carrying it
+///   3. Player looks at a PC on the workstation → "E: Plug In Power Cord"
+///   4. Press E → plug snaps to PSU port, power flows
+///   5. Player looks at a plugged-in cord → "E: Unplug Power Cord"
+///   6. Press E → cord returns to its resting spot on the outlet
+///
+///   Press Q while carrying → cord returns to outlet (cancel)
 ///
 /// SETUP:
-///   1. Attach this to the same GameObject as PlayerInteract (the player).
-///   2. Drag references in the Inspector:
-///      - mainCam: your player camera
-///      - interactLayer: same layer mask as PlayerInteract
-///      - interactionPrompt: same InteractionPromptUI as PlayerInteract
-///   3. Make sure PSU cord objects are tagged "PowerCord" and on the interact layer.
-///   4. Make sure PC cases have PCPowerSystem + a child tagged "PowerCordSlot".
-///
-/// HOW IT WORKS:
-///   • When NOT carrying a cord:
-///     - Raycast hits a "PowerCord" tag → shows "E: Pick Up Power Cord"
-///     - Press E → cord is hidden, player enters carrying state
-///     - Raycast hits a plugged-in cord → shows "E: Unplug Power Cord"
-///     - Press E → cord unplugs, player picks it up immediately
-///
-///   • When CARRYING a cord:
-///     - Raycast hits a "PickupPC" with PCPowerSystem → shows "E: Plug In Power Cord"
-///     - Press E → cord snaps to PSU slot
-///     - Press Q → drop the cord on the ground
-///
-///   • This script yields to PlacementManager — if the player is already
-///     holding a box, power cord interactions are disabled.
+///   1. Attach to the Player object
+///   2. Drag: mainCam, interactLayer, interactionPrompt, placementManager
+///   3. PowerCord children tagged "PowerCord" on NPC layer
+///   4. PC cases have PCPowerSystem + child tagged "PowerCordSlot" on NPC layer
+///   5. IMPORTANT: The outlet body / wire mesh siblings must be on
+///      Default layer so they don't block the raycast!
 /// </summary>
 public class PowerCordManager : MonoBehaviour
 {
@@ -40,19 +33,29 @@ public class PowerCordManager : MonoBehaviour
     public InteractionPromptUI interactionPrompt;
     public PlacementManager placementManager;
 
-    [Header("State")]
+    [Header("State (Read-Only)")]
     public bool isCarryingCord = false;
+    public bool isHandlingInteraction = false;
 
     private PowerCordInteraction carriedCord = null;
+    private InspectionManager cachedInspection;
 
-    void Update()
+    void Start()
     {
-        // Don't interfere if player is holding a box or in a menu
+        cachedInspection = FindObjectOfType<InspectionManager>();
+    }
+
+    // LateUpdate runs AFTER PlayerInteract.Update()
+    // so our prompts don't get overridden by HideAllPrompts()
+    void LateUpdate()
+    {
+        isHandlingInteraction = false;
+
+        // Don't interfere if player is holding a box
         if (placementManager != null && placementManager.isHoldingItem) return;
 
-        // Don't run if InspectionManager is active
-        InspectionManager inspection = FindObjectOfType<InspectionManager>();
-        if (inspection != null && inspection.isInspecting) return;
+        // Don't run during inspection mode
+        if (cachedInspection != null && cachedInspection.isInspecting) return;
 
         if (isCarryingCord)
             HandleCarrying();
@@ -71,33 +74,38 @@ public class PowerCordManager : MonoBehaviour
 
         if (!Physics.Raycast(ray, out hit, interactRange, interactLayer)) return;
 
-        // --- LOOSE CORD ON THE GROUND ---
+        // --- Check if we hit a PowerCord (the plug end) ---
         PowerCordInteraction cord = hit.collider.GetComponent<PowerCordInteraction>();
         if (cord == null) cord = hit.collider.GetComponentInParent<PowerCordInteraction>();
 
         if (cord != null)
         {
-            if (cord.isPluggedIn)
+            isHandlingInteraction = true;
+
+            if (cord.isPluggedIntoPC)
             {
-                // Show unplug prompt
-                if (interactionPrompt != null) interactionPrompt.Show("E", "Unplug Power Cord");
+                // Cord is plugged into a PC → offer to unplug
+                if (interactionPrompt != null)
+                    interactionPrompt.Show("E", "Unplug Power Cord");
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    cord.Unplug();
-                    PickUpCord(cord);
+                    cord.UnplugFromPC();
+                    if (interactionPrompt != null) interactionPrompt.Hide();
                 }
             }
             else
             {
-                // Show pickup prompt
-                if (interactionPrompt != null) interactionPrompt.Show("E", "Pick Up Power Cord");
+                // Cord is loose (resting on outlet) → pick it up
+                if (interactionPrompt != null)
+                    interactionPrompt.Show("E", "Pick Up Power Cord");
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
                     PickUpCord(cord);
                 }
             }
+            return;
         }
     }
 
@@ -106,10 +114,14 @@ public class PowerCordManager : MonoBehaviour
     // =============================================
     void HandleCarrying()
     {
-        // DROP with Q
+        if (carriedCord == null) { isCarryingCord = false; return; }
+
+        isHandlingInteraction = true;
+
+        // CANCEL with Q → cord returns to outlet
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            DropCord();
+            CancelCord();
             return;
         }
 
@@ -118,19 +130,18 @@ public class PowerCordManager : MonoBehaviour
 
         if (!Physics.Raycast(ray, out hit, interactRange, interactLayer))
         {
-            if (interactionPrompt != null) interactionPrompt.Show("Q", "Drop Power Cord");
+            if (interactionPrompt != null)
+                interactionPrompt.Show("Q", "Cancel | Look at PC to plug in");
             return;
         }
 
-        // --- LOOKING AT A PC ON THE WORKSTATION ---
-        // Check if we hit a PowerCordSlot tag directly
+        // --- Check if we hit a PC's PSU port or the PC itself ---
         PCPowerSystem targetPC = null;
 
         if (hit.collider.CompareTag("PowerCordSlot"))
         {
             targetPC = hit.collider.GetComponentInParent<PCPowerSystem>();
         }
-        // Or if we hit the PC case itself
         else if (hit.collider.CompareTag("PickupPC"))
         {
             targetPC = hit.collider.GetComponent<PCPowerSystem>();
@@ -140,7 +151,7 @@ public class PowerCordManager : MonoBehaviour
 
         if (targetPC != null)
         {
-            // Check if this PC already has a cord
+            // PC already has a cord?
             if (targetPC.isPowerCordConnected)
             {
                 if (interactionPrompt != null)
@@ -159,8 +170,9 @@ public class PowerCordManager : MonoBehaviour
             return;
         }
 
-        // Not looking at anything useful — show drop hint
-        if (interactionPrompt != null) interactionPrompt.Show("Q", "Drop Power Cord");
+        // Not looking at anything useful
+        if (interactionPrompt != null)
+            interactionPrompt.Show("Q", "Cancel | Look at PC to plug in");
     }
 
     // =============================================
@@ -172,55 +184,46 @@ public class PowerCordManager : MonoBehaviour
         isCarryingCord = true;
         carriedCord = cord;
 
-        // Hide the cord while carrying
+        // Hide the plug while carrying
         cord.gameObject.SetActive(false);
-        cord.transform.SetParent(null); // Detach from any parent
 
         if (interactionPrompt != null) interactionPrompt.Hide();
-
-        Debug.Log($"[PowerCordManager] Picked up {cord.gameObject.name}.");
+        Debug.Log($"[PowerCordManager] Picked up {cord.name}.");
     }
 
     void PlugCordInto(PCPowerSystem pc)
     {
         if (carriedCord == null) return;
 
-        // Re-enable the cord and plug it in
+        // Show the plug again and connect it
         carriedCord.gameObject.SetActive(true);
-        carriedCord.PlugInto(pc);
+        carriedCord.PlugIntoPC(pc);
 
         isCarryingCord = false;
         carriedCord = null;
 
         if (interactionPrompt != null) interactionPrompt.Hide();
-
-        Debug.Log($"[PowerCordManager] Cord plugged into {pc.gameObject.name}.");
+        Debug.Log($"[PowerCordManager] Cord plugged into {pc.name}.");
     }
 
-    void DropCord()
+    void CancelCord()
     {
         if (carriedCord == null) return;
 
-        // Place the cord at the player's feet
-        carriedCord.gameObject.SetActive(true);
-        carriedCord.transform.position = transform.position + transform.forward * 1f;
-        carriedCord.transform.rotation = Quaternion.identity;
+        // Return cord to its resting spot on the outlet
+        carriedCord.ReturnToOutlet();
 
         isCarryingCord = false;
         carriedCord = null;
 
         if (interactionPrompt != null) interactionPrompt.Hide();
-
-        Debug.Log("[PowerCordManager] Cord dropped.");
+        Debug.Log("[PowerCordManager] Cord returned to outlet.");
     }
 
     // =============================================
     //  PUBLIC HELPERS
     // =============================================
 
-    /// <summary>
-    /// Other scripts can check this to know if the player is busy with a cord.
-    /// </summary>
     public bool IsCarrying()
     {
         return isCarryingCord;

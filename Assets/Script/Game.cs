@@ -23,19 +23,15 @@ public class GameManager : MonoBehaviour
     // Called automatically every time a scene finishes loading
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // If we flagged that we are "Continuing", load the data now
         if (PlayerPrefs.GetInt("IsLoadingGame") == 1)
         {
-           if (CloudDataHandler.Instance != null)
+            if (CloudDataHandler.Instance != null)
             {
-                CloudDataHandler.Instance.LoadGameData(); 
+                CloudDataHandler.Instance.LoadGameDataDelayed(); // ← changed
             }
-            PlayerPrefs.SetInt("IsLoadingGame", 0); // Reset flag
-            
-            
+            PlayerPrefs.SetInt("IsLoadingGame", 0);
         }
     }
-
     public void SaveGame()
     {
         // 1. Find the Player
@@ -48,10 +44,10 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetFloat("SaveX", player.transform.position.x);
             PlayerPrefs.SetFloat("SaveY", player.transform.position.y);
             PlayerPrefs.SetFloat("SaveZ", player.transform.position.z);
-            
+
             // Save Rotation
             PlayerPrefs.SetFloat("RotY", player.transform.eulerAngles.y);
-            
+
             // Save Scene Name
             PlayerPrefs.SetString("SavedScene", SceneManager.GetActiveScene().name);
         }

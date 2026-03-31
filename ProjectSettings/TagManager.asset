@@ -18,6 +18,7 @@ TagManager:
   - PowerCordSlot
   - WorkstationMonitor
   - PowerCord
+  - WallOutlet
   layers:
   - Default
   - TransparentFX

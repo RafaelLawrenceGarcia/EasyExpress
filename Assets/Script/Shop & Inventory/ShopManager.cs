@@ -49,9 +49,8 @@ public class ShopManager : MonoBehaviour
     public Image detailImage;
     public Button detailAddToCartBtn;
 
-    [Header("Cart Button")]
-    public Button cartIconButton;
-
+    [Header("Cart Buttons")]
+    public Button[] cartIconButtons;
     [Header("Shopping Cart Data")]
     public List<CartItem> shoppingCart = new List<CartItem>();
 
@@ -105,8 +104,11 @@ public class ShopManager : MonoBehaviour
         if (searchInputField != null)
             searchInputField.onValueChanged.AddListener(UpdateSearchFilter);
 
-        if (cartIconButton != null)
-            cartIconButton.onClick.AddListener(ToggleCart);
+        foreach (Button btn in cartIconButtons)
+        {
+            if (btn != null)
+                btn.onClick.AddListener(ToggleCart);
+        }
 
         hasStarted = true;
         GenerateCategories();
@@ -327,9 +329,11 @@ public class ShopManager : MonoBehaviour
         if (itemListScreen != null) itemListScreen.SetActive(false);
         if (productDetailsPanel != null) productDetailsPanel.SetActive(true);
 
-        if (cartIconButton != null)
-            cartIconButton.transform.SetAsLastSibling();
-
+        foreach (Button btn in cartIconButtons)
+        {
+            if (btn != null)
+                btn.transform.SetAsLastSibling();
+        }
         if (detailNameText != null) detailNameText.text = item.itemName;
         if (detailDescText != null) detailDescText.text = item.description;
         if (detailPriceText != null) detailPriceText.text = "₱" + item.price.ToString("N0");
@@ -523,6 +527,142 @@ public class ShopManager : MonoBehaviour
             if (activeNotification != null) StopCoroutine(activeNotification);
             activeNotification = StartCoroutine(SlideNotificationCoroutine("Not enough money!"));
         }
+    }
+    // Add this to ShopManager.cs
+    // Replace the SetActiveMonitorUI in ShopManager.cs with this COMPLETE version
+    public void SetActiveMonitorUI(
+        // Search
+        TMP_InputField newSearchInput,
+        // Category Navigation
+        GameObject newCategoryScreen,
+        GameObject newItemListScreen,
+        Transform newCategoryContainer,
+        // Filter
+        GameObject newFilterPanel,
+        // Back Navigation
+        GameObject newThisShopPanel,
+        GameObject newPreviousShopPanel,
+        // Shop UI
+        Transform newContentContainer,
+        // Product Details
+        GameObject newProductDetailsPanel,
+        TextMeshProUGUI newDetailName,
+        TextMeshProUGUI newDetailDesc,
+        TextMeshProUGUI newDetailPrice,
+        Image newDetailImage,
+        Button newDetailAddToCartBtn,
+        // Cart Button
+        Button[] newCartIconButtons,
+
+        // Cart UI
+        RectTransform newCartPanelRect,
+        Transform newCartContentContainer,
+        TextMeshProUGUI newTotalCostText,
+        // Notification UI
+        GameObject newNotificationPanel,
+        TextMeshProUGUI newNotificationText,
+        RectTransform newNotificationRect
+    )
+    {
+        // Search
+        searchInputField = newSearchInput;
+
+        // Category Navigation
+        categoryScreen = newCategoryScreen;
+        itemListScreen = newItemListScreen;
+        categoryContentContainer = newCategoryContainer;
+
+        // Filter
+        filterCategoriesPanel = newFilterPanel;
+
+        // Back Navigation
+        thisShopPanel = newThisShopPanel;
+        previousShopPanel = newPreviousShopPanel;
+
+        // Shop UI
+        contentContainer = newContentContainer;
+
+        // Product Details
+        productDetailsPanel = newProductDetailsPanel;
+        detailNameText = newDetailName;
+        detailDescText = newDetailDesc;
+        detailPriceText = newDetailPrice;
+        detailImage = newDetailImage;
+        detailAddToCartBtn = newDetailAddToCartBtn;
+
+        // Cart Button
+        if (cartIconButtons != null)
+        {
+            foreach (Button btn in cartIconButtons)
+            {
+                if (btn != null)
+                    btn.onClick.RemoveListener(ToggleCart);
+            }
+        }
+        cartIconButtons = newCartIconButtons;
+        if (cartIconButtons != null)
+        {
+            foreach (Button btn in cartIconButtons)
+            {
+                if (btn != null)
+                    btn.onClick.AddListener(ToggleCart);
+            }
+        }
+        // Cart UI — reset state on the new panel
+        isCartOpen = false;
+        if (activeCartAnimation != null) StopCoroutine(activeCartAnimation);
+        cartPanelRect = newCartPanelRect;
+        cartContentContainer = newCartContentContainer;
+        totalCostText = newTotalCostText;
+
+        if (cartPanelRect != null)
+        {
+            cartPanelRect.anchoredPosition = cartHiddenPosition;
+            cartPanelRect.gameObject.SetActive(false);
+        }
+
+        // Notification UI
+        notificationPanel = newNotificationPanel;
+        notificationText = newNotificationText;
+        notificationRect = newNotificationRect;
+
+        if (notificationRect != null)
+            notificationRect.anchoredPosition = hiddenPosition;
+
+        // Search listener
+        if (searchInputField != null)
+        {
+            searchInputField.onValueChanged.RemoveAllListeners();
+            searchInputField.onValueChanged.AddListener(UpdateSearchFilter);
+        }
+        if (cartContentContainer != null)
+        {
+            foreach (Transform child in cartContentContainer)
+                Destroy(child.gameObject);
+        }
+        // Clean up OLD category container
+        if (categoryContentContainer != null)
+        {
+            foreach (Transform child in categoryContentContainer)
+                Destroy(child.gameObject);
+        }
+
+        // Clean up OLD item list container
+        if (contentContainer != null)
+        {
+            foreach (Transform child in contentContainer)
+                Destroy(child.gameObject);
+        }
+
+        // Now swap to new references
+        cartPanelRect = newCartPanelRect;
+        cartContentContainer = newCartContentContainer;
+        totalCostText = newTotalCostText;
+
+        // Refresh everything with new UI
+        GenerateCategories();
+        RefreshCartUI();
+        OpenCategoryScreen();
     }
 
     public void ToggleCart()

@@ -11,6 +11,10 @@ public class RandomEmailGenerator : MonoBehaviour
     public int minEmailsPerDay = 1;
     public int maxEmailsPerDay = 3;
 
+    [Header("Daily Email Limit")]
+    [Tooltip("Maximum total emails that can exist at once (pending + accepted).")]
+    public int absoluteEmailLimit = 5;
+
     [Header("Scaling (Optional)")]
     public bool scaleWithDay = true;
     public int daysPerExtraEmail = 3;
@@ -48,11 +52,23 @@ public class RandomEmailGenerator : MonoBehaviour
             maxToday = Mathf.Min(maxEmailsPerDay + bonusEmails, absoluteMaxEmails);
         }
 
+        // Enforce hard limit: count existing pending + accepted emails
+        int existingCount = emailManager.activeEmails.Count + emailManager.acceptedJobs.Count;
+        int slotsAvailable = absoluteEmailLimit - existingCount;
+
+        if (slotsAvailable <= 0)
+        {
+            Debug.Log($"[EmailGen] Email limit reached ({existingCount}/{absoluteEmailLimit}). No new emails today.");
+            return;
+        }
+
         int emailCount = Random.Range(minEmailsPerDay, maxToday + 1);
+
+        // Cap to available slots
+        emailCount = Mathf.Min(emailCount, slotsAvailable);
 
         for (int i = 0; i < emailCount; i++)
         {
-            // Now safely pulls either a Repair or Build job!
             EmailData newEmail = partDatabase.GenerateRandomJob();
 
             if (profilePicturePool != null && profilePicturePool.Length > 0)
@@ -71,6 +87,7 @@ public class RandomEmailGenerator : MonoBehaviour
             emailManager.activeEmails.Add(newEmail);
         }
 
+        Debug.Log($"[EmailGen] Generated {emailCount} new emails. Total: {emailManager.activeEmails.Count} pending, {emailManager.acceptedJobs.Count} accepted.");
         emailManager.RefreshInboxUI();
     }
 }

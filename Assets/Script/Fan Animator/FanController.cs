@@ -1,3 +1,4 @@
+// PCFanController.cs — FULL REPLACEMENT
 using UnityEngine;
 
 public class PCFanController : MonoBehaviour
@@ -13,41 +14,36 @@ public class PCFanController : MonoBehaviour
 
     private Material fanMaterial;
     private Renderer fanRenderer;
-    // REMOVED: private float currentHue; (We don't need personal stopwatches anymore!)
 
     void Start()
     {
-        // Save the renderer so we can find the physical center of the model later
         fanRenderer = GetComponentInChildren<Renderer>();
         if (fanRenderer != null)
         {
             fanMaterial = fanRenderer.material;
-            fanMaterial.EnableKeyword("_EMISSION");
+
+            // DON'T enable emission here — start dark, let Update handle glow
+            fanMaterial.SetColor("_EmissionColor", Color.black);
         }
     }
 
     void Update()
     {
-        // 1. THE AUTOMATIC PIVOT FIX
-        // We find the 'bounds.center' (the exact middle of the 3D mesh) and spin around that!
+        // 1. Spin
         if (fanRenderer != null)
         {
-            // Convert your local axis (0,0,1) into a world direction
             Vector3 worldAxis = transform.TransformDirection(spinAxis);
-
-            // Spin around the visual center, completely ignoring the broken pivot point
             transform.RotateAround(fanRenderer.bounds.center, worldAxis, spinSpeed * Time.deltaTime);
         }
 
-        // 2. Cycle the RGB Rainbow Glow (NOW SYNCED!)
+        // 2. RGB Glow — only runs when enabled (SetFansState controls this)
         if (enableRainbowRGB && fanMaterial != null)
         {
-            // THE FIX: Use Time.time so every single fan calculates the exact same color at the exact same moment!
+            fanMaterial.EnableKeyword("_EMISSION");
+
             float syncedHue = Mathf.Repeat(Time.time * colorCycleSpeed, 1f);
-
             Color neonColor = Color.HSVToRGB(syncedHue, 1f, 1f);
-            Color finalGlow = neonColor * Mathf.Pow(2, glowIntensity); // Keeps your awesome HDR glow math
-
+            Color finalGlow = neonColor * Mathf.Pow(2, glowIntensity);
             fanMaterial.SetColor("_EmissionColor", finalGlow);
         }
     }

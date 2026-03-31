@@ -28,7 +28,7 @@ public class MainMenu : MonoBehaviour
     public GameObject modeSelectionPanel;
     public GameObject optionsPanel;
     public GameObject creditsPanel;
-    public Text statusText; 
+    public Text statusText;
 
     [Header("Settings")]
     public string gameplaySceneName = "Gameplay"; // Make sure this matches your exact scene name!
@@ -77,29 +77,29 @@ public class MainMenu : MonoBehaviour
     #region Game Logic
     void StartSingleplayer()
     {
-        // Loads the gameplay scene immediately
+        // Always load cloud data when entering gameplay
+        PlayerPrefs.SetInt("IsLoadingGame", 1);
         SceneManager.LoadScene(gameplaySceneName);
     }
-
     void CheckForSaveData()
     {
-        if(statusText) statusText.text = "Checking Save Data...";
+        if (statusText) statusText.text = "Checking Save Data...";
 
-        PlayFabClientAPI.GetUserData(new GetUserDataRequest(), 
-        result => 
+        PlayFabClientAPI.GetUserData(new GetUserDataRequest(),
+        result =>
         {
-            if (newGameButton != null) newGameButton.interactable = true; 
+            if (newGameButton != null) newGameButton.interactable = true;
             if (result.Data != null && result.Data.ContainsKey("Gold"))
             {
-                if (continueButton != null) continueButton.interactable = true; 
-                if(statusText) statusText.text = "Welcome Back!";
+                if (continueButton != null) continueButton.interactable = true;
+                if (statusText) statusText.text = "Welcome Back!";
             }
             else
             {
                 if (continueButton != null) continueButton.interactable = false;
-                if(statusText) statusText.text = "Ready.";
+                if (statusText) statusText.text = "Ready.";
             }
-        }, 
+        },
         error => Debug.LogError("Failed to get data"));
     }
 

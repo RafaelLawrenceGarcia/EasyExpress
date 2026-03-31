@@ -20,8 +20,6 @@ public class PCCaseBuilder : MonoBehaviour
         // =============================================
         //  TRACK INSTALLED PARTS FOR BLOCKING SYSTEM
         // =============================================
-        // We need to remember which real parts were placed
-        // so we can set up the motherboard's blocking list.
         InspectableItem motherboardScript = null;
         List<InspectableItem> allInstalledParts = new List<InspectableItem>();
 
@@ -44,6 +42,8 @@ public class PCCaseBuilder : MonoBehaviour
                 InspectableItem partScript = realPart.GetComponent<InspectableItem>();
                 if (partScript != null)
                 {
+                    string prefabDefaultName = partScript.itemName;
+
                     partScript.partCategory = part.partCategory;
                     partScript.itemName = part.partName;
                     partScript.compatTags = part.compatTags;
@@ -54,6 +54,21 @@ public class PCCaseBuilder : MonoBehaviour
                     partScript.fault = part.fault;
                     partScript.faultDescription = part.faultDescription;
 
+                    // Rename direct children that still have the prefab's default name
+                    foreach (InspectableItem child in realPart.GetComponentsInChildren<InspectableItem>(true))
+                    {
+                        if (child == partScript) continue;
+
+                        // Skip children placed by earlier iterations
+                        if (child.isRemovable && child.partCategory != part.partCategory) continue;
+
+                        // Only update children with the same default name
+                        if (child.itemName == prefabDefaultName)
+                        {
+                            child.itemName = part.partName;
+                        }
+                    }
+
                     // Transfer the blocking rules to the real part
                     InspectableItem dummyScript = matchingDummy.GetComponent<InspectableItem>();
                     if (dummyScript != null && dummyScript.blockingParts != null)
@@ -62,14 +77,13 @@ public class PCCaseBuilder : MonoBehaviour
                     }
 
                     // =============================================
-                    //  NEW: MAKE MOTHERBOARD REMOVABLE
+                    //  MAKE MOTHERBOARD REMOVABLE
                     // =============================================
                     if (part.partCategory == "Motherboard")
                     {
                         partScript.isRemovable = true;
                         motherboardScript = partScript;
 
-                        // Initialize blocking list (will be filled after all parts are placed)
                         if (partScript.blockingParts == null)
                             partScript.blockingParts = new List<InspectableItem>();
                     }
@@ -88,7 +102,28 @@ public class PCCaseBuilder : MonoBehaviour
                 }
 
                 SetLayerRecursively(realPart, LayerMask.NameToLayer("Ignore Raycast"));
+
+                // =============================================
+                //  REFRESH SLOT LIST
+                //  When a part (e.g. motherboard) is placed,
+                //  it brings its own Slot_ children (e.g. Slot_CPU).
+                //  We must remove the old slots that were children
+                //  of the destroyed dummy and add the new ones
+                //  from the placed part, so subsequent parts
+                //  (like CPU) get placed into the SURVIVING parent.
+                // =============================================
                 dummySlots.Remove(matchingDummy);
+
+                // Remove old slots that were children of the dummy being destroyed
+                dummySlots.RemoveAll(s => s != null && s.IsChildOf(matchingDummy));
+
+                // Add new Slot_ children from the placed part into the pool
+                foreach (Transform newChild in realPart.GetComponentsInChildren<Transform>(true))
+                {
+                    if (newChild.name.StartsWith("Slot_") && !dummySlots.Contains(newChild))
+                        dummySlots.Add(newChild);
+                }
+
                 Destroy(matchingDummy.gameObject);
 
                 Debug.Log($"[PC Builder] Placed {part.partCategory} into {matchingDummy.name}.");
@@ -100,19 +135,13 @@ public class PCCaseBuilder : MonoBehaviour
         }
 
         // =============================================
-        //  NEW: SET UP MOTHERBOARD BLOCKING
-        //  Every installed part blocks the motherboard
-        //  so you MUST remove all parts before you can
-        //  take out the motherboard.
+        //  SET UP MOTHERBOARD BLOCKING
         // =============================================
         if (motherboardScript != null)
         {
             foreach (InspectableItem installedPart in allInstalledParts)
             {
-                // Don't add the motherboard as blocking itself!
                 if (installedPart == motherboardScript) continue;
-
-                // Don't add PSU (it's not ON the motherboard)
                 if (installedPart.partCategory == "PSU") continue;
 
                 if (!motherboardScript.blockingParts.Contains(installedPart))
@@ -158,6 +187,22 @@ public class PCCaseBuilder : MonoBehaviour
             if (dust == null) dust = gameObject.AddComponent<DustSystem>();
             dust.isDusty = true;
         }
+
+        // =============================================
+        //  AUTO-ADD PCPowerSystem
+        // =============================================
+        PCPowerSystem powerSystem = GetComponent<PCPowerSystem>();
+        if (powerSystem == null)
+            powerSystem = gameObject.AddComponent<PCPowerSystem>();
+
+        powerSystem.isPoweredOn = false;
+        powerSystem.isPowerCordConnected = false;
+
+        Transform cordSlot = transform.Find("PowerCordSlot");
+        if (cordSlot != null)
+            powerSystem.powerCordSnapPoint = cordSlot;
+
+        Debug.Log($"[PC Builder] PCPowerSystem added — PC starts OFF, fans disabled.");
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer)

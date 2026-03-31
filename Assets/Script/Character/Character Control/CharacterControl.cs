@@ -10,25 +10,25 @@ public class GTAMovement : MonoBehaviour
     // Jump height removed
 
     [Header("Turning Feel")]
-    public float turnSmoothTime = 0.25f; 
+    public float turnSmoothTime = 0.25f;
     float turnSmoothVelocity;
 
     [Header("References")]
-    public Transform cam; 
-    public Animator animator; 
+    public Transform cam;
+    public Animator animator;
 
     CharacterController controller;
     Vector3 velocity;
     bool isGrounded;
-    
+
     // We keep this variable so PlayerInteract can change it!
-    public bool canMove = true; 
+    public bool canMove = true;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
         if (animator == null) animator = GetComponentInChildren<Animator>();
-        
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -37,14 +37,14 @@ public class GTAMovement : MonoBehaviour
     public void SetMovementState(bool state)
     {
         canMove = state;
-        
+
         if (animator != null)
         {
-            if (state == false) 
+            if (state == false)
             {
                 // FORCE STOP: Set speed to 0 immediately
                 animator.SetFloat("Speed", 0f);
-                animator.SetBool("IsTalking", true); 
+                animator.SetBool("IsTalking", true);
             }
             else
             {
@@ -65,7 +65,7 @@ public class GTAMovement : MonoBehaviour
         }
 
         // --- STOP LOGIC (When Talking) ---
-        if (!canMove) 
+        if (!canMove)
         {
             // 1. Force Animation to Idle (0 speed)
             if (animator != null) animator.SetFloat("Speed", 0f);

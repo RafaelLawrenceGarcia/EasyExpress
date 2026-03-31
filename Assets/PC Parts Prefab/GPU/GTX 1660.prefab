@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5389092462482250398}
   - component: {fileID: 2721649690172285749}
   m_Layer: 14
-  m_Name: GPU Slot
+  m_Name: GTX 1660
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e7abfb7cc70ccd641b22802ccc2343bf, type: 2}
+  - {fileID: 2100000, guid: 3ecc25597962bb54ebc3f5d414a780f4, type: 2}
   - {fileID: 2100000, guid: 81144caee6621644884f16cd8f893d4c, type: 2}
   - {fileID: 2100000, guid: f752001de2f86d74c96a074d7192a0b9, type: 2}
   - {fileID: 2100000, guid: dbb7fc88d42755e48addccab5db8e53b, type: 2}
@@ -138,9 +138,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: GPU
-  partCategory: Generic
+  partCategory: GPU
   itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -155,5 +162,8 @@ MonoBehaviour:
   placeHeadHere: 0
   wireHead: {fileID: 0}
   blockingParts: []
+  childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 

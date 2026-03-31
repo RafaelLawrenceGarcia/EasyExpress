@@ -28,22 +28,28 @@ public class PlayerInteract : MonoBehaviour
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogueText;
 
+    [Header("Computer Canvas Transition")]
+    public Canvas computerCanvas;
+    private RenderMode originalRenderMode;
+    private Camera originalWorldCamera;
+
     public Button option1Button;
     public Button option2Button;
     public Button exitButton;
 
-    [Header("Outline Highlight")]
-    [Tooltip("Same outline material used by InspectionManager (Custom/OutlineEdge shader)")]
-    public Material outlineMaterial;
+    [Header("Highlight Overlay")]
+    [Tooltip("Material using Custom/HighlightOverlay shader (semi-transparent grey)")]
+    public Material highlightMaterial;
 
-    // Internal tracking for gameplay outline
-    private GameObject currentOutlinedObject = null;
-    private System.Collections.Generic.Dictionary<Renderer, Material[]> outlineCache
+    // Internal tracking for gameplay highlight
+    private GameObject currentHighlightedObject = null;
+    private System.Collections.Generic.Dictionary<Renderer, Material[]> highlightCache
         = new System.Collections.Generic.Dictionary<Renderer, Material[]>();
 
     private NPCWalker currentCityNPC;
     private CustomerInside currentShopNPC;
     private bool isInteracting = false;
+    private bool isUsingComputer = false;
     private DoorInteractionMenu activeDoorMenu = null;
     private bool menuJustClosed = false;
 
@@ -60,6 +66,13 @@ public class PlayerInteract : MonoBehaviour
         if (goldHUD != null) goldHUD.SetActive(true);
         if (interactionPrompt != null) interactionPrompt.Hide();
         if (pcMenu != null) pcMenu.Hide();
+
+        // Save the main shop 3D monitor settings
+        if (computerCanvas != null)
+        {
+            originalRenderMode = computerCanvas.renderMode;
+            originalWorldCamera = computerCanvas.worldCamera;
+        }
     }
 
     void Update()
@@ -68,6 +81,8 @@ public class PlayerInteract : MonoBehaviour
         { HideAllPrompts(); return; }
 
         if (menuJustClosed) { menuJustClosed = false; return; }
+        PowerCordManager cordManager = GetComponent<PowerCordManager>();
+        if (cordManager != null && cordManager.IsCarrying()) { HideAllPrompts(); return; }
         if (inspectionManager != null && inspectionManager.isInspecting) { HideAllPrompts(); return; }
         if (activeDoorMenu != null && activeDoorMenu.IsOpen()) { HideAllPrompts(); return; }
 
@@ -92,15 +107,20 @@ public class PlayerInteract : MonoBehaviour
             return;
         }
 
-        if (computerOS != null && computerOS.gameObject.activeSelf)
+        if (isUsingComputer)
         {
             HideAllPrompts();
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 PauseManager.BlockPause = true;
-                if (computerOS.HandleEscapeInput())
+
+                // Dynamically find WHICH computer OS we are currently looking at
+                PCController currentOS = computerOS; // Default to main shop PC
+                if (activeWorkstationMonitor != null && activeWorkstationMonitor.localOS != null)
+                    currentOS = activeWorkstationMonitor.localOS;
+
+                if (currentOS != null && currentOS.HandleEscapeInput())
                 {
-                    // Close whichever monitor opened it
                     if (activeWorkstationMonitor != null)
                         CloseWorkstationMonitor();
                     else
@@ -147,12 +167,12 @@ public class PlayerInteract : MonoBehaviour
             {
                 if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
                 {
-                    ShowPromptWithOutline("X", "Finish your tasks first!", hit.collider.gameObject);
+                    ShowPromptWithHighlight("X", "Finish your tasks first!", hit.collider.gameObject);
                     return;
                 }
 
                 if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithOutline("E", "Open Door", hit.collider.gameObject);
+                ShowPromptWithHighlight("E", "Open Door", hit.collider.gameObject);
 
                 if (Input.GetKeyDown(KeyCode.E)) OpenDoorMenu(doorMenu);
             }
@@ -162,7 +182,7 @@ public class PlayerInteract : MonoBehaviour
             else if (sceneDoor != null)
             {
                 if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithOutline("E", "Open Door", hit.collider.gameObject);
+                ShowPromptWithHighlight("E", "Open Door", hit.collider.gameObject);
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
@@ -183,7 +203,7 @@ public class PlayerInteract : MonoBehaviour
             else if (shopDoor != null)
             {
                 if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithOutline("E", "Enter Room", hit.collider.gameObject);
+                ShowPromptWithHighlight("E", "Enter Room", hit.collider.gameObject);
 
                 if (Input.GetKeyDown(KeyCode.E)) shopDoor.EnterShop(transform.root.gameObject);
             }
@@ -196,7 +216,7 @@ public class PlayerInteract : MonoBehaviour
                 if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive()
                     && TutorialManager.Instance.GetCurrentStep() < 9)
                 {
-                    ShowPromptWithOutline("X", "Finish your tasks first!", hit.collider.gameObject);
+                    ShowPromptWithHighlight("X", "Finish your tasks first!", hit.collider.gameObject);
                     return;
                 }
 
@@ -207,13 +227,13 @@ public class PlayerInteract : MonoBehaviour
                     storedInspectItem = item;
                     storedPickupTarget = hit.collider.gameObject;
 
-                    ApplyOutline(hit.collider.gameObject);
+                    ApplyHighlight(hit.collider.gameObject);
                     pcMenu.Show((int choice) =>
                     {
                         if (choice == 0 && storedInspectItem != null)
                         {
                             pcMenu.Hide();
-                            ClearOutline(); // Clear the green outline before entering Inspect Mode!
+                            ClearHighlight();
                             if (TutorialManager.Instance != null) TutorialManager.Instance.CompletePCTask();
                             if (inspectionManager != null) inspectionManager.Inspect(storedInspectItem);
                         }
@@ -234,11 +254,11 @@ public class PlayerInteract : MonoBehaviour
             else if (canInspectInWorld)
             {
                 if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithOutline("E", "Inspect PC", hit.collider.gameObject);
+                ShowPromptWithHighlight("E", "Inspect PC", hit.collider.gameObject);
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
-                    HideAllPrompts(); // Clear the green outline before entering Inspect Mode!
+                    HideAllPrompts();
                     if (TutorialManager.Instance != null) TutorialManager.Instance.CompletePCTask();
                     if (inspectionManager != null) inspectionManager.Inspect(item);
                 }
@@ -249,7 +269,7 @@ public class PlayerInteract : MonoBehaviour
             else if (cityNPC)
             {
                 if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithOutline("E", "Talk to Citizen", hit.collider.gameObject);
+                ShowPromptWithHighlight("E", "Talk to Citizen", hit.collider.gameObject);
 
                 if (Input.GetKeyDown(KeyCode.E)) StartCityInteraction(cityNPC);
             }
@@ -259,16 +279,19 @@ public class PlayerInteract : MonoBehaviour
             else if (readyShopCustomer)
             {
                 if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithOutline("E", "Talk to Customer", hit.collider.gameObject);
+                ShowPromptWithHighlight("E", "Talk to Customer", hit.collider.gameObject);
 
                 if (Input.GetKeyDown(KeyCode.E)) StartShopInteraction(shopCustomer);
             }
+            // =============================================
+            //  WORKSTATION MONITOR
+            // =============================================
             else if (hit.collider.CompareTag("WorkstationMonitor"))
             {
                 // Block during tutorial
                 if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
                 {
-                    ShowPromptWithOutline("X", "Finish your tasks first!", hit.collider.gameObject);
+                    ShowPromptWithHighlight("X", "Finish your tasks first!", hit.collider.gameObject);
                     return;
                 }
 
@@ -279,9 +302,9 @@ public class PlayerInteract : MonoBehaviour
                 {
                     if (pcMenu != null) pcMenu.Hide();
 
-                    if (monitor.CanUseMonitor())
+                    if (monitor.CanInteract())
                     {
-                        ShowPromptWithOutline("E", "Use Monitor", hit.collider.gameObject);
+                        ShowPromptWithHighlight("E", "Use Monitor", hit.collider.gameObject);
 
                         if (Input.GetKeyDown(KeyCode.E))
                         {
@@ -291,26 +314,25 @@ public class PlayerInteract : MonoBehaviour
                     }
                     else
                     {
-                        // FIX 2: Changed GetBlockedReason() to GetMonitorStatus()
-                        string reason = monitor.GetMonitorStatus();
-                        ShowPromptWithOutline("X", reason, hit.collider.gameObject);
+                        string reason = monitor.GetBlockedReason();
+                        ShowPromptWithHighlight("X", reason, hit.collider.gameObject);
                     }
                 }
             }
             // =============================================
-            //  SHOP COMPUTER
+            //  SHOP COMPUTER (Main Desk)
             // =============================================
             else if (shopPC)
             {
                 // Block during tutorial
                 if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
                 {
-                    ShowPromptWithOutline("X", "Finish your tasks first!", hit.collider.gameObject);
+                    ShowPromptWithHighlight("X", "Finish your tasks first!", hit.collider.gameObject);
                     return;
                 }
 
                 if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithOutline("E", "Use Computer", hit.collider.gameObject);
+                ShowPromptWithHighlight("E", "Use Computer", hit.collider.gameObject);
 
                 if (Input.GetKeyDown(KeyCode.E)) OpenShopComputer();
             }
@@ -320,7 +342,7 @@ public class PlayerInteract : MonoBehaviour
             else if (isPickupBox)
             {
                 if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithOutline("E / Q", "E: Inventory | Q: Carry", hit.collider.gameObject);
+                ShowPromptWithHighlight("E / Q", "E: Inventory | Q: Carry", hit.collider.gameObject);
 
                 if (Input.GetKeyDown(KeyCode.E))
                 {
@@ -352,7 +374,7 @@ public class PlayerInteract : MonoBehaviour
             else if (isPickupPC)
             {
                 if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithOutline("Q", "Pick Up PC", hit.collider.gameObject);
+                ShowPromptWithHighlight("Q", "Pick Up PC", hit.collider.gameObject);
 
                 if (Input.GetKeyDown(KeyCode.Q)) PickUpItem(hit.collider.gameObject);
             }
@@ -361,17 +383,17 @@ public class PlayerInteract : MonoBehaviour
         else { HideAllPrompts(); currentLookTarget = null; }
     }
 
-    void ShowPromptWithOutline(string key, string action, GameObject target)
+    void ShowPromptWithHighlight(string key, string action, GameObject target)
     {
         if (interactionPrompt != null) interactionPrompt.Show(key, action);
-        ApplyOutline(target);
+        ApplyHighlight(target);
     }
 
     void HideAllPrompts()
     {
         if (interactionPrompt != null) interactionPrompt.Hide();
         if (pcMenu != null) pcMenu.Hide();
-        ClearOutline();
+        ClearHighlight();
     }
 
     void OpenDoorMenu(DoorInteractionMenu doorMenu)
@@ -509,10 +531,28 @@ public class PlayerInteract : MonoBehaviour
             TutorialManager.Instance.CompleteCustomerTask();
     }
 
+    // =============================================
+    //  MAIN SHOP COMPUTER
+    // =============================================
     void OpenShopComputer()
     {
         isInteracting = true;
-        if (computerOS != null) { computerOS.gameObject.SetActive(true); computerOS.ShowDesktop(); }
+        isUsingComputer = true;
+
+        if (computerOS != null)
+        {
+            computerOS.gameObject.SetActive(true);
+            computerOS.ShowDesktop();
+        }
+
+        // Added Full-Screen Snap for Main Desk Computer too!
+        if (computerCanvas != null)
+        {
+            originalRenderMode = computerCanvas.renderMode;
+            originalWorldCamera = computerCanvas.worldCamera;
+            computerCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        }
+
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
         HideAllPrompts();
         if (goldHUD != null) goldHUD.SetActive(false);
@@ -522,14 +562,24 @@ public class PlayerInteract : MonoBehaviour
 
     public void CloseShopComputer()
     {
+        isUsingComputer = false;
         isInteracting = false;
+
+        // Put the Main Desk Computer Canvas back
+        if (computerCanvas != null)
+        {
+            computerCanvas.renderMode = originalRenderMode;
+            computerCanvas.worldCamera = originalWorldCamera;
+        }
+
         if (computerOS != null) computerOS.gameObject.SetActive(false);
         if (goldHUD != null) goldHUD.SetActive(true);
         FreezePlayer(false);
         if (TutorialManager.Instance != null) TutorialManager.Instance.RestoreTaskIfNeeded();
     }
+
     // =============================================
-    //  WORKSTATION MONITOR (NEW)
+    //  PREFAB WORKSTATION MONITOR 
     // =============================================
     private WorkstationMonitor activeWorkstationMonitor = null;
 
@@ -537,25 +587,34 @@ public class PlayerInteract : MonoBehaviour
     {
         activeWorkstationMonitor = monitor;
         isInteracting = true;
+        isUsingComputer = true;
 
-        if (computerOS != null)
+        Canvas activeCanvas = monitor.localCanvas;
+        PCController activeOS = monitor.localOS;
+
+        if (activeOS != null && activeCanvas != null)
         {
-            computerOS.gameObject.SetActive(true);
+            originalRenderMode = activeCanvas.renderMode;
+            originalWorldCamera = activeCanvas.worldCamera;
 
-            // FIX 3: Use a new GetLinkedPC() method (we will add this next)
+            activeOS.gameObject.SetActive(true);
+            activeCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+
+            // Enable raycaster so fullscreen UI is clickable
+            GraphicRaycaster raycaster = activeCanvas.GetComponent<GraphicRaycaster>();
+            if (raycaster != null) raycaster.enabled = true;
+
+            if (monitor.uiBridge != null)
+            {
+                monitor.uiBridge.ActivateForShop();
+                monitor.uiBridge.ActivateForEmail();
+            }
+
             PCPowerSystem pc = monitor.GetLinkedPC();
-
-            // FIX 4: Use GetCriticalFaultReason() instead of HasAnyFault()
-            if (pc != null && !string.IsNullOrEmpty(pc.GetCriticalFaultReason()))
-            {
-                // PC has problems — boot to BIOS or show error
-                computerOS.RestartToBIOS();
-            }
+            if (pc != null && pc.HasAnyFault())
+                activeOS.RestartToBIOS();
             else
-            {
-                // PC is healthy — boot normally
-                computerOS.BootToOS();
-            }
+                activeOS.BootToOS();
         }
 
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
@@ -566,64 +625,82 @@ public class PlayerInteract : MonoBehaviour
 
     public void CloseWorkstationMonitor()
     {
+        if (activeWorkstationMonitor != null)
+        {
+            Canvas activeCanvas = activeWorkstationMonitor.localCanvas;
+            if (activeCanvas != null)
+            {
+                activeCanvas.renderMode = originalRenderMode;
+                activeCanvas.worldCamera = originalWorldCamera;
+
+                // Disable raycaster so world-space canvas doesn't steal clicks
+                GraphicRaycaster raycaster = activeCanvas.GetComponent<GraphicRaycaster>();
+                if (raycaster != null) raycaster.enabled = false;
+            }
+        }
+
         activeWorkstationMonitor = null;
         isInteracting = false;
-        if (computerOS != null) computerOS.gameObject.SetActive(false);
+        isUsingComputer = false;
+
+        PauseManager.BlockPause = false;
         if (goldHUD != null) goldHUD.SetActive(true);
         FreezePlayer(false);
+        if (TutorialManager.Instance != null) TutorialManager.Instance.RestoreTaskIfNeeded();
     }
 
-    void ApplyOutline(GameObject obj)
+    // =============================================
+    //  HIGHLIGHT OVERLAY (semi-transparent fill)
+    // =============================================
+
+    void ApplyHighlight(GameObject obj)
     {
-        if (obj == currentOutlinedObject) return;
+        if (obj == currentHighlightedObject) return;
+        ClearHighlight();
+        if (highlightMaterial == null || obj == null) return;
 
-        ClearOutline();
-
-        if (outlineMaterial == null || obj == null) return;
-
-        currentOutlinedObject = obj;
-
-        GameObject outlineTarget = obj;
+        currentHighlightedObject = obj;
+        GameObject highlightTarget = obj;
 
         Transform parentCheck = obj.transform.parent;
         if (parentCheck != null)
         {
             if (parentCheck.CompareTag("PickupBox") || parentCheck.CompareTag("PickupPC"))
-                outlineTarget = parentCheck.gameObject;
+                highlightTarget = parentCheck.gameObject;
 
             JobBox jb = obj.GetComponentInParent<JobBox>();
             DeliveryBox db = obj.GetComponentInParent<DeliveryBox>();
             PCCaseBuilder pcb = obj.GetComponentInParent<PCCaseBuilder>();
 
-            if (jb != null) outlineTarget = jb.gameObject;
-            else if (db != null) outlineTarget = db.gameObject;
-            else if (pcb != null) outlineTarget = pcb.gameObject;
+            if (jb != null) highlightTarget = jb.gameObject;
+            else if (db != null) highlightTarget = db.gameObject;
+            else if (pcb != null) highlightTarget = pcb.gameObject;
         }
 
-        foreach (Renderer rend in outlineTarget.GetComponentsInChildren<Renderer>())
+        foreach (Renderer rend in highlightTarget.GetComponentsInChildren<Renderer>())
         {
             if (rend == null) continue;
 
-            if (!outlineCache.ContainsKey(rend))
-                outlineCache.Add(rend, rend.sharedMaterials);
+            if (!highlightCache.ContainsKey(rend))
+                highlightCache.Add(rend, rend.sharedMaterials);
 
             Material[] currentMats = rend.sharedMaterials;
             Material[] newMats = new Material[currentMats.Length + 1];
             for (int i = 0; i < currentMats.Length; i++)
                 newMats[i] = currentMats[i];
-            newMats[newMats.Length - 1] = outlineMaterial;
+            newMats[newMats.Length - 1] = highlightMaterial;
             rend.sharedMaterials = newMats;
         }
     }
 
-    void ClearOutline()
+    void ClearHighlight()
     {
-        foreach (var kv in outlineCache)
+        foreach (var kv in highlightCache)
         {
             if (kv.Key != null)
                 kv.Key.sharedMaterials = kv.Value;
         }
-        outlineCache.Clear();
-        currentOutlinedObject = null;
+        highlightCache.Clear();
+        currentHighlightedObject = null;
     }
 }

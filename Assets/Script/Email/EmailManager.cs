@@ -56,15 +56,79 @@ public class EmailManager : MonoBehaviour
     public TextMeshProUGUI completionPay;
     public TextMeshProUGUI completionRating;
     public Button completionOKButton;
+    [Header("PC Status Button")]
+    public Button pcStatusButton;
+    public void SetActiveMonitorUI(
+        Transform newInboxContainer,
+        GameObject newDetailPanel,
+        TextMeshProUGUI newSenderText,
+        TextMeshProUGUI newSubjectText,
+        TextMeshProUGUI newBodyText,
+        TextMeshProUGUI newLabourText,
+        TextMeshProUGUI newBudgetText,
+        TextMeshProUGUI newObjectivesText,
+        Image newDetailProfilePic,
+        GameObject newPcStatusPanel,
+        TextMeshProUGUI newPcProblemsText,
+        TextMeshProUGUI newRequestedPartsText,
+        Transform newPcSpecsContainer,
+        Button newAcceptButton,
+        Button newRejectButton,
+        Button newCompleteButton,
+        GameObject newCompletionPanel,
+        TextMeshProUGUI newCompletionTitle,
+        TextMeshProUGUI newCompletionDetails,
+        TextMeshProUGUI newCompletionPay,
+        TextMeshProUGUI newCompletionRating,
+        Button newCompletionOKButton,
+        Button newPcStatusButton
+    )
+    {
+        inboxContentContainer = newInboxContainer;
+        detailPanel = newDetailPanel;
+        senderText = newSenderText;
+        subjectText = newSubjectText;
+        bodyText = newBodyText;
+        labourText = newLabourText;
+        budgetText = newBudgetText;
+        objectivesText = newObjectivesText;
+        detailProfilePic = newDetailProfilePic;
+        pcStatusPanel = newPcStatusPanel;
+        pcProblemsText = newPcProblemsText;
+        requestedPartsText = newRequestedPartsText;
+        pcSpecsContentContainer = newPcSpecsContainer;
+        acceptButton = newAcceptButton;
+        rejectButton = newRejectButton;
+        completeButton = newCompleteButton;
+        completionPanel = newCompletionPanel;
+        completionTitle = newCompletionTitle;
+        completionDetails = newCompletionDetails;
+        completionPay = newCompletionPay;
+        completionRating = newCompletionRating;
+        completionOKButton = newCompletionOKButton;
 
+        // Refresh with new UI
+        if (detailPanel != null) detailPanel.SetActive(false);
+        if (pcStatusPanel != null) pcStatusPanel.SetActive(false);
+        if (completionPanel != null) completionPanel.SetActive(false);
+        if (pcStatusButton != null)
+            pcStatusButton.onClick.RemoveListener(TogglePCStatusPanel);
+        pcStatusButton = newPcStatusButton;
+        if (pcStatusButton != null)
+            pcStatusButton.onClick.AddListener(TogglePCStatusPanel);
+        RefreshInboxUI();
+    }
     void Awake() { Instance = this; }
 
     void Start()
     {
+        if (pcStatusButton != null)
+            pcStatusButton.onClick.AddListener(TogglePCStatusPanel);
         if (detailPanel != null) detailPanel.SetActive(false);
         if (pcStatusPanel != null) pcStatusPanel.SetActive(false);
         if (completionPanel != null) completionPanel.SetActive(false);
         RefreshInboxUI();
+
     }
 
     public void OpenEmailApp()

@@ -23,7 +23,7 @@ public class ShopTrafficSimulator : MonoBehaviour
         // Don't let random walk-ins happen while the tutorial is running.
         // Once tutorial is done this check costs almost nothing.
         if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
-        return;
+            return;
         // ───────────────────────────────────────────────────────
 
         int peopleInShop = FindObjectsOfType<CustomerInside>().Length;
@@ -46,6 +46,9 @@ public class ShopTrafficSimulator : MonoBehaviour
 
         if (roll <= walkInChance)
         {
+            // Check daily limit AFTER the roll succeeds
+            if (!WalkInLimiter.TrySpawn()) return;
+
             Debug.Log("A random customer just walked in from the street!");
 
             if (mySpawner != null)

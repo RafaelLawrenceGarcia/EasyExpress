@@ -2,255 +2,276 @@ using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// PCPowerSystem — Attach to the SAME GameObject as PCCaseBuilder.
-/// 
-/// This script controls whether the PC can turn on or not.
-/// It checks two things:
-///   1. Is a power cord physically plugged in?
-///   2. Does the PC have any CRITICAL faults that prevent booting?
+/// PCPowerSystem — Attach to the same GameObject as PCCaseBuilder.
+///
+/// Controls whether the PC can turn on. Checks:
+///   1. Is a power cord FULLY connected? (both outlet + PC ends)
+///   2. Does the PC have critical faults that prevent booting?
+///
+/// The PowerCordInteraction script calls ConnectPowerCord() only
+/// when BOTH ends of the cord are plugged in (outlet + PSU port).
 ///
 /// SETUP:
-///   1. Add this component to your PC Case prefab (same object that has PCCaseBuilder).
-///   2. Create an empty child object on the BACK of the case called "PowerCordSnapPoint".
-///      Position it where the PSU power inlet is (the 3-prong socket on the back).
-///   3. Drag that empty object into the "powerCordSnapPoint" field.
-///   4. Add a Box Collider (isTrigger = true) around the PSU inlet area.
-///      Tag the collider object as "PSUInlet" so PowerCordSnap can detect it.
-///   5. The system auto-detects faults from InspectableItem components inside the PC.
+///   1. Add this to your PC Case prefab (same object as PCCaseBuilder).
+///      It will also be auto-added at runtime by the PCCaseBuilder change.
+///   2. Create an empty child called "PowerCordSlot":
+///      - Position it at the PSU power inlet on the back of the case
+///      - Add a small Box Collider
+///      - Tag it as "PowerCordSlot"
+///      - Put it on the interactable layer
+///   3. Drag that child into the "powerCordSnapPoint" field.
 /// </summary>
 public class PCPowerSystem : MonoBehaviour
 {
-    [Header("Power Cord")]
-    [Tooltip("Empty transform on the back of the case where the cord snaps to.")]
-    public Transform powerCordSnapPoint;
-
-    [Tooltip("Is a power cord currently plugged in?")]
+    [Header("State (Read-Only in Inspector)")]
+    [Tooltip("Is a power cord FULLY connected (outlet + PC)?")]
     public bool isPowerCordConnected = false;
 
-    [Header("Power State")]
-    [Tooltip("Is the PC currently turned on?")]
+    [Tooltip("Is this PC currently powered on?")]
     public bool isPoweredOn = false;
 
-    [Tooltip("Should this PC start with the power cord already connected?\n" +
-             "Tip: Set to FALSE for repair jobs so the player must plug it in.")]
-    public bool startWithCordConnected = false;
+    [Header("Connected Cord Reference")]
+    [Tooltip("The power cord object currently delivering power (set at runtime).")]
+    public GameObject connectedCord = null;
 
-    [Header("Visual Feedback")]
-    [Tooltip("Optional: A cord model child that appears when plugged in.\n" +
-             "Leave empty if using PowerCordSnap (it handles visuals).")]
-    public GameObject connectedCordVisual;
+    [Header("Snap Point")]
+    [Tooltip("Drag the 'PowerCordSlot' child transform here.")]
+    public Transform powerCordSnapPoint;
 
-    [Header("Audio (Optional)")]
-    public AudioClip plugInSound;
-    public AudioClip powerOnSound;
-    public AudioClip powerFailSound;
-    private AudioSource audioSource;
-
-    // Runtime: the cord object that's plugged in
-    [HideInInspector] public GameObject attachedCord = null;
+    [HideInInspector] public bool skipStartReset = false;
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-            audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.spatialBlend = 1f;
-        audioSource.playOnAwake = false;
 
-        isPowerCordConnected = startWithCordConnected;
-        isPoweredOn = false; // Always start OFF
+        // Auto-find PowerCordSlot if not assigned (works for ALL PCs)
+        if (powerCordSnapPoint == null)
+        {
+            foreach (Transform child in GetComponentsInChildren<Transform>(true))
+            {
+                if (child.CompareTag("PowerCordSlot"))
+                {
+                    powerCordSnapPoint = child;
+                    Debug.Log($"[PCPowerSystem] Auto-found PowerCordSlot: {child.name}");
+                    break;
+                }
+            }
+        }
+        if (skipStartReset) return;
 
-        if (connectedCordVisual != null)
-            connectedCordVisual.SetActive(isPowerCordConnected);
+        isPoweredOn = false;
+        isPowerCordConnected = false;
+        SetFansState(false);
+
+        // Auto-find PowerCordSlot if not assigned in Inspector
+        if (powerCordSnapPoint == null)
+        {
+            foreach (Transform child in GetComponentsInChildren<Transform>(true))
+            {
+                if (child.CompareTag("PowerCordSlot"))
+                {
+                    powerCordSnapPoint = child;
+                    Debug.Log($"[PCPowerSystem] Auto-found PowerCordSlot: {child.name}");
+                    break;
+                }
+            }
+        }
     }
 
     // =============================================
     //  POWER CORD CONNECTION
+    //  (Called by PowerCordInteraction when BOTH
+    //   ends are connected — outlet + PC)
     // =============================================
 
     /// <summary>
-    /// Called by PowerCordSnap when the player plugs a cord in.
+    /// Called by PowerCordInteraction when both ends are plugged in.
     /// </summary>
-    public void PlugInCord(GameObject cord)
+    public void ConnectPowerCord(GameObject cord)
     {
         isPowerCordConnected = true;
-        attachedCord = cord;
-
-        if (connectedCordVisual != null)
-            connectedCordVisual.SetActive(true);
-
-        if (plugInSound != null && audioSource != null)
-            audioSource.PlayOneShot(plugInSound);
-
-        Debug.Log($"[PCPower] Power cord plugged into {gameObject.name}!");
+        connectedCord = cord;
+        Debug.Log($"[PCPowerSystem] Power cord delivering power to {gameObject.name}.");
     }
 
     /// <summary>
-    /// Called when the player unplugs the cord.
+    /// Called when the cord is disconnected from either end.
+    /// Forces the PC off if it was running.
     /// </summary>
-    public void UnplugCord()
+    public void DisconnectPowerCord()
     {
-        if (isPoweredOn)
-            ForcePowerOff();
-
+        bool wasOn = isPoweredOn;
         isPowerCordConnected = false;
-        attachedCord = null;
+        connectedCord = null;
 
-        if (connectedCordVisual != null)
-            connectedCordVisual.SetActive(false);
+        if (wasOn)
+        {
+            isPoweredOn = false;
+            SetFansState(false);
+            Debug.Log($"[PCPowerSystem] Power lost — {gameObject.name} forced OFF.");
+        }
 
-        Debug.Log($"[PCPower] Power cord unplugged from {gameObject.name}.");
+        Debug.Log($"[PCPowerSystem] Power cord disconnected from {gameObject.name}.");
     }
 
     // =============================================
-    //  POWER TOGGLE
+    //  POWER TOGGLE (called by InspectionManager)
     // =============================================
 
     /// <summary>
-    /// Attempts to toggle the PC power.
+    /// Attempts to toggle the PC on/off.
     /// Returns true if the action succeeded.
-    /// Also outputs a reason string for UI tooltips.
+    /// 'reason' is filled with a user-friendly message.
     /// </summary>
-    public bool TryTogglePower(out string failReason)
+    public bool TryTogglePower(out string reason)
     {
-        failReason = "";
-
+        // --- TURNING OFF (always allowed) ---
         if (isPoweredOn)
         {
-            ForcePowerOff();
+            isPoweredOn = false;
+            SetFansState(false);
+            reason = "PC powered off.";
+            Debug.Log($"[PCPowerSystem] {gameObject.name} turned OFF.");
             return true;
         }
-        else
-        {
-            return TryPowerOn(out failReason);
-        }
-    }
 
-    /// <summary>
-    /// Tries to turn the PC on. Checks cord + faults.
-    /// </summary>
-    public bool TryPowerOn(out string failReason)
-    {
-        failReason = "";
+        // --- TURNING ON: CHECK REQUIREMENTS ---
 
-        // CHECK 1: Power cord
+        // 1. Power cord must be fully connected (outlet + PC)
         if (!isPowerCordConnected)
         {
-            failReason = "No power cord connected!";
-            Debug.Log("[PCPower] Cannot turn on — no power cord connected!");
-            PlaySound(powerFailSound);
+            reason = "No power!\nPlug the cord into both the outlet and the PC.";
+            Debug.Log($"[PCPowerSystem] Cannot turn on — no power cord connected.");
             return false;
         }
 
-        // CHECK 2: Critical faults
-        string faultReason = GetCriticalFaultReason();
+        // 2. Check for critical faults that prevent booting
+        string faultReason = CheckCriticalFaults();
         if (!string.IsNullOrEmpty(faultReason))
         {
-            failReason = faultReason;
-            Debug.Log($"[PCPower] Cannot turn on — {faultReason}");
-            PlaySound(powerFailSound);
+            reason = faultReason;
+            Debug.Log($"[PCPowerSystem] Cannot turn on — {faultReason}");
             return false;
         }
 
-        // All clear — power on!
+        // All checks passed — power on!
         isPoweredOn = true;
-        PlaySound(powerOnSound);
-        Debug.Log($"[PCPower] {gameObject.name} powered ON!");
+        SetFansState(true);
+        reason = "PC powered on!";
+        Debug.Log($"[PCPowerSystem] {gameObject.name} turned ON.");
         return true;
-    }
-
-    /// <summary>
-    /// Force the PC off (always works).
-    /// </summary>
-    public void ForcePowerOff()
-    {
-        isPoweredOn = false;
-        Debug.Log($"[PCPower] {gameObject.name} powered OFF.");
     }
 
     // =============================================
     //  FAULT CHECKING
-    //  These faults BLOCK the PC from booting.
-    //  Other faults (slow perf, noise) let it boot.
+    //  Critical faults = PC won't even POST
+    //  Non-critical faults = PC boots but has issues
     // =============================================
 
-    /// <summary>
-    /// Scans all child parts for critical boot-blocking faults.
-    /// Returns reason string if PC cannot boot, or "" if OK.
-    /// </summary>
-    public string GetCriticalFaultReason()
+    string CheckCriticalFaults()
     {
         InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
 
-        // --- Check for BROKEN essential components ---
         foreach (InspectableItem part in allParts)
         {
-            if (part.isInventorySlot || part.isMainObject) continue;
+            if (part.isMainObject) continue;
 
-            // PSU faults that prevent boot
+            // --- Missing essential parts (ghost slots) ---
+            if (part.isInventorySlot)
+            {
+                if (part.partCategory == "PSU")
+                    return "PSU is missing!\nInstall a power supply first.";
+                if (part.partCategory == "Motherboard")
+                    return "Motherboard is missing!\nInstall a motherboard first.";
+                if (part.partCategory == "CPU")
+                    return "CPU is missing!\nInstall a processor first.";
+                continue;
+            }
+
+            // --- Critical faults on installed parts ---
+
+            // PSU
             if (part.partCategory == "PSU" && part.fault == PartFault.Broken)
-                return "PSU is dead — no power output";
-
+                return "PSU is dead!\nReplace the power supply.";
             if (part.partCategory == "PSU" && part.fault == PartFault.Overloaded)
-                return "PSU overloaded — insufficient wattage";
+                return "PSU is overloaded!\nWattage too low for this build.";
 
-            // Motherboard faults that prevent boot
+            // Motherboard
             if (part.partCategory == "Motherboard" && part.fault == PartFault.Broken)
-                return "Motherboard is dead — no POST";
-
+                return "Motherboard is dead!\nReplace the motherboard.";
             if (part.partCategory == "Motherboard" && part.fault == PartFault.LooseConnection)
-                return "24-pin ATX cable loose — reseat the connection";
-
+                return "24-pin power cable loose!\nReseat the ATX connection.";
             if (part.partCategory == "Motherboard" && part.fault == PartFault.Corrupted)
-                return "BIOS corrupted — system stuck in boot loop";
+                return "BIOS is corrupted!\nThe system can't POST.";
 
-            // CPU faults that prevent boot
+            // CPU
             if (part.partCategory == "CPU" && part.fault == PartFault.Broken)
-                return "CPU is dead — system won't POST";
+                return "CPU is dead!\nReplace the processor.";
 
-            // RAM not seated prevents POST
+            // RAM (prevents POST)
+            if (part.partCategory == "RAM" && part.fault == PartFault.Broken)
+                return "RAM is faulty!\nSystem fails POST — replace the RAM.";
             if (part.partCategory == "RAM" && part.fault == PartFault.NotSeated)
-                return "RAM not seated — system beeps, won't POST";
+                return "RAM not seated properly!\nReseat the memory sticks.";
         }
 
-        // --- Check for MISSING essential parts (ghost slots) ---
-        foreach (InspectableItem part in allParts)
-        {
-            if (!part.isInventorySlot) continue;
-
-            if (part.partCategory == "PSU")
-                return "No PSU installed — cannot power on";
-            if (part.partCategory == "Motherboard")
-                return "No motherboard — cannot boot";
-            if (part.partCategory == "CPU")
-                return "No CPU installed — cannot POST";
-        }
-
-        return ""; // All clear!
+        return null; // No blocking faults — all clear!
     }
 
     // =============================================
-    //  HELPERS
+    //  FAN CONTROL
+    // =============================================
+
+    void SetFansState(bool on)
+    {
+        foreach (PCFanController fan in GetComponentsInChildren<PCFanController>(true))
+        {
+            fan.enabled = on;
+
+            // Always kill emission directly on the renderer
+            Renderer r = fan.GetComponentInChildren<Renderer>();
+            if (r != null)
+            {
+                if (!on)
+                {
+                    r.material.EnableKeyword("_EMISSION");
+                    r.material.SetColor("_EmissionColor", Color.black);
+                }
+            }
+        }
+    }
+
+    // =============================================
+    //  HELPERS (used by WorkstationMonitor)
     // =============================================
 
     /// <summary>
-    /// User-friendly status string for UI tooltips.
+    /// Returns true if any installed part has a fault.
+    /// Used by WorkstationMonitor to show error screens.
     /// </summary>
-    public string GetPowerStatus()
+    public bool HasAnyFault()
     {
-        if (!isPowerCordConnected) return "No power cord connected";
-        if (!isPoweredOn)
+        InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
+        foreach (InspectableItem part in allParts)
         {
-            string fault = GetCriticalFaultReason();
-            if (!string.IsNullOrEmpty(fault)) return $"Won't turn on: {fault}";
-            return "Ready to turn on";
+            if (part.isMainObject || part.isInventorySlot) continue;
+            if (part.IsFaulty()) return true;
         }
-        return "PC is ON";
+        return false;
     }
 
-    void PlaySound(AudioClip clip)
+    /// <summary>
+    /// Returns descriptions of all current faults.
+    /// </summary>
+    public List<string> GetAllFaultDescriptions()
     {
-        if (clip != null && audioSource != null)
-            audioSource.PlayOneShot(clip);
+        List<string> faults = new List<string>();
+        InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
+        foreach (InspectableItem part in allParts)
+        {
+            if (part.isMainObject || part.isInventorySlot) continue;
+            if (part.IsFaulty())
+                faults.Add($"{part.itemName}: {part.faultDescription}");
+        }
+        return faults;
     }
 }

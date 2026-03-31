@@ -132,10 +132,11 @@ MonoBehaviour:
   powerDraw: 0
   maxWattage: 0
   requiresScrewdriver: 1
-  itemName: PC Fance
+  itemName: PC Fan
   partCategory: Case Fan
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 1
   isPowerButton: 0
@@ -150,8 +151,11 @@ MonoBehaviour:
   placeHeadHere: 0
   wireHead: {fileID: 0}
   blockingParts: []
+  childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 
 --- !u!1 &4140979247045431159
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,6 +309,7 @@ MonoBehaviour:
   partCategory: Generic
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
   isMainObject: 0
   isRemovable: 0
   isPowerButton: 0
@@ -319,5 +324,8 @@ MonoBehaviour:
   placeHeadHere: 0
   wireHead: {fileID: 0}
   blockingParts: []
+  childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
+  fault: 0
+  faultDescription: 

@@ -3103,6 +3103,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2075277909522383546}
+  - {fileID: 7990427755743493394}
   - {fileID: 5427401267041014842}
   - {fileID: 532167713162661746}
   - {fileID: 3759438568438743374}
@@ -3117,7 +3118,6 @@ Transform:
   - {fileID: 5842803391758141539}
   - {fileID: 5871709169101682319}
   - {fileID: 4438005847143361904}
-  - {fileID: 7990427755743493394}
   m_Father: {fileID: 6064928310581888633}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5600843099135085844
@@ -6771,7 +6771,7 @@ GameObject:
   - component: {fileID: 4888261145255120369}
   m_Layer: 6
   m_Name: PowerCordSlot
-  m_TagString: Untagged
+  m_TagString: PowerCordSlot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6784,8 +6784,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4089253086507126096}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.00087, y: -0.000844, z: -0.000474}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.00054271397, y: -0.000826605, z: -0.0005728512}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6810,8 +6810,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.0011516911, y: 0.00057371374, z: 0.0005017986}
-  m_Center: {x: 0.00024089306, y: -0.00009913941, z: -0.000009407867}
+  m_Size: {x: 0.0007579872, y: 0.00055055844, z: 0.0005017986}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4107785063438436211
 GameObject:
   m_ObjectHideFlags: 0
@@ -10238,7 +10238,7 @@ GameObject:
   - component: {fileID: 4314359648466619518}
   - component: {fileID: 4304868444661981639}
   m_Layer: 6
-  m_Name: Slot_Motherboard Frame
+  m_Name: Slot_Motherboard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10396,7 +10396,7 @@ MonoBehaviour:
   maxWattage: 0
   requiresScrewdriver: 1
   itemName: MotherBoard
-  partCategory: MotherBoard
+  partCategory: Motherboard
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}

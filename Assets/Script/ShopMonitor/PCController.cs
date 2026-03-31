@@ -23,16 +23,20 @@ public class PCController : MonoBehaviour
     public GameObject[] searchableIcons;   // NEW: The app icons you want to filter
 
     private bool isPoweredOn = true;
-
+    [Header("Save System")]
+    [Tooltip("Give each PC a unique name (e.g., 'MainDesk', 'BuildStation1')")]
+    public string pcID = "DefaultPC";
     private void Start()
     {
-        BootToOS(); // Start up normally
+        BootToOS();
 
-        // Auto-listen to the search bar when the player types
         if (searchInput != null)
-        {
             searchInput.onValueChanged.AddListener(FilterApps);
-        }
+
+        // EXAMPLE: Hide apps if they haven't been unlocked on THIS specific PC yet
+        // (You would attach your desktop icons to these variables in the Inspector)
+        // if (emailIcon != null) emailIcon.SetActive(IsAppUnlocked("Email"));
+        // if (storeIcon != null) storeIcon.SetActive(IsAppUnlocked("Store"));
     }
 
     // --- POWER & BIOS LOGIC ---
@@ -80,9 +84,24 @@ public class PCController : MonoBehaviour
         ShowDesktop();
     }
 
-    public void OpenStoreApp() { ShowDesktop(); if (storeAppPanel) storeAppPanel.SetActive(true); }
+    public void OpenStoreApp()
+    {
+        ShowDesktop();
+        if (storeAppPanel) storeAppPanel.SetActive(true);
+
+        // Tell ShopManager to reinitialize its panels
+        ShopManager shop = FindFirstObjectByType<ShopManager>();
+        if (shop != null) shop.OpenShopApp();
+    }
     public void OpenFurnitureShop() { ShowDesktop(); if (furnitureShopPanel) furnitureShopPanel.SetActive(true); }
-    public void OpenEmailApp() { ShowDesktop(); if (emailAppPanel) emailAppPanel.SetActive(true); }
+    public void OpenEmailApp()
+    {
+        ShowDesktop();
+        if (emailAppPanel) emailAppPanel.SetActive(true);
+
+        EmailManager email = EmailManager.Instance;
+        if (email != null) email.OpenEmailApp();
+    }
     public void OpenProgramsApp() { ShowDesktop(); if (programsAppPanel) programsAppPanel.SetActive(true); }
     public void OpenWallpaperApp() { ShowDesktop(); if (wallpaperAppPanel) wallpaperAppPanel.SetActive(true); }
 
@@ -143,4 +162,23 @@ public class PCController : MonoBehaviour
         // If no apps are open, we are already at the desktop, so we can leave.
         return true;
     }
+
+    // Call this when the player buys/downloads an app!
+    public void UnlockApp(string appName)
+    {
+        // Saves a value like: "BuildStation1_EmailAppUnlocked = 1"
+        PlayerPrefs.SetInt(pcID + "_" + appName + "Unlocked", 1);
+        PlayerPrefs.Save();
+    }
+
+    // Call this to check if an app should be visible
+    public bool IsAppUnlocked(string appName)
+    {
+        // Defaults to 0 (locked) if it's a brand new PC
+        return PlayerPrefs.GetInt(pcID + "_" + appName + "Unlocked", 0) == 1;
+    }
+
+
+
+
 }
