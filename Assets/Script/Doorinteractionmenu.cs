@@ -40,8 +40,12 @@ public class DoorInteractionMenu : MonoBehaviour
     private int selectedIndex = 0; // 0 = Exit Store, 1 = End Day, 2 = Cancel
     private const int OPTION_COUNT = 3;
 
-    // NEW: Record when menu opened to prevent double-click
+    // Record when menu opened to prevent double-click
     private float openTime = 0f;
+
+    // For resetting the End Day text after showing a warning
+    private string defaultEndDayLabel = "End Day";
+    private Coroutine warningResetCoroutine;
 
     // Store references in arrays for cleaner code
     private Image[] backgrounds;
@@ -53,13 +57,17 @@ public class DoorInteractionMenu : MonoBehaviour
 
         backgrounds = new Image[] { option1Background, option2Background, option3Background };
         texts = new TextMeshProUGUI[] { option1Text, option2Text, option3Text };
+
+        // Cache the default label so we can restore it after warnings
+        if (option2Text != null)
+            defaultEndDayLabel = option2Text.text;
     }
 
     void Update()
     {
         if (!isOpen) return;
 
-        // ADDED: Ignore input for a short time after opening to prevent
+        // Ignore input for a short time after opening to prevent
         // the same E press from immediately confirming
         if (Time.time - openTime < 0.2f) return;
 
@@ -104,7 +112,10 @@ public class DoorInteractionMenu : MonoBehaviour
 
         isOpen = true;
         selectedIndex = 0;
-        openTime = Time.time; // ADDED: Record when menu opened
+        openTime = Time.time;
+
+        // Reset the End Day label in case it was showing a warning
+        ResetEndDayLabel();
 
         if (menuPanel != null) menuPanel.SetActive(true);
 
@@ -118,6 +129,13 @@ public class DoorInteractionMenu : MonoBehaviour
     {
         isOpen = false;
         if (menuPanel != null) menuPanel.SetActive(false);
+
+        // Clean up any pending warning reset
+        if (warningResetCoroutine != null)
+        {
+            StopCoroutine(warningResetCoroutine);
+            warningResetCoroutine = null;
+        }
     }
 
     public bool IsOpen()
@@ -197,6 +215,14 @@ public class DoorInteractionMenu : MonoBehaviour
 
     void DoEndDay()
     {
+        // ── BLOCK: Cannot end day while customers are still inside ──
+        if (ShopCustomerSpawner.Instance != null && ShopCustomerSpawner.Instance.HasCustomersInside())
+        {
+            int count = ShopCustomerSpawner.Instance.GetCustomerCount();
+            ShowEndDayWarning("Customers still inside! (" + count + ")");
+            return;
+        }
+
         CloseMenu();
 
         if (playerInteract != null) playerInteract.ForceCloseAllInteraction();
@@ -218,5 +244,44 @@ public class DoorInteractionMenu : MonoBehaviour
     {
         CloseMenu();
         if (playerInteract != null) playerInteract.ForceCloseAllInteraction();
+    }
+
+    // =============================================
+    //  END DAY WARNING HELPERS
+    // =============================================
+
+    /// <summary>
+    /// Briefly flashes a red warning on the End Day option, then resets.
+    /// </summary>
+    void ShowEndDayWarning(string message)
+    {
+        if (option2Text != null)
+        {
+            option2Text.text = message;
+            option2Text.color = new Color(1f, 0.3f, 0.3f, 1f); // Red
+        }
+
+        // Reset after 2 seconds
+        if (warningResetCoroutine != null)
+            StopCoroutine(warningResetCoroutine);
+
+        warningResetCoroutine = StartCoroutine(ResetEndDayLabelAfterDelay(2f));
+    }
+
+    System.Collections.IEnumerator ResetEndDayLabelAfterDelay(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        ResetEndDayLabel();
+        UpdateVisuals(); // Re-apply correct colors
+        warningResetCoroutine = null;
+    }
+
+    void ResetEndDayLabel()
+    {
+        if (option2Text != null)
+        {
+            option2Text.text = defaultEndDayLabel;
+            // Color will be set by UpdateVisuals
+        }
     }
 }

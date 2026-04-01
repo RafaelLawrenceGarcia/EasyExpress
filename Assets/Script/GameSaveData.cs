@@ -11,6 +11,13 @@ public class GamePersistData
     public List<SavedJob> acceptedJobs = new List<SavedJob>();
     public List<SavedPart> inventoryParts = new List<SavedPart>();
     public int currentDay = 1;
+    public bool tutorialDone = false;
+
+    // Shop purchases (item IDs the player owns)
+    public List<string> ownedItemIDs = new List<string>();
+
+    // Pending delivery orders that haven't arrived yet
+    public List<SavedDelivery> pendingDeliveries = new List<SavedDelivery>();
 }
 
 /// <summary>
@@ -19,26 +26,17 @@ public class GamePersistData
 [Serializable]
 public class SavedJob
 {
-    // Sender info
     public string senderName;
     public string subjectLine;
     public string bodyText;
-
-    // Job type & stats
-    public int jobType; // 0=Repair, 1=Build
+    public int jobType;
     public float labourCost;
     public float partsBudget;
-
-    // Requirements
     public string[] objectives;
     public string[] pcProblems;
     public int originalFaultCount;
-
-    // Parts
     public List<SavedPart> startingParts = new List<SavedPart>();
     public List<SavedPart> requestedParts = new List<SavedPart>();
-
-    // Case prefab identifier (matched by name from database)
     public string casePrefabName;
 }
 
@@ -50,13 +48,22 @@ public class SavedPart
 {
     public string partCategory;
     public string partName;
-    public string prefabName;  // Name of the prefab to look up in the database
+    public string prefabName;
     public string[] compatTags;
     public float powerDraw;
     public float maxWattage;
     public bool isDusty;
-
-    // Fault data
-    public int fault; // PartFault enum as int
+    public int fault;
     public string faultDescription;
+}
+
+/// <summary>
+/// Serializable version of a pending delivery order.
+/// </summary>
+[Serializable]
+public class SavedDelivery
+{
+    public string itemId;       // ItemData.id to look up on restore
+    public int quantity;
+    public int daysRemaining;
 }

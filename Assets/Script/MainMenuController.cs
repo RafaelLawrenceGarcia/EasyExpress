@@ -31,10 +31,20 @@ public class MainMenu : MonoBehaviour
     public Text statusText;
 
     [Header("Settings")]
-    public string gameplaySceneName = "Gameplay"; // Make sure this matches your exact scene name!
+    public string gameplaySceneName = "Gameplay";
+
+    [Header("Auth")]
+    public AuthManager authManager;
 
     void Start()
     {
+        // Hide all panels on startup — AuthManager controls what's visible first
+        if (mainPanel != null) mainPanel.SetActive(false);
+        if (modeSelectionPanel != null) modeSelectionPanel.SetActive(false);
+        if (saveSelectionPanel != null) saveSelectionPanel.SetActive(false);
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+        if (creditsPanel != null) creditsPanel.SetActive(false);
+
         // Main Panel
         if (playButton != null) playButton.onClick.AddListener(OpenModeSelection);
         if (optionsButton != null) optionsButton.onClick.AddListener(OpenOptions);
@@ -42,23 +52,42 @@ public class MainMenu : MonoBehaviour
         if (logoutButton != null) logoutButton.onClick.AddListener(Logout);
 
         // Mode Selection
-        // ---> CHANGED: Now skips save selection and loads the scene directly
         if (singleplayerButton != null) singleplayerButton.onClick.AddListener(StartSingleplayer);
         if (multiplayerButton != null) multiplayerButton.onClick.AddListener(() => Debug.Log("Multiplayer TBD!"));
         if (backToMainButton != null) backToMainButton.onClick.AddListener(ShowMainPanel);
 
-        // Save Selection (Safe to leave empty in Inspector for now)
+        // Save Selection
         if (newGameButton != null) newGameButton.onClick.AddListener(NewGame);
         if (continueButton != null) continueButton.onClick.AddListener(ContinueGame);
         if (backToModeButton != null) backToModeButton.onClick.AddListener(OpenModeSelection);
 
-        AuthManager.OnLoginSuccessEvent += CheckForSaveData;
+        // Only check for cloud save data if the player is actually logged in
+        if (GameSession.IsLoggedIn)
+        {
+            AuthManager.OnLoginSuccessEvent += CheckForSaveData;
+        }
     }
 
     void OnDestroy() => AuthManager.OnLoginSuccessEvent -= CheckForSaveData;
 
     #region Panel Navigation
-    public void ShowMainPanel() => SwitchPanel(mainPanel);
+    public void ShowMainPanel()
+    {
+        SwitchPanel(mainPanel);
+
+        // Update the logout button text depending on session type
+        if (logoutButton != null)
+        {
+            Text btnText = logoutButton.GetComponentInChildren<Text>();
+            if (btnText != null)
+                btnText.text = GameSession.IsGuest ? "BACK TO LOGIN" : "LOGOUT";
+        }
+
+        // Show status for guests
+        if (GameSession.IsGuest && statusText != null)
+            statusText.text = "Playing Offline (Local Save)";
+    }
+
     public void OpenModeSelection() => SwitchPanel(modeSelectionPanel);
     public void OpenSaveSelection() => SwitchPanel(saveSelectionPanel);
     public void OpenOptions() => SwitchPanel(optionsPanel);
@@ -77,12 +106,24 @@ public class MainMenu : MonoBehaviour
     #region Game Logic
     void StartSingleplayer()
     {
-        // Always load cloud data when entering gameplay
-        PlayerPrefs.SetInt("IsLoadingGame", 1);
+        if (GameSession.IsLoggedIn)
+        {
+            // ── CLOUD SESSION: load cloud save data after the scene loads ──
+            PlayerPrefs.SetInt("IsLoadingGame", 1);
+        }
+        else
+        {
+            // ── GUEST SESSION: use local PlayerPrefs only ──
+            PlayerPrefs.SetInt("IsLoadingGame", 0);
+        }
         SceneManager.LoadScene(gameplaySceneName);
     }
+
     void CheckForSaveData()
     {
+        // Only query PlayFab if we have a real session
+        if (!GameSession.IsLoggedIn) return;
+
         if (statusText) statusText.text = "Checking Save Data...";
 
         PlayFabClientAPI.GetUserData(new GetUserDataRequest(),
@@ -100,7 +141,7 @@ public class MainMenu : MonoBehaviour
                 if (statusText) statusText.text = "Ready.";
             }
         },
-        error => Debug.LogError("Failed to get data"));
+        error => Debug.LogWarning("Failed to get save data: " + error.ErrorMessage));
     }
 
     void NewGame()
@@ -113,15 +154,36 @@ public class MainMenu : MonoBehaviour
 
     void ContinueGame()
     {
-        PlayerPrefs.SetInt("IsLoadingGame", 1);
+        if (GameSession.IsLoggedIn)
+            PlayerPrefs.SetInt("IsLoadingGame", 1);
+        else
+            PlayerPrefs.SetInt("IsLoadingGame", 0);
+
         SceneManager.LoadScene(gameplaySceneName);
     }
 
     public void Logout()
     {
-        PlayFabClientAPI.ForgetAllCredentials();
-        AuthManager auth = Object.FindFirstObjectByType<AuthManager>();
-        if (auth != null) auth.ResetToLogin();
+        // Clear PlayFab credentials if we were logged in
+        if (GameSession.IsLoggedIn)
+            PlayFabClientAPI.ForgetAllCredentials();
+
+        // Clear session state
+        GameSession.Logout();
+
+        // Hide all menu panels
+        if (mainPanel != null) mainPanel.SetActive(false);
+        if (modeSelectionPanel != null) modeSelectionPanel.SetActive(false);
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+        if (creditsPanel != null) creditsPanel.SetActive(false);
+
+        if (authManager != null)
+        {
+            if (authManager.loginOverlay != null)
+                authManager.loginOverlay.SetActive(true);
+
+            authManager.ResetToLogin();
+        }
     }
     #endregion
 }

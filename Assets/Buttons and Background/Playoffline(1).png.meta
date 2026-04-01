@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4fb29960fbc8767479371c5752cf84e7
+guid: 724f056b9ec72a140bd7d35b69c5a150
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -95,34 +95,12 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: tutorial_arrow_sprite_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1360
-        height: 1360
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9aac1e684c8e7624ea862c997ab4f6c4
-      internalID: 1077803568
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: def22ba70899f3d4c90b0e76f7d5ce1e
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -131,8 +109,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      tutorial_arrow_sprite_0: 1077803568
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

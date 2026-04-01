@@ -29,12 +29,20 @@ public class CloudDataHandler : MonoBehaviour
     // =============================================
     public void SaveGameData()
     {
+        // ── GUARD: skip cloud save if not logged in ──
+        if (!GameSession.IsLoggedIn)
+        {
+            Debug.Log("[CloudSave] Skipped — not logged in (guest session).");
+            return;
+        }
+
         PlayerWallet wallet = FindFirstObjectByType<PlayerWallet>();
         float currentGold = wallet != null ? wallet.currentGold : 0f;
 
         // Build persistent data
         GamePersistData persistData = new GamePersistData();
         persistData.currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
+        persistData.tutorialDone = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
 
         // Save accepted jobs
         EmailManager email = EmailManager.Instance;
@@ -72,6 +80,28 @@ public class CloudDataHandler : MonoBehaviour
             }
         }
 
+        // Save shop owned item IDs
+        ShopSystem shop = ShopSystem.Instance;
+        if (shop != null)
+        {
+            persistData.ownedItemIDs = new List<string>(shop.GetInventoryIDs());
+        }
+
+        // Save pending delivery orders
+        DeliveryManager delivery = DeliveryManager.Instance;
+        if (delivery != null)
+        {
+            foreach (DeliveryOrder order in delivery.pendingOrders)
+            {
+                if (order.item == null) continue;
+                SavedDelivery saved = new SavedDelivery();
+                saved.itemId = order.item.id;
+                saved.quantity = order.quantity;
+                saved.daysRemaining = order.daysRemaining;
+                persistData.pendingDeliveries.Add(saved);
+            }
+        }
+
         string persistJson = JsonUtility.ToJson(persistData);
 
         // Prepare PlayFab data
@@ -85,9 +115,13 @@ public class CloudDataHandler : MonoBehaviour
         };
 
         PlayFabClientAPI.UpdateUserData(request,
-            result => Debug.Log("[CloudSave] Save successful! Jobs: " + persistData.acceptedJobs.Count +
-                              ", Inventory: " + persistData.inventoryParts.Count),
-            error => Debug.LogError("[CloudSave] Save failed: " + error.GenerateErrorReport()));
+            result => Debug.Log("[CloudSave] Save successful! Day: " + persistData.currentDay +
+                              ", Tutorial: " + persistData.tutorialDone +
+                              ", Jobs: " + persistData.acceptedJobs.Count +
+                              ", Inventory: " + persistData.inventoryParts.Count +
+                              ", ShopItems: " + persistData.ownedItemIDs.Count +
+                              ", Deliveries: " + persistData.pendingDeliveries.Count),
+            error => Debug.LogWarning("[CloudSave] Save failed: " + error.GenerateErrorReport()));
     }
 
     // =============================================
@@ -95,12 +129,25 @@ public class CloudDataHandler : MonoBehaviour
     // =============================================
     public void LoadGameData()
     {
+        // ── GUARD: skip cloud load if not logged in ──
+        if (!GameSession.IsLoggedIn)
+        {
+            Debug.Log("[CloudSave] Load skipped — not logged in (guest session).");
+            return;
+        }
+
         PlayFabClientAPI.GetUserData(new GetUserDataRequest(), OnDataReceived, OnError);
     }
 
     void OnDataReceived(GetUserDataResult result)
     {
-        if (result.Data == null) return;
+        // ── NEW ACCOUNT: no cloud data at all → reset to fresh state ──
+        if (result.Data == null || result.Data.Count == 0)
+        {
+            Debug.Log("[CloudSave] No cloud data found (new account). Resetting to Day 1.");
+            ResetToFreshState();
+            return;
+        }
 
         // Load Gold
         if (result.Data.ContainsKey("Gold"))
@@ -109,6 +156,16 @@ public class CloudDataHandler : MonoBehaviour
             if (wallet != null)
             {
                 wallet.currentGold = float.Parse(result.Data["Gold"].Value);
+                wallet.UpdateUI();
+            }
+        }
+        else
+        {
+            // No gold saved yet — reset wallet to 0
+            PlayerWallet wallet = FindFirstObjectByType<PlayerWallet>();
+            if (wallet != null)
+            {
+                wallet.currentGold = 0f;
                 wallet.UpdateUI();
             }
         }
@@ -122,16 +179,80 @@ public class CloudDataHandler : MonoBehaviour
                 GamePersistData persistData = JsonUtility.FromJson<GamePersistData>(json);
                 RestoreGameData(persistData);
             }
+            else
+            {
+                // GameData key exists but is empty → treat as new
+                Debug.Log("[CloudSave] GameData key is empty. Resetting to Day 1.");
+                ResetToFreshState();
+            }
+        }
+        else
+        {
+            // Has Gold but no GameData → still reset day/tutorial
+            Debug.Log("[CloudSave] No GameData key. Resetting to Day 1.");
+            ResetToFreshState();
         }
 
         Debug.Log("[CloudSave] Load complete.");
     }
+
+    /// <summary>
+    /// Resets local PlayerPrefs to a fresh Day 1 state.
+    /// Called when a logged-in account has no cloud save data yet.
+    /// </summary>
+    void ResetToFreshState()
+    {
+        PlayerPrefs.SetInt("CurrentDay", 1);
+        PlayerPrefs.SetInt("TutorialDone", 0);
+        PlayerPrefs.SetInt("IsLoadingGame", 0);
+        PlayerPrefs.SetFloat("SavedGold", 0f);
+        PlayerPrefs.SetInt("HasSaveData", 0);
+        PlayerPrefs.Save();
+
+        // Reset wallet in-game if it exists
+        PlayerWallet wallet = FindFirstObjectByType<PlayerWallet>();
+        if (wallet != null)
+        {
+            wallet.currentGold = 0f;
+            wallet.UpdateUI();
+        }
+
+        Debug.Log("[CloudSave] Local state reset to fresh Day 1.");
+
+        // Update DayTransitionManager so the HUD shows the correct day
+        SyncDayTransitionManager();
+
+        // Restart the tutorial — it was skipped because IsLoadingGame was 1
+        if (TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.RestartTutorial();
+        }
+    }
+
+    /// <summary>
+    /// Tells DayTransitionManager to re-read the current day from PlayerPrefs.
+    /// Called after cloud data changes the day value.
+    /// </summary>
+    void SyncDayTransitionManager()
+    {
+        if (DayTransitionManager.Instance != null)
+        {
+            DayTransitionManager.Instance.SyncCurrentDay();
+        }
+    }
+
     /// <summary>
     /// Waits for scene singletons to be ready, then loads.
     /// Call this from GameManager.OnSceneLoaded instead of LoadGameData directly.
     /// </summary>
     public void LoadGameDataDelayed()
     {
+        if (!GameSession.IsLoggedIn)
+        {
+            Debug.Log("[CloudSave] Delayed load skipped — not logged in.");
+            return;
+        }
+
         StartCoroutine(DelayedLoad());
     }
 
@@ -143,9 +264,19 @@ public class CloudDataHandler : MonoBehaviour
         yield return null;
         LoadGameData();
     }
+
     void RestoreGameData(GamePersistData data)
     {
         if (data == null) return;
+
+        // Restore current day and tutorial status from cloud
+        PlayerPrefs.SetInt("CurrentDay", data.currentDay);
+        PlayerPrefs.SetInt("TutorialDone", data.tutorialDone ? 1 : 0);
+        PlayerPrefs.Save();
+        Debug.Log("[CloudSave] Restored day: " + data.currentDay + ", tutorialDone: " + data.tutorialDone);
+
+        // Update DayTransitionManager so the HUD shows the correct day
+        SyncDayTransitionManager();
 
         // Restore accepted jobs
         EmailManager email = EmailManager.Instance;
@@ -156,7 +287,6 @@ public class CloudDataHandler : MonoBehaviour
                 EmailData job = DeserializeJob(savedJob);
                 if (job != null)
                 {
-                    // Add to accepted list and spawn the box on a shelf
                     bool spawned = email.SpawnBoxFromData(job.basePCCasePrefab, job.startingParts, job);
                     if (spawned)
                     {
@@ -165,7 +295,6 @@ public class CloudDataHandler : MonoBehaviour
                     else
                     {
                         Debug.LogWarning("[CloudSave] No shelf space for restored job: " + savedJob.senderName);
-                        // Still add to accepted list so it shows in email
                         email.acceptedJobs.Add(job);
                     }
                 }
@@ -188,6 +317,35 @@ public class CloudDataHandler : MonoBehaviour
                 }
             }
             Debug.Log("[CloudSave] Restored " + data.inventoryParts.Count + " inventory parts.");
+        }
+
+        // Restore shop owned item IDs
+        ShopSystem shop = ShopSystem.Instance;
+        if (shop != null && data.ownedItemIDs != null && data.ownedItemIDs.Count > 0)
+        {
+            shop.SetInventoryIDs(data.ownedItemIDs.ToArray());
+            Debug.Log("[CloudSave] Restored " + data.ownedItemIDs.Count + " shop owned items.");
+        }
+
+        // Restore pending delivery orders
+        DeliveryManager delivery = DeliveryManager.Instance;
+        if (delivery != null && shop != null && data.pendingDeliveries != null && data.pendingDeliveries.Count > 0)
+        {
+            delivery.pendingOrders.Clear();
+            foreach (SavedDelivery saved in data.pendingDeliveries)
+            {
+                ItemData item = FindItemDataById(saved.itemId, shop);
+                if (item != null)
+                {
+                    DeliveryOrder order = new DeliveryOrder(item, saved.quantity, saved.daysRemaining);
+                    delivery.pendingOrders.Add(order);
+                }
+                else
+                {
+                    Debug.LogWarning("[CloudSave] Could not find ItemData for delivery: " + saved.itemId);
+                }
+            }
+            Debug.Log("[CloudSave] Restored " + data.pendingDeliveries.Count + " pending deliveries.");
         }
     }
 
@@ -272,10 +430,8 @@ public class CloudDataHandler : MonoBehaviour
         job.pcProblems = saved.pcProblems;
         job.originalFaultCount = saved.originalFaultCount;
 
-        // Find case prefab
         job.basePCCasePrefab = FindCasePrefab(saved.casePrefabName);
 
-        // Reconstruct parts
         job.startingParts = new List<StartingPCComponent>();
         foreach (SavedPart sp in saved.startingParts)
             job.startingParts.Add(DeserializeStartingPart(sp));
@@ -302,9 +458,6 @@ public class CloudDataHandler : MonoBehaviour
         return part;
     }
 
-    /// <summary>
-    /// Recreate a part GameObject from saved data for inventory restoration.
-    /// </summary>
     GameObject RecreatePart(SavedPart saved)
     {
         GameObject prefab = FindPartPrefab(saved.prefabName, saved.partCategory);
@@ -356,7 +509,6 @@ public class CloudDataHandler : MonoBehaviour
     {
         if (string.IsNullOrEmpty(prefabName) || partDatabase == null) return null;
 
-        // Search all part arrays in the database
         StartingPCComponent[][] allArrays = new StartingPCComponent[][]
         {
             partDatabase.motherboards,
@@ -379,7 +531,6 @@ public class CloudDataHandler : MonoBehaviour
             }
         }
 
-        // Fallback: match by category if exact name not found
         foreach (StartingPCComponent[] array in allArrays)
         {
             if (array == null) continue;
@@ -393,10 +544,6 @@ public class CloudDataHandler : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// Try to determine the prefab name for an existing part instance.
-    /// Falls back to searching the database by category.
-    /// </summary>
     string GetPrefabNameForPart(InspectableItem item)
     {
         if (partDatabase == null) return item.gameObject.name.Replace("(Clone)", "").Trim();
@@ -408,7 +555,6 @@ public class CloudDataHandler : MonoBehaviour
             partDatabase.coolers, partDatabase.fans
         };
 
-        // Match by category and name
         foreach (StartingPCComponent[] array in allArrays)
         {
             if (array == null) continue;
@@ -419,7 +565,6 @@ public class CloudDataHandler : MonoBehaviour
             }
         }
 
-        // Fallback: just use the category match
         foreach (StartingPCComponent[] array in allArrays)
         {
             if (array == null) continue;
@@ -433,8 +578,23 @@ public class CloudDataHandler : MonoBehaviour
         return item.gameObject.name.Replace("(Clone)", "").Trim();
     }
 
+    /// <summary>
+    /// Find an ItemData ScriptableObject by its ID from the ShopSystem's item list.
+    /// </summary>
+    ItemData FindItemDataById(string itemId, ShopSystem shop)
+    {
+        if (string.IsNullOrEmpty(itemId) || shop == null) return null;
+
+        foreach (ItemData item in shop.allAvailableItems)
+        {
+            if (item != null && item.id == itemId)
+                return item;
+        }
+        return null;
+    }
+
     void OnError(PlayFabError error)
     {
-        Debug.LogError("[CloudSave] Error: " + error.ErrorMessage);
+        Debug.LogWarning("[CloudSave] Error: " + error.ErrorMessage);
     }
 }

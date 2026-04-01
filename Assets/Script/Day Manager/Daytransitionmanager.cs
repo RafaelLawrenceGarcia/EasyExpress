@@ -51,7 +51,10 @@ public class DayTransitionManager : MonoBehaviour
         bool isChangingRooms = PlayerPrefs.GetInt("ChangingRooms", 0) == 1;
 
         // Auto-load cloud data if we have a saved day (not first time)
-        if (PlayerPrefs.GetInt("TutorialDone", 0) == 1 && CloudDataHandler.Instance != null)
+        // Only call PlayFab if actually logged in
+        if (PlayerPrefs.GetInt("TutorialDone", 0) == 1
+            && GameSession.IsLoggedIn
+            && CloudDataHandler.Instance != null)
         {
             CloudDataHandler.Instance.LoadGameData();
         }
@@ -81,6 +84,17 @@ public class DayTransitionManager : MonoBehaviour
 
     public int GetCurrentDay() { return currentDay; }
     public bool IsTransitioning() { return isTransitioning; }
+
+    /// <summary>
+    /// Re-reads CurrentDay from PlayerPrefs and updates the HUD.
+    /// Called by CloudDataHandler after cloud data loads or resets.
+    /// </summary>
+    public void SyncCurrentDay()
+    {
+        currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
+        if (hudDayText != null) hudDayText.text = "Day " + currentDay;
+        Debug.Log("[DayTransition] Synced to Day " + currentDay);
+    }
 
     public void SkipDayIntro()
     {
@@ -140,21 +154,23 @@ public class DayTransitionManager : MonoBehaviour
         // Fade to black
         yield return StartCoroutine(FadePanel(0f, 1f, fadeInDuration));
 
-        // =============================================
-        //  SAVE GAME DATA TO CLOUD BEFORE ADVANCING
-        // =============================================
-        if (CloudDataHandler.Instance != null)
-        {
-            CloudDataHandler.Instance.SaveGameData();
-            Debug.Log("[DayTransition] Cloud save triggered.");
-        }
-
         // Reset daily walk-in counter
         WalkInLimiter.ResetDaily();
 
+        // Advance to next day
         currentDay++;
         PlayerPrefs.SetInt("CurrentDay", currentDay);
         PlayerPrefs.Save();
+
+        // =============================================
+        //  SAVE TO CLOUD AFTER ADVANCING THE DAY
+        //  (so the cloud stores the NEW day number)
+        // =============================================
+        if (GameSession.IsLoggedIn && CloudDataHandler.Instance != null)
+        {
+            CloudDataHandler.Instance.SaveGameData();
+            Debug.Log("[DayTransition] Cloud save triggered for Day " + currentDay);
+        }
 
         yield return new WaitForSecondsRealtime(0.5f);
 

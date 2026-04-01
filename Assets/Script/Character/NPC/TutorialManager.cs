@@ -1,5 +1,4 @@
 using UnityEngine;
-using TMPro;
 using System.Collections;
 
 public class TutorialManager : MonoBehaviour
@@ -80,14 +79,14 @@ public class TutorialManager : MonoBehaviour
     }
 
     void ShowArrow(Transform target) { if (tutorialArrow != null && target != null) tutorialArrow.ShowAt(target); }
-    void HideArrow()                 { if (tutorialArrow != null) tutorialArrow.Hide(); }
+    void HideArrow() { if (tutorialArrow != null) tutorialArrow.Hide(); }
 
     // ─────────────────────────────────────────────────────────────
     //  UNITY LIFECYCLE
     // ─────────────────────────────────────────────────────────────
 
     void Awake() { Instance = this; }
-    void OnEnable()  { DayTransitionManager.OnNewDayStarted += OnDayStarted; }
+    void OnEnable() { DayTransitionManager.OnNewDayStarted += OnDayStarted; }
     void OnDisable() { DayTransitionManager.OnNewDayStarted -= OnDayStarted; }
 
     void OnDayStarted(int day)
@@ -112,6 +111,29 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         if (dialogueManager == null || part1_MoveDialogue == null) { tutorialStep = 14; yield break; }
         dialogueManager.PlaySequence(part1_MoveDialogue, StartMovementTask);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    //  RESTART TUTORIAL (called by CloudDataHandler for new accounts)
+    //
+    //  When a logged-in player has no cloud data, Start() already
+    //  ran and skipped the tutorial (because IsLoadingGame was 1).
+    //  This method resets everything and kicks off the tutorial
+    //  without waiting for the day-started event again.
+    // ─────────────────────────────────────────────────────────────
+
+    public void RestartTutorial()
+    {
+        Debug.Log("[Tutorial] Restarting tutorial for new account.");
+
+        // Reset step and WASD timers
+        tutorialStep = 0;
+        wTimer = aTimer = sTimer = dTimer = 0f;
+        wDone = aDone = sDone = dDone = false;
+        HideArrow();
+
+        // Kick off the tutorial directly (day intro already played)
+        StartCoroutine(DelayedStart());
     }
 
     public void HideTaskTemporarily() { if (TaskListUI.Instance != null) TaskListUI.Instance.HideTemporarily(); }

@@ -105,6 +105,26 @@ public class ShopCustomerSpawner : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns true if any customers are currently inside the shop.
+    /// Used by DoorInteractionMenu to block ending the day.
+    /// </summary>
+    public bool HasCustomersInside()
+    {
+        // Clean up any destroyed references first
+        activeCustomers.RemoveAll(c => c == null);
+        return activeCustomers.Count > 0;
+    }
+
+    /// <summary>
+    /// Returns how many customers are currently inside.
+    /// </summary>
+    public int GetCustomerCount()
+    {
+        activeCustomers.RemoveAll(c => c == null);
+        return activeCustomers.Count;
+    }
+
     void UpdateQueuePositions()
     {
         for (int i = 0; i < activeCustomers.Count; i++)

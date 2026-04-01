@@ -141,7 +141,7 @@ public class TutorialArrow : MonoBehaviour
             float sin = Mathf.Sin(angle);
 
             // Find which edge of the screen we hit first
-            float halfW = (Screen.width  * 0.5f) - screenEdgeOffset;
+            float halfW = (Screen.width * 0.5f) - screenEdgeOffset;
             float halfH = (Screen.height * 0.5f) - screenEdgeOffset;
 
             float tX = (cos != 0) ? halfW / Mathf.Abs(cos) : float.MaxValue;

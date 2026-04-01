@@ -1,19 +1,44 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseManager : MonoBehaviour
 {
-    [Header("UI Reference")]
-    public GameObject optionsPanel; 
+    [Header("Panels")]
+    [Tooltip("The main pause menu with Resume / Options / Quit buttons.")]
+    public GameObject pausePanel;
+
+    [Tooltip("The existing options panel (video, audio, controls tabs).")]
+    public GameObject optionsPanel;
+
+    [Header("Buttons")]
+    public Button resumeButton;
+    public Button optionsButton;
+    public Button quitButton;
+
+    [Tooltip("Optional — a Back button inside the Options panel to return to the pause menu.")]
+    public Button optionsBackButton;
+
+    [Header("Settings")]
+    [Tooltip("Scene name to load when Quit is pressed. Leave empty to use 'MainMenu'.")]
+    public string mainMenuSceneName = "MainMenu";
 
     public static bool isPaused = false;
-    
-    // --- 1. THE BLOCKER FLAG ---
+
     // Other scripts can set this to TRUE to stop the pause menu from opening
-    public static bool BlockPause = false; 
+    public static bool BlockPause = false;
 
     void Start()
     {
-        if(optionsPanel != null) optionsPanel.SetActive(false);
+        if (pausePanel != null) pausePanel.SetActive(false);
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+
+        // Wire up buttons
+        if (resumeButton != null) resumeButton.onClick.AddListener(ResumeGame);
+        if (optionsButton != null) optionsButton.onClick.AddListener(OpenOptions);
+        if (quitButton != null) quitButton.onClick.AddListener(QuitToMainMenu);
+        if (optionsBackButton != null) optionsBackButton.onClick.AddListener(BackToPauseMenu);
+
         ResumeGame();
     }
 
@@ -21,13 +46,19 @@ public class PauseManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // --- 2. CHECK THE FLAG ---
-            // If something else (like the Shop) blocked us, STOP immediately.
-            if (BlockPause) return; 
+            if (BlockPause) return;
 
             if (isPaused)
             {
-                ResumeGame();
+                // If options panel is open, go back to pause menu first
+                if (optionsPanel != null && optionsPanel.activeSelf)
+                {
+                    BackToPauseMenu();
+                }
+                else
+                {
+                    ResumeGame();
+                }
             }
             else
             {
@@ -40,18 +71,21 @@ public class PauseManager : MonoBehaviour
         }
     }
 
-    // --- 3. AUTO-RESET ---
-    // LateUpdate runs AFTER all Update functions are done.
-    // This resets the flag so the pause menu works again in the next frame.
     void LateUpdate()
     {
         BlockPause = false;
     }
 
+    // =============================================
+    //  PAUSE / RESUME
+    // =============================================
+
     public void PauseGame()
     {
-        optionsPanel.SetActive(true); 
-        Time.timeScale = 0f;          
+        if (pausePanel != null) pausePanel.SetActive(true);
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+
+        Time.timeScale = 0f;
         isPaused = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -59,10 +93,48 @@ public class PauseManager : MonoBehaviour
 
     public void ResumeGame()
     {
-        optionsPanel.SetActive(false); 
-        Time.timeScale = 1f;           
+        if (pausePanel != null) pausePanel.SetActive(false);
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+
+        Time.timeScale = 1f;
         isPaused = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    // =============================================
+    //  OPTIONS
+    // =============================================
+
+    public void OpenOptions()
+    {
+        if (pausePanel != null) pausePanel.SetActive(false);
+        if (optionsPanel != null) optionsPanel.SetActive(true);
+    }
+
+    public void BackToPauseMenu()
+    {
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+        if (pausePanel != null) pausePanel.SetActive(true);
+    }
+
+    // =============================================
+    //  QUIT TO MAIN MENU
+    // =============================================
+
+    public void QuitToMainMenu()
+    {
+        // Save to cloud before leaving if logged in
+        if (GameSession.IsLoggedIn && CloudDataHandler.Instance != null)
+        {
+            CloudDataHandler.Instance.SaveGameData();
+            Debug.Log("[PauseManager] Cloud save triggered before quit.");
+        }
+
+        // Reset time scale before loading a new scene
+        Time.timeScale = 1f;
+        isPaused = false;
+
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 }
