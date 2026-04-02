@@ -25,7 +25,7 @@ public class InspectableItem : MonoBehaviour
 
     // NEW: Categorizes the part so the storage knows what slot it fits into!
     public string partCategory = "Generic";
-
+    public Sprite inventoryIcon;
     [TextArea(3, 5)]
     public string itemDescription = "No description available.";
     public GameObject itemIconPrefab;

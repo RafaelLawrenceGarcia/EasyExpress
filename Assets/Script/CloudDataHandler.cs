@@ -54,10 +54,10 @@ public class CloudDataHandler : MonoBehaviour
 
         // ── BUILD PERSISTENT DATA ──
         GamePersistData persistData = new GamePersistData();
-        persistData.currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
-        persistData.tutorialDone = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
-        persistData.gold = currentGold;
-        persistData.lastSaveTime = DateTime.UtcNow.ToString("o");
+        persistData.currentDay    = PlayerPrefs.GetInt("CurrentDay", 1);
+        persistData.tutorialDone  = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
+        persistData.gold          = currentGold;
+        persistData.lastSaveTime  = DateTime.UtcNow.ToString("o");
 
         // Checkpoint = start of new day, so time is always 6:00 AM
         persistData.gameTime = 6f;
@@ -79,7 +79,10 @@ public class CloudDataHandler : MonoBehaviour
                 persistData.acceptedJobs.Add(SerializeJob(job));
         }
 
-        // ── PLAYER INVENTORY (parts removed from PCs, in playerStorage) ──
+        // ── PLAYER INVENTORY ──
+        // InventorySystem.AddPart() stores everything into playerStorage,
+        // so ONE loop captures both parts removed from PCs AND loose world pickups.
+        // The old separate invSys.entries block is no longer needed.
         InspectionManager inspection = FindFirstObjectByType<InspectionManager>();
         if (inspection != null)
         {
@@ -87,19 +90,6 @@ public class CloudDataHandler : MonoBehaviour
             {
                 if (partObj == null) continue;
                 InspectableItem item = partObj.GetComponent<InspectableItem>();
-                if (item == null) continue;
-                persistData.inventoryParts.Add(SerializePart(item));
-            }
-        }
-
-        // ── INVENTORY SYSTEM ENTRIES (parts picked up via E into grid inventory) ──
-        InventorySystem invSys = InventorySystem.Instance;
-        if (invSys != null)
-        {
-            foreach (var entry in invSys.entries)
-            {
-                if (entry.obj == null) continue;
-                InspectableItem item = entry.obj.GetComponent<InspectableItem>();
                 if (item == null) continue;
                 persistData.inventoryParts.Add(SerializePart(item));
             }
@@ -120,8 +110,8 @@ public class CloudDataHandler : MonoBehaviour
             {
                 if (order.item == null) continue;
                 SavedDelivery saved = new SavedDelivery();
-                saved.itemId = order.item.id;
-                saved.quantity = order.quantity;
+                saved.itemId        = order.item.id;
+                saved.quantity      = order.quantity;
                 saved.daysRemaining = order.daysRemaining;
                 persistData.pendingDeliveries.Add(saved);
             }
@@ -134,19 +124,28 @@ public class CloudDataHandler : MonoBehaviour
         {
             Data = new Dictionary<string, string>
             {
-                { "Gold", currentGold.ToString() },
+                { "Gold",     currentGold.ToString() },
                 { "GameData", persistJson }
             }
         };
 
         PlayFabClientAPI.UpdateUserData(request,
-            result => Debug.Log($"[CloudSave] End-of-day checkpoint saved! " +
-                $"Day: {persistData.currentDay}, " +
-                $"Gold: {persistData.gold:N0}, " +
-                $"PendingEmails: {persistData.activeEmails.Count}, " +
-                $"AcceptedJobs: {persistData.acceptedJobs.Count}, " +
-                $"Inventory: {persistData.inventoryParts.Count}, " +
-                $"Deliveries: {persistData.pendingDeliveries.Count}"),
+            result =>
+            {
+                Debug.Log($"[CloudSave] End-of-day checkpoint saved! " +
+                    $"Day: {persistData.currentDay}, " +
+                    $"Gold: {persistData.gold:N0}, " +
+                    $"PendingEmails: {persistData.activeEmails.Count}, " +
+                    $"AcceptedJobs: {persistData.acceptedJobs.Count}, " +
+                    $"Inventory: {persistData.inventoryParts.Count}, " +
+                    $"Deliveries: {persistData.pendingDeliveries.Count}");
+
+                // ── SYNC LEADERBOARD STATISTICS ──
+                // Pushes Gold / PCsRepaired / OverallPoints to PlayFab Statistics
+                // so the React website leaderboard reflects accurate live data.
+                if (PlayFabStatSync.Instance != null)
+                    PlayFabStatSync.Instance.SyncStats();
+            },
             error => Debug.LogWarning("[CloudSave] Save failed: " + error.GenerateErrorReport()));
     }
 
@@ -227,9 +226,7 @@ public class CloudDataHandler : MonoBehaviour
         SyncDayTransitionManager();
         WalkInLimiter.ResetDaily();
         if (TutorialManager.Instance != null)
-        {
             TutorialManager.Instance.RestartTutorial();
-        }
     }
 
     void SyncDayTransitionManager()
@@ -283,9 +280,7 @@ public class CloudDataHandler : MonoBehaviour
 
         // ── SAVE TIMESTAMP ──
         if (!string.IsNullOrEmpty(data.lastSaveTime))
-        {
             Debug.Log("[CloudSave] Last saved at: " + data.lastSaveTime);
-        }
 
         // ── GAME TIME (skip on room change — PlayerPrefs has current time) ──
         if (!IsRoomChangeLoad && data.gameTime > 0f)
@@ -296,9 +291,7 @@ public class CloudDataHandler : MonoBehaviour
 
             DayTimeUI dayTimeUI = FindFirstObjectByType<DayTimeUI>();
             if (dayTimeUI != null)
-            {
                 dayTimeUI.SetTime(data.gameTime);
-            }
         }
 
         if (!IsRoomChangeLoad)
@@ -307,12 +300,13 @@ public class CloudDataHandler : MonoBehaviour
             SyncDayTransitionManager();
             WalkInLimiter.ResetDaily();
         }
+
         // ── EMAILS & JOBS ──
         EmailManager email = EmailManager.Instance;
         if (email != null)
         {
             bool hasEmailData = (data.activeEmails != null && data.activeEmails.Count > 0)
-                             || (data.acceptedJobs != null && data.acceptedJobs.Count > 0);
+                             || (data.acceptedJobs  != null && data.acceptedJobs.Count  > 0);
 
             if (hasEmailData)
             {
@@ -351,19 +345,32 @@ public class CloudDataHandler : MonoBehaviour
         }
 
         // ── INVENTORY PARTS ──
+        // Recreates saved parts and adds them to playerStorage.
+        // InventorySystem then syncs those into the StorageRoomShelf
+        // so the physical storage room shows the correct items on its shelves.
         InspectionManager inspection = FindFirstObjectByType<InspectionManager>();
         if (inspection != null && data.inventoryParts != null && data.inventoryParts.Count > 0)
         {
             foreach (SavedPart savedPart in data.inventoryParts)
             {
                 GameObject partObj = RecreatePart(savedPart);
-                if (partObj != null)
-                {
-                    partObj.SetActive(false);
-                    inspection.playerStorage.Add(partObj);
-                }
+                if (partObj == null) continue;
+
+                // Keep hidden — InventorySystem.HideFromWorld already does this,
+                // but SetActive(false) + position guard is the belt-and-braces approach.
+                partObj.SetActive(false);
+                partObj.transform.position = new Vector3(0f, -999f, 0f);
+
+                inspection.playerStorage.Add(partObj);
             }
+
             Debug.Log("[CloudSave] Restored " + data.inventoryParts.Count + " inventory parts.");
+
+            // ── SYNC STORAGE ROOM SHELF VISUALS ──
+            // After all parts are in playerStorage, tell StorageRoomShelf to
+            // place 3D props on the shelves so the room looks populated.
+            if (InventorySystem.Instance != null && InventorySystem.Instance.storageShelf != null)
+                InventorySystem.Instance.storageShelf.SyncWithStorage(inspection.playerStorage);
         }
 
         // ── SHOP OWNED ITEMS ──
@@ -406,14 +413,14 @@ public class CloudDataHandler : MonoBehaviour
     SavedJob SerializeJob(EmailData job)
     {
         SavedJob saved = new SavedJob();
-        saved.senderName = job.senderName;
-        saved.subjectLine = job.subjectLine;
-        saved.bodyText = job.bodyText;
-        saved.jobType = (int)job.jobType;
-        saved.buildPurpose = (int)job.buildPurpose;
-        saved.reward = job.reward;
-        saved.objectives = job.objectives;
-        saved.pcProblems = job.pcProblems;
+        saved.senderName        = job.senderName;
+        saved.subjectLine       = job.subjectLine;
+        saved.bodyText          = job.bodyText;
+        saved.jobType           = (int)job.jobType;
+        saved.buildPurpose      = (int)job.buildPurpose;
+        saved.reward            = job.reward;
+        saved.objectives        = job.objectives;
+        saved.pcProblems        = job.pcProblems;
         saved.originalFaultCount = job.originalFaultCount;
 
         if (job.basePCCasePrefab != null)
@@ -433,15 +440,15 @@ public class CloudDataHandler : MonoBehaviour
     SavedPart SerializeStartingPart(StartingPCComponent part)
     {
         SavedPart saved = new SavedPart();
-        saved.partCategory = part.partCategory;
-        saved.partName = part.partName;
-        saved.prefabName = part.partPrefab != null ? part.partPrefab.name : "";
-        saved.compatTags = part.compatTags;
-        saved.partPrice = part.partPrice;
-        saved.powerDraw = part.powerDraw;
-        saved.maxWattage = part.maxWattage;
-        saved.isDusty = part.isDusty;
-        saved.fault = (int)part.fault;
+        saved.partCategory    = part.partCategory;
+        saved.partName        = part.partName;
+        saved.prefabName      = part.partPrefab != null ? part.partPrefab.name : "";
+        saved.compatTags      = part.compatTags;
+        saved.partPrice       = part.partPrice;
+        saved.powerDraw       = part.powerDraw;
+        saved.maxWattage      = part.maxWattage;
+        saved.isDusty         = part.isDusty;
+        saved.fault           = (int)part.fault;
         saved.faultDescription = part.faultDescription;
         return saved;
     }
@@ -449,13 +456,13 @@ public class CloudDataHandler : MonoBehaviour
     SavedPart SerializePart(InspectableItem item)
     {
         SavedPart saved = new SavedPart();
-        saved.partCategory = item.partCategory;
-        saved.partName = item.itemName;
-        saved.prefabName = GetPrefabNameForPart(item);
-        saved.compatTags = item.compatTags;
-        saved.powerDraw = item.powerDraw;
-        saved.maxWattage = item.maxWattage;
-        saved.fault = (int)item.fault;
+        saved.partCategory     = item.partCategory;
+        saved.partName         = item.itemName;
+        saved.prefabName       = GetPrefabNameForPart(item);
+        saved.compatTags       = item.compatTags;
+        saved.powerDraw        = item.powerDraw;
+        saved.maxWattage       = item.maxWattage;
+        saved.fault            = (int)item.fault;
         saved.faultDescription = item.faultDescription;
         return saved;
     }
@@ -467,14 +474,14 @@ public class CloudDataHandler : MonoBehaviour
     EmailData DeserializeJob(SavedJob saved)
     {
         EmailData job = ScriptableObject.CreateInstance<EmailData>();
-        job.senderName = saved.senderName;
-        job.subjectLine = saved.subjectLine;
-        job.bodyText = saved.bodyText;
-        job.jobType = (JobType)saved.jobType;
-        job.buildPurpose = (BuildPurpose)saved.buildPurpose;
-        job.reward = saved.reward;
-        job.objectives = saved.objectives;
-        job.pcProblems = saved.pcProblems;
+        job.senderName         = saved.senderName;
+        job.subjectLine        = saved.subjectLine;
+        job.bodyText           = saved.bodyText;
+        job.jobType            = (JobType)saved.jobType;
+        job.buildPurpose       = (BuildPurpose)saved.buildPurpose;
+        job.reward             = saved.reward;
+        job.objectives         = saved.objectives;
+        job.pcProblems         = saved.pcProblems;
         job.originalFaultCount = saved.originalFaultCount;
 
         job.basePCCasePrefab = FindCasePrefab(saved.casePrefabName);
@@ -493,15 +500,15 @@ public class CloudDataHandler : MonoBehaviour
     StartingPCComponent DeserializeStartingPart(SavedPart saved)
     {
         StartingPCComponent part = new StartingPCComponent();
-        part.partCategory = saved.partCategory;
-        part.partName = saved.partName;
-        part.partPrefab = FindPartPrefab(saved.prefabName, saved.partCategory);
-        part.compatTags = saved.compatTags;
-        part.partPrice = saved.partPrice;
-        part.powerDraw = saved.powerDraw;
-        part.maxWattage = saved.maxWattage;
-        part.isDusty = saved.isDusty;
-        part.fault = (PartFault)saved.fault;
+        part.partCategory     = saved.partCategory;
+        part.partName         = saved.partName;
+        part.partPrefab       = FindPartPrefab(saved.prefabName, saved.partCategory);
+        part.compatTags       = saved.compatTags;
+        part.partPrice        = saved.partPrice;
+        part.powerDraw        = saved.powerDraw;
+        part.maxWattage       = saved.maxWattage;
+        part.isDusty          = saved.isDusty;
+        part.fault            = (PartFault)saved.fault;
         part.faultDescription = saved.faultDescription;
         return part;
     }
@@ -521,14 +528,14 @@ public class CloudDataHandler : MonoBehaviour
         InspectableItem item = obj.GetComponent<InspectableItem>();
         if (item != null)
         {
-            item.itemName = saved.partName;
-            item.partCategory = saved.partCategory;
-            item.compatTags = saved.compatTags;
-            item.powerDraw = saved.powerDraw;
-            item.maxWattage = saved.maxWattage;
-            item.fault = (PartFault)saved.fault;
+            item.itemName         = saved.partName;
+            item.partCategory     = saved.partCategory;
+            item.compatTags       = saved.compatTags;
+            item.powerDraw        = saved.powerDraw;
+            item.maxWattage       = saved.maxWattage;
+            item.fault            = (PartFault)saved.fault;
             item.faultDescription = saved.faultDescription;
-            item.isRemovable = true;
+            item.isRemovable      = true;
         }
 
         return obj;
@@ -552,13 +559,14 @@ public class CloudDataHandler : MonoBehaviour
     {
         if (string.IsNullOrEmpty(prefabName) || partDatabase == null) return null;
 
-        StartingPCComponent[][] allArrays = new StartingPCComponent[][]
+        StartingPCComponent[][] allArrays =
         {
-            partDatabase.motherboards, partDatabase.psus, partDatabase.cpus,
-            partDatabase.gpus, partDatabase.rams, partDatabase.storage,
-            partDatabase.coolers, partDatabase.fans
+            partDatabase.motherboards, partDatabase.psus,  partDatabase.cpus,
+            partDatabase.gpus,         partDatabase.rams,  partDatabase.storage,
+            partDatabase.coolers,      partDatabase.fans
         };
 
+        // Exact name match first
         foreach (StartingPCComponent[] array in allArrays)
         {
             if (array == null) continue;
@@ -567,6 +575,7 @@ public class CloudDataHandler : MonoBehaviour
                     return comp.partPrefab;
         }
 
+        // Category fallback
         foreach (StartingPCComponent[] array in allArrays)
         {
             if (array == null) continue;
@@ -580,23 +589,28 @@ public class CloudDataHandler : MonoBehaviour
 
     string GetPrefabNameForPart(InspectableItem item)
     {
-        if (partDatabase == null) return item.gameObject.name.Replace("(Clone)", "").Trim();
+        if (partDatabase == null)
+            return item.gameObject.name.Replace("(Clone)", "").Trim();
 
-        StartingPCComponent[][] allArrays = new StartingPCComponent[][]
+        StartingPCComponent[][] allArrays =
         {
-            partDatabase.motherboards, partDatabase.psus, partDatabase.cpus,
-            partDatabase.gpus, partDatabase.rams, partDatabase.storage,
-            partDatabase.coolers, partDatabase.fans
+            partDatabase.motherboards, partDatabase.psus,  partDatabase.cpus,
+            partDatabase.gpus,         partDatabase.rams,  partDatabase.storage,
+            partDatabase.coolers,      partDatabase.fans
         };
 
+        // Exact name + category match
         foreach (StartingPCComponent[] array in allArrays)
         {
             if (array == null) continue;
             foreach (StartingPCComponent comp in array)
-                if (comp.partCategory == item.partCategory && comp.partName == item.itemName && comp.partPrefab != null)
+                if (comp.partCategory == item.partCategory
+                    && comp.partName  == item.itemName
+                    && comp.partPrefab != null)
                     return comp.partPrefab.name;
         }
 
+        // Category fallback
         foreach (StartingPCComponent[] array in allArrays)
         {
             if (array == null) continue;
@@ -616,6 +630,10 @@ public class CloudDataHandler : MonoBehaviour
                 return item;
         return null;
     }
+
+    // =============================================
+    //  WALLET HELPER
+    // =============================================
 
     /// <summary>
     /// Sets currentGold on EVERY PlayerWallet in the scene and updates their UI.

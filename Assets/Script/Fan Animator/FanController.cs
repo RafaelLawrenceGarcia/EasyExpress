@@ -1,4 +1,3 @@
-// PCFanController.cs — FULL REPLACEMENT
 using UnityEngine;
 
 public class PCFanController : MonoBehaviour
@@ -10,7 +9,9 @@ public class PCFanController : MonoBehaviour
     [Header("RGB Lighting Settings")]
     public bool enableRainbowRGB = true;
     public float colorCycleSpeed = 0.5f;
-    public float glowIntensity = 2.5f;
+
+    [Range(0f, 1f)]
+    public float glowIntensity = 0.8f; // CLAMPED to 0-1 max
 
     private Material fanMaterial;
     private Renderer fanRenderer;
@@ -21,30 +22,77 @@ public class PCFanController : MonoBehaviour
         if (fanRenderer != null)
         {
             fanMaterial = fanRenderer.material;
-
-            // DON'T enable emission here — start dark, let Update handle glow
             fanMaterial.SetColor("_EmissionColor", Color.black);
         }
     }
 
     void Update()
     {
-        // 1. Spin
-        if (fanRenderer != null)
+        // Check if we are currently in inspection mode
+        // If yes — kill emission completely to prevent bloom
+        if (IsInInspectionMode())
         {
-            Vector3 worldAxis = transform.TransformDirection(spinAxis);
-            transform.RotateAround(fanRenderer.bounds.center, worldAxis, spinSpeed * Time.deltaTime);
+            if (fanMaterial != null)
+                fanMaterial.SetColor("_EmissionColor", Color.black);
+            
+            // Still spin so it looks alive
+            Spin();
+            return;
         }
 
-        // 2. RGB Glow — only runs when enabled (SetFansState controls this)
+        // Check if PC is powered on
+        PCPowerSystem power = GetComponentInParent<PCPowerSystem>();
+        if (power != null && !power.isPoweredOn)
+        {
+            if (fanMaterial != null)
+                fanMaterial.SetColor("_EmissionColor", Color.black);
+            return;
+        }
+
+        // Spin
+        Spin();
+
+        // RGB Glow — only in gameplay, not inspection
         if (enableRainbowRGB && fanMaterial != null)
         {
             fanMaterial.EnableKeyword("_EMISSION");
 
-            float syncedHue = Mathf.Repeat(Time.time * colorCycleSpeed, 1f);
-            Color neonColor = Color.HSVToRGB(syncedHue, 1f, 1f);
-            Color finalGlow = neonColor * Mathf.Pow(2, glowIntensity);
-            fanMaterial.SetColor("_EmissionColor", finalGlow);
+            float hue       = Mathf.Repeat(Time.time * colorCycleSpeed, 1f);
+            Color neonColor = Color.HSVToRGB(hue, 1f, 1f);
+
+            // glowIntensity is now clamped 0-1 in the inspector
+            // Multiply by 2 max so it never goes above 2.0
+            fanMaterial.SetColor("_EmissionColor", neonColor * (glowIntensity * 2f));
+        }
+    }
+
+    void Spin()
+    {
+        if (fanRenderer == null) return;
+        Vector3 worldAxis = transform.TransformDirection(spinAxis);
+        transform.RotateAround(
+            fanRenderer.bounds.center, worldAxis, spinSpeed * Time.deltaTime);
+    }
+
+    bool IsInInspectionMode()
+    {
+        // InspectionManager.isInspecting is the source of truth
+        InspectionManager mgr = InspectionManager_Cache.Instance;
+        return mgr != null && mgr.isInspecting;
+    }
+}
+
+// Lightweight cache so we don't call FindObjectOfType every frame
+public static class InspectionManager_Cache
+{
+    private static InspectionManager _instance;
+    public static InspectionManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = Object.FindObjectOfType<InspectionManager>();
+            return _instance;
         }
     }
 }

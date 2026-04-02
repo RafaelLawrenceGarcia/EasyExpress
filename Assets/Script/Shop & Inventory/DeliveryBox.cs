@@ -80,23 +80,68 @@ public class DeliveryBox : MonoBehaviour
     // =============================================
     //  DIRECT UNPACK — Called when pressing E
     // =============================================
-    public void InteractUnpack()
+   public void InteractUnpack()
     {
         if (containedItem == null)
         {
-            Debug.LogWarning("[DeliveryBox] This box is empty! No item data was assigned.");
+            Debug.LogWarning("[DeliveryBox] This box is empty!");
             Destroy(gameObject);
             return;
         }
 
-        // Add the item directly to the player's inventory
+        // 1. Add item to ShopSystem inventory
         if (ShopSystem.Instance != null)
         {
             ShopSystem.Instance.AddItemDirectly(containedItem);
-            Debug.Log($"[DeliveryBox] '{containedItem.itemName}' added to inventory directly via E!");
+            Debug.Log($"[DeliveryBox] '{containedItem.itemName}' added to inventory!");
         }
 
-        // Destroy the cardboard box since we took the item
+        // 2. Find a free shelf slot
+        StorageRoomShelf shelf = FindObjectOfType<StorageRoomShelf>();
+        if (shelf != null)
+        {
+            Transform freeSlot = shelf.GetFreeSlot();
+            if (freeSlot != null)
+            {
+                // 3. Spawn the RETAIL BOX (AMD/Nvidia/Intel box)
+                //    on the shelf slot instead of the plain cardboard box
+                if (containedItem.retailBoxPrefab != null)
+                {
+                    GameObject retailBox = Instantiate(
+                        containedItem.retailBoxPrefab,
+                        freeSlot.position,
+                        freeSlot.rotation,
+                        freeSlot
+                    );
+                    retailBox.name = $"RetailBox_{containedItem.itemName}";
+
+                    // Disable physics on retail box
+                    Rigidbody retailRb = retailBox.GetComponent<Rigidbody>();
+                    if (retailRb != null) Destroy(retailRb);
+
+                    // Disable colliders — visual only
+                    foreach (Collider c in retailBox.GetComponentsInChildren<Collider>(true))
+                        c.enabled = false;
+
+                    // Register on shelf
+                    shelf.RegisterBoxOnSlot(freeSlot, retailBox, containedItem);
+
+                    Debug.Log($"[DeliveryBox] Retail box spawned on shelf for " +
+                            $"'{containedItem.itemName}'.");
+                }
+                else
+                {
+                    Debug.LogWarning($"[DeliveryBox] '{containedItem.itemName}' has no " +
+                                    "retailBoxPrefab assigned on its ItemData!");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[DeliveryBox] Shelf is full!");
+            }
+        }
+
+        // 4. Destroy the plain cardboard delivery box
         Destroy(gameObject);
     }
 }

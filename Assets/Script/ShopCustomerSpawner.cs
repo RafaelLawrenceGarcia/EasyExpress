@@ -8,12 +8,18 @@ public class ShopCustomerSpawner : MonoBehaviour
 
     [Header("Settings")]
     public GameObject customerPrefab;
-    public Transform spawnPoint;
+    public Transform  spawnPoint;
 
     [Header("Queue System")]
     public Transform[] queueSpots;
 
-    private bool isReady = false; // Always starts false — TutorialManager releases it
+    [Header("Exit Point")]
+    [Tooltip("Drag the empty GameObject at your shop exit door here. " +
+             "Customers walk here before being destroyed. " +
+             "THIS MUST BE SET or customers will vanish instantly.")]
+    public Transform exitPoint;
+
+    private bool isReady = false;
     private List<CustomerInside> activeCustomers = new List<CustomerInside>();
 
     void Awake()
@@ -23,48 +29,37 @@ public class ShopCustomerSpawner : MonoBehaviour
 
     void Start()
     {
-        // Always start paused. Wait one frame so TutorialManager.Instance is ready,
-        // then check: if tutorial is already done → release immediately.
-        // If tutorial is active → stay paused until TutorialManager calls AllowSpawn().
         StartCoroutine(WaitForTutorialDecision());
     }
 
     IEnumerator WaitForTutorialDecision()
     {
-        // Wait one frame so all Awake/Start functions have run
         yield return null;
 
-        // If no tutorial manager, or tutorial is already finished → spawn now
         if (TutorialManager.Instance == null || !TutorialManager.Instance.IsTutorialActive())
-        {
             AllowSpawn();
-        }
-        // Otherwise stay paused — TutorialManager calls AllowSpawn() after WASD
     }
 
-    // ── Called by TutorialManager after WASD is done ──
-    // Also called immediately above if tutorial is already finished
+    // ── Called by TutorialManager after WASD is done ──────────────────────
     public void AllowSpawn()
     {
-        if (isReady) return; // Safety: don't double-spawn
+        if (isReady) return;
         isReady = true;
-        Debug.Log("[ShopCustomerSpawner] AllowSpawn called. RetainedData=" + CustomerRetainer.hasRetainedData
-        + " QueueSpots=" + (queueSpots != null ? queueSpots.Length : 0));
-        Debug.Log("[ShopCustomerSpawner] Released! Spawning customers.");
 
-        // ── CHECK FOR RETAINED CUSTOMERS (room change) ──
-        // Only restore if this scene has queue spots (store scene, not outside)
+        Debug.Log("[ShopCustomerSpawner] Released! RetainedData=" +
+                  CustomerRetainer.hasRetainedData +
+                  " QueueSpots=" + (queueSpots != null ? queueSpots.Length : 0));
+
+        // Restore retained customers from a scene change
         if (CustomerRetainer.hasRetainedData && queueSpots != null && queueSpots.Length > 0)
         {
             RestoreRetainedCustomers();
-            return; // Don't spawn new ones — we restored the old ones
+            return;
         }
 
         int customersWaiting = NPCWalker.incomingCustomers;
 
-        // During the tutorial no street NPCs were allowed to queue up,
-        // so force-spawn 1 customer so the tutorial can continue.
-        // Only do this if the tutorial is actually active.
+        // Force at least 1 customer during tutorial so it can continue
         if (customersWaiting == 0
             && TutorialManager.Instance != null
             && TutorialManager.Instance.IsTutorialActive())
@@ -79,94 +74,60 @@ public class ShopCustomerSpawner : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Restores customers saved by CustomerRetainer during a scene transition.
-    /// </summary>
-    void RestoreRetainedCustomers()
-    {
-        Debug.Log("[ShopCustomerSpawner] Restoring " + CustomerRetainer.savedCustomers.Count + " retained customers.");
-
-        foreach (var rc in CustomerRetainer.savedCustomers)
-        {
-            if (activeCustomers.Count >= queueSpots.Length) break;
-
-            if (customerPrefab == null || spawnPoint == null) continue;
-
-            int slotIndex = activeCustomers.Count;
-            Transform assignedSpot = queueSpots[slotIndex];
-
-            GameObject newCustomerObj = Instantiate(customerPrefab, spawnPoint.position, spawnPoint.rotation);
-            CustomerInside customer = newCustomerObj.GetComponent<CustomerInside>();
-
-            if (customer != null)
-            {
-                // Override the random name/job with the retained data
-                customer.npcName = rc.npcName;
-                customer.assignedJob = rc.assignedJob;
-                customer.reward = rc.assignedJob != null ? (int)rc.assignedJob.reward : 0;
-                customer.jobRequest = rc.assignedJob != null ? BuildRestoredDialogue(rc.assignedJob, rc.npcName) : "Can you help me?";
-                newCustomerObj.name = "Customer_" + rc.npcName;
-
-                // Skip browsing — they already browsed before the scene change
-                customer.willBrowseFirst = false;
-
-                customer.AssignQueueSpot(assignedSpot);
-                customer.mySpawner = this;
-                activeCustomers.Add(customer);
-                customer.DisableCollisionUntilAtSpot();
-                Debug.Log("[ShopCustomerSpawner] Restored customer: " + rc.npcName);
-            }
-
-            if (NPCWalker.incomingCustomers > 0)
-                NPCWalker.incomingCustomers--;
-        }
-
-        // Clear retained data so the next scene entry doesn't re-restore
-        CustomerRetainer.Clear();
-    }
-
-    /// <summary>
-    /// Builds a simple dialogue line for a restored customer.
-    /// </summary>
-    string BuildRestoredDialogue(EmailData job, string name)
-    {
-        if (job.jobType == JobType.Build)
-            return $"Hi! I'm still waiting for my PC build. Can you help?\n\nReward: {job.reward:N0}";
-        else
-            return $"Hey! I'm still here about my PC repair. Can you take a look?\n\nReward: {job.reward:N0}";
-    }
-
+    // =====================================================================
+    //  SPAWN CUSTOMER
+    //  KEY FIX: now calls Initialize(queueSpot, exitPoint) instead of
+    //  AssignQueueSpot() — this ensures exitPos is always set so customers
+    //  physically walk to the door before being destroyed.
+    // =====================================================================
     public void SpawnCustomer()
     {
         if (customerPrefab == null || spawnPoint == null)
         {
-            Debug.LogError("MISSING PREFAB OR SPAWN POINT!");
+            Debug.LogError("[ShopCustomerSpawner] Missing prefab or spawn point!");
             return;
         }
 
         if (activeCustomers.Count >= queueSpots.Length)
         {
-            Debug.Log("Shop is full! Customer waits outside.");
+            Debug.Log("[ShopCustomerSpawner] Shop is full! Customer waits outside.");
             return;
+        }
+
+        if (exitPoint == null)
+        {
+            Debug.LogWarning("[ShopCustomerSpawner] exitPoint is not assigned! " +
+                             "Customers will vanish instantly when they leave. " +
+                             "Please assign the exit door Transform in the Inspector.");
         }
 
         int mySlotIndex = activeCustomers.Count;
         Transform assignedSpot = queueSpots[mySlotIndex];
 
-        GameObject newCustomerObj = Instantiate(customerPrefab, spawnPoint.position, spawnPoint.rotation);
-        CustomerInside newCustomerScript = newCustomerObj.GetComponent<CustomerInside>();
+        GameObject newCustomerObj = Instantiate(
+            customerPrefab, spawnPoint.position, spawnPoint.rotation);
 
-        if (newCustomerScript != null)
+        CustomerInside customer = newCustomerObj.GetComponent<CustomerInside>();
+
+        if (customer != null)
         {
-            newCustomerScript.AssignQueueSpot(assignedSpot);
-            newCustomerScript.mySpawner = this;
-            activeCustomers.Add(newCustomerScript);
+            customer.mySpawner = this;
+            activeCustomers.Add(customer);
+            customer.DisableCollisionUntilAtSpot();
+
+            // ── THE FIX ──────────────────────────────────────────────────────
+            // Call Initialize instead of AssignQueueSpot.
+            // This sets exitPos AND starts the browse routine properly.
+            customer.Initialize(assignedSpot, exitPoint);
         }
 
         if (NPCWalker.incomingCustomers > 0)
             NPCWalker.incomingCustomers--;
     }
 
+    // =====================================================================
+    //  CUSTOMER LEFT — remove from list and shuffle queue forward
+    // =====================================================================
     public void CustomerLeft(CustomerInside customer)
     {
         if (activeCustomers.Contains(customer))
@@ -176,40 +137,89 @@ public class ShopCustomerSpawner : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Returns true if any customers are currently inside the shop.
-    /// Used by DoorInteractionMenu to block ending the day.
-    /// </summary>
+    void UpdateQueuePositions()
+    {
+        for (int i = 0; i < activeCustomers.Count; i++)
+        {
+            // AssignQueueSpot just repositions — Initialize was already called
+            activeCustomers[i].AssignQueueSpot(queueSpots[i]);
+        }
+    }
+
+    // =====================================================================
+    //  RESTORE RETAINED CUSTOMERS (after scene change)
+    // =====================================================================
+    void RestoreRetainedCustomers()
+    {
+        Debug.Log("[ShopCustomerSpawner] Restoring " +
+                  CustomerRetainer.savedCustomers.Count + " retained customers.");
+
+        foreach (var rc in CustomerRetainer.savedCustomers)
+        {
+            if (activeCustomers.Count >= queueSpots.Length) break;
+            if (customerPrefab == null || spawnPoint == null) continue;
+
+            int slotIndex = activeCustomers.Count;
+            Transform assignedSpot = queueSpots[slotIndex];
+
+            GameObject newCustomerObj = Instantiate(
+                customerPrefab, spawnPoint.position, spawnPoint.rotation);
+
+            CustomerInside customer = newCustomerObj.GetComponent<CustomerInside>();
+
+            if (customer != null)
+            {
+                customer.npcName     = rc.npcName;
+                customer.assignedJob = rc.assignedJob;
+                customer.reward      = rc.assignedJob != null ? (int)rc.assignedJob.reward : 0;
+                customer.jobRequest  = rc.assignedJob != null
+                    ? BuildRestoredDialogue(rc.assignedJob, rc.npcName)
+                    : "Can you help me?";
+                newCustomerObj.name  = "Customer_" + rc.npcName;
+
+                customer.mySpawner = this;
+                activeCustomers.Add(customer);
+                customer.DisableCollisionUntilAtSpot();
+
+                // Skip browsing for restored customers — they already browsed
+                customer.Initialize(assignedSpot, exitPoint, skipBrowse: true);
+
+                Debug.Log("[ShopCustomerSpawner] Restored: " + rc.npcName);
+            }
+
+            if (NPCWalker.incomingCustomers > 0)
+                NPCWalker.incomingCustomers--;
+        }
+
+        CustomerRetainer.Clear();
+    }
+
+    string BuildRestoredDialogue(EmailData job, string name)
+    {
+        if (job.jobType == JobType.Build)
+            return $"Hi! I'm still waiting for my PC build.\n\nReward: ₱{job.reward:N0}";
+        else
+            return $"Hey! I'm still here about my PC repair.\n\nReward: ₱{job.reward:N0}";
+    }
+
+    // =====================================================================
+    //  HELPERS
+    // =====================================================================
     public bool HasCustomersInside()
     {
-        // Clean up any destroyed references first
         activeCustomers.RemoveAll(c => c == null);
         return activeCustomers.Count > 0;
     }
 
-    /// <summary>
-    /// Returns how many customers are currently inside.
-    /// </summary>
     public int GetCustomerCount()
     {
         activeCustomers.RemoveAll(c => c == null);
         return activeCustomers.Count;
     }
 
-    /// <summary>
-    /// Returns the active customers list (used by CustomerRetainer).
-    /// </summary>
     public List<CustomerInside> GetActiveCustomers()
     {
         activeCustomers.RemoveAll(c => c == null);
         return activeCustomers;
-    }
-
-    void UpdateQueuePositions()
-    {
-        for (int i = 0; i < activeCustomers.Count; i++)
-        {
-            activeCustomers[i].AssignQueueSpot(queueSpots[i]);
-        }
     }
 }

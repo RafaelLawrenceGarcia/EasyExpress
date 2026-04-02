@@ -48,7 +48,7 @@ public class ShopTrafficSimulator : MonoBehaviour
         {
             // Check daily limit AFTER the roll succeeds
             if (!WalkInLimiter.TrySpawn()) return;
-
+    
             Debug.Log("A random customer just walked in from the street!");
 
             if (mySpawner != null)

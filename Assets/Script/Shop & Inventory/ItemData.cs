@@ -30,6 +30,11 @@ public class ItemData : ScriptableObject
     [Header("Delivery")]
     [Tooltip("The specific-sized fragile box prefab for this item. Leave empty to use the default.")]
     public GameObject deliveryBoxPrefab;
+
+    [Header("Storage Display")]
+    [Tooltip("The retail product box that appears on the storage shelf. " +
+            "e.g. AMD box, Nvidia box, Intel box")]
+    public GameObject retailBoxPrefab;
 }
 
 public enum ItemCategory
