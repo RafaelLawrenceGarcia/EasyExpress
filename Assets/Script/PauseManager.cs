@@ -124,12 +124,17 @@ public class PauseManager : MonoBehaviour
 
     public void QuitToMainMenu()
     {
+        if (pausePanel != null) pausePanel.SetActive(false);
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+
         DayTransitionManager.ResetDayFlag();
         PlayerPrefs.SetFloat("SavedGameTime", 6f);  // ← add this
         PlayerPrefs.Save();                           // ← add this
 
         Time.timeScale = 1f;
         isPaused = false;
+        Cursor.lockState = CursorLockMode.None;   // ← add this
+        Cursor.visible = true;
         SceneManager.LoadScene(mainMenuSceneName);
     }
 }

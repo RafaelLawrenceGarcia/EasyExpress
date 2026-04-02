@@ -31,17 +31,11 @@ public class AuthManager : MonoBehaviour
     public TMP_Text registerMessageText;
 
     [Header("Show Password Toggles")]
-    [Tooltip("Toggle on the Login panel to show/hide the password.")]
     public Toggle loginShowPasswordToggle;
-
-    [Tooltip("Toggle on the Register panel to show/hide both password fields.")]
     public Toggle registerShowPasswordToggle;
 
     [Header("Guest / Offline Play")]
-    [Tooltip("Optional — a button on the Login panel that lets the player skip login entirely.")]
     public Button playOfflineButton;
-
-    [Tooltip("Scene to load directly when playing offline. Leave empty to show the main menu instead.")]
     public string offlineSceneName = "";
 
     void Start()
@@ -49,16 +43,13 @@ public class AuthManager : MonoBehaviour
         PlayFabSettings.TitleId = "164227";
         PlayFabSettings.RequestType = PlayFab.WebRequestType.UnityWebRequest;
 
-        // ── MASK ALL PASSWORD FIELDS ──
         SetPasswordHidden(loginPasswordInput);
         SetPasswordHidden(registerPasswordInput);
         SetPasswordHidden(registerConfirmPasswordInput);
 
-        // ── WIRE UP OFFLINE BUTTON ──
         if (playOfflineButton != null)
             playOfflineButton.onClick.AddListener(PlayOffline);
 
-        // ── WIRE UP SHOW PASSWORD TOGGLES ──
         if (loginShowPasswordToggle != null)
         {
             loginShowPasswordToggle.isOn = false;
@@ -70,11 +61,8 @@ public class AuthManager : MonoBehaviour
             registerShowPasswordToggle.onValueChanged.AddListener(OnRegisterShowPasswordChanged);
         }
 
-        // ── SKIP LOGIN IF ALREADY AUTHENTICATED ──
-        // (e.g. returning from gameplay via Quit, session is still active)
         if (GameSession.IsLoggedIn || GameSession.IsGuest)
         {
-            // Go straight to the main menu — no need to log in again
             if (loginOverlay != null) loginOverlay.SetActive(false);
             if (mainCanvas != null)
             {
@@ -83,9 +71,14 @@ public class AuthManager : MonoBehaviour
                 if (menuScript != null) menuScript.ShowMainPanel();
             }
 
-            // Re-fire the event so CheckForSaveData runs
             if (GameSession.IsLoggedIn)
+            {
                 OnLoginSuccessEvent?.Invoke();
+
+                // Load this account's settings from cloud
+                if (PlayerSettingsCloud.Instance != null)
+                    PlayerSettingsCloud.Instance.LoadSettings();
+            }
         }
         else
         {
@@ -93,9 +86,6 @@ public class AuthManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Forces a TMP_InputField to hide characters (shows ● instead of plain text).
-    /// </summary>
     void SetPasswordHidden(TMP_InputField field)
     {
         if (field == null) return;
@@ -103,21 +93,11 @@ public class AuthManager : MonoBehaviour
         field.ForceLabelUpdate();
     }
 
-    // =============================================
-    //  SHOW / HIDE PASSWORD
-    // =============================================
-
-    /// <summary>
-    /// Toggles the login password field between hidden (●●●) and visible (plain text).
-    /// </summary>
     void OnLoginShowPasswordChanged(bool showPassword)
     {
         TogglePasswordVisibility(loginPasswordInput, showPassword);
     }
 
-    /// <summary>
-    /// Toggles both register password fields between hidden and visible.
-    /// </summary>
     void OnRegisterShowPasswordChanged(bool showPassword)
     {
         TogglePasswordVisibility(registerPasswordInput, showPassword);
@@ -133,15 +113,6 @@ public class AuthManager : MonoBehaviour
         field.ForceLabelUpdate();
     }
 
-    // =============================================
-    //  GUEST / OFFLINE PLAY
-    // =============================================
-
-    /// <summary>
-    /// Called by the "Play Offline" button.
-    /// Skips PlayFab authentication and either loads the gameplay scene directly
-    /// or shows the main menu in guest mode.
-    /// </summary>
     public void PlayOffline()
     {
         GameSession.StartGuestSession();
@@ -149,28 +120,20 @@ public class AuthManager : MonoBehaviour
 
         if (!string.IsNullOrEmpty(offlineSceneName))
         {
-            // Go straight to gameplay with local data
             PlayerPrefs.SetInt("IsLoadingGame", 0);
             SceneManager.LoadScene(offlineSceneName);
         }
         else
         {
-            // Show the main menu in guest mode (no cloud features)
             if (loginOverlay != null) loginOverlay.SetActive(false);
-
             if (mainCanvas != null)
             {
                 mainCanvas.SetActive(true);
-
                 MainMenu menuScript = mainCanvas.GetComponent<MainMenu>();
                 if (menuScript != null) menuScript.ShowMainPanel();
             }
         }
     }
-
-    // =============================================
-    //  PANEL SWITCHING
-    // =============================================
 
     public void ResetToLogin()
     {
@@ -188,7 +151,6 @@ public class AuthManager : MonoBehaviour
             loginMessageText.text = "Please Login";
             loginMessageText.color = Color.white;
         }
-        // Reset toggle so password is hidden when returning to this panel
         if (loginShowPasswordToggle != null) loginShowPasswordToggle.isOn = false;
     }
 
@@ -205,7 +167,6 @@ public class AuthManager : MonoBehaviour
         if (registerEmailInput != null) registerEmailInput.text = "";
         if (registerPasswordInput != null) registerPasswordInput.text = "";
         if (registerConfirmPasswordInput != null) registerConfirmPasswordInput.text = "";
-        // Reset toggle so passwords are hidden when entering this panel
         if (registerShowPasswordToggle != null) registerShowPasswordToggle.isOn = false;
     }
 
@@ -213,10 +174,6 @@ public class AuthManager : MonoBehaviour
     {
         ShowLoginPanel();
     }
-
-    // =============================================
-    //  LOGIN
-    // =============================================
 
     public void LoginButton()
     {
@@ -246,7 +203,6 @@ public class AuthManager : MonoBehaviour
 
     void OnLoginSuccess(LoginResult result)
     {
-        // ── MARK THIS AS A CLOUD SESSION ──
         GameSession.StartCloudSession();
 
         if (gameObject.activeInHierarchy)
@@ -268,10 +224,6 @@ public class AuthManager : MonoBehaviour
         }
         Debug.LogWarning("[AuthManager] Login failed: " + error.GenerateErrorReport());
     }
-
-    // =============================================
-    //  REGISTER
-    // =============================================
 
     public void RegisterButton()
     {
@@ -380,10 +332,6 @@ public class AuthManager : MonoBehaviour
             loginEmailInput.text = registerEmailInput.text;
     }
 
-    // =============================================
-    //  LOGIN SEQUENCE (after successful login)
-    // =============================================
-
     IEnumerator LoginSequence(string startMessage)
     {
         loginMessageText.color = Color.green;
@@ -403,6 +351,10 @@ public class AuthManager : MonoBehaviour
     void FinalizeLogin()
     {
         OnLoginSuccessEvent?.Invoke();
+
+        // Load this account's settings from cloud
+        if (PlayerSettingsCloud.Instance != null)
+            PlayerSettingsCloud.Instance.LoadSettings();
 
         if (loginOverlay != null) loginOverlay.SetActive(false);
 

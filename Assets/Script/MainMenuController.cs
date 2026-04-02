@@ -24,7 +24,6 @@ public class MainMenu : MonoBehaviour
     public Button backToModeButton;
 
     [Header("Save Info Display")]
-    [Tooltip("Text element on the save selection panel that shows save details")]
     public Text saveInfoText;
 
     [Header("Panels")]
@@ -34,6 +33,10 @@ public class MainMenu : MonoBehaviour
     public GameObject creditsPanel;
     public Text statusText;
 
+    [Header("Options Back Button")]
+    [Tooltip("The BackBtn inside the OptionUI — wired here so it returns to main panel.")]
+    public Button optionsBackButton;
+
     [Header("Settings")]
     public string gameplaySceneName = "Gameplay";
 
@@ -42,7 +45,7 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        // Hide all panels on startup — AuthManager controls what's visible first
+        // Hide all panels on startup
         if (mainPanel != null) mainPanel.SetActive(false);
         if (modeSelectionPanel != null) modeSelectionPanel.SetActive(false);
         if (saveSelectionPanel != null) saveSelectionPanel.SetActive(false);
@@ -65,7 +68,9 @@ public class MainMenu : MonoBehaviour
         if (continueButton != null) continueButton.onClick.AddListener(ContinueGame);
         if (backToModeButton != null) backToModeButton.onClick.AddListener(OpenModeSelection);
 
-        // Only check for cloud save data if the player is actually logged in
+        // Options back button — returns to main panel
+        if (optionsBackButton != null) optionsBackButton.onClick.AddListener(ShowMainPanel);
+
         if (GameSession.IsLoggedIn)
         {
             AuthManager.OnLoginSuccessEvent += CheckForSaveData;
@@ -79,7 +84,6 @@ public class MainMenu : MonoBehaviour
     {
         SwitchPanel(mainPanel);
 
-        // Update the logout button text depending on session type
         if (logoutButton != null)
         {
             Text btnText = logoutButton.GetComponentInChildren<Text>();
@@ -87,7 +91,6 @@ public class MainMenu : MonoBehaviour
                 btnText.text = GameSession.IsGuest ? "BACK TO LOGIN" : "LOGOUT";
         }
 
-        // Show status for guests
         if (GameSession.IsGuest && statusText != null)
             statusText.text = "Playing Offline (Local Save)";
     }
@@ -111,21 +114,15 @@ public class MainMenu : MonoBehaviour
     void StartSingleplayer()
     {
         if (GameSession.IsLoggedIn)
-        {
-            // ── CLOUD SESSION: load cloud save data after the scene loads ──
             PlayerPrefs.SetInt("IsLoadingGame", 1);
-        }
         else
-        {
-            // ── GUEST SESSION: use local PlayerPrefs only ──
             PlayerPrefs.SetInt("IsLoadingGame", 0);
-        }
+
         SceneManager.LoadScene(gameplaySceneName);
     }
 
     void CheckForSaveData()
     {
-        // Only query PlayFab if we have a real session
         if (!GameSession.IsLoggedIn) return;
 
         if (statusText) statusText.text = "Checking Save Data...";
@@ -140,7 +137,6 @@ public class MainMenu : MonoBehaviour
                 if (continueButton != null) continueButton.interactable = true;
                 if (statusText) statusText.text = "Welcome Back!";
 
-                // ── Parse the full save JSON to show details ──
                 string json = result.Data["GameData"].Value;
                 if (!string.IsNullOrEmpty(json) && saveInfoText != null)
                 {
@@ -196,14 +192,11 @@ public class MainMenu : MonoBehaviour
 
     public void Logout()
     {
-        // Clear PlayFab credentials if we were logged in
         if (GameSession.IsLoggedIn)
             PlayFabClientAPI.ForgetAllCredentials();
 
-        // Clear session state
         GameSession.Logout();
 
-        // Hide all menu panels
         if (mainPanel != null) mainPanel.SetActive(false);
         if (modeSelectionPanel != null) modeSelectionPanel.SetActive(false);
         if (optionsPanel != null) optionsPanel.SetActive(false);
