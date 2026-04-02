@@ -55,8 +55,7 @@ public class MonitorShopBridge : MonoBehaviour
     public TextMeshProUGUI senderText;
     public TextMeshProUGUI subjectText;
     public TextMeshProUGUI bodyText;
-    public TextMeshProUGUI labourText;
-    public TextMeshProUGUI budgetText;
+    public TextMeshProUGUI rewardText;
     public TextMeshProUGUI objectivesText;
     public Image detailProfilePic;
 
@@ -112,7 +111,7 @@ public class MonitorShopBridge : MonoBehaviour
             email.SetActiveMonitorUI(
                 inboxContentContainer, emailDetailPanel,
                 senderText, subjectText, bodyText,
-                labourText, budgetText, objectivesText,
+                rewardText, objectivesText,
                 detailProfilePic, pcStatusPanel,
                 pcProblemsText, requestedPartsText,
                 pcSpecsContentContainer,

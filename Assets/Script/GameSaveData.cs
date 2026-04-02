@@ -1,17 +1,26 @@
 using System;
 using System.Collections.Generic;
 
-/// <summary>
-/// Serializable wrapper for all persistent game data.
-/// Converted to JSON and stored in PlayFab user data.
-/// </summary>
 [Serializable]
 public class GamePersistData
 {
-    public List<SavedJob> acceptedJobs = new List<SavedJob>();
-    public List<SavedPart> inventoryParts = new List<SavedPart>();
+    // Core progression
     public int currentDay = 1;
     public bool tutorialDone = false;
+    public float gold = 0f;
+
+    // In-game clock (0-24 float, e.g. 7.5 = 7:30 AM)
+    public float gameTime = 6f;
+
+    // UTC timestamp of last save (ISO 8601)
+    public string lastSaveTime = "";
+
+    // Email jobs: pending inbox AND accepted in-progress
+    public List<SavedJob> activeEmails = new List<SavedJob>();
+    public List<SavedJob> acceptedJobs = new List<SavedJob>();
+
+    // Player inventory (loose parts the player picked up)
+    public List<SavedPart> inventoryParts = new List<SavedPart>();
 
     // Shop purchases (item IDs the player owns)
     public List<string> ownedItemIDs = new List<string>();
@@ -20,9 +29,6 @@ public class GamePersistData
     public List<SavedDelivery> pendingDeliveries = new List<SavedDelivery>();
 }
 
-/// <summary>
-/// Serializable version of an accepted EmailData job.
-/// </summary>
 [Serializable]
 public class SavedJob
 {
@@ -30,8 +36,8 @@ public class SavedJob
     public string subjectLine;
     public string bodyText;
     public int jobType;
-    public float labourCost;
-    public float partsBudget;
+    public int buildPurpose;
+    public float reward;
     public string[] objectives;
     public string[] pcProblems;
     public int originalFaultCount;
@@ -40,9 +46,6 @@ public class SavedJob
     public string casePrefabName;
 }
 
-/// <summary>
-/// Serializable version of a PC component (used for both job parts and inventory).
-/// </summary>
 [Serializable]
 public class SavedPart
 {
@@ -50,6 +53,7 @@ public class SavedPart
     public string partName;
     public string prefabName;
     public string[] compatTags;
+    public float partPrice;
     public float powerDraw;
     public float maxWattage;
     public bool isDusty;
@@ -57,13 +61,10 @@ public class SavedPart
     public string faultDescription;
 }
 
-/// <summary>
-/// Serializable version of a pending delivery order.
-/// </summary>
 [Serializable]
 public class SavedDelivery
 {
-    public string itemId;       // ItemData.id to look up on restore
+    public string itemId;
     public int quantity;
     public int daysRemaining;
 }

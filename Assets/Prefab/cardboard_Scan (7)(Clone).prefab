@@ -256,6 +256,11 @@ MonoBehaviour:
   partsToBuild: []
   sourceEmail: {fileID: 0}
   existingPC: {fileID: 0}
+  labelHeight: 0.9
+  labelCharSize: 0.1
+  labelFontSize: 80
+  labelViewRange: 10
+  labelViewDot: 0.85
 --- !u!114 &-5225081585764485490
 MonoBehaviour:
   m_ObjectHideFlags: 0

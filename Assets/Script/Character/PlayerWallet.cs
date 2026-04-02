@@ -17,9 +17,15 @@ public class PlayerWallet : MonoBehaviour
 
     void Start()
     {
-        // Load the money and debt we saved earlier
-        currentGold = PlayerPrefs.GetFloat("SavedGold", 0);
-        currentDebt = PlayerPrefs.GetFloat("SavedDebt", 0);
+        // Read current gold from PlayerPrefs (kept up-to-date by SaveData()).
+        // For room changes: this is the correct current value.
+        // For checkpoint loads: CloudDataHandler.RestoreGameData() will
+        //   override this a few frames later via SetAllWallets().
+        if (PlayerPrefs.HasKey("SavedGold"))
+        {
+            currentGold = PlayerPrefs.GetFloat("SavedGold");
+            currentDebt = PlayerPrefs.GetFloat("SavedDebt", 0);
+        }
 
         UpdateUI();
     }
@@ -73,31 +79,28 @@ public class PlayerWallet : MonoBehaviour
     // UPDATED: Now returns a true/false and handles automatic loans!
     public bool SpendGold(float amount)
     {
-        // Scenario 1: Player has enough cash
         if (currentGold >= amount)
         {
             currentGold -= amount;
             UpdateUI();
             SaveData();
-            return true; // Purchase successful!
+            return true;
         }
-        // Scenario 2: Player doesn't have enough cash, but it fits in their loan limit
         else if ((currentGold + maxLoanLimit - currentDebt) >= amount)
         {
-            float remainingCost = amount - currentGold; // Calculate what we are short
-            currentGold = 0;                            // Drain whatever cash we had
-            currentDebt += remainingCost;               // Put the rest on the tab
+            float remainingCost = amount - currentGold;
+            currentGold = 0;
+            currentDebt += remainingCost;
 
             Debug.Log("Bought with a loan! Added ₱" + remainingCost + " to debt.");
             UpdateUI();
             SaveData();
-            return true; // Purchase successful!
+            return true;
         }
-        // Scenario 3: Player is too broke and maxed out their credit
         else
         {
             Debug.Log("Purchase failed: Not enough money AND reached maximum loan limit!");
-            return false; // Purchase failed!
+            return false;
         }
     }
 
@@ -113,12 +116,14 @@ public class PlayerWallet : MonoBehaviour
         }
     }
 
-    // Helper method to keep saving clean
+    // Keeps PlayerPrefs up-to-date so:
+    // 1. CloudDataHandler.SaveGameData() reads the correct gold at end-of-day
+    // 2. Room changes carry gold over via PlayerPrefs
+    // No cloud save triggered here — checkpoint system only.
     private void SaveData()
     {
         PlayerPrefs.SetFloat("SavedGold", currentGold);
         PlayerPrefs.SetFloat("SavedDebt", currentDebt);
-        if (CloudDataHandler.Instance) CloudDataHandler.Instance.SaveGameData();
     }
 
     // Cheat key for testing

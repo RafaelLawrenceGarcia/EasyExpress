@@ -372,7 +372,7 @@ public class ShopManager : MonoBehaviour
             CartItem newItem = new CartItem();
             newItem.item = itemAdded;
             newItem.amount = 1;
-            newItem.deliveryDays = 2;
+            newItem.deliveryDays = 1;  // CHANGED: Was 2, now 1 day delivery
             newItem.isChecked = true;
             shoppingCart.Add(newItem);
         }
@@ -465,7 +465,12 @@ public class ShopManager : MonoBehaviour
             if (priceObj != null) priceObj.GetComponent<TextMeshProUGUI>().text = "Price: ₱" + totalRowPrice.ToString("N0");
 
             Transform arrivalObj = t.Find("Arrival Day");
-            if (arrivalObj != null) arrivalObj.GetComponent<TextMeshProUGUI>().text = "Time of Arrival: " + currentItem.deliveryDays + " Days";
+            if (arrivalObj != null)
+            {
+                // CHANGED: Proper singular/plural grammar
+                string dayLabel = currentItem.deliveryDays == 1 ? "Day" : "Days";
+                arrivalObj.GetComponent<TextMeshProUGUI>().text = "Time of Arrival: " + currentItem.deliveryDays + " " + dayLabel;
+            }
         }
 
         CalculateCartTotal();
@@ -513,10 +518,7 @@ public class ShopManager : MonoBehaviour
                 shoppingCart.Remove(boughtItem);
             }
 
-            if (CloudDataHandler.Instance != null)
-                CloudDataHandler.Instance.SaveGameData();
-            else
-                Debug.LogWarning("CloudDataHandler not found, wallet changes might not be saved!");
+
 
             RefreshCartUI();
 

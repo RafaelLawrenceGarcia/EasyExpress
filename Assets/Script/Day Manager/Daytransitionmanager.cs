@@ -26,6 +26,9 @@ public class DayTransitionManager : MonoBehaviour
     private int currentDay = 1;
     private bool isTransitioning = false;
 
+    // Static: survives scene loads, resets when game restarts
+    private static bool dayHasStarted = false;
+
     public static System.Action<int> OnNewDayStarted;
 
     void Awake()
@@ -50,25 +53,83 @@ public class DayTransitionManager : MonoBehaviour
 
         bool isChangingRooms = PlayerPrefs.GetInt("ChangingRooms", 0) == 1;
 
-        // Auto-load cloud data if we have a saved day (not first time)
-        // Only call PlayFab if actually logged in
-        if (PlayerPrefs.GetInt("TutorialDone", 0) == 1
-            && GameSession.IsLoggedIn
-            && CloudDataHandler.Instance != null)
-        {
-            CloudDataHandler.Instance.LoadGameData();
-        }
-
+        // Always clear ChangingRooms so it doesn't carry over
         if (isChangingRooms)
         {
             PlayerPrefs.SetInt("ChangingRooms", 0);
             PlayerPrefs.Save();
-            SkipDayIntro();
+        }
+
+        if (isChangingRooms || dayHasStarted)
+        {
+            // ── ROOM CHANGE or RE-ENTRY ──
+            // Load cloud data for jobs/boxes/deliveries, but skip gold/time override
+            if (GameSession.IsLoggedIn && CloudDataHandler.Instance != null)
+            {
+                CloudDataHandler.IsRoomChangeLoad = true;
+                CloudDataHandler.Instance.LoadGameData();
+            }
+            StartCoroutine(ResumeFromRoomChange());
         }
         else
         {
+            // ── FIRST ENTRY: new game or continuing from main menu ──
+            if (PlayerPrefs.GetInt("TutorialDone", 0) == 1
+                && GameSession.IsLoggedIn
+                && CloudDataHandler.Instance != null)
+            {
+                CloudDataHandler.Instance.LoadGameData();
+            }
+
             PlayDayIntro(null);
         }
+    }
+
+    /// <summary>
+    /// Called when re-entering a scene mid-day.
+    /// Keeps screen black briefly so customers can walk to their spots,
+    /// then fades out. Game time is preserved (doesn't tick during wait).
+    /// </summary>
+    IEnumerator ResumeFromRoomChange()
+    {
+        isTransitioning = true;
+        FreezePlayer(true);
+
+        // Keep screen black
+        if (transitionCanvas != null) transitionCanvas.enabled = true;
+        if (transitionImage != null) SetImageAlpha(1f);
+        if (dayText != null) dayText.alpha = 0f;
+        if (hudDayText != null) hudDayText.text = "Day " + currentDay;
+
+        // Save the current game time so the clock doesn't advance during the wait
+        DayTimeUI clock = FindFirstObjectByType<DayTimeUI>();
+        float savedTime = (clock != null) ? clock.GetCurrentTime() : -1f;
+
+        // Wait 2 seconds (real time) for customers/boxes to settle into position
+        yield return new WaitForSecondsRealtime(2f);
+
+        // Restore exact game time (undo any ticking that happened during the wait)
+        if (clock != null && savedTime >= 0f)
+            clock.SetTime(savedTime);
+
+        // Fade out the black screen
+        yield return StartCoroutine(FadePanel(1f, 0f, fadeOutDuration));
+
+        if (transitionCanvas != null) transitionCanvas.enabled = false;
+
+        FreezePlayer(false);
+        isTransitioning = false;
+
+        Debug.Log("[DayTransition] Resumed from room change — Day " + currentDay);
+    }
+
+    /// <summary>
+    /// Call this when returning to the main menu so the next
+    /// game start plays the day intro fresh.
+    /// </summary>
+    public static void ResetDayFlag()
+    {
+        dayHasStarted = false;
     }
 
     public void PlayDayIntro(System.Action onComplete)
@@ -135,6 +196,10 @@ public class DayTransitionManager : MonoBehaviour
         FreezePlayer(false);
         isTransitioning = false;
         if (hudDayText != null) hudDayText.text = "Day " + currentDay;
+
+        // Mark day as started so re-entering any scene skips the intro
+        dayHasStarted = true;
+
         OnNewDayStarted?.Invoke(currentDay);
         onComplete?.Invoke();
     }
@@ -151,25 +216,23 @@ public class DayTransitionManager : MonoBehaviour
         if (transitionImage != null) SetImageAlpha(0f);
         if (dayText != null) dayText.alpha = 0f;
 
-        // Fade to black
         yield return StartCoroutine(FadePanel(0f, 1f, fadeInDuration));
 
-        // Reset daily walk-in counter
         WalkInLimiter.ResetDaily();
+        CustomerRetainer.Clear();
 
-        // Advance to next day
+        // Reset so next day's intro will play
+        dayHasStarted = false;
+
         currentDay++;
         PlayerPrefs.SetInt("CurrentDay", currentDay);
         PlayerPrefs.Save();
 
-        // =============================================
-        //  SAVE TO CLOUD AFTER ADVANCING THE DAY
-        //  (so the cloud stores the NEW day number)
-        // =============================================
+        // ── CHECKPOINT SAVE — before deliveries tick ──
         if (GameSession.IsLoggedIn && CloudDataHandler.Instance != null)
         {
             CloudDataHandler.Instance.SaveGameData();
-            Debug.Log("[DayTransition] Cloud save triggered for Day " + currentDay);
+            Debug.Log("[DayTransition] Checkpoint saved for Day " + currentDay);
         }
 
         yield return new WaitForSecondsRealtime(0.5f);
@@ -192,7 +255,15 @@ public class DayTransitionManager : MonoBehaviour
         FreezePlayer(false);
         isTransitioning = false;
         if (hudDayText != null) hudDayText.text = "Day " + currentDay;
-        OnNewDayStarted?.Invoke(currentDay);
+
+        // Mark new day as started
+        dayHasStarted = true;
+
+        OnNewDayStarted?.Invoke(currentDay);   // deliveries tick, emails generate, boxes spawn
+
+        // Reset clock to 6:00 AM for the new day
+        DayTimeUI clock = FindFirstObjectByType<DayTimeUI>();
+        if (clock != null) clock.ResetTimeForNewDay();
     }
 
     // =============================================

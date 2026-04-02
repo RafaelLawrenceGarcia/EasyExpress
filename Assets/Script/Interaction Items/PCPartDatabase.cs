@@ -40,14 +40,29 @@ public class PCPartDatabase : ScriptableObject
     public int minRAMSticks = 1;
     public int maxRAMSticks = 4;
 
-    [Header("Job Generation")]
-    public float minLabourCost = 100f;
-    public float maxLabourCost = 500f;
-    public float minPartsBudget = 500f;
-    public float maxPartsBudget = 5000f;
+    [Header("Reward Calculation")]
+    [Tooltip("Markup multiplier on top of component cost (e.g. 1.3 = 30% markup)")]
+    public float markupMultiplier = 1.3f;
+
+    [Tooltip("Flat labour fee added on top of marked-up parts cost")]
+    public float labourFee = 300f;
+
+    [Tooltip("Extra labour multiplier for build jobs (builds pay more labour)")]
+    public float buildLabourMultiplier = 1.5f;
+
+    [Header("Fallback Prices (if partPrice is 0)")]
+    [Tooltip("Fallback price per category if a part has no price set")]
+    public float fallbackMotherboardPrice = 4500f;
+    public float fallbackCPUPrice = 6000f;
+    public float fallbackGPUPrice = 12000f;
+    public float fallbackRAMPrice = 1800f;
+    public float fallbackStoragePrice = 2500f;
+    public float fallbackPSUPrice = 3000f;
+    public float fallbackCoolerPrice = 1500f;
+    public float fallbackFanPrice = 500f;
 
     // =============================================
-    //  MASTER API: Generate Random PC
+    //  MASTER API: Generate Random PC (generic)
     // =============================================
     public RandomPCResult GenerateRandomPC()
     {
@@ -81,6 +96,118 @@ public class PCPartDatabase : ScriptableObject
     }
 
     // =============================================
+    //  PURPOSE-DRIVEN PC GENERATION (for Build jobs)
+    // =============================================
+    public RandomPCResult GeneratePCForPurpose(BuildPurpose purpose)
+    {
+        RandomPCResult result = new RandomPCResult();
+
+        if (cases == null || cases.Length == 0) return result;
+        result.casePrefab = cases[Random.Range(0, cases.Length)];
+
+        // Motherboard and PSU are always required
+        bool hasMotherboard = TryAddPart(motherboards, result.parts, true);
+        if (!hasMotherboard) return result;
+        TryAddPart(psus, result.parts, true);
+
+        switch (purpose)
+        {
+            case BuildPurpose.School:
+                // Basic: CPU always, GPU optional (30%), 1-2 RAM, storage always, cooler likely
+                TryAddPart(cpus, result.parts, true);
+                TryAddPart(gpus, result.parts, Roll(30f));
+                AddRAMSticks(result.parts, 1, 2);
+                TryAddPart(storage, result.parts, true);
+                TryAddPart(coolers, result.parts, Roll(80f));
+                TryAddFans(result.parts, 1, 2, 50f);
+                break;
+
+            case BuildPurpose.Office:
+                // Reliable mid-range: CPU always, GPU likely (60%), 2 RAM, storage always, cooler always
+                TryAddPart(cpus, result.parts, true);
+                TryAddPart(gpus, result.parts, Roll(60f));
+                AddRAMSticks(result.parts, 2, 2);
+                TryAddPart(storage, result.parts, true);
+                TryAddPart(coolers, result.parts, true);
+                TryAddFans(result.parts, 1, 3, 60f);
+                break;
+
+            case BuildPurpose.Streaming:
+                // Mid-high: CPU always, GPU always, 2-4 RAM, storage always, cooler always, fans
+                TryAddPart(cpus, result.parts, true);
+                TryAddPart(gpus, result.parts, true);
+                AddRAMSticks(result.parts, 2, 4);
+                TryAddPart(storage, result.parts, true);
+                TryAddPart(coolers, result.parts, true);
+                TryAddFans(result.parts, 2, 4, 80f);
+                break;
+
+            case BuildPurpose.Gaming:
+                // High-end: Everything maxed — CPU, GPU, 2-4 RAM, storage, cooler, fans
+                TryAddPart(cpus, result.parts, true);
+                TryAddPart(gpus, result.parts, true);
+                AddRAMSticks(result.parts, 2, 4);
+                TryAddPart(storage, result.parts, true);
+                TryAddPart(coolers, result.parts, true);
+                TryAddFans(result.parts, 2, 5, 90f);
+                break;
+        }
+
+        return result;
+    }
+
+    void AddRAMSticks(List<StartingPCComponent> parts, int min, int max)
+    {
+        if (rams == null || rams.Length == 0) return;
+        int count = Random.Range(min, max + 1);
+        for (int i = 0; i < count; i++)
+            AddCopiedPart(rams[Random.Range(0, rams.Length)], parts);
+    }
+
+    void TryAddFans(List<StartingPCComponent> parts, int min, int max, float chance)
+    {
+        if (fans == null || fans.Length == 0 || !Roll(chance)) return;
+        int count = Random.Range(min, max + 1);
+        for (int i = 0; i < count; i++)
+            AddCopiedPart(fans[Random.Range(0, fans.Length)], parts);
+    }
+
+    // =============================================
+    //  REWARD CALCULATION
+    // =============================================
+    float CalculateReward(List<StartingPCComponent> parts, bool isBuild)
+    {
+        float totalComponentCost = 0f;
+
+        foreach (var part in parts)
+        {
+            float price = part.partPrice > 0f ? part.partPrice : GetFallbackPrice(part.partCategory);
+            totalComponentCost += price;
+        }
+
+        float markedUp = totalComponentCost * markupMultiplier;
+        float labour = isBuild ? (labourFee * buildLabourMultiplier) : labourFee;
+
+        return Mathf.Round(markedUp + labour);
+    }
+
+    float GetFallbackPrice(string category)
+    {
+        switch (category)
+        {
+            case "Motherboard": return fallbackMotherboardPrice;
+            case "CPU": return fallbackCPUPrice;
+            case "GPU": return fallbackGPUPrice;
+            case "RAM": return fallbackRAMPrice;
+            case "Storage": return fallbackStoragePrice;
+            case "PSU": return fallbackPSUPrice;
+            case "Cooler": return fallbackCoolerPrice;
+            case "Fan": return fallbackFanPrice;
+            default: return 1000f;
+        }
+    }
+
+    // =============================================
     //  MASTER JOB GENERATOR (Calls Build or Repair)
     // =============================================
     public EmailData GenerateRandomJob()
@@ -91,23 +218,27 @@ public class PCPartDatabase : ScriptableObject
 
     public EmailData GenerateRandomBuildJob()
     {
-        RandomPCResult desiredPC = GenerateRandomPC();
+        // Pick a random build purpose
+        BuildPurpose[] purposes = { BuildPurpose.School, BuildPurpose.Streaming, BuildPurpose.Gaming, BuildPurpose.Office };
+        BuildPurpose purpose = purposes[Random.Range(0, purposes.Length)];
+
+        RandomPCResult desiredPC = GeneratePCForPurpose(purpose);
 
         EmailData job = ScriptableObject.CreateInstance<EmailData>();
         job.jobType = JobType.Build;
+        job.buildPurpose = purpose;
         job.basePCCasePrefab = desiredPC.casePrefab;
         job.startingParts = new List<StartingPCComponent>(); // Empty case
         job.requestedParts = desiredPC.parts;
 
-        job.labourCost = Mathf.Round(Random.Range(minLabourCost * 1.5f, maxLabourCost * 2f));
-        job.partsBudget = Mathf.Round(Random.Range(minPartsBudget, maxPartsBudget));
+        job.reward = CalculateReward(desiredPC.parts, true);
 
         job.pcProblems = new string[] { "New PC Build" };
         job.originalFaultCount = 0;
-        job.objectives = GenerateBuildObjectives(desiredPC.parts);
+        job.objectives = GenerateBuildObjectives(desiredPC.parts, purpose);
         job.senderName = GenerateRandomName();
-        job.subjectLine = GenerateBuildSubjectLine();
-        job.bodyText = GenerateBuildEmailBody(job.senderName, desiredPC.parts, job.partsBudget);
+        job.subjectLine = GenerateBuildSubjectLine(purpose);
+        job.bodyText = GenerateBuildEmailBody(job.senderName, desiredPC.parts, job.reward, purpose);
 
         return job;
     }
@@ -121,18 +252,11 @@ public class PCPartDatabase : ScriptableObject
         job.basePCCasePrefab = pc.casePrefab;
         job.startingParts = pc.parts;
 
-        job.labourCost = Mathf.Round(Random.Range(minLabourCost, maxLabourCost));
-        job.partsBudget = Mathf.Round(Random.Range(minPartsBudget, maxPartsBudget));
+        // Pick a problem that actually matches what parts exist in this PC
+        string chosenProblem = PickValidProblem(pc.parts);
+        job.pcProblems = new string[] { chosenProblem };
 
-        string[] problems = new string[]
-        {
-            "Blue Screen of Death", "No Display on Monitor", "PC Keeps Overheating",
-            "Won't Turn On", "Full of Dust", "Random Shutdowns", "Loud Fan Noise",
-            "Slow Performance", "Boot Loop", "No Internet Connection"
-        };
-        job.pcProblems = new string[] { problems[Random.Range(0, problems.Length)] };
-
-        ApplyFaultToPC(job.pcProblems[0], pc.parts);
+        ApplyFaultToPC(chosenProblem, pc.parts);
 
         int faultCount = 0;
         foreach (var part in pc.parts)
@@ -141,12 +265,66 @@ public class PCPartDatabase : ScriptableObject
         }
         job.originalFaultCount = faultCount;
 
-        job.objectives = GenerateObjectives(job.pcProblems[0]);
+        job.reward = CalculateReward(pc.parts, false);
+
+        job.objectives = GenerateObjectives(chosenProblem);
         job.senderName = GenerateRandomName();
-        job.subjectLine = GenerateSubjectLine(job.pcProblems[0]);
-        job.bodyText = GenerateEmailBody(job.senderName, job.pcProblems[0], job.partsBudget);
+        job.subjectLine = GenerateSubjectLine(chosenProblem);
+        job.bodyText = GenerateEmailBody(job.senderName, chosenProblem, job.reward);
 
         return job;
+    }
+
+    // =============================================
+    //  SMART PROBLEM PICKER — Only picks problems
+    //  that match parts actually in this PC
+    // =============================================
+    string PickValidProblem(List<StartingPCComponent> parts)
+    {
+        // Build a set of which categories exist
+        HashSet<string> categories = new HashSet<string>();
+        foreach (var p in parts) categories.Add(p.partCategory);
+
+        // Define which problems require which part categories
+        List<ProblemRequirement> allProblems = new List<ProblemRequirement>
+        {
+            new ProblemRequirement("Blue Screen of Death",  new string[] { "RAM", "Storage" }),
+            new ProblemRequirement("No Display on Monitor", new string[] { "GPU", "RAM" }),
+            new ProblemRequirement("PC Keeps Overheating",  new string[] { "Cooler", "Fan" }),
+            new ProblemRequirement("Won't Turn On",         new string[] { "PSU", "Motherboard" }),
+            new ProblemRequirement("Full of Dust",          new string[] { }),  // Any PC can be dusty
+            new ProblemRequirement("Random Shutdowns",      new string[] { "PSU", "CPU" }),
+            new ProblemRequirement("Loud Fan Noise",        new string[] { "Fan", "Cooler" }),
+            new ProblemRequirement("Slow Performance",      new string[] { "Storage", "RAM" }),
+            new ProblemRequirement("Boot Loop",             new string[] { "RAM", "Motherboard" }),
+            new ProblemRequirement("No Internet Connection", new string[] { "Motherboard" }),
+        };
+
+        // Filter to only problems where at least one required part exists
+        List<string> validProblems = new List<string>();
+        foreach (var prob in allProblems)
+        {
+            if (prob.requiredCategories.Length == 0)
+            {
+                // "Full of Dust" — always valid
+                validProblems.Add(prob.problemName);
+                continue;
+            }
+
+            foreach (string cat in prob.requiredCategories)
+            {
+                if (categories.Contains(cat))
+                {
+                    validProblems.Add(prob.problemName);
+                    break;
+                }
+            }
+        }
+
+        // Fallback (should never happen but just in case)
+        if (validProblems.Count == 0) return "Full of Dust";
+
+        return validProblems[Random.Range(0, validProblems.Count)];
     }
 
     // =============================================
@@ -246,6 +424,7 @@ public class PCPartDatabase : ScriptableObject
         copy.partName = original.partName;
         copy.partPrefab = original.partPrefab;
         copy.partIcon = original.partIcon;
+        copy.partPrice = original.partPrice;
         copy.compatTags = original.compatTags;
         copy.powerDraw = original.powerDraw;
         copy.maxWattage = original.maxWattage;
@@ -260,10 +439,10 @@ public class PCPartDatabase : ScriptableObject
     // =============================================
     //  BUILD JOB — TEXT GENERATION
     // =============================================
-    string[] GenerateBuildObjectives(List<StartingPCComponent> requestedParts)
+    string[] GenerateBuildObjectives(List<StartingPCComponent> requestedParts, BuildPurpose purpose)
     {
         List<string> objectives = new List<string>();
-        objectives.Add("Build the PC from scratch");
+        objectives.Add($"Build a PC for {PurposeLabel(purpose)}");
         Dictionary<string, int> partCounts = new Dictionary<string, int>();
         foreach (var part in requestedParts)
         {
@@ -279,16 +458,49 @@ public class PCPartDatabase : ScriptableObject
         return objectives.ToArray();
     }
 
-    string GenerateBuildSubjectLine()
+    string GenerateBuildSubjectLine(BuildPurpose purpose)
     {
-        string[] templates = { "Custom PC Build Request", "Need a new PC built", "PC Build Order", "Build me a computer!", "New PC — Can you build it?", "Custom Build Request" };
-        return templates[Random.Range(0, templates.Length)];
+        switch (purpose)
+        {
+            case BuildPurpose.School:
+                return new string[] { "Need a PC for school", "Student PC Build Request", "Build me a study PC!", "School laptop won't cut it — need a desktop" }[Random.Range(0, 4)];
+            case BuildPurpose.Streaming:
+                return new string[] { "Streaming PC Build Request", "Need a PC for streaming", "Build me a streaming rig!", "Time to start streaming — need a PC" }[Random.Range(0, 4)];
+            case BuildPurpose.Gaming:
+                return new string[] { "Gaming PC Build Request", "Need a beast gaming rig!", "Build me a gaming PC!", "Custom Gaming PC — Can you build it?" }[Random.Range(0, 4)];
+            case BuildPurpose.Office:
+                return new string[] { "Office PC Build Request", "Need a reliable work PC", "Build me an office computer", "New office setup — PC needed" }[Random.Range(0, 4)];
+            default:
+                return "Custom PC Build Request";
+        }
     }
 
-    string GenerateBuildEmailBody(string senderName, List<StartingPCComponent> parts, float budget)
+    string GenerateBuildEmailBody(string senderName, List<StartingPCComponent> parts, float reward, BuildPurpose purpose)
     {
         string[] greetings = { "Hi there,", "Hello,", "Hey,", "Good day," };
-        string[] intros = { "I'd like to have a custom PC built. Here's what I need:", "Can you build me a new PC? I have a specific parts list:", "I'm looking for someone to assemble a PC for me. Here are the specs:", "I need a brand new PC built from scratch. My requirements:" };
+
+        string purposeDesc = "";
+        switch (purpose)
+        {
+            case BuildPurpose.School:
+                purposeDesc = "I need a PC for school — mostly for documents, browsing, and video calls.";
+                break;
+            case BuildPurpose.Streaming:
+                purposeDesc = "I'm getting into streaming and need a solid rig that can handle OBS, games, and a webcam all at once.";
+                break;
+            case BuildPurpose.Gaming:
+                purposeDesc = "I want a gaming PC that can handle the latest AAA titles at high settings. No compromises!";
+                break;
+            case BuildPurpose.Office:
+                purposeDesc = "I need a reliable office PC for spreadsheets, email, and general productivity.";
+                break;
+        }
+
+        string[] intros = {
+            $"{purposeDesc} Here's what I need:",
+            $"Can you build me a new PC? {purposeDesc} I have a specific parts list:",
+            $"I'm looking for someone to assemble a PC for me. {purposeDesc} Here are the specs:"
+        };
 
         string partsList = "\n\n";
         Dictionary<string, List<string>> grouped = new Dictionary<string, List<string>>();
@@ -302,7 +514,11 @@ public class PCPartDatabase : ScriptableObject
             foreach (string name in kvp.Value) partsList += $"  • {kvp.Key}: {name}\n";
         }
 
-        string[] closings = { $"\nMy budget is around ₱{budget:N0}. Thanks!", $"\nI can spend up to ₱{budget:N0} on this build. Let me know!", $"\nBudget: ₱{budget:N0}. Looking forward to the build!", $"\nI've set aside ₱{budget:N0} for this. Hope you can do it!" };
+        string[] closings = {
+            $"\nI'm willing to pay ₱{reward:N0} for the whole build. Thanks!",
+            $"\nMy budget for this build is ₱{reward:N0} including parts and labour. Let me know!",
+            $"\nI've set aside ₱{reward:N0} total for parts and your service fee. Hope you can do it!"
+        };
         string[] signoffs = { $"Thanks,\n{senderName}", $"Best regards,\n{senderName}", $"Cheers,\n{senderName}", $"— {senderName}" };
 
         return greetings[Random.Range(0, greetings.Length)] + "\n\n" + intros[Random.Range(0, intros.Length)] + partsList + "\n" + closings[Random.Range(0, closings.Length)] + "\n\n" + signoffs[Random.Range(0, signoffs.Length)];
@@ -324,11 +540,11 @@ public class PCPartDatabase : ScriptableObject
         return templates[Random.Range(0, templates.Length)];
     }
 
-    string GenerateEmailBody(string senderName, string problem, float budget)
+    string GenerateEmailBody(string senderName, string problem, float reward)
     {
         string[] greetings = { "Hi there,", "Hello,", "Hey,", "Good day," };
         string[] descriptions = { $"My PC has been giving me trouble lately. The issue is: {problem}.", $"Something's wrong with my PC. I think the problem is {problem}." };
-        string[] closings = { $"My budget is around ₱{budget:N0}. Let me know if you can help!", $"I can spend up to ₱{budget:N0} on this. Thanks in advance!" };
+        string[] closings = { $"I can pay ₱{reward:N0} for the repair. Let me know if you can help!", $"I'll pay up to ₱{reward:N0} to get this fixed. Thanks in advance!" };
         string[] signoffs = { $"Thanks,\n{senderName}", $"Best regards,\n{senderName}" };
         return greetings[Random.Range(0, greetings.Length)] + "\n\n" + descriptions[Random.Range(0, descriptions.Length)] + "\n\n" + closings[Random.Range(0, closings.Length)] + "\n\n" + signoffs[Random.Range(0, signoffs.Length)];
     }
@@ -343,16 +559,56 @@ public class PCPartDatabase : ScriptableObject
             case "No Display on Monitor": objectives.Add("Check GPU seating"); objectives.Add("Test with a different GPU"); break;
             case "PC Keeps Overheating": objectives.Add("Clean dust from components"); objectives.Add("Check CPU cooler"); break;
             case "Won't Turn On": objectives.Add("Check PSU connections"); objectives.Add("Test power supply"); break;
+            case "Full of Dust": objectives.Add("Clean all components thoroughly"); objectives.Add("Check for heat damage"); break;
+            case "Random Shutdowns": objectives.Add("Check PSU wattage capacity"); objectives.Add("Monitor CPU temperatures"); break;
+            case "Loud Fan Noise": objectives.Add("Inspect fan bearings"); objectives.Add("Clean or replace noisy fans"); break;
+            case "Slow Performance": objectives.Add("Check storage health"); objectives.Add("Verify RAM compatibility"); break;
+            case "Boot Loop": objectives.Add("Reseat RAM sticks"); objectives.Add("Check BIOS status"); break;
+            case "No Internet Connection": objectives.Add("Test onboard network adapter"); objectives.Add("Consider PCIe network card"); break;
             default: objectives.Add("Replace broken part"); break;
         }
         objectives.Add("Boot to Desktop");
         return objectives.ToArray();
     }
+
+    // =============================================
+    //  UTILITY
+    // =============================================
+    string PurposeLabel(BuildPurpose purpose)
+    {
+        switch (purpose)
+        {
+            case BuildPurpose.School: return "School";
+            case BuildPurpose.Streaming: return "Streaming";
+            case BuildPurpose.Gaming: return "Gaming";
+            case BuildPurpose.Office: return "Office";
+            default: return "General Use";
+        }
+    }
 }
 
+// =============================================
+//  HELPER CLASSES
+// =============================================
 [System.Serializable]
 public class RandomPCResult
 {
     public GameObject casePrefab;
     public List<StartingPCComponent> parts = new List<StartingPCComponent>();
+}
+
+/// <summary>
+/// Maps a problem name to the part categories it requires.
+/// Used by PickValidProblem to filter out impossible problems.
+/// </summary>
+public class ProblemRequirement
+{
+    public string problemName;
+    public string[] requiredCategories;
+
+    public ProblemRequirement(string name, string[] categories)
+    {
+        problemName = name;
+        requiredCategories = categories;
+    }
 }

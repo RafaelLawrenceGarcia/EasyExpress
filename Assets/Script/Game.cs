@@ -13,6 +13,18 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             SceneManager.sceneLoaded += OnSceneLoaded;
+
+            // ── FAILSAFE: Direct-to-Gameplay without auth ──
+            // If we got here without going through login or "Play Offline",
+            // force a guest session so we only use local saves and never
+            // touch cloud data.
+            if (!GameSession.IsLoggedIn && !GameSession.IsGuest)
+            {
+                Debug.Log("[GameManager] No session detected — forcing guest mode (local save only).");
+                GameSession.StartGuestSession();
+                PlayerPrefs.SetInt("IsLoadingGame", 0);
+                PlayerPrefs.Save();
+            }
         }
         else
         {
@@ -25,10 +37,10 @@ public class GameManager : MonoBehaviour
     {
         if (PlayerPrefs.GetInt("IsLoadingGame") == 1)
         {
-            // ── CLOUD SESSION: load from PlayFab ──
+            // ── CLOUD SESSION: load from PlayFab (last end-of-day checkpoint) ──
             if (GameSession.IsLoggedIn && CloudDataHandler.Instance != null)
             {
-                Debug.Log("[GameManager] Cloud session — loading save from PlayFab.");
+                Debug.Log("[GameManager] Cloud session — loading last checkpoint from PlayFab.");
                 CloudDataHandler.Instance.LoadGameDataDelayed();
             }
             else
@@ -44,9 +56,8 @@ public class GameManager : MonoBehaviour
 
     public void SaveGame()
     {
-        // 1. Always save locally to PlayerPrefs (works for both modes)
+        // Save player position locally (for scene transitions)
         GameObject player = GameObject.FindWithTag("Player");
-        PlayerWallet wallet = FindObjectOfType<PlayerWallet>();
 
         if (player != null)
         {
@@ -57,21 +68,12 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetString("SavedScene", SceneManager.GetActiveScene().name);
         }
 
-        if (wallet != null)
-        {
-            PlayerPrefs.SetFloat("SavedGold", wallet.currentGold);
-        }
+        // Checkpoint system: gold is only saved at end-of-day.
+        // Player position is still saved locally for scene transitions.
 
         PlayerPrefs.SetInt("HasSaveData", 1);
         PlayerPrefs.Save();
-        Debug.Log("[GameManager] Local save complete.");
-
-        // 2. If logged in, ALSO push to cloud
-        if (GameSession.IsLoggedIn && CloudDataHandler.Instance != null)
-        {
-            CloudDataHandler.Instance.SaveGameData();
-            Debug.Log("[GameManager] Cloud save triggered.");
-        }
+        Debug.Log("[GameManager] Local save complete (position only).");
     }
 
     void LoadPlayerData()
@@ -96,6 +98,7 @@ public class GameManager : MonoBehaviour
             if (cc) cc.enabled = true;
         }
 
+        // Guest session: gold loaded from PlayerPrefs (last local checkpoint)
         if (wallet != null && PlayerPrefs.HasKey("SavedGold"))
         {
             wallet.currentGold = PlayerPrefs.GetFloat("SavedGold");

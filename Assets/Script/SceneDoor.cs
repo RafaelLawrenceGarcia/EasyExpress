@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class SceneDoor : MonoBehaviour
@@ -13,12 +14,10 @@ public class SceneDoor : MonoBehaviour
     public GameObject loadingScreenPanel;
     public Slider progressBar;
 
-    // Prevent player from spamming the E button
     private bool isAlreadyLoading = false;
 
     public void EnterDoor()
     {
-        // 1. If we are already loading, IGNORE the click
         if (isAlreadyLoading) return;
 
         if (loadingScreenPanel != null)
@@ -35,47 +34,65 @@ public class SceneDoor : MonoBehaviour
     {
         isAlreadyLoading = true;
 
-        // 2. DISABLE PLAYER CONTROL (The Fix)
-        // We stop the scripts so the player cannot Move or Press E again
+        // 1. DISABLE PLAYER CONTROL
         GTAMovement moveScript = FindObjectOfType<GTAMovement>();
         if (moveScript) moveScript.enabled = false;
 
         PlayerInteract interactScript = FindObjectOfType<PlayerInteract>();
-        if (interactScript) interactScript.enabled = false; // Stops the "Press E" logic
+        if (interactScript) interactScript.enabled = false;
 
-        // 3. Save Data
-        PlayerWallet wallet = FindObjectOfType<PlayerWallet>();
-        if (wallet != null)
-        {
-            PlayerPrefs.SetFloat("SavedGold", wallet.currentGold);
-            PlayerPrefs.Save();
-        }
-        // Save current game time so DayTimeUI can restore it in the next scene
+        // 2. Save game time for room change
         DayTimeUI dayTimeUI = FindObjectOfType<DayTimeUI>();
         if (dayTimeUI != null)
         {
             PlayerPrefs.SetFloat("SavedGameTime", dayTimeUI.GetCurrentTime());
         }
 
-        // 4. Hide UI Elements (Cleanup)
+        // 3. Save customers
+        if (ShopCustomerSpawner.Instance != null)
+        {
+            CustomerRetainer.SaveCustomers(ShopCustomerSpawner.Instance);
+        }
+
+        // 4. Save pending delivery orders (not yet arrived)
+        if (DeliveryManager.Instance != null)
+        {
+            DeliveryManager.SavedOrders = new List<DeliveryOrder>(DeliveryManager.Instance.pendingOrders);
+            Debug.Log("[SceneDoor] Saved " + DeliveryManager.SavedOrders.Count + " pending delivery orders.");
+        }
+
+        // 5. Save already-spawned delivery boxes (arrived but not picked up)
+        DeliveryBox[] allBoxes = FindObjectsOfType<DeliveryBox>();
+        if (allBoxes.Length > 0)
+        {
+            DeliveryManager.SavedSpawnedBoxItems = new List<ItemData>();
+            foreach (DeliveryBox box in allBoxes)
+            {
+                if (box.containedItem != null)
+                {
+                    DeliveryManager.SavedSpawnedBoxItems.Add(box.containedItem);
+                }
+            }
+            Debug.Log("[SceneDoor] Saved " + DeliveryManager.SavedSpawnedBoxItems.Count + " spawned delivery boxes.");
+        }
+
+        // 6. Hide UI Elements
         GameObject hud = GameObject.Find("Gold HUD");
         if (hud != null) hud.SetActive(false);
 
-        // Safely hide the prompt if it exists
         if (interactScript != null && interactScript.interactionPrompt != null)
         {
             interactScript.interactionPrompt.Hide();
         }
 
-        // --- THE FIX: Tell the next scene we are just walking through a door! ---
+        // 7. Set room change flag
         PlayerPrefs.SetInt("ChangingRooms", 1);
         PlayerPrefs.Save();
-        // ------------------------------------------------------------------------
 
-        // 5. Show Loading Screen
+        // 8. Show Loading Screen
         loadingScreenPanel.SetActive(true);
 
-        // 6. Start Loading
+        // 9. Start Loading
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
         operation.allowSceneActivation = false;
 

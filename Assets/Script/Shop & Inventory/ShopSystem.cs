@@ -28,12 +28,8 @@ public class ShopSystem : MonoBehaviour
             // FIX: Removed the duplicate check! Buy as many as you want!
             ownedItemIDs.Add(item.id);
 
-            // --- CRITICAL CHANGE: SAVE TO CLOUD ---
-            if (CloudDataHandler.Instance != null)
-            {
-                CloudDataHandler.Instance.SaveGameData();
-            }
-            // -------------------------------------
+            // Checkpoint system: no mid-day cloud saves.
+            // State is saved at end-of-day by DayTransitionManager.
 
             Debug.Log($"Bought {item.itemName}!");
         }
@@ -46,10 +42,7 @@ public class ShopSystem : MonoBehaviour
         // FIX: Removed the duplicate check! Unpack as many as you ordered!
         ownedItemIDs.Add(item.id);
 
-        if (CloudDataHandler.Instance != null)
-        {
-            CloudDataHandler.Instance.SaveGameData();
-        }
+        // Checkpoint system: no mid-day cloud saves.
 
         Debug.Log($"[ShopSystem] '{item.itemName}' added to inventory via delivery!");
     }

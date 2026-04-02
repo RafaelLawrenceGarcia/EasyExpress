@@ -23,6 +23,10 @@ public class MainMenu : MonoBehaviour
     public Button newGameButton;
     public Button backToModeButton;
 
+    [Header("Save Info Display")]
+    [Tooltip("Text element on the save selection panel that shows save details")]
+    public Text saveInfoText;
+
     [Header("Panels")]
     public GameObject mainPanel;
     public GameObject modeSelectionPanel;
@@ -130,15 +134,42 @@ public class MainMenu : MonoBehaviour
         result =>
         {
             if (newGameButton != null) newGameButton.interactable = true;
-            if (result.Data != null && result.Data.ContainsKey("Gold"))
+
+            if (result.Data != null && result.Data.ContainsKey("GameData"))
             {
                 if (continueButton != null) continueButton.interactable = true;
                 if (statusText) statusText.text = "Welcome Back!";
+
+                // ── Parse the full save JSON to show details ──
+                string json = result.Data["GameData"].Value;
+                if (!string.IsNullOrEmpty(json) && saveInfoText != null)
+                {
+                    try
+                    {
+                        GamePersistData d = JsonUtility.FromJson<GamePersistData>(json);
+
+                        int jobCount = d.acceptedJobs != null ? d.acceptedJobs.Count : 0;
+                        int invCount = d.inventoryParts != null ? d.inventoryParts.Count : 0;
+                        int delCount = d.pendingDeliveries != null ? d.pendingDeliveries.Count : 0;
+
+                        saveInfoText.text =
+                            $"Day {d.currentDay}   |   ₱{d.gold:F2}\n" +
+                            $"Jobs: {jobCount}   |   " +
+                            $"Inventory: {invCount}   |   " +
+                            $"Deliveries: {delCount}";
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogWarning("[MainMenu] Failed to parse save info: " + e.Message);
+                        saveInfoText.text = "";
+                    }
+                }
             }
             else
             {
                 if (continueButton != null) continueButton.interactable = false;
                 if (statusText) statusText.text = "Ready.";
+                if (saveInfoText != null) saveInfoText.text = "No save data found.";
             }
         },
         error => Debug.LogWarning("Failed to get save data: " + error.ErrorMessage));
@@ -149,6 +180,7 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetInt("IsLoadingGame", 0);
         PlayerPrefs.SetInt("TutorialDone", 0);
         PlayerPrefs.SetInt("CurrentDay", 1);
+        if (saveInfoText != null) saveInfoText.text = "";
         SceneManager.LoadScene(gameplaySceneName);
     }
 

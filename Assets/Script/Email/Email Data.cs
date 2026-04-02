@@ -10,6 +10,17 @@ public enum JobType
     Build       // Build a PC from scratch (new system)
 }
 
+// =============================================
+//  BUILD PURPOSE — What the customer needs the PC for
+// =============================================
+public enum BuildPurpose
+{
+    School,     // Basic office + light apps (Word, browser, Zoom)
+    Streaming,  // Mid-high CPU, good GPU, lots of RAM
+    Gaming,     // High-end GPU, fast CPU, fast storage
+    Office      // Reliable, mid-range, balanced
+}
+
 [CreateAssetMenu(fileName = "New Email", menuName = "EasyExpress/Email Job")]
 public class EmailData : ScriptableObject
 {
@@ -24,9 +35,12 @@ public class EmailData : ScriptableObject
     [Header("Job Type")]
     public JobType jobType = JobType.Repair;
 
-    [Header("Job Stats")]
-    public float labourCost;
-    public float partsBudget;
+    [Header("Build Purpose (Build Jobs Only)")]
+    public BuildPurpose buildPurpose = BuildPurpose.Gaming;
+
+    [Header("Job Reward")]
+    [Tooltip("Total reward = component cost + markup + labour. Single value the player earns.")]
+    public float reward;
 
     [Header("Requirements")]
     public string[] objectives;
@@ -73,6 +87,10 @@ public class StartingPCComponent
     public string partName;
     public GameObject partPrefab;
     public Sprite partIcon;
+
+    [Header("Pricing")]
+    [Tooltip("Base cost of this component in ₱. Used to calculate job reward.")]
+    public float partPrice = 0f;
 
     // Compatibility
     [Tooltip("e.g. DDR4, LGA1700, PCIe4")]

@@ -8,7 +8,7 @@ public class CustomerInside : MonoBehaviour
     [Header("Details")]
     public string npcName = "Customer";
     public string jobRequest;
-    public int budget;
+    public int reward;
 
     [Tooltip("If you leave this empty, the game will automatically generate a random PC using the lists below!")]
     public EmailData assignedJob;
@@ -34,11 +34,47 @@ public class CustomerInside : MonoBehaviour
     private NavMeshAgent agent;
     private Transform myQueueSpot;
     private Transform exitPos;
+    private bool collisionDisabled = false;
 
+    // Add this method
+    public void DisableCollisionUntilAtSpot()
+    {
+        collisionDisabled = true;
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+    }
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+
+        // Generate a random name if still using the default "Customer"
+        if (npcName == "Customer")
+        {
+            npcName = GenerateRandomCustomerName();
+            gameObject.name = "Customer_" + npcName;
+        }
+
         GenerateRandomJob();
+    }
+
+    /// <summary>
+    /// Generates a random first + last name for walk-in customers.
+    /// </summary>
+    string GenerateRandomCustomerName()
+    {
+        string[] firstNames = {
+            "James", "Mary", "Robert", "Patricia", "John", "Jennifer",
+            "Michael", "Linda", "David", "Elizabeth", "Carlos", "Sofia",
+            "Andre", "Maria", "Kevin", "Angela", "Brian", "Karen",
+            "Ryan", "Samantha", "Derek", "Nina", "Marcus", "Chloe"
+        };
+        string[] lastNames = {
+            "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia",
+            "Miller", "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez",
+            "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson",
+            "Lee", "Perez", "White", "Harris", "Clark", "Lewis"
+        };
+        return firstNames[Random.Range(0, firstNames.Length)] + " " + lastNames[Random.Range(0, lastNames.Length)];
     }
 
     public void Initialize(Transform assignedSpot, Transform exitLocation)
@@ -54,7 +90,6 @@ public class CustomerInside : MonoBehaviour
     {
         isBrowsing = true;
 
-        // THE FIX: Find the spots using the Unity Tag system like you had originally!
         GameObject[] spots = GameObject.FindGameObjectsWithTag("BrowseSpot");
 
         if (spots.Length > 0)
@@ -63,7 +98,6 @@ public class CustomerInside : MonoBehaviour
 
             for (int i = 0; i < itemsToBrowse; i++)
             {
-                // Pick a random shelf from the array
                 currentBrowseSpot = spots[Random.Range(0, spots.Length)].transform;
 
                 if (currentBrowseSpot != null && agent.isOnNavMesh)
@@ -81,7 +115,7 @@ public class CustomerInside : MonoBehaviour
         else
         {
             Debug.LogWarning("No BrowseSpots found! Make sure your shelves have the 'BrowseSpot' tag.");
-            yield return new WaitForSeconds(1f); // Brief pause if no spots exist
+            yield return new WaitForSeconds(1f);
         }
 
         isBrowsing = false;
@@ -100,6 +134,14 @@ public class CustomerInside : MonoBehaviour
             {
                 isAtSpot = true;
                 RotateTowards(myQueueSpot.forward);
+
+                // Re-enable collision once at their spot
+                if (collisionDisabled)
+                {
+                    collisionDisabled = false;
+                    Collider col = GetComponent<Collider>();
+                    if (col != null) col.enabled = true;
+                }
             }
             else
             {
@@ -156,7 +198,6 @@ public class CustomerInside : MonoBehaviour
         isServed = true;
         isAtSpot = false;
 
-        // THE FIX: Use the correct method name from your spawner script!
         if (mySpawner != null) mySpawner.CustomerLeft(this);
 
         if (exitPos != null) agent.SetDestination(exitPos.position);
@@ -180,30 +221,30 @@ public class CustomerInside : MonoBehaviour
     }
 
     void GenerateRandomJob()
-{
-    if (assignedJob != null)
     {
-        budget = (int)assignedJob.partsBudget;
-        jobRequest = BuildSpokenDialogue(assignedJob);
-        return;
+        if (assignedJob != null)
+        {
+            reward = (int)assignedJob.reward;
+            jobRequest = BuildSpokenDialogue(assignedJob);
+            return;
+        }
+
+        if (partDatabase != null)
+        {
+            assignedJob = partDatabase.GenerateRandomJob();
+            assignedJob.senderName = npcName;
+            reward = (int)assignedJob.reward;
+            jobRequest = BuildSpokenDialogue(assignedJob);
+
+            string jobLabel = assignedJob.jobType == JobType.Build ? "BUILD" : "REPAIR";
+            Debug.Log($"[{npcName}] {jobLabel} job generated.");
+            return;
+        }
+
+        Debug.LogWarning($"[{npcName}] No assignedJob AND no partDatabase! Giving generic text.");
+        reward = Random.Range(500, 3000);
+        jobRequest = "Hey, can you take a look at my PC? It's been acting up lately.\n\nReward: " + reward;
     }
-
-    if (partDatabase != null)
-    {
-        assignedJob = partDatabase.GenerateRandomJob();
-        assignedJob.senderName = npcName;
-        budget = (int)assignedJob.partsBudget;
-        jobRequest = BuildSpokenDialogue(assignedJob);
-
-        string jobLabel = assignedJob.jobType == JobType.Build ? "BUILD" : "REPAIR";
-        Debug.Log($"[{npcName}] {jobLabel} job generated.");
-        return;
-    }
-
-    Debug.LogWarning($"[{npcName}] No assignedJob AND no partDatabase! Giving generic text.");
-    budget = Random.Range(50, 300);
-    jobRequest = "Hey, can you take a look at my PC? It's been acting up lately.\n\nBudget: ₱" + budget;
-}
 
     string BuildSpokenDialogue(EmailData job)
     {
@@ -212,10 +253,12 @@ public class CustomerInside : MonoBehaviour
 
         if (job.jobType == JobType.Build)
         {
+            string purposeDesc = GetPurposeDescription(job.buildPurpose);
+
             string[] buildLines = {
-                $"{opener} I need someone to build me a custom PC. Can you do it?\n\nBudget: ₱{job.partsBudget:N0}",
-                $"{opener} I'm looking to get a new PC assembled. I have the parts list ready!\n\nBudget: ₱{job.partsBudget:N0}",
-                $"{opener} Can you build a PC for me? I know exactly what I want.\n\nBudget: ₱{job.partsBudget:N0}"
+                $"{opener} I need someone to build me a PC {purposeDesc}. Can you do it?\n\nReward: {job.reward:N0}",
+                $"{opener} I'm looking to get a new PC assembled {purposeDesc}. I have the parts list ready!\n\nReward: {job.reward:N0}",
+                $"{opener} Can you build a PC for me? It's {purposeDesc}. I know exactly what I want.\n\nReward: {job.reward:N0}"
             };
             return buildLines[Random.Range(0, buildLines.Length)];
         }
@@ -226,12 +269,24 @@ public class CustomerInside : MonoBehaviour
                 : "some issue";
 
             string[] repairLines = {
-                $"{opener} My PC has a problem — {problem}. Can you fix it?\n\nBudget: ₱{job.partsBudget:N0}",
-                $"{opener} I need help with my PC. It keeps having this issue: {problem}.\n\nBudget: ₱{job.partsBudget:N0}",
-                $"{opener} Something's wrong with my computer. The problem is {problem}. Think you can repair it?\n\nBudget: ₱{job.partsBudget:N0}",
-                $"{opener} My PC is broken! It's been {problem} for days now. Please help!\n\nBudget: ₱{job.partsBudget:N0}"
+                $"{opener} My PC has a problem - {problem}. Can you fix it?\n\nReward: {job.reward:N0}",
+                $"{opener} I need help with my PC. It keeps having this issue: {problem}.\n\nReward: {job.reward:N0}",
+                $"{opener} Something's wrong with my computer. The problem is {problem}. Think you can repair it?\n\nReward: {job.reward:N0}",
+                $"{opener} My PC is broken! It's been {problem} for days now. Please help!\n\nReward: {job.reward:N0}"
             };
             return repairLines[Random.Range(0, repairLines.Length)];
+        }
+    }
+
+    string GetPurposeDescription(BuildPurpose purpose)
+    {
+        switch (purpose)
+        {
+            case BuildPurpose.School: return "for school work";
+            case BuildPurpose.Streaming: return "for streaming";
+            case BuildPurpose.Gaming: return "for gaming";
+            case BuildPurpose.Office: return "for office use";
+            default: return "";
         }
     }
 }

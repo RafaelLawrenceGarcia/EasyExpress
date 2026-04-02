@@ -16,8 +16,7 @@ public class EmailManager : MonoBehaviour
     public TextMeshProUGUI senderText;
     public TextMeshProUGUI subjectText;
     public TextMeshProUGUI bodyText;
-    public TextMeshProUGUI labourText;
-    public TextMeshProUGUI budgetText;
+    public TextMeshProUGUI rewardText;
     public TextMeshProUGUI objectivesText;
     public Image detailProfilePic;
 
@@ -64,8 +63,7 @@ public class EmailManager : MonoBehaviour
         TextMeshProUGUI newSenderText,
         TextMeshProUGUI newSubjectText,
         TextMeshProUGUI newBodyText,
-        TextMeshProUGUI newLabourText,
-        TextMeshProUGUI newBudgetText,
+        TextMeshProUGUI newRewardText,
         TextMeshProUGUI newObjectivesText,
         Image newDetailProfilePic,
         GameObject newPcStatusPanel,
@@ -89,8 +87,7 @@ public class EmailManager : MonoBehaviour
         senderText = newSenderText;
         subjectText = newSubjectText;
         bodyText = newBodyText;
-        labourText = newLabourText;
-        budgetText = newBudgetText;
+        rewardText = newRewardText;
         objectivesText = newObjectivesText;
         detailProfilePic = newDetailProfilePic;
         pcStatusPanel = newPcStatusPanel;
@@ -213,8 +210,8 @@ public class EmailManager : MonoBehaviour
                 foreach (KeyValuePair<string, PartGroup> kvp in groupedParts)
                 {
                     PartGroup group = kvp.Value;
-                    GameObject newSpecObj = Instantiate(pcSpecItemPrefab, pcSpecsContentContainer);
-                    Transform t = newSpecObj.transform;
+                    GameObject specItem = Instantiate(pcSpecItemPrefab, pcSpecsContentContainer);
+                    Transform t = specItem.transform;
 
                     Transform textObj = FindChildRecursive(t, "Spec Text");
                     if (textObj != null)
@@ -229,8 +226,7 @@ public class EmailManager : MonoBehaviour
             }
         }
 
-        if (labourText != null) labourText.text = "Labour: ₱" + email.labourCost.ToString("N0");
-        if (budgetText != null) budgetText.text = "Budget: ₱" + email.partsBudget.ToString("N0");
+        if (rewardText != null) rewardText.text = "Reward: ₱" + email.reward.ToString("N0");
         if (detailProfilePic != null && email.profilePic != null) detailProfilePic.sprite = email.profilePic;
 
         string combinedObjectives = "";
@@ -248,7 +244,8 @@ public class EmailManager : MonoBehaviour
         {
             if (email.jobType == JobType.Build && email.requestedParts != null)
             {
-                string buildList = "<color=#4AE0FF>■</color> <b>BUILD REQUEST</b>\n\n";
+                string purposeLabel = GetPurposeLabel(email.buildPurpose);
+                string buildList = $"<color=#4AE0FF>■</color> <b>BUILD REQUEST — {purposeLabel}</b>\n\n";
                 Dictionary<string, int> grouped = new Dictionary<string, int>();
                 foreach (var part in email.requestedParts)
                 {
@@ -283,6 +280,18 @@ public class EmailManager : MonoBehaviour
         }
     }
 
+    string GetPurposeLabel(BuildPurpose purpose)
+    {
+        switch (purpose)
+        {
+            case BuildPurpose.School: return "For School";
+            case BuildPurpose.Streaming: return "For Streaming";
+            case BuildPurpose.Gaming: return "For Gaming";
+            case BuildPurpose.Office: return "For Office";
+            default: return "Custom";
+        }
+    }
+
     public bool SpawnBoxFromData(GameObject casePrefab, List<StartingPCComponent> parts, EmailData email = null)
     {
         int emptySlot = GetEmptyShelfSpot();
@@ -308,38 +317,40 @@ public class EmailManager : MonoBehaviour
             activeEmails.Remove(email);
             acceptedJobs.Add(email);
             RefreshInboxUI();
-            SelectEmail(email);
+            if (detailPanel != null) detailPanel.SetActive(false);
+            Debug.Log("Job Accepted: " + email.subjectLine);
         }
         else
         {
-            Debug.LogWarning("No empty shelf space!");
+            Debug.LogWarning("No empty shelf spot! Cannot accept job.");
         }
     }
 
     public void RejectJob(EmailData email)
     {
         activeEmails.Remove(email);
-        if (detailPanel != null) detailPanel.SetActive(false);
         RefreshInboxUI();
+        if (detailPanel != null) detailPanel.SetActive(false);
+        Debug.Log("Job Rejected: " + email.subjectLine);
     }
 
     public void CompleteJob(EmailData email)
     {
-        if (shippingZone == null)
-        {
-            Debug.LogError("Assign a Shipping Zone in the Inspector!");
-            return;
-        }
+        if (shippingZone == null) return;
 
         PCCaseBuilder[] allPCs = FindObjectsOfType<PCCaseBuilder>();
         PCCaseBuilder pcToShip = null;
 
         foreach (PCCaseBuilder pc in allPCs)
         {
-            if (Vector3.Distance(pc.transform.position, shippingZone.position) <= shippingRadius)
+            if (pc.linkedEmail == email)
             {
-                pcToShip = pc;
-                break;
+                float dist = Vector3.Distance(pc.transform.position, shippingZone.position);
+                if (dist <= shippingRadius)
+                {
+                    pcToShip = pc;
+                    break;
+                }
             }
         }
 
@@ -510,17 +521,18 @@ public class EmailManager : MonoBehaviour
         else if (score >= 0.40f) result.starRating = 2;
         else result.starRating = 1;
 
-        float basePay = email.labourCost;
-        float earnedLabour = basePay * score;
+        // Reward is now a single value — scale it by score
+        float baseReward = email.reward;
+        float earnedReward = baseReward * score;
 
         float tipBonus = 0f;
-        if (result.starRating == 5) tipBonus = basePay * 0.25f;
-        else if (result.starRating == 4) tipBonus = basePay * 0.10f;
+        if (result.starRating == 5) tipBonus = baseReward * 0.25f;
+        else if (result.starRating == 4) tipBonus = baseReward * 0.10f;
 
-        result.basePay = basePay;
-        result.earnedLabour = Mathf.Round(earnedLabour);
+        result.basePay = baseReward;
+        result.earnedReward = Mathf.Round(earnedReward);
         result.tipBonus = Mathf.Round(tipBonus);
-        result.totalPay = Mathf.Round(earnedLabour + tipBonus);
+        result.totalPay = Mathf.Round(earnedReward + tipBonus);
     }
 
     void ShowCompletionPopup(JobCompletionResult result)
@@ -594,7 +606,7 @@ public class EmailManager : MonoBehaviour
 
         if (completionPay != null)
         {
-            string payText = $"Labour: ₱{result.earnedLabour:N0}";
+            string payText = $"Reward: ₱{result.earnedReward:N0}";
             if (result.tipBonus > 0) payText += $"\n<color=#FFD700>Tip: +₱{result.tipBonus:N0}</color>";
             payText += $"\n\n<b><size=120%>Total: ₱{result.totalPay:N0}</size></b>";
             completionPay.text = payText;
@@ -668,7 +680,7 @@ public class JobCompletionResult
     public int starRating;
 
     public float basePay;
-    public float earnedLabour;
+    public float earnedReward;
     public float tipBonus;
     public float totalPay;
 }

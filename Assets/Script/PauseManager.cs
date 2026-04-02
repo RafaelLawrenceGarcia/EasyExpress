@@ -124,17 +124,12 @@ public class PauseManager : MonoBehaviour
 
     public void QuitToMainMenu()
     {
-        // Save to cloud before leaving if logged in
-        if (GameSession.IsLoggedIn && CloudDataHandler.Instance != null)
-        {
-            CloudDataHandler.Instance.SaveGameData();
-            Debug.Log("[PauseManager] Cloud save triggered before quit.");
-        }
+        DayTransitionManager.ResetDayFlag();
+        PlayerPrefs.SetFloat("SavedGameTime", 6f);  // ← add this
+        PlayerPrefs.Save();                           // ← add this
 
-        // Reset time scale before loading a new scene
         Time.timeScale = 1f;
         isPaused = false;
-
         SceneManager.LoadScene(mainMenuSceneName);
     }
 }

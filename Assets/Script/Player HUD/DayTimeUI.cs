@@ -19,6 +19,15 @@ public class DayTimeUI : MonoBehaviour
 
     public float GetCurrentTime() { return currentTime; }
 
+    /// <summary>
+    /// Called by CloudDataHandler to restore the saved game time directly,
+    /// in case Start() already ran and defaulted to 6:00 AM.
+    /// </summary>
+    public void SetTime(float time)
+    {
+        currentTime = time;
+    }
+
     void Start()
     {
         currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
@@ -26,8 +35,8 @@ public class DayTimeUI : MonoBehaviour
         if (PlayerPrefs.HasKey("SavedGameTime"))
         {
             currentTime = PlayerPrefs.GetFloat("SavedGameTime");
-            PlayerPrefs.DeleteKey("SavedGameTime");
-            PlayerPrefs.Save();
+            // Don't delete the key — it needs to survive for room changes.
+            // SceneDoor overwrites it on each scene transition anyway.
         }
         else
         {
@@ -35,13 +44,31 @@ public class DayTimeUI : MonoBehaviour
         }
     }
 
-    void OnEnable()  { DayTransitionManager.OnNewDayStarted += SetDay; }
+    void OnEnable() { DayTransitionManager.OnNewDayStarted += SetDay; }
     void OnDisable() { DayTransitionManager.OnNewDayStarted -= SetDay; }
 
+    /// <summary>
+    /// Called when OnNewDayStarted fires. Only updates the day number.
+    /// Time is NOT reset here — EndDaySequence handles that via ResetTimeForNewDay().
+    /// This prevents the saved time from being overwritten on first load.
+    /// </summary>
     void SetDay(int newDay)
     {
         currentDay = newDay;
+        // Time is NOT reset to 6 AM here.
+        // For new days, DayTransitionManager calls ResetTimeForNewDay() explicitly.
+    }
+
+    /// <summary>
+    /// Called by DayTransitionManager.EndDaySequence to reset clock to 6:00 AM
+    /// at the start of a genuinely new day.
+    /// </summary>
+    public void ResetTimeForNewDay()
+    {
         currentTime = 6f;
+        // Also update PlayerPrefs so room changes get the correct time
+        PlayerPrefs.SetFloat("SavedGameTime", currentTime);
+        PlayerPrefs.Save();
     }
 
     void Update()
@@ -51,7 +78,7 @@ public class DayTimeUI : MonoBehaviour
                               && TutorialManager.Instance.IsTutorialActive();
 
         if (timeIcon != null) timeIcon.gameObject.SetActive(!tutorialActive);
-        if (dayText  != null) dayText.gameObject.SetActive(!tutorialActive);
+        if (dayText != null) dayText.gameObject.SetActive(!tutorialActive);
         if (timeText != null) timeText.gameObject.SetActive(!tutorialActive);
 
         if (tutorialActive) return; // Don't update time during tutorial
@@ -77,6 +104,6 @@ public class DayTimeUI : MonoBehaviour
         if (displayHour == 0) displayHour = 12;
 
         if (timeText != null) timeText.text = $"{displayHour}:{minutes:D2} {ampm}";
-        if (dayText  != null) dayText.text  = $"Day {currentDay}";
+        if (dayText != null) dayText.text = $"Day {currentDay}";
     }
 }
