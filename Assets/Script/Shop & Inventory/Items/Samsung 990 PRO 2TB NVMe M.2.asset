@@ -21,6 +21,7 @@ MonoBehaviour:
     8W'
   price: 10500
   itemType: 0
-  prefabToPlace: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
+  prefabToPlace: {fileID: 2409526990387310036, guid: 86029257c8fca054799dae7e794e3084, type: 3}
   isTool: 0
   deliveryBoxPrefab: {fileID: 7783733196365189470, guid: 6ac2167ccbcc89a469b947b3d80c891d, type: 3}
+  retailBoxPrefab: {fileID: 0}

@@ -133,6 +133,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -536,6 +537,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -691,6 +693,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -852,6 +855,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: RAM 4
   partCategory: RAM
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -1130,6 +1134,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 20 Pins PSU
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -1306,6 +1311,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -1479,6 +1485,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -1634,6 +1641,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -1789,6 +1797,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 6 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -1944,6 +1953,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 6 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -2077,6 +2087,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws4
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
   cachedShopIcon: {fileID: 0}
@@ -2255,6 +2266,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Power Button
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -2521,6 +2533,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 6 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -2678,6 +2691,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: USB 3.0 & Ethernet
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -2892,6 +2906,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: HDMI Port
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -3025,6 +3040,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws2
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
   cachedShopIcon: {fileID: 0}
@@ -3218,6 +3234,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Power Supply
   partCategory: PSU
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -3374,6 +3391,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -3529,6 +3547,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -3690,6 +3709,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: RAM 4
   partCategory: RAM
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -3824,6 +3844,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws1
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
   cachedShopIcon: {fileID: 0}
@@ -4001,6 +4022,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Power Supply Outlet
   partCategory: PSU
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -4134,6 +4156,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws1
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
   cachedShopIcon: {fileID: 0}
@@ -4289,6 +4312,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws3
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
   cachedShopIcon: {fileID: 0}
@@ -4466,6 +4490,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Heat Sink
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -4621,6 +4646,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -4777,6 +4803,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -4932,6 +4959,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -5087,6 +5115,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: SSD Slot
   partCategory: SSD
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -5243,6 +5272,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: PC Case
   partCategory: Case
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -5420,6 +5450,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -5575,6 +5606,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 6 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -5767,6 +5799,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: RAM 4
   partCategory: RAM
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -5924,6 +5957,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 4 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -6097,6 +6131,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -6270,6 +6305,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -6425,6 +6461,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -6581,6 +6618,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Fan
   partCategory: Fan
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -6737,6 +6775,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -7067,6 +7106,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws3
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
   cachedShopIcon: {fileID: 0}
@@ -7262,6 +7302,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -7418,6 +7459,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 4 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -7573,6 +7615,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -7820,6 +7863,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: PC Case
   partCategory: Case
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -7887,6 +7931,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: PC Case
   partCategory: Case
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -8042,6 +8087,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -8197,6 +8243,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: SATA
   partCategory: SATA
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -8353,6 +8400,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -8418,8 +8466,6 @@ GameObject:
   - component: {fileID: 8902105681143248262}
   - component: {fileID: 2202130169765135966}
   - component: {fileID: 8659894682264109394}
-  - component: {fileID: 289462205756052853}
-  - component: {fileID: -819016476123871855}
   m_Layer: 6
   m_Name: PC Build Dummy MAIN
   m_TagString: PickupPC
@@ -8491,6 +8537,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: PC
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -8556,32 +8603,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!114 &289462205756052853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5178879464572469348}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b95aba4f9278564cb56912295b67b2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PCCaseBuilder
-  linkedEmail: {fileID: 0}
---- !u!114 &-819016476123871855
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5178879464572469348}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33a9b2af5bf810b4db40d1a2caae718c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
-  type: 2
 --- !u!1 &5323593287482091735
 GameObject:
   m_ObjectHideFlags: 0
@@ -8719,6 +8740,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: SSD NvMe M.2
   partCategory: SSD
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -8876,6 +8898,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 20 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -9052,6 +9075,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -9207,6 +9231,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -9362,6 +9387,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Heat Sink
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -9549,6 +9575,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -9704,6 +9731,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Ram Slot Lock
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -9891,6 +9919,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -10047,6 +10076,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: USB 3.0
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -10202,6 +10232,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 2 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -10397,6 +10428,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: MotherBoard
   partCategory: Motherboard
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -10584,6 +10616,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Fan
   partCategory: Fan
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -10718,6 +10751,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws4
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
   cachedShopIcon: {fileID: 0}
@@ -11043,6 +11077,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Intel CPU
   partCategory: CPU
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -11200,6 +11235,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -11357,6 +11393,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 20 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -11534,6 +11571,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Fan
   partCategory: Fan
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -11694,6 +11732,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: USB 2.0 w/ PS/2 Port
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -11852,6 +11891,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -12008,6 +12048,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 4 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -12163,6 +12204,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -12319,6 +12361,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Fan
   partCategory: Fan
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -12476,6 +12519,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 14 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -12631,6 +12675,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: SATA
   partCategory: SATA
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -12787,6 +12832,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 5 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -12943,6 +12989,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 8 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -13155,6 +13202,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 4 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -13311,6 +13359,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: 10 Pins
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -13444,6 +13493,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws2
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 2625642472155752381}
   cachedShopIcon: {fileID: 0}
@@ -13633,6 +13683,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: GPU
   partCategory: GPU
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -13795,6 +13846,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: RAM 4
   partCategory: RAM
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}

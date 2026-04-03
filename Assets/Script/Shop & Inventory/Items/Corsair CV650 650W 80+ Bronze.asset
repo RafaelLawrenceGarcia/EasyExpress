@@ -20,6 +20,7 @@ MonoBehaviour:
   specs: 'Max Wattage: 650W | Rating: 80+ Bronze | Form Factor: ATX'
   price: 3200
   itemType: 0
-  prefabToPlace: {fileID: 9167510366309624687, guid: c4da24ededcfbcc47b85626d08e195aa, type: 3}
+  prefabToPlace: {fileID: 825193487274983354, guid: 18b71829982428a42b3e0c07b49cfa78, type: 3}
   isTool: 0
   deliveryBoxPrefab: {fileID: 7783733196365189470, guid: bdc4bb08a7c99d246b661b86eb9c514a, type: 3}
+  retailBoxPrefab: {fileID: 0}

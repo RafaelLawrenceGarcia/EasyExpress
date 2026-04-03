@@ -252,7 +252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b513db02fab765147a1ce76cf92a7276, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::JobBox
-  pcCasePrefabToSpawn: {fileID: 5178879464572469348, guid: 5a2627d8cb2e87a4694ca3d738875dc7, type: 3}
+  pcCasePrefabToSpawn: {fileID: 5462959227998055957, guid: 52b945f90ff4fe4449faf87199ac9e35, type: 3}
   partsToBuild: []
   sourceEmail: {fileID: 0}
   existingPC: {fileID: 0}

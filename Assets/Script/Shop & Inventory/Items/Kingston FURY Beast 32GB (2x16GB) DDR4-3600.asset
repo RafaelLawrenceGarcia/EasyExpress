@@ -21,6 +21,7 @@ MonoBehaviour:
   specs: 'Type: DDR4 | Speed: 3600 MHz | Capacity: 32GB | Power Draw: 8W'
   price: 4500
   itemType: 0
-  prefabToPlace: {fileID: 5317888025729605750, guid: b47aa970d9d49044191b74ec2ef79806, type: 3}
+  prefabToPlace: {fileID: 4379802468972624886, guid: 436a5818e183a6f4085a23e3ffc52fb0, type: 3}
   isTool: 0
   deliveryBoxPrefab: {fileID: 7783733196365189470, guid: e66ce747bcebc384684c9ef3d2994bd2, type: 3}
+  retailBoxPrefab: {fileID: 0}

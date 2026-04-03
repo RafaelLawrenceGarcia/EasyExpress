@@ -1,6 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// =============================================
+//  Interface for pre-built wires.
+//  Defined here so InspectionManager and PrebuiltWire
+//  can both use it without circular dependency.
+// =============================================
+public interface IPrebuiltWire
+{
+    bool IsConnected { get; }
+    bool IsPowerCord { get; }
+    string WireName { get; }
+    string RequiredPartCategory { get; }
+    InspectableItem ConnectorPort { get; }
+    GameObject WireMeshRoot { get; }
+    void Connect(Transform pcRoot);
+    void Disconnect(Transform pcRoot);
+    bool IsRequiredComponentInstalled(Transform pcRoot);
+}
+
 public class InspectableItem : MonoBehaviour
 {
     [Header("Compatibility System")]
@@ -92,5 +110,25 @@ public class InspectableItem : MonoBehaviour
     public bool IsFaulty()
     {
         return fault != PartFault.None;
+    }
+
+    // =============================================
+    //  PRE-BUILT WIRE LINK (NEW)
+    //  Stored as Component to avoid circular dependency.
+    //  InspectionManager casts to IPrebuiltWire at runtime.
+    //  In the Unity Inspector, drag a PrebuiltWire here.
+    // =============================================
+    [Header("Pre-built Wire (PCCase3+)")]
+    [Tooltip("If this port/wire belongs to a PrebuiltWire, drag it here.\n" +
+             "Leave empty for legacy dynamic wiring.")]
+    public Component linkedPrebuiltWire;
+
+    /// <summary>
+    /// Helper — returns the linked pre-built wire as IPrebuiltWire.
+    /// Returns null if not assigned or not a valid PrebuiltWire.
+    /// </summary>
+    public IPrebuiltWire GetPrebuiltWire()
+    {
+        return linkedPrebuiltWire as IPrebuiltWire;
     }
 }

@@ -21,6 +21,7 @@ MonoBehaviour:
   specs: 'VRAM: 12GB GDDR6 | Interface: PCIe x16 | Power Draw: 170W'
   price: 17500
   itemType: 0
-  prefabToPlace: {fileID: 7569750174951828164, guid: 9aac142f358179d4fa4924abb9f60d2e, type: 3}
+  prefabToPlace: {fileID: 7539906692983069053, guid: 7737de23fb91530478829c28dc08bdf0, type: 3}
   isTool: 0
   deliveryBoxPrefab: {fileID: 7783733196365189470, guid: 54a720658af6b7a45932ff5bbc65f939, type: 3}
+  retailBoxPrefab: {fileID: 0}

@@ -242,7 +242,7 @@ public class InspectionManager : MonoBehaviour
         foreach (Collider col in currentClone.GetComponents<Collider>())
             col.enabled = false;
 
-        string[] caseChildNames = { "case", "case.001", "case.003", "psucase" };
+        string[] caseChildNames = { "case", "Front Panel", "Back Panel", "PSU Cover", "case.004" };
         foreach (string childName in caseChildNames)
         {
             foreach (Transform t in currentClone.GetComponentsInChildren<Transform>(true))
@@ -542,7 +542,25 @@ public class InspectionManager : MonoBehaviour
 
         if (part == null) return;
         if (isPlacingFromInventory && !part.isInventorySlot) return;
-
+        if (part.isWirePort && part.linkedPrebuiltWire != null)
+        {
+            IPrebuiltWire wire = part.GetPrebuiltWire();
+            if (wire != null)
+            {
+                if (wire.IsConnected) HandlePrebuiltWireDisconnect(wire);
+                else HandlePrebuiltWireConnect(wire);
+                return;
+            }
+        }
+        if (part.isRemovable && part.linkedPrebuiltWire != null)
+        {
+            IPrebuiltWire wire = part.GetPrebuiltWire();
+            if (wire != null && wire.IsConnected)
+            {
+                HandlePrebuiltWireDisconnect(wire);
+                return;
+            }
+        }
         if (part.isInventorySlot) BeginInstallConfirmation(part);
         else if (part.isRemovable) BeginRemovalConfirmation(part);
         else if (part.isPowerButton) TogglePCPower();
@@ -674,7 +692,7 @@ public class InspectionManager : MonoBehaviour
         }
 
         Debug.Log($"Removing {part.itemName}");
-
+        AutoDisconnectPrebuiltWires(part);
         if (TutorialManager.Instance != null) TutorialManager.Instance.CompleteRemoveTask();
 
         ClearHighlight();
@@ -910,6 +928,16 @@ public class InspectionManager : MonoBehaviour
         }
 
         StartCoroutine(AnimateInstall(partToInstall));
+        // Refresh pre-built wire connector ports
+        foreach (MonoBehaviour mb in currentClone.GetComponentsInChildren<MonoBehaviour>(true))
+        {
+            IPrebuiltWire w = mb as IPrebuiltWire;
+            if (w != null && w.ConnectorPort != null && w.ConnectorPort.isWirePort)
+            {
+                if (!allPorts.Contains(w.ConnectorPort))
+                    allPorts.Add(w.ConnectorPort);
+            }
+        }
     }
 
     private IEnumerator AnimateInstall(GameObject obj)
@@ -1515,6 +1543,46 @@ public class InspectionManager : MonoBehaviour
     void ShowTooltip(InspectableItem part)
     {
         if (!tooltipPanel) return;
+        // Pre-built wire port tooltip
+        if (part.isWirePort && part.linkedPrebuiltWire != null)
+        {
+            IPrebuiltWire wire = part.GetPrebuiltWire();
+            if (wire != null)
+            {
+                tooltipPanel.SetActive(true);
+                tooltipAnchored = false;
+                if (wire.IsConnected)
+                {
+                    if (tooltipTitle) tooltipTitle.text = wire.WireName;
+                    if (tooltipBody) tooltipBody.text = "Click to disconnect.";
+                }
+                else if (!wire.IsRequiredComponentInstalled(currentClone.transform))
+                {
+                    if (tooltipTitle) tooltipTitle.text = wire.WireName;
+                    if (tooltipBody) tooltipBody.text = $"Install {wire.RequiredPartCategory} first.";
+                }
+                else
+                {
+                    if (tooltipTitle) tooltipTitle.text = wire.WireName;
+                    if (tooltipBody) tooltipBody.text = "Click to connect.";
+                }
+                return;
+            }
+        }
+
+        // Pre-built wire mesh hover (for disconnect)
+        if (part.isRemovable && part.linkedPrebuiltWire != null)
+        {
+            IPrebuiltWire wire = part.GetPrebuiltWire();
+            if (wire != null && wire.IsConnected)
+            {
+                tooltipPanel.SetActive(true);
+                tooltipAnchored = false;
+                if (tooltipTitle) tooltipTitle.text = wire.WireName;
+                if (tooltipBody) tooltipBody.text = "Click to disconnect.";
+                return;
+            }
+        }
         string extra = "";
         if (part.isWirePort)
         {
@@ -1679,5 +1747,135 @@ public class InspectionManager : MonoBehaviour
     {
         obj.layer = originalLayerCache.ContainsKey(obj) ? originalLayerCache[obj] : LayerMask.NameToLayer("Default");
         foreach (Transform child in obj.transform) RestoreLayers(child.gameObject);
+    }
+
+    void HandlePrebuiltWireConnect(IPrebuiltWire wire)
+    {
+        if (InspectionToolbarUI.Instance != null && !InspectionToolbarUI.Instance.IsScrewdriverSelected())
+        {
+            if (tooltipPanel)
+            {
+                tooltipPanel.SetActive(true);
+                if (tooltipTitle) tooltipTitle.text = "Tool Required";
+                if (tooltipBody) tooltipBody.text = "Select the Screwdriver first.\nPress 1 to equip.";
+            }
+            return;
+        }
+
+        if (!wire.IsRequiredComponentInstalled(currentClone.transform))
+        {
+            if (tooltipPanel)
+            {
+                tooltipPanel.SetActive(true);
+                if (tooltipTitle) tooltipTitle.text = "Missing Component";
+                if (tooltipBody) tooltipBody.text = string.IsNullOrEmpty(wire.RequiredPartCategory)
+                    ? "Required component is not installed."
+                    : $"Install the {wire.RequiredPartCategory} first.";
+            }
+            return;
+        }
+
+        if (screwdriverSystem != null)
+        {
+            Transform screwTarget = wire.ConnectorPort != null
+                ? wire.ConnectorPort.transform
+                : ((Component)wire).transform;
+
+            isConfirmingRemoval = true;
+
+            screwdriverSystem.onCancelled = () =>
+            {
+                isConfirmingRemoval = false;
+            };
+
+            screwdriverSystem.BeginUnscrewing(screwTarget, () =>
+            {
+                isConfirmingRemoval = false;
+                wire.Connect(currentClone.transform);
+
+                if (wire.WireMeshRoot != null)
+                    SetLayerRecursively(wire.WireMeshRoot, currentClone.layer);
+
+                if (tooltipPanel)
+                {
+                    tooltipPanel.SetActive(true);
+                    if (tooltipTitle) tooltipTitle.text = "Connected!";
+                    if (tooltipBody) tooltipBody.text = wire.IsPowerCord
+                        ? "Power cord plugged in."
+                        : $"{wire.WireName} connected.";
+                }
+            });
+        }
+        else
+        {
+            wire.Connect(currentClone.transform);
+            if (wire.WireMeshRoot != null)
+                SetLayerRecursively(wire.WireMeshRoot, currentClone.layer);
+        }
+    }
+
+    void HandlePrebuiltWireDisconnect(IPrebuiltWire wire)
+    {
+        if (InspectionToolbarUI.Instance != null && !InspectionToolbarUI.Instance.IsScrewdriverSelected())
+        {
+            if (tooltipPanel)
+            {
+                tooltipPanel.SetActive(true);
+                if (tooltipTitle) tooltipTitle.text = "Tool Required";
+                if (tooltipBody) tooltipBody.text = "Select the Screwdriver first.\nPress 1 to equip.";
+            }
+            return;
+        }
+
+        if (screwdriverSystem != null)
+        {
+            Transform screwTarget = wire.ConnectorPort != null
+                ? wire.ConnectorPort.transform
+                : ((Component)wire).transform;
+
+            isConfirmingRemoval = true;
+
+            screwdriverSystem.onCancelled = () =>
+            {
+                isConfirmingRemoval = false;
+            };
+
+            screwdriverSystem.BeginUnscrewing(screwTarget, () =>
+            {
+                isConfirmingRemoval = false;
+                wire.Disconnect(currentClone.transform);
+
+                if (tooltipPanel)
+                {
+                    tooltipPanel.SetActive(true);
+                    if (tooltipTitle) tooltipTitle.text = "Disconnected";
+                    if (tooltipBody) tooltipBody.text = wire.IsPowerCord
+                        ? "Power cord unplugged."
+                        : $"{wire.WireName} disconnected.";
+                }
+            });
+        }
+        else
+        {
+            wire.Disconnect(currentClone.transform);
+        }
+    }
+
+    void AutoDisconnectPrebuiltWires(InspectableItem removedPart)
+    {
+        if (currentClone == null) return;
+
+        foreach (MonoBehaviour mb in currentClone.GetComponentsInChildren<MonoBehaviour>(true))
+        {
+            IPrebuiltWire wire = mb as IPrebuiltWire;
+            if (wire == null || !wire.IsConnected) continue;
+
+            if (!string.IsNullOrEmpty(wire.RequiredPartCategory)
+                && wire.RequiredPartCategory == removedPart.partCategory)
+            {
+                wire.Disconnect(currentClone.transform);
+                Debug.Log($"[PrebuiltWire] Auto-disconnected '{wire.WireName}' because {removedPart.itemName} was removed.");
+            }
+        }
     }
 }

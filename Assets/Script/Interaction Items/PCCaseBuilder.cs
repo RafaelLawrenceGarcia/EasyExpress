@@ -105,12 +105,6 @@ public class PCCaseBuilder : MonoBehaviour
 
                 // =============================================
                 //  REFRESH SLOT LIST
-                //  When a part (e.g. motherboard) is placed,
-                //  it brings its own Slot_ children (e.g. Slot_CPU).
-                //  We must remove the old slots that were children
-                //  of the destroyed dummy and add the new ones
-                //  from the placed part, so subsequent parts
-                //  (like CPU) get placed into the SURVIVING parent.
                 // =============================================
                 dummySlots.Remove(matchingDummy);
 
@@ -203,6 +197,56 @@ public class PCCaseBuilder : MonoBehaviour
             powerSystem.powerCordSnapPoint = cordSlot;
 
         Debug.Log($"[PC Builder] PCPowerSystem added — PC starts OFF, fans disabled.");
+
+        // =============================================
+        //  AUTO-CONNECT PRE-BUILT WIRES
+        //  After all parts are installed, scan for
+        //  PrebuiltWire components and connect any
+        //  whose required component is present.
+        //  Skips the power cord — player plugs that in.
+        //  Uses IPrebuiltWire interface to avoid
+        //  circular dependency.
+        // =============================================
+        AutoConnectPrebuiltWires();
+    }
+
+    /// <summary>
+    /// Scans all IPrebuiltWire components on this case and auto-connects
+    /// internal wires (24-pin, 8-pin, SATA, fan wires) if their required
+    /// component is installed. The power cord is skipped — the player
+    /// must plug that in themselves during inspection.
+    /// </summary>
+    void AutoConnectPrebuiltWires()
+    {
+        int connectedCount = 0;
+
+        foreach (MonoBehaviour mb in GetComponentsInChildren<MonoBehaviour>(true))
+        {
+            IPrebuiltWire wire = mb as IPrebuiltWire;
+            if (wire == null) continue;
+
+            // Skip the power cord — player connects it manually
+            if (wire.IsPowerCord)
+            {
+                Debug.Log($"[PC Builder] Skipping power cord '{wire.WireName}' — player connects manually.");
+                continue;
+            }
+
+            // Check if the required component is installed
+            if (wire.IsRequiredComponentInstalled(transform))
+            {
+                wire.Connect(transform);
+                connectedCount++;
+                Debug.Log($"[PC Builder] Auto-connected '{wire.WireName}'.");
+            }
+            else
+            {
+                Debug.Log($"[PC Builder] Skipping '{wire.WireName}' — {wire.RequiredPartCategory} not installed.");
+            }
+        }
+
+        if (connectedCount > 0)
+            Debug.Log($"[PC Builder] Auto-connected {connectedCount} internal wire(s).");
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer)

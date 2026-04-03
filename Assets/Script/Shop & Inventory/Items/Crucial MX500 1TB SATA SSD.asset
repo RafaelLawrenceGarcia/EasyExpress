@@ -21,6 +21,7 @@ MonoBehaviour:
   specs: 'Type: SATA III | Speed: 560 MB/s Read | Capacity: 1TB | Power Draw: 5W'
   price: 3500
   itemType: 0
-  prefabToPlace: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
+  prefabToPlace: {fileID: 671365937383816078, guid: 625c192bb9e437d4384ebf49f36360e4, type: 3}
   isTool: 0
   deliveryBoxPrefab: {fileID: 7783733196365189470, guid: 5d904b72665ee6c4699e76d9f940ca63, type: 3}
+  retailBoxPrefab: {fileID: 0}

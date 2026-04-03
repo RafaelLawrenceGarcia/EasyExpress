@@ -21,6 +21,7 @@ MonoBehaviour:
   specs: 'Size: 120mm | RPM: 1500 | Power Draw: 3W'
   price: 800
   itemType: 0
-  prefabToPlace: {fileID: 2579925757013124890, guid: 7306775fc6b09c04bb7dcb092aab623a, type: 3}
+  prefabToPlace: {fileID: 6981174563034521290, guid: 36df68ff8afd16147afbee70534d3fd9, type: 3}
   isTool: 0
   deliveryBoxPrefab: {fileID: 7783733196365189470, guid: b7cd2f9fae1bb434197e5c33b01796bb, type: 3}
+  retailBoxPrefab: {fileID: 0}

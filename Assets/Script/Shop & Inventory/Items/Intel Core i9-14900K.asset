@@ -21,6 +21,7 @@ MonoBehaviour:
   specs: 'Socket: LGA1700 | Cores: 24 | Base Clock: 3.2 GHz | Power Draw: 253W'
   price: 35000
   itemType: 0
-  prefabToPlace: {fileID: 2252500206942124367, guid: fd98be95be420b744920080ba75db3ee, type: 3}
+  prefabToPlace: {fileID: 7747259706899601607, guid: 5f24875d15347264f9f8e50baf8b631d, type: 3}
   isTool: 0
   deliveryBoxPrefab: {fileID: 7783733196365189470, guid: 117f9ffff91e1cf4fb455250200c2d29, type: 3}
+  retailBoxPrefab: {fileID: 0}

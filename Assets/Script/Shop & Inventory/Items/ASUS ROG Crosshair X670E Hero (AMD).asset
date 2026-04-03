@@ -21,6 +21,7 @@ MonoBehaviour:
   specs: 'Socket: AM5 | Memory: DDR5 | Form Factor: ATX | Power Draw: 20W'
   price: 38000
   itemType: 0
-  prefabToPlace: {fileID: 7402668134811180990, guid: e9560bebbc2cd9442a1a6dc6acc88c6e, type: 3}
+  prefabToPlace: {fileID: 6659405790919455895, guid: 3de402d7915161542a157fef528b79c3, type: 3}
   isTool: 0
   deliveryBoxPrefab: {fileID: 7783733196365189470, guid: 64912e9fe38b4134e839234e54d8a246, type: 3}
+  retailBoxPrefab: {fileID: 0}

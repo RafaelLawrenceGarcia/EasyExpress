@@ -134,6 +134,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: PC Fan
   partCategory: Case Fan
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -156,6 +157,7 @@ MonoBehaviour:
   inventoryEntryId: 
   fault: 0
   faultDescription: 
+  linkedPrebuiltWire: {fileID: 0}
 --- !u!1 &4140979247045431159
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,7 +267,7 @@ MonoBehaviour:
   spinAxis: {x: 1, y: 0, z: 0}
   enableRainbowRGB: 1
   colorCycleSpeed: 0.5
-  glowIntensity: 2.5
+  glowIntensity: 1
 --- !u!64 &662234184078735803
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -307,6 +309,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Unknown Item
   partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -329,3 +332,4 @@ MonoBehaviour:
   inventoryEntryId: 
   fault: 0
   faultDescription: 
+  linkedPrebuiltWire: {fileID: 0}
