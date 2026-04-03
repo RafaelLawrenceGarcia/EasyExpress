@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: OpeningSequence 5
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
-  - speakerName: Oswold Johnson (Guide)
+  - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Now that you're hear this is where the Game Begins.
-    showOnRightSide: 1
-  - speakerName: Oswold Johnson (Guide)
+    text: Alright, now let's see what we're dealing with.
+    showOnRightSide: 0
+  - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: You can hover your mouse to any components and will see a highlight and
-      what's their name.
-    showOnRightSide: 1
+    text: Look at the PC on the desk and press E to open Inspect Mode.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: This lets you see every component inside the machine
+    showOnRightSide: 0

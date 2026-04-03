@@ -165,7 +165,11 @@ public class PlayerInteract : MonoBehaviour
             // =============================================
             if (doorMenu != null)
             {
-                if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
+                // ── Tutorial: block door EXCEPT during End Day step (step 18) ──
+                bool tutActive  = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
+                bool endDayStep = TutorialManager.Instance != null && TutorialManager.Instance.IsEndDayStep();
+
+                if (tutActive && !endDayStep)
                 {
                     ShowPromptWithHighlight("X", "Finish your tasks first!", hit.collider.gameObject);
                     return;
@@ -212,9 +216,12 @@ public class PlayerInteract : MonoBehaviour
             // =============================================
             else if (canInspectInWorld && isPickupPC)
             {
-                // Block during tutorial until step 9 (the inspect PC step)
-                if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive()
-                    && TutorialManager.Instance.GetCurrentStep() < 9)
+                // Block during tutorial until the Inspect step (step 11)
+                bool pcBlocked = TutorialManager.Instance != null
+                && TutorialManager.Instance.IsTutorialActive()
+                && !TutorialManager.Instance.IsInspectPCAllowed();
+
+                if (pcBlocked)
                 {
                     ShowPromptWithHighlight("X", "Finish your tasks first!", hit.collider.gameObject);
                     return;
@@ -284,12 +291,15 @@ public class PlayerInteract : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E)) StartShopInteraction(shopCustomer);
             }
             // =============================================
-            //  WORKSTATION MONITOR
+            //  WORKSTATION MONITOR  (Email / OS)
             // =============================================
             else if (hit.collider.CompareTag("WorkstationMonitor"))
             {
-                // Block during tutorial
-                if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
+                // ── Tutorial: block monitor EXCEPT during Email step (step 32) ──
+                bool tutActive = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
+                bool emailStep = TutorialManager.Instance != null && TutorialManager.Instance.IsEmailStep();
+
+                if (tutActive && !emailStep)
                 {
                     ShowPromptWithHighlight("X", "Finish your tasks first!", hit.collider.gameObject);
                     return;
@@ -309,6 +319,8 @@ public class PlayerInteract : MonoBehaviour
                         if (Input.GetKeyDown(KeyCode.E))
                         {
                             HideAllPrompts();
+                            // ── Tutorial hook: notify email step ──
+                            if (TutorialManager.Instance != null) TutorialManager.Instance.CompleteEmailTask();
                             OpenWorkstationMonitor(monitor);
                         }
                     }
@@ -320,17 +332,35 @@ public class PlayerInteract : MonoBehaviour
                 }
             }
             // =============================================
-            //  SHOP COMPUTER (Main Desk)
+            //  SHOP COMPUTER  (Main Desk / Cashier PC)
             // =============================================
             else if (shopPC)
             {
-                // Block during tutorial
-                if (TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive())
+                // ── Tutorial: evaluate which steps are allowed ──
+                bool tutActive    = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
+                bool cashierStep  = TutorialManager.Instance != null && TutorialManager.Instance.IsCashierPCStep();
+                bool installStep  = TutorialManager.Instance != null && TutorialManager.Instance.IsInstallComponentStep();
+
+                // Block when tutorial is running but it's not one of the two allowed steps
+                if (tutActive && !cashierStep && !installStep)
                 {
                     ShowPromptWithHighlight("X", "Finish your tasks first!", hit.collider.gameObject);
                     return;
                 }
 
+                // ── Step 5: accept the customer job via the cashier PC ──
+                if (cashierStep)
+                {
+                    if (pcMenu != null) pcMenu.Hide();
+                    ShowPromptWithHighlight("E", "Check Customer Request", hit.collider.gameObject);
+
+                    if (Input.GetKeyDown(KeyCode.E))
+                        TutorialManager.Instance.ForceAcceptCurrentCustomer();
+
+                    return; // Don't fall through to normal OpenShopComputer
+                }
+
+                // ── Normal flow (also used at step 24 — install component) ──
                 if (pcMenu != null) pcMenu.Hide();
                 ShowPromptWithHighlight("E", "Use Computer", hit.collider.gameObject);
 
@@ -415,8 +445,15 @@ public class PlayerInteract : MonoBehaviour
     {
         if (placementManager != null && !placementManager.isHoldingItem)
         {
+            // ── Check for delivery box BEFORE swapping the reference ──
             DeliveryBox deliveryScript = itemObj.GetComponentInParent<DeliveryBox>();
-            if (deliveryScript != null) itemObj = deliveryScript.gameObject;
+            if (deliveryScript != null)
+            {
+                itemObj = deliveryScript.gameObject;
+                // Tutorial hook: step 20 — picking up the delivery box
+                if (TutorialManager.Instance != null)
+                    TutorialManager.Instance.CompletePickupDeliveryTask();
+            }
 
             JobBox boxScript = itemObj.GetComponentInParent<JobBox>();
             if (boxScript != null) itemObj = boxScript.gameObject;
@@ -426,6 +463,10 @@ public class PlayerInteract : MonoBehaviour
 
             placementManager.PickUpObject(itemObj);
             HideAllPrompts();
+
+            // Tutorial hook: step 7 — picking up the customer's job box (PickupBox tag)
+            if (itemObj.CompareTag("PickupBox") && TutorialManager.Instance != null)
+                TutorialManager.Instance.CompletePickupBoxTask();
         }
     }
 
@@ -527,6 +568,7 @@ public class PlayerInteract : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         OnExitClick();
 
+        // Legacy path (outside tutorial): notify if job was accepted
         if (acceptedJob && TutorialManager.Instance != null)
             TutorialManager.Instance.CompleteCustomerTask();
     }

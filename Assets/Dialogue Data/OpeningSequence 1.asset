@@ -13,11 +13,15 @@ MonoBehaviour:
   m_Name: OpeningSequence 1
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
-  - speakerName: Oswold Johnson (Guide)
+  - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Okay Great!, now I want you to interact with an Objec
+    text: Not bad! You've got the basics down.
     showOnRightSide: 1
-  - speakerName: Oswold Johnson (Guide)
+  - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: By pressing E to a monitor will make you View them. Now Try
+    text: "Heads up \u2014 a customer is already on their way in right now."
+    showOnRightSide: 1
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: Get to the cashier counter and wait for them to arrive.
     showOnRightSide: 1

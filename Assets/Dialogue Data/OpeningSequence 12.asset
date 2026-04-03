@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: OpeningSequence 6
+  m_Name: OpeningSequence 12
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: This is Inspect Mode. Everything inside this PC is right in front of you.
+    text: Stored. Now the system needs to know which job that part belongs to.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: Move your cursor over any component to see what it is and what condition
-      it's in.
+    text: Go to the Shop PC, open the customer's job, and install the component into
+      it.
     showOnRightSide: 0

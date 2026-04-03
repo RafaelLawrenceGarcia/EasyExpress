@@ -13,19 +13,18 @@ MonoBehaviour:
   m_Name: OpeningSequence
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
-  - speakerName: Oswold Johnson (Guide)
+  - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Hello and Welcome To EasyExpress Rookie, I am Oswold Johnson your CEO
+    text: Hey, you're finally here. Welcome to Easy Express your very own PC repair
+      shop."
     showOnRightSide: 1
-  - speakerName: Oswold Johnson (Guide)
+  - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: 'I am now gonna teach you how to Make some Drugs
-
-'
+    text: Before your first customer shows up, let's make sure you know how to walk
+      around.
     showOnRightSide: 1
   - speakerName: Oswold Johnson (Guide)
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: 'First Thing first is Walking. To walk you need to do (ASWD).
-
-'
+    text: Use W, A, S, and D to move. Hold each direction until it checks off. Go
+      ahead.
     showOnRightSide: 1

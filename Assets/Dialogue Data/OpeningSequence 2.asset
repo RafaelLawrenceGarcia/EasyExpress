@@ -13,19 +13,22 @@ MonoBehaviour:
   m_Name: OpeningSequence 2
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
-  - speakerName: Oswold Johnson (Guide)
+  - speakerName: 'Customer '
+    portrait: {fileID: 0}
+    text: 'Hi! I heard you fix computers here?
+
+'
+    showOnRightSide: 1
+  - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: You're Doing Great Rookie, Now i want you Interact to a Customer
-    showOnRightSide: 1
-  - speakerName: Oswold Johnson (Guide)
-    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: By Pressing E you'll be able To talk to them and make Offer
-    showOnRightSide: 1
-  - speakerName: Oswold Johnson (Guide)
+    text: "Don't just go up and talk to them \u2014 we do everything through the
+      system."
+    showOnRightSide: 0
+  - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: There's gonna be a Dialogue where the Customer would want Fix their Computer.
-    showOnRightSide: 1
-  - speakerName: Oswold Johnson (Guide)
-    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: So I want you to Accept 1 Offer by the Customer.
-    showOnRightSide: 1
+    text: Walk to the PC on the desk and press E to check their job request.
+    showOnRightSide: 0
+  - speakerName: 'Customer: '
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: Since it's your first day, just accept it. We need the practice.
+    showOnRightSide: 0

@@ -10,18 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: OpeningSequence 3
+  m_Name: OpeningSequence 8
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Job accepted! The customer already dropped off their PC.
+    text: Nice. You found the problem and pulled it out.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: See that box near the counter? That's their machine
+    text: "Now we need a replacement part. Here's the thing \u2014 I cleared your
+      wallet to show you how buying works from scratch."
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: "Pick it up \u2014 hold Q to carry it."
-    showOnRightSide: 1
+    text: I'm lending you 15,000 pesos. Don't blow it.
+    showOnRightSide: 0
+  - speakerName: Oswold Johnson (Guide)
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: I'm lending you 15,000 pesos. Don't blow it.
+    showOnRightSide: 0
+  - speakerName: Oswold Johnson (Guide)
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: Head to the Shop PC and order the part you just removed.
+    showOnRightSide: 0

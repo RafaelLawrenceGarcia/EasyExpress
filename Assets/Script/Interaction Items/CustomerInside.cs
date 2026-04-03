@@ -40,7 +40,7 @@ public class CustomerInside : MonoBehaviour
     private bool _pcSpawnedOnDesk = false;
 
     // ─────────────────────────────────────────────────────────────────────────
-
+    
     public void DisableCollisionUntilAtSpot()
     {
         collisionDisabled = true;
@@ -179,6 +179,8 @@ public class CustomerInside : MonoBehaviour
         if (dist <= agent.stoppingDistance + 0.2f)
         {
             isAtSpot = true;
+            if (TutorialManager.Instance != null)
+            TutorialManager.Instance.NotifyCustomerArrivedAtCashier();
             RotateTowards(myQueueSpot.forward);
 
             // Re-enable collision once at spot
