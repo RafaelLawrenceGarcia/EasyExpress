@@ -54,10 +54,10 @@ public class CloudDataHandler : MonoBehaviour
 
         // ── BUILD PERSISTENT DATA ──
         GamePersistData persistData = new GamePersistData();
-        persistData.currentDay    = PlayerPrefs.GetInt("CurrentDay", 1);
-        persistData.tutorialDone  = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
-        persistData.gold          = currentGold;
-        persistData.lastSaveTime  = DateTime.UtcNow.ToString("o");
+        persistData.currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
+        persistData.tutorialDone = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
+        persistData.gold = currentGold;
+        persistData.lastSaveTime = DateTime.UtcNow.ToString("o");
 
         // Checkpoint = start of new day, so time is always 6:00 AM
         persistData.gameTime = 6f;
@@ -110,8 +110,8 @@ public class CloudDataHandler : MonoBehaviour
             {
                 if (order.item == null) continue;
                 SavedDelivery saved = new SavedDelivery();
-                saved.itemId        = order.item.id;
-                saved.quantity      = order.quantity;
+                saved.itemId = order.item.id;
+                saved.quantity = order.quantity;
                 saved.daysRemaining = order.daysRemaining;
                 persistData.pendingDeliveries.Add(saved);
             }
@@ -306,7 +306,7 @@ public class CloudDataHandler : MonoBehaviour
         if (email != null)
         {
             bool hasEmailData = (data.activeEmails != null && data.activeEmails.Count > 0)
-                             || (data.acceptedJobs  != null && data.acceptedJobs.Count  > 0);
+                             || (data.acceptedJobs != null && data.acceptedJobs.Count > 0);
 
             if (hasEmailData)
             {
@@ -413,14 +413,14 @@ public class CloudDataHandler : MonoBehaviour
     SavedJob SerializeJob(EmailData job)
     {
         SavedJob saved = new SavedJob();
-        saved.senderName        = job.senderName;
-        saved.subjectLine       = job.subjectLine;
-        saved.bodyText          = job.bodyText;
-        saved.jobType           = (int)job.jobType;
-        saved.buildPurpose      = (int)job.buildPurpose;
-        saved.reward            = job.reward;
-        saved.objectives        = job.objectives;
-        saved.pcProblems        = job.pcProblems;
+        saved.senderName = job.senderName;
+        saved.subjectLine = job.subjectLine;
+        saved.bodyText = job.bodyText;
+        saved.jobType = (int)job.jobType;
+        saved.buildPurpose = (int)job.buildPurpose;
+        saved.reward = job.reward;
+        saved.objectives = job.objectives;
+        saved.pcProblems = job.pcProblems;
         saved.originalFaultCount = job.originalFaultCount;
 
         if (job.basePCCasePrefab != null)
@@ -440,15 +440,15 @@ public class CloudDataHandler : MonoBehaviour
     SavedPart SerializeStartingPart(StartingPCComponent part)
     {
         SavedPart saved = new SavedPart();
-        saved.partCategory    = part.partCategory;
-        saved.partName        = part.partName;
-        saved.prefabName      = part.partPrefab != null ? part.partPrefab.name : "";
-        saved.compatTags      = part.compatTags;
-        saved.partPrice       = part.partPrice;
-        saved.powerDraw       = part.powerDraw;
-        saved.maxWattage      = part.maxWattage;
-        saved.isDusty         = part.isDusty;
-        saved.fault           = (int)part.fault;
+        saved.partCategory = part.partCategory;
+        saved.partName = part.partName;
+        saved.prefabName = part.partPrefab != null ? part.partPrefab.name : "";
+        saved.compatTags = part.compatTags;
+        saved.partPrice = part.partPrice;
+        saved.powerDraw = part.powerDraw;
+        saved.maxWattage = part.maxWattage;
+        saved.isDusty = part.isDusty;
+        saved.fault = (int)part.fault;
         saved.faultDescription = part.faultDescription;
         return saved;
     }
@@ -456,13 +456,13 @@ public class CloudDataHandler : MonoBehaviour
     SavedPart SerializePart(InspectableItem item)
     {
         SavedPart saved = new SavedPart();
-        saved.partCategory     = item.partCategory;
-        saved.partName         = item.itemName;
-        saved.prefabName       = GetPrefabNameForPart(item);
-        saved.compatTags       = item.compatTags;
-        saved.powerDraw        = item.powerDraw;
-        saved.maxWattage       = item.maxWattage;
-        saved.fault            = (int)item.fault;
+        saved.partCategory = item.partCategory;
+        saved.partName = item.itemName;
+        saved.prefabName = GetPrefabNameForPart(item);
+        saved.compatTags = item.compatTags;
+        saved.powerDraw = item.powerDraw;
+        saved.maxWattage = item.maxWattage;
+        saved.fault = (int)item.fault;
         saved.faultDescription = item.faultDescription;
         return saved;
     }
@@ -474,14 +474,14 @@ public class CloudDataHandler : MonoBehaviour
     EmailData DeserializeJob(SavedJob saved)
     {
         EmailData job = ScriptableObject.CreateInstance<EmailData>();
-        job.senderName         = saved.senderName;
-        job.subjectLine        = saved.subjectLine;
-        job.bodyText           = saved.bodyText;
-        job.jobType            = (JobType)saved.jobType;
-        job.buildPurpose       = (BuildPurpose)saved.buildPurpose;
-        job.reward             = saved.reward;
-        job.objectives         = saved.objectives;
-        job.pcProblems         = saved.pcProblems;
+        job.senderName = saved.senderName;
+        job.subjectLine = saved.subjectLine;
+        job.bodyText = saved.bodyText;
+        job.jobType = (JobType)saved.jobType;
+        job.buildPurpose = (BuildPurpose)saved.buildPurpose;
+        job.reward = saved.reward;
+        job.objectives = saved.objectives;
+        job.pcProblems = saved.pcProblems;
         job.originalFaultCount = saved.originalFaultCount;
 
         job.basePCCasePrefab = FindCasePrefab(saved.casePrefabName);
@@ -500,15 +500,15 @@ public class CloudDataHandler : MonoBehaviour
     StartingPCComponent DeserializeStartingPart(SavedPart saved)
     {
         StartingPCComponent part = new StartingPCComponent();
-        part.partCategory     = saved.partCategory;
-        part.partName         = saved.partName;
-        part.partPrefab       = FindPartPrefab(saved.prefabName, saved.partCategory);
-        part.compatTags       = saved.compatTags;
-        part.partPrice        = saved.partPrice;
-        part.powerDraw        = saved.powerDraw;
-        part.maxWattage       = saved.maxWattage;
-        part.isDusty          = saved.isDusty;
-        part.fault            = (PartFault)saved.fault;
+        part.partCategory = saved.partCategory;
+        part.partName = saved.partName;
+        part.partPrefab = FindPartPrefab(saved.prefabName, saved.partCategory);
+        part.compatTags = saved.compatTags;
+        part.partPrice = saved.partPrice;
+        part.powerDraw = saved.powerDraw;
+        part.maxWattage = saved.maxWattage;
+        part.isDusty = saved.isDusty;
+        part.fault = (PartFault)saved.fault;
         part.faultDescription = saved.faultDescription;
         return part;
     }
@@ -528,14 +528,14 @@ public class CloudDataHandler : MonoBehaviour
         InspectableItem item = obj.GetComponent<InspectableItem>();
         if (item != null)
         {
-            item.itemName         = saved.partName;
-            item.partCategory     = saved.partCategory;
-            item.compatTags       = saved.compatTags;
-            item.powerDraw        = saved.powerDraw;
-            item.maxWattage       = saved.maxWattage;
-            item.fault            = (PartFault)saved.fault;
+            item.itemName = saved.partName;
+            item.partCategory = saved.partCategory;
+            item.compatTags = saved.compatTags;
+            item.powerDraw = saved.powerDraw;
+            item.maxWattage = saved.maxWattage;
+            item.fault = (PartFault)saved.fault;
             item.faultDescription = saved.faultDescription;
-            item.isRemovable      = true;
+            item.isRemovable = true;
         }
 
         return obj;
@@ -548,10 +548,19 @@ public class CloudDataHandler : MonoBehaviour
     GameObject FindCasePrefab(string prefabName)
     {
         if (string.IsNullOrEmpty(prefabName) || partDatabase == null) return null;
-        if (partDatabase.cases != null)
-            foreach (GameObject casePrefab in partDatabase.cases)
-                if (casePrefab != null && casePrefab.name == prefabName)
-                    return casePrefab;
+
+        // Try exact match first
+        foreach (GameObject casePrefab in partDatabase.cases)
+            if (casePrefab != null && casePrefab.name == prefabName)
+                return casePrefab;
+
+        // Fallback: old case no longer exists — use the first available case
+        if (partDatabase.cases != null && partDatabase.cases.Length > 0)
+        {
+            Debug.LogWarning($"[SaveRestore] Case '{prefabName}' not found — falling back to '{partDatabase.cases[0].name}'.");
+            return partDatabase.cases[0];
+        }
+
         return null;
     }
 
@@ -605,7 +614,7 @@ public class CloudDataHandler : MonoBehaviour
             if (array == null) continue;
             foreach (StartingPCComponent comp in array)
                 if (comp.partCategory == item.partCategory
-                    && comp.partName  == item.itemName
+                    && comp.partName == item.itemName
                     && comp.partPrefab != null)
                     return comp.partPrefab.name;
         }

@@ -11,9 +11,7 @@ GameObject:
   - component: {fileID: 4629290079795770720}
   - component: {fileID: 3832718076571538803}
   - component: {fileID: 8321867192061559802}
-  - component: {fileID: 621767093341472662}
-  - component: {fileID: 6918776169090350886}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: NvMe M.2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,11 +27,10 @@ Transform:
   m_GameObject: {fileID: 2409526990387310036}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.31476083, y: 0.54719216, z: -0.2822728}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8864437781095177093}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3832718076571538803
@@ -43,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2409526990387310036}
-  m_Mesh: {fileID: 5804727923383348310, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 5804727923383348310, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &8321867192061559802
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -69,11 +66,11 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 47ad8fb03d89b4547aab21b057dcd0be, type: 2}
-  - {fileID: 2100000, guid: 2f8da9557c47b0c4eaaa3db0db6d8801, type: 2}
-  - {fileID: 2100000, guid: 18985882d70b43f44b971b8a90e82306, type: 2}
-  - {fileID: 2100000, guid: cb3418c296f05cf4fbc763d979bf50ce, type: 2}
-  - {fileID: 2100000, guid: 96fe722071e1c8840ad75474c7f38afb, type: 2}
+  - {fileID: 2100000, guid: a0000d34888c5d941b933b5dcaee8afb, type: 2}
+  - {fileID: 2100000, guid: 452405c25aaf0e143a594d0ba4768eee, type: 2}
+  - {fileID: 2100000, guid: d74e1e7eef3819741af392f2984042c4, type: 2}
+  - {fileID: 2100000, guid: 48785e24567b6ef43951185e844ae117, type: 2}
+  - {fileID: 2100000, guid: 42a34c8a2fe7f37428fbdbe17ef485f9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -97,202 +94,3 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &621767093341472662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2409526990387310036}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  compatTags: []
-  requiredTags: []
-  powerDraw: 0
-  maxWattage: 0
-  requiresScrewdriver: 1
-  itemName: SSD M.2
-  partCategory: SSD
-  inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
-  itemIconPrefab: {fileID: 0}
-  cachedShopIcon: {fileID: 0}
-  isMainObject: 0
-  isRemovable: 1
-  isPowerButton: 0
-  isWirePort: 0
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts: []
-  childPartsToDetach: []
-  isInventorySlot: 0
-  inventoryEntryId: 
-  fault: 0
-  faultDescription: 
-  linkedPrebuiltWire: {fileID: 0}
---- !u!64 &6918776169090350886
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2409526990387310036}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5804727923383348310, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!1 &3097674564322232648
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8864437781095177093}
-  - component: {fileID: 8084210500711898905}
-  - component: {fileID: 957709236249944998}
-  - component: {fileID: 2241323886434766430}
-  m_Layer: 6
-  m_Name: SSD_M2_Screw
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8864437781095177093
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3097674564322232648}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.0001746118, z: 1, w: 0}
-  m_LocalPosition: {x: 0.006703987, y: 0.005342101, z: 0.0009069997}
-  m_LocalScale: {x: 0.8409103, y: 0.8409101, z: 0.8409101}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4629290079795770720}
-  m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 180}
---- !u!33 &8084210500711898905
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3097674564322232648}
-  m_Mesh: {fileID: 6447934356920153408, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!23 &957709236249944998
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3097674564322232648}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 00d9ebdf1d92135419b6e09d600517d2, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2241323886434766430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3097674564322232648}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  compatTags: []
-  requiredTags: []
-  powerDraw: 0
-  maxWattage: 0
-  requiresScrewdriver: 1
-  itemName: M.2 Screw
-  partCategory: Generic
-  inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
-  itemIconPrefab: {fileID: 0}
-  cachedShopIcon: {fileID: 0}
-  isMainObject: 0
-  isRemovable: 1
-  isPowerButton: 0
-  isWirePort: 0
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts: []
-  childPartsToDetach: []
-  isInventorySlot: 0
-  inventoryEntryId: 
-  fault: 0
-  faultDescription: 
-  linkedPrebuiltWire: {fileID: 0}

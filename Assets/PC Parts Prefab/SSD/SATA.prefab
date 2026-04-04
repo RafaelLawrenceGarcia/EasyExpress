@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 3402026888002732034}
   - component: {fileID: 3842984698503324854}
   - component: {fileID: 7580949581545249142}
-  m_Layer: 6
+  - component: {fileID: 4476026063431589291}
+  m_Layer: 0
   m_Name: SATA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 671365937383816078}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.447621, y: 0.5580732, z: -0.3002964}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -43,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 671365937383816078}
-  m_Mesh: {fileID: -5741174448488666723, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -5741174448488666723, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &3402026888002732034
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -69,14 +70,14 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aa559f2c46437cc48a8cdd3a2ba51df2, type: 2}
-  - {fileID: 2100000, guid: 3276cc6a565b6da4799ca192a9afbcd3, type: 2}
-  - {fileID: 2100000, guid: 8cc9b20a2684e9e4ab17ba9f6c258c3d, type: 2}
-  - {fileID: 2100000, guid: f1899147c9b85074fa8bd29c65727386, type: 2}
-  - {fileID: 2100000, guid: 2cfcd2c793792e24d9c0cb73e5ba61ad, type: 2}
-  - {fileID: 2100000, guid: 2ebe18d6b45930e44b9d3f47bdd5ef46, type: 2}
-  - {fileID: 2100000, guid: 0debd506e517050418ae8f40fe2ce7d9, type: 2}
-  - {fileID: 2100000, guid: 30e20d73da6e3524e946eaf0ae693937, type: 2}
+  - {fileID: 2100000, guid: 81be016d8e124b14a8edb33151528dc2, type: 2}
+  - {fileID: 2100000, guid: bf48003131b440541922718645e184fe, type: 2}
+  - {fileID: 2100000, guid: 99fa1ab49eee3424d86bedcd5e459890, type: 2}
+  - {fileID: 2100000, guid: f0599327899276545ada7a3228c69b52, type: 2}
+  - {fileID: 2100000, guid: fe66e5d29995c0140b4cd82157014a5b, type: 2}
+  - {fileID: 2100000, guid: 8d619c7c4ced2094b81c664675a9ca53, type: 2}
+  - {fileID: 2100000, guid: 1214f01236d481b47864a53bb02fc290, type: 2}
+  - {fileID: 2100000, guid: d3d9b8b0c0ea26a47997420cf558cc4a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -117,7 +118,7 @@ MonoBehaviour:
   powerDraw: 0
   maxWattage: 0
   requiresScrewdriver: 1
-  itemName: SATA SSD
+  itemName: SATA
   partCategory: Storage
   inventoryIcon: {fileID: 0}
   itemDescription: No description available.
@@ -164,7 +165,28 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: -5741174448488666723, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -5741174448488666723, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
+--- !u!65 &4476026063431589291
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671365937383816078}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.003390517, y: 0.00027628147, z: 0.0023699258}
+  m_Center: {x: -0.000033569348, y: 0.000036925216, z: -0.00015464544}
 --- !u!1 &3512942960253333540
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,6 +200,7 @@ GameObject:
   - component: {fileID: 1469624382259338666}
   - component: {fileID: 6899733153908924057}
   - component: {fileID: 3123417618124359970}
+  - component: {fileID: 5210772196251957032}
   m_Layer: 6
   m_Name: SATA Port
   m_TagString: Untagged
@@ -193,13 +216,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3512942960253333540}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.00291, y: 0.003083, z: 0.005875}
-  m_LocalScale: {x: 0.0002626636, y: 0.00010543657, z: 0.0008150078}
+  m_LocalRotation: {x: -0, y: -0.00000005960465, z: 1, w: 0}
+  m_LocalPosition: {x: 0.0015842116, y: 0.00011410142, z: 0.0002672678}
+  m_LocalScale: {x: 0.00026270005, y: 0.00010540002, z: 0.00081500015}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7848272049260944310}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 180}
 --- !u!33 &325429797716571908
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -305,6 +328,49 @@ MonoBehaviour:
   isRemovable: 0
   isPowerButton: 0
   isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  ribbonAxis: {x: 0, y: 1, z: 0}
+  placeHeadHere: 0
+  wireHead: {fileID: 0}
+  blockingParts: []
+  childPartsToDetach: []
+  isInventorySlot: 0
+  inventoryEntryId: 
+  fault: 0
+  faultDescription: 
+  linkedPrebuiltWire: {fileID: 0}
+--- !u!114 &5210772196251957032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3512942960253333540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
+  itemName: Unknown Item
+  partCategory: Generic
+  inventoryIcon: {fileID: 0}
+  itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
+  isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
   parentComponent: {fileID: 0}
   connectorType: 
   isPSUPort: 0

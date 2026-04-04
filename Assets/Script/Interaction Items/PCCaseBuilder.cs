@@ -200,12 +200,6 @@ public class PCCaseBuilder : MonoBehaviour
 
         // =============================================
         //  AUTO-CONNECT PRE-BUILT WIRES
-        //  After all parts are installed, scan for
-        //  PrebuiltWire components and connect any
-        //  whose required component is present.
-        //  Skips the power cord — player plugs that in.
-        //  Uses IPrebuiltWire interface to avoid
-        //  circular dependency.
         // =============================================
         AutoConnectPrebuiltWires();
     }

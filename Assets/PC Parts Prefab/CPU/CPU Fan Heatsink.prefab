@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 7325798135175538040}
   - component: {fileID: 8089024977518364501}
   - component: {fileID: 3943344473396551364}
-  m_Layer: 6
+  - component: {fileID: 2048186921408633285}
+  m_Layer: 0
   m_Name: CPU Fan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26,8 +27,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2726797326194867397}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.000056727677, y: -0.0005648832, z: -0.000045251323}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -40,7 +41,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2726797326194867397}
-  m_Mesh: {fileID: 4493585093827132993, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 4493585093827132993, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &3943344473396551364
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -66,13 +67,13 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c14174e5223a3724eb8b397284184616, type: 2}
-  - {fileID: 2100000, guid: 9f1f04ce96baa994e93c09ce8200dbbc, type: 2}
-  - {fileID: 2100000, guid: 75392ecf4b4a150459455fe003e01bc3, type: 2}
-  - {fileID: 2100000, guid: cde16b9ffec391d43b0b0ec35534cfae, type: 2}
-  - {fileID: 2100000, guid: f7f77bf06b26b784dbed7d2b1e7385e8, type: 2}
-  - {fileID: 2100000, guid: 009e07a61e4310640957a6e0297bb20d, type: 2}
-  - {fileID: 2100000, guid: e705f00850e05154fb510e92bf0ea15c, type: 2}
+  - {fileID: 2100000, guid: 9a6e3e42a88873142a86c14db339a368, type: 2}
+  - {fileID: 2100000, guid: 4439ee16d2dcd8141a443ea8da0c5c3e, type: 2}
+  - {fileID: 2100000, guid: fc0d731905a75ea48bb1eafeb96fd28b, type: 2}
+  - {fileID: 2100000, guid: 00507dccdb9ef554a872200dd1390da0, type: 2}
+  - {fileID: 2100000, guid: ab835a86481ec0b459ade69d3ac87c9d, type: 2}
+  - {fileID: 2100000, guid: 970d8328419800542bd9bcf578c0db5a, type: 2}
+  - {fileID: 2100000, guid: d461d897746a5544d8b03fac12b35ee2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -96,6 +97,23 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2048186921408633285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2726797326194867397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 814da87a5139c1a429e1789ca61b23c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PCFanController
+  spinSpeed: 1000
+  spinAxis: {x: 0, y: 1, z: 0}
+  enableRainbowRGB: 0
+  colorCycleSpeed: 0.5
+  glowIntensity: 0.8
 --- !u!1 &3012185714139987248
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,7 +125,7 @@ GameObject:
   - component: {fileID: 1428968143305915628}
   - component: {fileID: 8414901163893412613}
   - component: {fileID: 3140380456889998104}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: CPU Fan Round Cover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +141,7 @@ Transform:
   m_GameObject: {fileID: 3012185714139987248}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.000042708663, y: -0.0005096463, z: -0.000046104862}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -136,7 +154,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3012185714139987248}
-  m_Mesh: {fileID: -1550514412580984892, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -1550514412580984892, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &3140380456889998104
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -162,7 +180,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ce967605ea1dfcb489a2f6d99a26c398, type: 2}
+  - {fileID: 2100000, guid: f3e1274e68f49554698f02a9f59e6576, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -197,7 +215,7 @@ GameObject:
   - component: {fileID: 36659136203550212}
   - component: {fileID: 7207578503272623300}
   - component: {fileID: 4548661461185057903}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: CPU Fan Cover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,7 +231,7 @@ Transform:
   m_GameObject: {fileID: 3109377019483217382}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.00013458564, y: -0.0010516385, z: -0.000013012439}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -226,7 +244,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3109377019483217382}
-  m_Mesh: {fileID: -7387706064836869012, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -7387706064836869012, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &4548661461185057903
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -252,7 +270,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6a9aaee87901b1a47a1c7b2e5d9c1884, type: 2}
+  - {fileID: 2100000, guid: 935fa3d6cd5c3724abf3731fa132f25d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -276,7 +294,7 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &4333689461917271320
+--- !u!1 &4362226840970717847
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -284,48 +302,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4372245498486032327}
-  - component: {fileID: 4497372919487898631}
-  - component: {fileID: 5675121248366986005}
-  - component: {fileID: 7147695155566186274}
-  - component: {fileID: 7562743212803969986}
-  m_Layer: 6
-  m_Name: 'CPU Fan Screw '
+  - component: {fileID: 542052574594462485}
+  - component: {fileID: 2828462641470840548}
+  - component: {fileID: 8392131309534593590}
+  - component: {fileID: 5962531227038621935}
+  m_Layer: 0
+  m_Name: CPU Fan Screw 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4372245498486032327
+--- !u!4 &542052574594462485
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4333689461917271320}
+  m_GameObject: {fileID: 4362226840970717847}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.0012587578, y: -0.00023041069, z: 0.0012098508}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 88736860872124132}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &4497372919487898631
+--- !u!33 &2828462641470840548
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4333689461917271320}
-  m_Mesh: {fileID: -5053925668127403250, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!23 &5675121248366986005
+  m_GameObject: {fileID: 4362226840970717847}
+  m_Mesh: {fileID: 8552134717624371188, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
+--- !u!23 &8392131309534593590
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4333689461917271320}
+  m_GameObject: {fileID: 4362226840970717847}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -344,7 +361,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 88cc04b6efc1b034bab12d1c414a1622, type: 2}
+  - {fileID: 2100000, guid: da700202ae1bdf749bd4896bf671b952, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -368,13 +385,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7147695155566186274
+--- !u!114 &5962531227038621935
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4333689461917271320}
+  m_GameObject: {fileID: 4362226840970717847}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
@@ -385,7 +402,7 @@ MonoBehaviour:
   powerDraw: 0
   maxWattage: 0
   requiresScrewdriver: 1
-  itemName: CPU Fan Screw
+  itemName: Screw
   partCategory: Screw
   inventoryIcon: {fileID: 0}
   itemDescription: No description available.
@@ -411,29 +428,7 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
---- !u!64 &7562743212803969986
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4333689461917271320}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5053925668127403250, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!1 &6236807851352854193
+--- !u!1 &4674583895760066850
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -441,48 +436,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7996963371574575195}
-  - component: {fileID: 1659499778760652485}
-  - component: {fileID: 7062127632984467994}
-  - component: {fileID: 4236866978656214289}
-  - component: {fileID: 8608852690881158737}
-  m_Layer: 6
-  m_Name: 'CPU Fan Screw '
+  - component: {fileID: 3047517913158060321}
+  - component: {fileID: 9197276060091243591}
+  - component: {fileID: 1435941437960444540}
+  - component: {fileID: 3627502434333536565}
+  m_Layer: 0
+  m_Name: CPU Fan Screw 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7996963371574575195
+--- !u!4 &3047517913158060321
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6236807851352854193}
+  m_GameObject: {fileID: 4674583895760066850}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0011798446, y: -0.0001812771, z: -0.0012714807}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 88736860872124132}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1659499778760652485
+--- !u!33 &9197276060091243591
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6236807851352854193}
-  m_Mesh: {fileID: -5495902117074765545, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!23 &7062127632984467994
+  m_GameObject: {fileID: 4674583895760066850}
+  m_Mesh: {fileID: -5053925668127403250, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
+--- !u!23 &1435941437960444540
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6236807851352854193}
+  m_GameObject: {fileID: 4674583895760066850}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -501,7 +495,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 61f9ef7e4a8621849a03bf9cd0d5fff7, type: 2}
+  - {fileID: 2100000, guid: d704c3c5c2737f246a50d4ec903e3c45, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -525,13 +519,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4236866978656214289
+--- !u!114 &3627502434333536565
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6236807851352854193}
+  m_GameObject: {fileID: 4674583895760066850}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
@@ -542,7 +536,7 @@ MonoBehaviour:
   powerDraw: 0
   maxWattage: 0
   requiresScrewdriver: 1
-  itemName: CPU Fan Screw
+  itemName: Screw
   partCategory: Screw
   inventoryIcon: {fileID: 0}
   itemDescription: No description available.
@@ -568,29 +562,7 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
---- !u!64 &8608852690881158737
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6236807851352854193}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5495902117074765545, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!1 &7549328776537713699
+--- !u!1 &5720220956857060241
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -598,48 +570,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8647927055395910743}
-  - component: {fileID: 6377199259219405047}
-  - component: {fileID: 6886524447597818006}
-  - component: {fileID: 8512329109462106010}
-  - component: {fileID: 6755352516699395763}
-  m_Layer: 6
-  m_Name: 'CPU Fan Screw '
+  - component: {fileID: 8698257686875519381}
+  - component: {fileID: 4236977561024981295}
+  - component: {fileID: 7284084204295328987}
+  - component: {fileID: 1563307339592872989}
+  m_Layer: 0
+  m_Name: CPU Fan Screw 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8647927055395910743
+--- !u!4 &8698257686875519381
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7549328776537713699}
+  m_GameObject: {fileID: 5720220956857060241}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0012060707, y: -0.00019531547, z: 0.0011704593}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 88736860872124132}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6377199259219405047
+--- !u!33 &4236977561024981295
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7549328776537713699}
-  m_Mesh: {fileID: -3329902420748629119, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!23 &6886524447597818006
+  m_GameObject: {fileID: 5720220956857060241}
+  m_Mesh: {fileID: -5495902117074765545, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
+--- !u!23 &7284084204295328987
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7549328776537713699}
+  m_GameObject: {fileID: 5720220956857060241}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -658,7 +629,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4fa5febca6c0bfb428d18eca416e3f8c, type: 2}
+  - {fileID: 2100000, guid: 4e8aba9e14b17d1489b2e022851b64cf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -682,13 +653,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8512329109462106010
+--- !u!114 &1563307339592872989
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7549328776537713699}
+  m_GameObject: {fileID: 5720220956857060241}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
@@ -699,7 +670,7 @@ MonoBehaviour:
   powerDraw: 0
   maxWattage: 0
   requiresScrewdriver: 1
-  itemName: CPU Fan Screw
+  itemName: Screw
   partCategory: Screw
   inventoryIcon: {fileID: 0}
   itemDescription: No description available.
@@ -725,29 +696,7 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
---- !u!64 &6755352516699395763
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7549328776537713699}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -3329902420748629119, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!1 &7656192833071704172
+--- !u!1 &7762956140255804339
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -755,48 +704,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6924055864862896032}
-  - component: {fileID: 6783095557360981208}
-  - component: {fileID: 5712351919175294569}
-  - component: {fileID: 6031007619899592960}
-  - component: {fileID: 8664838129348422822}
-  m_Layer: 6
-  m_Name: 'CPU Fan Screw '
+  - component: {fileID: 2106770630234285961}
+  - component: {fileID: 7611263029548048898}
+  - component: {fileID: 5441568514312259629}
+  - component: {fileID: 3490587295145330847}
+  m_Layer: 0
+  m_Name: CPU Fan Screw 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6924055864862896032
+--- !u!4 &2106770630234285961
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7656192833071704172}
+  m_GameObject: {fileID: 7762956140255804339}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.0012970383, y: -0.0002743557, z: -0.0012572567}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 88736860872124132}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6783095557360981208
+--- !u!33 &7611263029548048898
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7656192833071704172}
-  m_Mesh: {fileID: 8552134717624371188, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!23 &5712351919175294569
+  m_GameObject: {fileID: 7762956140255804339}
+  m_Mesh: {fileID: -3329902420748629119, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
+--- !u!23 &5441568514312259629
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7656192833071704172}
+  m_GameObject: {fileID: 7762956140255804339}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -815,7 +763,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a185700058bb5764d8cb2f3849aa06a9, type: 2}
+  - {fileID: 2100000, guid: 7a7b16b5c25ed6443aefe61f942e67cf, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -839,13 +787,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6031007619899592960
+--- !u!114 &3490587295145330847
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7656192833071704172}
+  m_GameObject: {fileID: 7762956140255804339}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
@@ -856,7 +804,7 @@ MonoBehaviour:
   powerDraw: 0
   maxWattage: 0
   requiresScrewdriver: 1
-  itemName: CPU Fan Screw
+  itemName: Screw
   partCategory: Screw
   inventoryIcon: {fileID: 0}
   itemDescription: No description available.
@@ -882,28 +830,6 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
---- !u!64 &8664838129348422822
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7656192833071704172}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8552134717624371188, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
 --- !u!1 &8050430242676290261
 GameObject:
   m_ObjectHideFlags: 0
@@ -916,9 +842,8 @@ GameObject:
   - component: {fileID: 1691552103395837072}
   - component: {fileID: 4535810391600695818}
   - component: {fileID: 6502970900154597015}
-  - component: {fileID: -1920291555862349858}
   - component: {fileID: 5942750040324057932}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: CPU Fan Heatsink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -934,17 +859,17 @@ Transform:
   m_GameObject: {fileID: 8050430242676290261}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.24165122, y: 0.7781636, z: -0.21853666}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 36659136203550212}
-  - {fileID: 7996963371574575195}
-  - {fileID: 4372245498486032327}
-  - {fileID: 8647927055395910743}
-  - {fileID: 6924055864862896032}
-  - {fileID: 1428968143305915628}
+  - {fileID: 542052574594462485}
+  - {fileID: 8698257686875519381}
+  - {fileID: 2106770630234285961}
+  - {fileID: 3047517913158060321}
   - {fileID: 7325798135175538040}
+  - {fileID: 1428968143305915628}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1691552103395837072
@@ -954,7 +879,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8050430242676290261}
-  m_Mesh: {fileID: 2534964839176971238, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 2534964839176971238, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &4535810391600695818
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -980,7 +905,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1e2f59b7abd19bf479691aed8a36f1a6, type: 2}
+  - {fileID: 2100000, guid: fa7210f52ed74c14c9ab0e711a417901, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1021,7 +946,7 @@ MonoBehaviour:
   powerDraw: 0
   maxWattage: 0
   requiresScrewdriver: 1
-  itemName: Intel CPU Fan
+  itemName: CPU Fan
   partCategory: Cooler
   inventoryIcon: {fileID: 0}
   itemDescription: No description available.
@@ -1040,34 +965,17 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 5962531227038621935}
+  - {fileID: 1563307339592872989}
+  - {fileID: 3490587295145330847}
+  - {fileID: 3627502434333536565}
   childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
---- !u!65 &-1920291555862349858
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8050430242676290261}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.0030466581, y: 0.0009295266, z: 0.003046658}
-  m_Center: {x: 0.002459868, y: 0.0021689627, z: 0.0077395695}
 --- !u!64 &5942750040324057932
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1089,4 +997,4 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 2534964839176971238, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 2534964839176971238, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}

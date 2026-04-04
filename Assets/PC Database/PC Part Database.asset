@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PC Part Database
   m_EditorClassIdentifier: Assembly-CSharp::PCPartDatabase
   cases:
-  - {fileID: 5462959227998055957, guid: 52b945f90ff4fe4449faf87199ac9e35, type: 3}
+  - {fileID: 6045767257924579890, guid: 2404e7163e9701e43b0637be9b781189, type: 3}
   motherboards:
   - partCategory: Motherboard
     partName: B550M Aorus Pro (AMD)

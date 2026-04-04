@@ -14,9 +14,15 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
     public InspectableItem connectorPort;
 
     [Header("Requirement")]
-    [Tooltip("Part category that must be installed first (e.g. GPU, Motherboard, Storage).\n" +
-             "Leave EMPTY for always-connectable wires (power cord, fan wires).")]
+    [Tooltip("Part category that must be installed first (e.g. GPU, Motherboard, Storage, Case Fan).\n" +
+             "Leave EMPTY for always-connectable wires (power cord).")]
     public string requiredPartCategory = "";
+
+    [Header("Proximity Matching")]
+    [Tooltip("When multiple parts share the same category (e.g. Case Fan),\n" +
+             "this wire only connects to the NEAREST one within this radius.\n" +
+             "Set to 0 to disable proximity matching (connects to any matching part).")]
+    public float proximityRadius = 2f;
 
     [Header("Power Cord")]
     [Tooltip("Check for the mains power cord. Connecting also sets PCPowerSystem.isPowerCordConnected.")]
@@ -28,6 +34,9 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
 
     [HideInInspector] public bool isConnected = false;
     [HideInInspector] public InspectableItem wireInspectableItem;
+
+    // ── Cached reference to the specific part this wire is linked to ──
+    [HideInInspector] public InspectableItem linkedPart;
 
     // ── IPrebuiltWire interface properties ──
     public bool IsConnected => isConnected;
@@ -96,6 +105,7 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
     {
         isConnected = false;
         SetWireVisible(false);
+        linkedPart = null;
 
         InspectableItem parentComponent = FindParentComponent(pcRoot);
         if (parentComponent != null && wireInspectableItem != null)
@@ -122,6 +132,14 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
         if (string.IsNullOrEmpty(requiredPartCategory)) return true;
         if (pcRoot == null) return false;
 
+        // If proximity matching is enabled, use nearest-part logic
+        if (proximityRadius > 0f)
+        {
+            InspectableItem nearest = FindNearestPart(pcRoot, requiredPartCategory);
+            return nearest != null;
+        }
+
+        // No proximity — any matching part counts
         foreach (InspectableItem part in pcRoot.GetComponentsInChildren<InspectableItem>(true))
         {
             if (part.isMainObject) continue;
@@ -130,6 +148,90 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
                 return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Finds the nearest installed part matching the given category.
+    /// Uses renderer bounds center as fallback when transforms are at origin.
+    /// If proximityRadius > 0, only parts within that distance are considered.
+    /// This allows each fan wire to connect only to its own nearby fan.
+    /// </summary>
+    InspectableItem FindNearestPart(Transform pcRoot, string category)
+    {
+        if (string.IsNullOrEmpty(category) || pcRoot == null) return null;
+
+        Vector3 wirePos = GetWorldPosition(transform);
+        InspectableItem nearest = null;
+        float nearestDist = float.MaxValue;
+
+        foreach (InspectableItem part in pcRoot.GetComponentsInChildren<InspectableItem>(true))
+        {
+            if (part.isMainObject) continue;
+            if (part.isInventorySlot) continue;
+            if (part.partCategory != category) continue;
+
+            Vector3 partPos = GetWorldPosition(part.transform);
+            float dist = Vector3.Distance(wirePos, partPos);
+
+            if (dist < nearestDist)
+            {
+                nearestDist = dist;
+                nearest = part;
+            }
+        }
+
+        // Enforce the distance limit
+        if (proximityRadius > 0f && nearestDist > proximityRadius)
+            return null;
+
+        return nearest;
+    }
+
+    /// <summary>
+    /// Gets the actual world position of a transform.
+    /// Falls back to renderer bounds center if localPosition is at origin
+    /// (handles Blender imports where origins weren't set).
+    /// </summary>
+    static Vector3 GetWorldPosition(Transform t)
+    {
+        if (t.localPosition.sqrMagnitude > 0.0001f)
+            return t.position;
+
+        Renderer rend = t.GetComponent<Renderer>();
+        if (rend == null) rend = t.GetComponentInChildren<Renderer>();
+        if (rend != null) return rend.bounds.center;
+
+        return t.position;
+    }
+
+    InspectableItem FindParentComponent(Transform pcRoot)
+    {
+        if (pcRoot == null) return null;
+        string category = isPowerCord ? "PSU" : requiredPartCategory;
+        if (string.IsNullOrEmpty(category)) return null;
+
+        // If we have a cached linked part, use it
+        if (linkedPart != null) return linkedPart;
+
+        // Use proximity matching if enabled
+        if (proximityRadius > 0f)
+        {
+            InspectableItem nearest = FindNearestPart(pcRoot, category);
+            if (nearest != null)
+            {
+                linkedPart = nearest;
+                return nearest;
+            }
+        }
+
+        // Fallback: return any matching part
+        foreach (InspectableItem part in pcRoot.GetComponentsInChildren<InspectableItem>(true))
+        {
+            if (part.isMainObject) continue;
+            if (part.isInventorySlot) continue;
+            if (part.partCategory == category) return part;
+        }
+        return null;
     }
 
     void SetWireVisible(bool visible)
@@ -165,19 +267,5 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
             if (wireMeshRoot.GetComponent<MeshRenderer>() != null)
                 wireMeshRoot.AddComponent<BoxCollider>();
         }
-    }
-
-    InspectableItem FindParentComponent(Transform pcRoot)
-    {
-        if (pcRoot == null) return null;
-        string category = isPowerCord ? "PSU" : requiredPartCategory;
-        if (string.IsNullOrEmpty(category)) return null;
-        foreach (InspectableItem part in pcRoot.GetComponentsInChildren<InspectableItem>(true))
-        {
-            if (part.isMainObject) continue;
-            if (part.isInventorySlot) continue;
-            if (part.partCategory == category) return part;
-        }
-        return null;
     }
 }

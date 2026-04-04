@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2594832641325901022}
   - component: {fileID: 3565908674966393042}
   - component: {fileID: 4353276572607319703}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 86772125098514884}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0020450014, y: -0.00095825735, z: 0.00016987324}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -40,7 +40,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 86772125098514884}
-  m_Mesh: {fileID: -8238140438652781414, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -8238140438652781414, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &4353276572607319703
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -66,7 +66,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -90,162 +90,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &117959455045555024
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4437736422007925495}
-  - component: {fileID: 5492047542131868262}
-  - component: {fileID: 7675921462258843399}
-  - component: {fileID: 8039852160246553264}
-  - component: {fileID: 7405980809531858759}
-  m_Layer: 6
-  m_Name: Power Supply Inlet
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4437736422007925495
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117959455045555024}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8998743978834974626}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5492047542131868262
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117959455045555024}
-  m_Mesh: {fileID: 4101157859103535334, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!23 &7675921462258843399
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117959455045555024}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8039852160246553264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117959455045555024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  compatTags: []
-  requiredTags: []
-  powerDraw: 0
-  maxWattage: 0
-  requiresScrewdriver: 1
-  itemName: Power Supply Inlet
-  partCategory: PSU Inlet
-  inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
-  itemIconPrefab: {fileID: 0}
-  cachedShopIcon: {fileID: 0}
-  isMainObject: 0
-  isRemovable: 0
-  isPowerButton: 0
-  isWirePort: 1
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts: []
-  childPartsToDetach: []
-  isInventorySlot: 0
-  inventoryEntryId: 
-  fault: 0
-  faultDescription: 
-  linkedPrebuiltWire: {fileID: 0}
---- !u!65 &7405980809531858759
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117959455045555024}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.00056278345, y: 0.00037792933, z: 0.00038617617}
-  m_Center: {x: 0.0061632884, y: 0.000037494472, z: 0.0009313608}
 --- !u!1 &142694359295656599
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,7 +101,7 @@ GameObject:
   - component: {fileID: 5191835252845129592}
   - component: {fileID: 4941143572733702054}
   - component: {fileID: 2673414603776157349}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.011
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +117,7 @@ Transform:
   m_GameObject: {fileID: 142694359295656599}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0020106118, y: -0.00084961473, z: -0.0005095528}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -286,7 +130,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 142694359295656599}
-  m_Mesh: {fileID: -6897890984203067043, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -6897890984203067043, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &2673414603776157349
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -312,7 +156,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -349,8 +193,8 @@ GameObject:
   - component: {fileID: 3104313666821760539}
   - component: {fileID: 6149540025067551475}
   - component: {fileID: 1494585264206081203}
-  - component: {fileID: 5928745467313425035}
-  m_Layer: 6
+  - component: {fileID: 815577427186111489}
+  m_Layer: 0
   m_Name: Power Supply
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -366,11 +210,12 @@ Transform:
   m_GameObject: {fileID: 825193487274983354}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.5655994, y: 0.14583157, z: -0.08700617}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4437736422007925495}
+  - {fileID: 1428241306968886977}
+  - {fileID: 2639518319221206607}
   - {fileID: 2594832641325901022}
   - {fileID: 4408897467033311554}
   - {fileID: 2735538892864998157}
@@ -384,7 +229,6 @@ Transform:
   - {fileID: 5191835252845129592}
   - {fileID: 9115935776286175702}
   - {fileID: 8051955289696069453}
-  - {fileID: 8634365794045660496}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6014666627757846301
@@ -394,7 +238,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 825193487274983354}
-  m_Mesh: {fileID: -6653778485022829025, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -6653778485022829025, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &3104313666821760539
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -420,7 +264,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -461,7 +305,7 @@ MonoBehaviour:
   powerDraw: 0
   maxWattage: 0
   requiresScrewdriver: 1
-  itemName: PSU
+  itemName: Power Supply
   partCategory: PSU
   inventoryIcon: {fileID: 0}
   itemDescription: No description available.
@@ -508,9 +352,9 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: -6653778485022829025, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
---- !u!64 &5928745467313425035
-MeshCollider:
+  m_Mesh: {fileID: -6653778485022829025, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
+--- !u!65 &815577427186111489
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -527,10 +371,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -6653778485022829025, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.0029301252, y: 0.0029092971, z: 0.0018700579}
+  m_Center: {x: -0.0006763758, y: -0.00018053091, z: -0.00021556985}
 --- !u!1 &1438014401936692550
 GameObject:
   m_ObjectHideFlags: 0
@@ -542,7 +385,7 @@ GameObject:
   - component: {fileID: 9115935776286175702}
   - component: {fileID: 6242760871098721983}
   - component: {fileID: 6198938065240581161}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.012
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -558,7 +401,7 @@ Transform:
   m_GameObject: {fileID: 1438014401936692550}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0020072358, y: 0.00016509465, z: -0.00050377107}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -571,7 +414,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1438014401936692550}
-  m_Mesh: {fileID: 4446513444690551959, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 4446513444690551959, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &6198938065240581161
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -597,7 +440,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -632,7 +475,7 @@ GameObject:
   - component: {fileID: 8634365794045660496}
   - component: {fileID: 4941709577970453009}
   - component: {fileID: 8097770808941911626}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: PSU Fan.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -648,11 +491,11 @@ Transform:
   m_GameObject: {fileID: 2630864325769557447}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.00026325224, y: 0.000065917964, z: 0.000053632397}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 8998743978834974626}
+  m_Father: {fileID: 8051955289696069453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4941709577970453009
 MeshFilter:
@@ -661,7 +504,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2630864325769557447}
-  m_Mesh: {fileID: 2551647194920449413, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 2551647194920449413, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &8097770808941911626
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -687,7 +530,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1bcad4775016cf24b86fda08a0eb5b2a, type: 2}
+  - {fileID: 2100000, guid: abba61d7b56b7604397825e6b170352f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -722,7 +565,7 @@ GameObject:
   - component: {fileID: 2226734234092630165}
   - component: {fileID: 1360801645624405616}
   - component: {fileID: 7200679493676391899}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -738,7 +581,7 @@ Transform:
   m_GameObject: {fileID: 4377453208300380935}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0020464319, y: -0.00059540337, z: -0.00016004316}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -751,7 +594,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4377453208300380935}
-  m_Mesh: {fileID: 4008658969935083650, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 4008658969935083650, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &7200679493676391899
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -777,7 +620,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -812,7 +655,7 @@ GameObject:
   - component: {fileID: 160967157312792488}
   - component: {fileID: 4532468105422656533}
   - component: {fileID: 3267596307672320683}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.009
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -828,7 +671,7 @@ Transform:
   m_GameObject: {fileID: 4420304577666960983}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.002046184, y: 0.00040648863, z: -0.00016051749}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -841,7 +684,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4420304577666960983}
-  m_Mesh: {fileID: 2305194300216732790, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 2305194300216732790, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &3267596307672320683
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -867,7 +710,231 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &4674046293908005751
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1428241306968886977}
+  - component: {fileID: 7455740860686700236}
+  - component: {fileID: 20075330375899431}
+  - component: {fileID: 3527481198666069833}
+  m_Layer: 0
+  m_Name: Power Supply Outlet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1428241306968886977
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4674046293908005751}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.00056339323, y: -0.00083283003, z: -0.000577185}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8998743978834974626}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7455740860686700236
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4674046293908005751}
+  m_Mesh: {fileID: 4101157859103535334, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
+--- !u!23 &20075330375899431
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4674046293908005751}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3527481198666069833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4674046293908005751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
+  itemName: PSU Inlet
+  partCategory: Inlet
+  inventoryIcon: {fileID: 0}
+  itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
+  isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  ribbonAxis: {x: 0, y: 1, z: 0}
+  placeHeadHere: 0
+  wireHead: {fileID: 0}
+  blockingParts: []
+  childPartsToDetach: []
+  isInventorySlot: 0
+  inventoryEntryId: 
+  fault: 0
+  faultDescription: 
+  linkedPrebuiltWire: {fileID: 0}
+--- !u!1 &5490714745043354552
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2639518319221206607}
+  - component: {fileID: 7549874600102397585}
+  - component: {fileID: 776932354800128604}
+  m_Layer: 0
+  m_Name: Power cord.001
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2639518319221206607
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5490714745043354552}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.0056559937, y: -0.0008700614, z: -0.0014583156}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8998743978834974626}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7549874600102397585
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5490714745043354552}
+  m_Mesh: {fileID: 2894609129210392350, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
+--- !u!23 &776932354800128604
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5490714745043354552}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -902,7 +969,7 @@ GameObject:
   - component: {fileID: 7360948236163985117}
   - component: {fileID: 6479943329809436809}
   - component: {fileID: 4978179220324841413}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.010
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -918,7 +985,7 @@ Transform:
   m_GameObject: {fileID: 5720734576577863119}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.002046699, y: 0.0006668035, z: -0.00016616799}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -931,7 +998,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5720734576577863119}
-  m_Mesh: {fileID: -8681991884519369773, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -8681991884519369773, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &4978179220324841413
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -957,7 +1024,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -992,7 +1059,7 @@ GameObject:
   - component: {fileID: 5489320955542330770}
   - component: {fileID: 2091962376673851850}
   - component: {fileID: 1230916456701078899}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1008,7 +1075,7 @@ Transform:
   m_GameObject: {fileID: 6385186083422653862}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0020458405, y: 0.00030730644, z: 0.00016959444}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1021,7 +1088,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6385186083422653862}
-  m_Mesh: {fileID: 6638264324856827878, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 6638264324856827878, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &1230916456701078899
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1047,7 +1114,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1082,8 +1149,7 @@ GameObject:
   - component: {fileID: 7426201605713565827}
   - component: {fileID: 4528969970450578952}
   - component: {fileID: 3514850867006712001}
-  - component: {fileID: 7974644132527868682}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1099,7 +1165,7 @@ Transform:
   m_GameObject: {fileID: 6955115235124970223}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0020462982, y: 0.00005736755, z: -0.00016030771}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1112,7 +1178,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6955115235124970223}
-  m_Mesh: {fileID: 5139894709300434345, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 5139894709300434345, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &3514850867006712001
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1138,7 +1204,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1162,49 +1228,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7974644132527868682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6955115235124970223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  compatTags: []
-  requiredTags: []
-  powerDraw: 0
-  maxWattage: 0
-  requiresScrewdriver: 0
-  itemName: 6 Pin PSU
-  partCategory: PSU Pin
-  inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
-  itemIconPrefab: {fileID: 0}
-  cachedShopIcon: {fileID: 0}
-  isMainObject: 0
-  isRemovable: 0
-  isPowerButton: 0
-  isWirePort: 1
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts: []
-  childPartsToDetach: []
-  isInventorySlot: 0
-  inventoryEntryId: 
-  fault: 0
-  faultDescription: 
-  linkedPrebuiltWire: {fileID: 0}
 --- !u!1 &7089202949613105703
 GameObject:
   m_ObjectHideFlags: 0
@@ -1216,7 +1239,7 @@ GameObject:
   - component: {fileID: 4408897467033311554}
   - component: {fileID: 25602497241664764}
   - component: {fileID: 412278636842053489}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1232,7 +1255,7 @@ Transform:
   m_GameObject: {fileID: 7089202949613105703}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0020450586, y: -0.0005401666, z: 0.0001707197}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1245,7 +1268,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7089202949613105703}
-  m_Mesh: {fileID: -4761349139754801279, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -4761349139754801279, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &412278636842053489
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1271,7 +1294,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1306,7 +1329,7 @@ GameObject:
   - component: {fileID: 4837040855149520706}
   - component: {fileID: 4740381226090507691}
   - component: {fileID: 295822101299170028}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1322,7 +1345,7 @@ Transform:
   m_GameObject: {fileID: 7231059106327883855}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0020409005, y: -0.00096069876, z: -0.00016237258}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1335,7 +1358,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7231059106327883855}
-  m_Mesh: {fileID: -5103919756457183890, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -5103919756457183890, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &295822101299170028
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1361,7 +1384,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1396,7 +1419,7 @@ GameObject:
   - component: {fileID: 2735538892864998157}
   - component: {fileID: 908856523939399049}
   - component: {fileID: 481645996438723387}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1412,7 +1435,7 @@ Transform:
   m_GameObject: {fileID: 7274936262426726717}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0020450777, y: -0.00011993959, z: 0.00017035495}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1425,7 +1448,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7274936262426726717}
-  m_Mesh: {fileID: 2339115096290082110, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 2339115096290082110, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &481645996438723387
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1451,7 +1474,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1486,7 +1509,7 @@ GameObject:
   - component: {fileID: 8599361054537876074}
   - component: {fileID: 5304914712130433890}
   - component: {fileID: 6792135826758759240}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Power Supply.007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1502,7 +1525,7 @@ Transform:
   m_GameObject: {fileID: 7458133206651406743}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0020463937, y: -0.00027710508, z: -0.00015944228}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1515,7 +1538,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7458133206651406743}
-  m_Mesh: {fileID: -634716969243896846, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: -634716969243896846, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &6792135826758759240
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1541,7 +1564,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f5cd5de60ff9a4b47bea8633f1d3d4f1, type: 2}
+  - {fileID: 2100000, guid: b9b29d1a03a1f4b48aa3ab8ddd7c0465, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1576,7 +1599,7 @@ GameObject:
   - component: {fileID: 8051955289696069453}
   - component: {fileID: 1193042436039347298}
   - component: {fileID: 8342155535506920448}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: PSU Fan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1592,10 +1615,11 @@ Transform:
   m_GameObject: {fileID: 8119936447539937758}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.0009981149, y: -0.000111394664, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8634365794045660496}
   m_Father: {fileID: 8998743978834974626}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1193042436039347298
@@ -1605,7 +1629,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8119936447539937758}
-  m_Mesh: {fileID: 4469274581185408394, guid: 4794f520acf7e1648a355a01643db2ad, type: 3}
+  m_Mesh: {fileID: 4469274581185408394, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!23 &8342155535506920448
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1631,7 +1655,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8204274adcc8c7043bd97f62cd95217e, type: 2}
+  - {fileID: 2100000, guid: 352b2f955f1b56e418ec2ede87a1ef85, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
