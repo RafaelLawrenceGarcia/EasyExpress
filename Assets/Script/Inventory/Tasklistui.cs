@@ -281,6 +281,7 @@ public class TaskListUI : MonoBehaviour
 
     void ClearTasks()
     {
+        StopAllCoroutines(); // stop AnimateCompletion before destroying rows
         foreach (var t in currentTasks)
         {
             if (t.rowObject != null) Destroy(t.rowObject);
@@ -323,14 +324,15 @@ public class TaskListUI : MonoBehaviour
         task.textComponent.color = flashColor;
 
         while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / duration;
-            float scale = 1f + Mathf.Sin(t * Mathf.PI) * 0.35f; // Bounce up then back
-            circleT.localScale = originalScale * scale;
-            yield return null;
-        }
-        circleT.localScale = originalScale;
+    {
+        if (circleT == null) yield break;
+        elapsed += Time.deltaTime;
+        float t = elapsed / duration;
+        float scale = 1f + Mathf.Sin(t * Mathf.PI) * 0.35f;
+        circleT.localScale = originalScale * scale;
+        yield return null;
+    }
+    if (circleT != null) circleT.localScale = originalScale;
 
         // --- PHASE 2: Settle (text fades to grey + strikethrough) ---
         yield return new WaitForSeconds(0.3f);
@@ -343,14 +345,17 @@ public class TaskListUI : MonoBehaviour
 
         while (elapsed < duration)
         {
+            if (task.textComponent == null) yield break;
             elapsed += Time.deltaTime;
             float t = Mathf.SmoothStep(0f, 1f, elapsed / duration);
             task.textComponent.color = Color.Lerp(startColor, endColor, t);
             yield return null;
         }
-
-        task.textComponent.color = completedTextColor;
-        task.textComponent.fontStyle = FontStyles.Strikethrough;
+        if (task.textComponent != null)
+        {
+            task.textComponent.color = completedTextColor;
+            task.textComponent.fontStyle = FontStyles.Strikethrough;
+        }
     }
 
     // =============================================

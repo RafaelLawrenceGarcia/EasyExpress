@@ -215,8 +215,20 @@ public class DoorInteractionMenu : MonoBehaviour
 
     void DoEndDay()
     {
+        // ── During tutorial: only allow End Day at step 18 ──
+        bool tutActive  = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
+        bool endDayStep = TutorialManager.Instance != null && TutorialManager.Instance.IsEndDayStep();
+
+        if (tutActive && !endDayStep)
+        {
+            ShowEndDayWarning("Finish your tasks first!");
+            return;
+        }
+
         // ── BLOCK: Cannot end day while customers are still inside ──
-        if (ShopCustomerSpawner.Instance != null && ShopCustomerSpawner.Instance.HasCustomersInside())
+        // Skip this check during tutorial so it doesn't get stuck
+        if (!tutActive && ShopCustomerSpawner.Instance != null
+            && ShopCustomerSpawner.Instance.HasCustomersInside())
         {
             int count = ShopCustomerSpawner.Instance.GetCustomerCount();
             ShowEndDayWarning("Customers still inside! (" + count + ")");
@@ -226,6 +238,10 @@ public class DoorInteractionMenu : MonoBehaviour
         CloseMenu();
 
         if (playerInteract != null) playerInteract.ForceCloseAllInteraction();
+
+        // ── Tutorial hook: mark End Day task complete ──
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.CompleteEndDayTask();
 
         if (dayTransitionManager != null)
         {

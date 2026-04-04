@@ -34,7 +34,13 @@ public class PlacementManager : MonoBehaviour
 
     // Remembers the physical object in your hands
     private GameObject currentlyHeldObject;
-
+    public GameObject GetHeldObject() => currentlyHeldObject;
+    public void ForceRelease()
+    {
+        currentlyHeldObject = null;
+        isHoldingItem = false;
+        currentPlacementItem = null;
+    }
     void Update()
     {
         HandleVisuals();

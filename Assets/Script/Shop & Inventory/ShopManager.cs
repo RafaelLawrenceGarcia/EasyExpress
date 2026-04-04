@@ -496,7 +496,8 @@ public class ShopManager : MonoBehaviour
         if (playerWallet.SpendGold(finalCheckoutTotal))
         {
             Debug.Log("Order successfully placed!");
-
+            if (TutorialManager.Instance != null)
+            TutorialManager.Instance.CompleteOrderPartsTask();
             if (activeNotification != null) StopCoroutine(activeNotification);
             activeNotification = StartCoroutine(SlideNotificationCoroutine("Order Placed Successfully!"));
 

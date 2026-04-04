@@ -92,6 +92,7 @@ public class InspectionManager : MonoBehaviour
     private bool isWiring = false;
     private bool isPCOn = false;
     private bool tutorialHoverDone = false;
+    
     private Vector3 focusPoint;
     private Vector3 targetFocusPoint;
     private float currentDistance;
@@ -178,12 +179,24 @@ public class InspectionManager : MonoBehaviour
         // Dust cleaning with compressed air
         HandleDustCleaning();
     }
-
+    IEnumerator AutoOpenInventoryForInstall()
+    {
+        yield return new WaitForSeconds(0.4f);
+        if (inventoryUI != null)
+        {
+            inventoryUI.currentMode = InspectionInventoryUI.InventoryMode.PlayerStorage;
+            if (inventoryUI.inventoryPanel != null)
+                inventoryUI.inventoryPanel.SetActive(true);
+            inventoryUI.RefreshInventory();
+        }
+    }
     public void Inspect(InspectableItem originalItem)
     {
         inspectCooldown = 0.3f;
         isInspecting = true;
-
+        tutorialHoverDone = false;
+        if (TutorialManager.Instance != null && TutorialManager.Instance.IsInstallComponentStep())
+        StartCoroutine(AutoOpenInventoryForInstall());
         if (blurVolume != null) blurVolume.weight = 1;
 
         if (controlsUI) controlsUI.SetActive(true);
@@ -387,7 +400,6 @@ public class InspectionManager : MonoBehaviour
     public void HideAllGhostSlots()
     {
         if (currentClone == null) return;
-
         partPendingInstallation = null;
         isPlacingFromInventory = false;
 
@@ -434,11 +446,15 @@ public class InspectionManager : MonoBehaviour
             RestoreLayers(currentClone);
             originalLayerCache.Clear();
 
+
             InspectableItem rootScript = currentClone.GetComponent<InspectableItem>();
             if (rootScript != null) rootScript.enabled = true;
 
-            Collider mainCollider = currentClone.GetComponent<Collider>();
-            if (mainCollider != null) mainCollider.enabled = true;
+            // ADD THIS:
+            PCCaseBuilder builderScript = currentClone.GetComponent<PCCaseBuilder>();
+            if (builderScript != null) builderScript.enabled = true;
+            foreach (Collider col in currentClone.GetComponents<Collider>())
+            col.enabled = true;
 
             string[] caseChildNames = { "case", "case.001", "case.003", "psucase" };
             foreach (string childName in caseChildNames)
@@ -459,7 +475,19 @@ public class InspectionManager : MonoBehaviour
             currentClone.transform.position = savedOriginalPosition;
             currentClone.transform.rotation = savedOriginalRotation;
         }
+    // Re-enable ALL renderers on the PC when exiting inspection
+        foreach (Renderer rend in currentClone.GetComponentsInChildren<Renderer>(true))
+            rend.enabled = true;
 
+        // Then hide ghost slots (empty inventory slots stay invisible)
+        foreach (InspectableItem item in currentClone.GetComponentsInChildren<InspectableItem>(true))
+        {
+            if (item.isInventorySlot)
+            {
+                foreach (Renderer rend in item.GetComponentsInChildren<Renderer>(true))
+                    rend.enabled = false;
+            }
+        }
         currentClone = null;
         allPorts.Clear();
 
@@ -483,14 +511,12 @@ public class InspectionManager : MonoBehaviour
         if (playerRootObject)
             foreach (Renderer r in playerRootObject.GetComponentsInChildren<Renderer>())
                 r.enabled = true;
-        if (TutorialManager.Instance != null && TutorialManager.Instance.GetCurrentStep() == 11)
-        {
-            if (TutorialManager.Instance != null) TutorialManager.Instance.CompleteHoverTask();
-        }
+        if (TutorialManager.Instance != null)
+        TutorialManager.Instance.OnPlayerExitedInspection();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-
+    
     bool IsCaseShellObject(GameObject obj)
     {
         string[] caseNames = { "case", "case.001", "case.003", "psucase" };
@@ -860,7 +886,8 @@ public class InspectionManager : MonoBehaviour
 
         SetLayerRecursively(partToInstall, currentClone.layer);
         partToInstall.SetActive(true);
-
+        foreach (Renderer rend in partToInstall.GetComponentsInChildren<Renderer>(true))
+        rend.enabled = true;
         InspectableItem newPartScript = partToInstall.GetComponent<InspectableItem>();
         newPartScript.isRemovable = true;
         newPartScript.isInventorySlot = false;
@@ -938,6 +965,8 @@ public class InspectionManager : MonoBehaviour
                     allPorts.Add(w.ConnectorPort);
             }
         }
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.CompleteInstallComponentTask();
     }
 
     private IEnumerator AnimateInstall(GameObject obj)
@@ -1496,7 +1525,14 @@ public class InspectionManager : MonoBehaviour
                 ShowTooltip(part);
             }
             MoveTooltip();
+            if (!tutorialHoverDone && TutorialManager.Instance != null
+            && TutorialManager.Instance.GetCurrentStep() == 13)
+            {
+                tutorialHoverDone = true;
+                TutorialManager.Instance.CompleteHoverTask();
+            }
             return;
+            
         }
 
         if (!isWiring) ClearHighlight();

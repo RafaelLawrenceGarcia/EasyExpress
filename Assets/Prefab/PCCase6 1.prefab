@@ -12071,7 +12071,7 @@ GameObject:
   - component: {fileID: 5248741772411205381}
   m_Layer: 6
   m_Name: PCCase6 1
-  m_TagString: Untagged
+  m_TagString: PickupPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -12228,7 +12228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33a9b2af5bf810b4db40d1a2caae718c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
-  type: 0
+  type: 2
 --- !u!114 &5248741772411205381
 MonoBehaviour:
   m_ObjectHideFlags: 0

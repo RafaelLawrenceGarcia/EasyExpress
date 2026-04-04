@@ -62,7 +62,7 @@ public class StorageRoomShelf : MonoBehaviour
 
     [Tooltip("How often (seconds) the shelf checks ShopSystem for new/removed items.")]
     public float pollInterval = 1f;
-
+    private PlacementManager _placementManager;
     // ── Runtime ───────────────────────────────────────────────────────────────
 
     // itemId → slot index it's shown on
@@ -99,11 +99,12 @@ public class StorageRoomShelf : MonoBehaviour
 
     void Start()
     {
-        // Auto-find inventoryUI if not assigned
         if (inventoryUI == null)
             inventoryUI = FindObjectOfType<InspectionInventoryUI>();
 
-        // Initial sync with whatever is already in ShopSystem
+        // Cache PlacementManager reference
+        _placementManager = FindObjectOfType<PlacementManager>();
+
         SyncWithShopSystem();
     }
 
