@@ -12,7 +12,7 @@ public class DayTransitionManager : MonoBehaviour
     public Image transitionImage;
     public TextMeshProUGUI dayText;
     public TextMeshProUGUI hudDayText;
-
+    public bool skipIntroForCutscene = false;
     [Header("Timing")]
     public float fadeInDuration = 0.8f;
     public float holdDuration = 2.0f;
@@ -32,18 +32,24 @@ public class DayTransitionManager : MonoBehaviour
     public static System.Action<int> OnNewDayStarted;
 
     void Awake()
-    {
-        Instance = this;
+{
+    Instance = this;
 
-        if (PlayerPrefs.GetInt("IsLoadingGame", 0) == 1 || PlayerPrefs.GetInt("TutorialDone", 0) == 1)
-        {
-            currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
-        }
-        else
-        {
-            currentDay = 1;
-        }
+    if (PlayerPrefs.GetInt("IsLoadingGame", 0) == 1 || PlayerPrefs.GetInt("TutorialDone", 0) == 1)
+    {
+        currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
     }
+    else
+    {
+        currentDay = 1;
+    }
+
+    // If new player, skip Day 1 intro — cutscene plays instead
+    bool tutorialDone = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
+    bool isLoading = PlayerPrefs.GetInt("IsLoadingGame", 0) == 1;
+    if (!tutorialDone && !isLoading)
+        skipIntroForCutscene = true;
+}
 
     void Start()
     {
@@ -81,10 +87,29 @@ public class DayTransitionManager : MonoBehaviour
                 CloudDataHandler.Instance.LoadGameData();
             }
 
-            PlayDayIntro(null);
+            if (skipIntroForCutscene)
+            {
+                if (transitionCanvas != null) transitionCanvas.enabled = true;
+                if (transitionImage != null) SetImageAlpha(1f);
+                if (dayText != null) dayText.alpha = 0f;
+                FreezePlayer(true);
+                isTransitioning = false;
+                if (hudDayText != null) hudDayText.text = "Day " + currentDay;
+                dayHasStarted = true;
+                // Delay firing the event so the black screen has time to render first
+                StartCoroutine(DelayedDayStart());
+            }
+            else
+            {
+                PlayDayIntro(null);
+            }
         }
     }
-
+    IEnumerator DelayedDayStart()
+    {
+        yield return new WaitForSecondsRealtime(1.5f);
+        OnNewDayStarted?.Invoke(currentDay);
+    }
     /// <summary>
     /// Called when re-entering a scene mid-day.
     /// Keeps screen black briefly so customers can walk to their spots,
@@ -324,7 +349,8 @@ public class DayTransitionManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            if (transitionCanvas != null) transitionCanvas.enabled = false;
+            if (transitionCanvas != null && !skipIntroForCutscene) 
+            transitionCanvas.enabled = false;
         }
     }
 }

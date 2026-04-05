@@ -6,7 +6,8 @@ public partial class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance;
     private const int STEP_DONE = 50;
-
+     [HideInInspector]
+    public bool waitingForCutscene = false;  // ── ADD THIS ──
     [Header("Managers")]
     public IntroDialogueManager dialogueManager;
     public DayTransitionManager dayTransitionManager;
@@ -82,7 +83,14 @@ public partial class TutorialManager : MonoBehaviour
 
     // ─── Lifecycle ───────────────────────────────────────────────
 
-    void Awake() { Instance = this; }
+    void Awake() 
+{ 
+    Instance = this;
+    bool done = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
+    bool loading = PlayerPrefs.GetInt("IsLoadingGame", 0) == 1;
+    if (!done && !loading)
+        waitingForCutscene = true;
+}
     void OnEnable() { DayTransitionManager.OnNewDayStarted += OnDayStarted; }
     void OnDisable() { DayTransitionManager.OnNewDayStarted -= OnDayStarted; }
 
@@ -99,11 +107,20 @@ public partial class TutorialManager : MonoBehaviour
         else step = 0;
     }
 
-    void OnDayStarted(int day)
-    {
-        if (step == 0 && day == 1) StartCoroutine(DelayedStart());
-    }
+     void OnDayStarted(int day)     {
+        if (step == 0 && day == 1 && !waitingForCutscene)   // ── CHANGED ──
+             StartCoroutine(DelayedStart());
+   }
 
+      /// <summary>
+     /// Called by PreTutorialCutscene when the story cutscene finishes or is skipped.
+   /// Clears the wait flag and starts the tutorial immediately.
+      /// </summary>
+      public void OnCutsceneComplete()                         // ── ADD THIS ──
+     {
+          waitingForCutscene = false;
+          if (step == 0)              StartCoroutine(DelayedStart());
+      }
     void Update()
     {
         if (step == 1) UpdateWASD();
