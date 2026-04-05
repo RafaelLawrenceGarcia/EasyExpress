@@ -10,25 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: OpeningSequence 2
+  m_Name: InspectPC
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
-  - speakerName: 'Customer '
-    portrait: {fileID: 0}
-    text: 'Hi! I heard you fix computers here?
-
-'
-    showOnRightSide: 1
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: "Don't just go up and talk to them \u2014 we do everything through the
-      system."
+    text: Alright, now let's see what we're dealing with.
     showOnRightSide: 0
   - speakerName: Boss
-    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Walk to the PC on the desk and press E to check their job request.
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: Look at the PC on the desk and press E to open Inspect Mode.
     showOnRightSide: 0
-  - speakerName: 'Customer: '
-    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Since it's your first day, just accept it. We need the practice.
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: This lets you see every component inside the machine
     showOnRightSide: 0

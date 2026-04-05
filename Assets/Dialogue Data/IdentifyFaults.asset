@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
+  m_Name: IdentifyFaults
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
+  lines:
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "Good, the case is open. Now here's how real diagnosis works \u2014 process
+      of elimination."
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: We remove one suspect component, try powering on again, and see if the
+      problem changes.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: We remove one suspect component, try powering on again, and see if the
+      problem changes.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: If the PC still fails the same way, that part was fine. Put it aside and
+      try the next one.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: If the symptom changes or goes away, congratulations, you found the culprit.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: The customer said 'no display', so let's start with the most likely cause.
+      Remove the GPU first.
+    showOnRightSide: 0

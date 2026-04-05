@@ -52,22 +52,22 @@ public class InspectionInventoryUI : MonoBehaviour
     //  Always opens in PlayerStorage mode
     // =============================================
     public void ToggleInventory()
-{
-    if (inspectManager == null)
-        inspectManager = FindObjectOfType<InspectionManager>();
-
-    // ── Always set to PlayerStorage when opened via Tab during inspection
-    currentMode = InventoryMode.PlayerStorage;
-
-    bool isOpening = !inventoryPanel.activeSelf;
-    inventoryPanel.SetActive(isOpening);
-
-    if (isOpening)
     {
-        RefreshInventory();
-        if (detailPanel != null) detailPanel.SetActive(false);
+        if (inspectManager == null)
+            inspectManager = FindObjectOfType<InspectionManager>();
+
+        // ── Always set to PlayerStorage when opened via Tab during inspection
+        currentMode = InventoryMode.PlayerStorage;
+
+        bool isOpening = !inventoryPanel.activeSelf;
+        inventoryPanel.SetActive(isOpening);
+
+        if (isOpening)
+        {
+            RefreshInventory();
+            if (detailPanel != null) detailPanel.SetActive(false);
+        }
     }
-}
 
     // =============================================
     //  REFRESH — routes to correct method by mode
@@ -134,7 +134,7 @@ public class InspectionInventoryUI : MonoBehaviour
 
                 if (itemData.cachedShopIcon != null && img != null)
                 {
-                    img.sprite  = itemData.cachedShopIcon;
+                    img.sprite = itemData.cachedShopIcon;
                     img.enabled = true;
                 }
                 else if (itemData.itemIconPrefab != null)
@@ -158,7 +158,7 @@ public class InspectionInventoryUI : MonoBehaviour
 
             AddCountBadge(newSlot, group.Count);
 
-            GameObject capturedObj       = firstObj;
+            GameObject capturedObj = firstObj;
             InspectableItem capturedData = itemData;
             Button btn = newSlot.GetComponent<Button>();
             btn.onClick.AddListener(() => SelectItem(capturedObj, capturedData));
@@ -190,8 +190,8 @@ public class InspectionInventoryUI : MonoBehaviour
         {
             ItemData ia = ShopSystem.Instance.allAvailableItems.Find(x => x.id == a);
             ItemData ib = ShopSystem.Instance.allAvailableItems.Find(x => x.id == b);
-            string catA  = ia != null ? ia.category  : "";
-            string catB  = ib != null ? ib.category  : "";
+            string catA = ia != null ? ia.category : "";
+            string catB = ib != null ? ib.category : "";
             int catCompare = string.Compare(catA, catB, System.StringComparison.OrdinalIgnoreCase);
             if (catCompare != 0) return catCompare;
             string nameA = ia != null ? ia.itemName : a;
@@ -217,7 +217,7 @@ public class InspectionInventoryUI : MonoBehaviour
 
                 if (shopItem.icon != null && img != null)
                 {
-                    img.sprite  = shopItem.icon;
+                    img.sprite = shopItem.icon;
                     img.enabled = true;
                 }
                 else if (prefabData.itemIconPrefab != null)
@@ -241,7 +241,7 @@ public class InspectionInventoryUI : MonoBehaviour
 
             AddCountBadge(newSlot, idCounts[id]);
 
-            ItemData capturedShopItem        = shopItem;
+            ItemData capturedShopItem = shopItem;
             InspectableItem capturedPrefabData = prefabData;
             Button btn = newSlot.GetComponent<Button>();
             btn.onClick.AddListener(() => SelectShopItem(capturedShopItem, capturedPrefabData));
@@ -262,20 +262,20 @@ public class InspectionInventoryUI : MonoBehaviour
         badgeBG.color = new Color(0.1f, 0.1f, 0.1f, 0.85f);
 
         RectTransform badgeRect = badge.GetComponent<RectTransform>();
-        badgeRect.sizeDelta        = new Vector2(22, 22);
-        badgeRect.anchorMin        = new Vector2(1f, 0f);
-        badgeRect.anchorMax        = new Vector2(1f, 0f);
-        badgeRect.pivot            = new Vector2(1f, 0f);
+        badgeRect.sizeDelta = new Vector2(22, 22);
+        badgeRect.anchorMin = new Vector2(1f, 0f);
+        badgeRect.anchorMax = new Vector2(1f, 0f);
+        badgeRect.pivot = new Vector2(1f, 0f);
         badgeRect.anchoredPosition = new Vector2(-2f, 2f);
 
         GameObject textGO = new GameObject("BadgeText");
         textGO.transform.SetParent(badge.transform, false);
 
         TextMeshProUGUI badgeText = textGO.AddComponent<TextMeshProUGUI>();
-        badgeText.text      = "x" + count;
-        badgeText.fontSize  = 10;
+        badgeText.text = "x" + count;
+        badgeText.fontSize = 10;
         badgeText.fontStyle = FontStyles.Bold;
-        badgeText.color     = Color.white;
+        badgeText.color = Color.white;
         badgeText.alignment = TextAlignmentOptions.Center;
 
         RectTransform textRect = textGO.GetComponent<RectTransform>();
@@ -290,14 +290,14 @@ public class InspectionInventoryUI : MonoBehaviour
     // =============================================
     public void SelectItem(GameObject itemObj, InspectableItem itemData)
     {
-        currentlySelectedItemObj  = itemObj;
+        currentlySelectedItemObj = itemObj;
         currentlySelectedItemData = itemData;
         currentlySelectedShopItem = null;
 
         detailPanel.SetActive(true);
         detailCategoryText.text = itemData.partCategory;
-        detailNameText.text     = itemData.itemName;
-        detailDescText.text     = itemData.itemDescription;
+        detailNameText.text = itemData.itemName;
+        detailDescText.text = itemData.itemDescription;
 
         if (detailIcon != null)
         {
@@ -305,7 +305,7 @@ public class InspectionInventoryUI : MonoBehaviour
 
             if (itemData.cachedShopIcon != null)
             {
-                detailIcon.sprite  = itemData.cachedShopIcon;
+                detailIcon.sprite = itemData.cachedShopIcon;
                 detailIcon.enabled = true;
             }
             else if (itemData.itemIconPrefab != null)
@@ -332,14 +332,14 @@ public class InspectionInventoryUI : MonoBehaviour
     // =============================================
     public void SelectShopItem(ItemData shopItem, InspectableItem prefabData)
     {
-        currentlySelectedItemObj  = null;
+        currentlySelectedItemObj = null;
         currentlySelectedItemData = prefabData;
         currentlySelectedShopItem = shopItem;
 
         detailPanel.SetActive(true);
         detailCategoryText.text = shopItem.category;
-        detailNameText.text     = shopItem.itemName;
-        detailDescText.text     = shopItem.description;
+        detailNameText.text = shopItem.itemName;
+        detailDescText.text = shopItem.description;
 
         if (detailIcon != null)
         {
@@ -347,7 +347,7 @@ public class InspectionInventoryUI : MonoBehaviour
 
             if (shopItem.icon != null)
             {
-                detailIcon.sprite  = shopItem.icon;
+                detailIcon.sprite = shopItem.icon;
                 detailIcon.enabled = true;
             }
             else if (prefabData.itemIconPrefab != null)
@@ -387,7 +387,6 @@ public class InspectionInventoryUI : MonoBehaviour
         if (inspectManager == null)
             inspectManager = FindObjectOfType<InspectionManager>();
 
-        // Instantiate the part prefab
         GameObject newPartObj = Instantiate(currentlySelectedShopItem.prefabToPlace);
         newPartObj.SetActive(false);
 
@@ -398,37 +397,33 @@ public class InspectionInventoryUI : MonoBehaviour
             return;
         }
 
-        // Fill in item data from the shop item
         if (newPartData.partCategory == "Generic" || string.IsNullOrEmpty(newPartData.partCategory))
             newPartData.partCategory = currentlySelectedShopItem.category;
 
-        newPartData.itemName        = currentlySelectedShopItem.itemName;
+        newPartData.itemName = currentlySelectedShopItem.itemName;
         newPartData.itemDescription = currentlySelectedShopItem.description;
-        newPartData.cachedShopIcon  = currentlySelectedShopItem.icon;
+        newPartData.cachedShopIcon = currentlySelectedShopItem.icon;
 
-        // Add to player's carried inventory
         inspectManager.playerStorage.Add(newPartObj);
 
-        // Remove from ShopSystem so shelf updates
         ShopSystem.Instance.GetInventoryIDs().Remove(currentlySelectedShopItem.id);
 
-        // Hide from world properly
         InventorySystem.HideFromWorld(newPartObj);
 
-        // Sync shelf visuals
+        // ── NEW — Notify tutorial ──
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.NotifyStoragePartGrabbed(newPartData.partCategory);
+
         if (InventorySystem.Instance != null)
             InventorySystem.Instance.NotifyInstalled();
 
-        // If currently inspecting a PC, go straight to installation mode
         if (inspectManager.isInspecting)
             inspectManager.PrepareInstallationFromUI(newPartObj, newPartData);
 
-        // Close the panel
         if (inventoryPanel != null)
             inventoryPanel.SetActive(false);
 
-        // Restore cursor for gameplay
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible   = false;
+        Cursor.visible = false;
     }
 }

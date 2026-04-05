@@ -10,21 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: OpeningSequence
+  m_Name: PlaceBox
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Hey, you're finally here. Welcome to Easy Express your very own PC repair
-      shop."
-    showOnRightSide: 1
+    text: "Good. Now bring it to the workstation over there \u2014 that's your main
+      repair desk."
+    showOnRightSide: 0
   - speakerName: Boss
-    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: Before your first customer shows up, let's make sure you know how to walk
-      around.
-    showOnRightSide: 1
-  - speakerName: Oswold Johnson (Guide)
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Use W, A, S, and D to move. Hold each direction until it checks off. Go
-      ahead.
-    showOnRightSide: 1
+    text: Walk up to it and left-click to set the box down.
+    showOnRightSide: 0

@@ -21,8 +21,17 @@ using System.Collections.Generic;
 ///      - Put it on the interactable layer
 ///   3. Drag that child into the "powerCordSnapPoint" field.
 /// </summary>
+public enum PowerResult
+{
+    Success,          // 0 — PC boots fully (least severe)
+    BootWithIssues,   // 1 — Boots but has non-critical faults
+    NoDisplay,        // 2 — Fans spin, no picture (GPU issue)
+    FailedPOST,       // 3 — Fans spin briefly then shuts off (RAM/BIOS)
+    NoPower           // 4 — Won't respond at all (most severe)
+}
 public class PCPowerSystem : MonoBehaviour
 {
+    [HideInInspector] public PowerResult lastPowerResult = PowerResult.Success;
     [Header("State (Read-Only in Inspector)")]
     [Tooltip("Is a power cord FULLY connected (outlet + PC)?")]
     public bool isPowerCordConnected = false;
@@ -122,6 +131,12 @@ public class PCPowerSystem : MonoBehaviour
     /// Returns true if the action succeeded.
     /// 'reason' is filled with a user-friendly message.
     /// </summary>
+    // ── NEW ──────────────────────────────────────────
+    /// <summary>
+    /// Attempts to toggle the PC on/off.
+    /// Returns true if the button press resulted in a state change.
+    /// 'reason' is filled with a user-friendly message.
+    /// </summary>
     public bool TryTogglePower(out string reason)
     {
         // --- TURNING OFF (always allowed) ---
@@ -129,6 +144,7 @@ public class PCPowerSystem : MonoBehaviour
         {
             isPoweredOn = false;
             SetFansState(false);
+            lastPowerResult = PowerResult.Success;
             reason = "PC powered off.";
             Debug.Log($"[PCPowerSystem] {gameObject.name} turned OFF.");
             return true;
@@ -139,82 +155,215 @@ public class PCPowerSystem : MonoBehaviour
         // 1. Power cord must be fully connected (outlet + PC)
         if (!isPowerCordConnected)
         {
+            lastPowerResult = PowerResult.NoPower;
             reason = "No power!\nPlug the cord into both the outlet and the PC.";
             Debug.Log($"[PCPowerSystem] Cannot turn on — no power cord connected.");
             return false;
         }
 
-        // 2. Check for critical faults that prevent booting
-        string faultReason = CheckCriticalFaults();
-        if (!string.IsNullOrEmpty(faultReason))
-        {
-            reason = faultReason;
-            Debug.Log($"[PCPowerSystem] Cannot turn on — {faultReason}");
-            return false;
-        }
+        // 2. Evaluate all faults with the tiered system
+        PowerResult result = EvaluatePowerState();
+        lastPowerResult = result;
 
-        // All checks passed — power on!
-        isPoweredOn = true;
-        SetFansState(true);
-        reason = "PC powered on!";
-        Debug.Log($"[PCPowerSystem] {gameObject.name} turned ON.");
-        return true;
+        switch (result)
+        {
+            case PowerResult.NoPower:
+                reason = GetNoPowerReason();
+                Debug.Log($"[PCPowerSystem] Cannot turn on — {reason}");
+                return false;
+
+            case PowerResult.FailedPOST:
+                // PC turns on briefly (fans spin) then shuts off after a few seconds
+                isPoweredOn = true;
+                SetFansState(true);
+                reason = GetFailedPOSTReason();
+                StartCoroutine(DelayedShutdown(3f, "POST failed — system shut down automatically."));
+                Debug.Log($"[PCPowerSystem] POST failed — auto-shutdown in 3s.");
+                return true;
+
+            case PowerResult.NoDisplay:
+                // PC stays on (fans spin) but no display — GPU issue
+                isPoweredOn = true;
+                SetFansState(true);
+                reason = GetNoDisplayReason();
+                Debug.Log($"[PCPowerSystem] {gameObject.name} ON but no display.");
+                return true;
+
+            case PowerResult.BootWithIssues:
+                // PC boots but has non-critical issues
+                isPoweredOn = true;
+                SetFansState(true);
+                reason = "PC powered on.\n⚠ Warning: Non-critical issues detected.";
+                Debug.Log($"[PCPowerSystem] {gameObject.name} ON with issues.");
+                return true;
+
+            default: // PowerResult.Success
+                isPoweredOn = true;
+                SetFansState(true);
+                reason = "PC powered on successfully!";
+                Debug.Log($"[PCPowerSystem] {gameObject.name} turned ON.");
+                return true;
+        }
     }
 
-    // =============================================
-    //  FAULT CHECKING
-    //  Critical faults = PC won't even POST
-    //  Non-critical faults = PC boots but has issues
-    // =============================================
+    /// <summary>
+    /// Coroutine: Fans spin for a few seconds, then the PC shuts itself off.
+    /// Simulates a failed POST — the motherboard detects bad RAM / corrupted BIOS.
+    /// </summary>
+    System.Collections.IEnumerator DelayedShutdown(float delay, string shutdownReason)
+    {
+        yield return new WaitForSeconds(delay);
 
-    string CheckCriticalFaults()
+        if (isPoweredOn)
+        {
+            isPoweredOn = false;
+            SetFansState(false);
+            Debug.Log($"[PCPowerSystem] Auto-shutdown: {shutdownReason}");
+        }
+    }
+
+    /// <summary>
+    /// Evaluates all parts and returns the worst power result tier.
+    /// Priority: NoPower > FailedPOST > NoDisplay > BootWithIssues > Success
+    /// </summary>
+    PowerResult EvaluatePowerState()
     {
         InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
+        PowerResult worst = PowerResult.Success;
 
         foreach (InspectableItem part in allParts)
         {
             if (part.isMainObject) continue;
 
-            // --- Missing essential parts (ghost slots) ---
+            // ── MISSING ESSENTIAL PARTS (ghost slots) ──
             if (part.isInventorySlot)
             {
-                if (part.partCategory == "PSU")
-                    return "PSU is missing!\nInstall a power supply first.";
-                if (part.partCategory == "Motherboard")
-                    return "Motherboard is missing!\nInstall a motherboard first.";
-                if (part.partCategory == "CPU")
-                    return "CPU is missing!\nInstall a processor first.";
+                if (part.partCategory == "PSU" || part.partCategory == "Motherboard"
+                    || part.partCategory == "CPU")
+                {
+                    return PowerResult.NoPower; // Immediately return — can't boot at all
+                }
+
+                // Missing RAM = failed POST (beeps, shuts off)
+                if (part.partCategory == "RAM")
+                    worst = WorstOf(worst, PowerResult.FailedPOST);
+
+                // Missing GPU = no display (but PC still runs)
+                if (part.partCategory == "GPU")
+                    worst = WorstOf(worst, PowerResult.NoDisplay);
+
                 continue;
             }
 
-            // --- Critical faults on installed parts ---
+            // ── INSTALLED PART FAULTS ──
+            PowerResult partResult = EvaluatePartFault(part);
+            worst = WorstOf(worst, partResult);
 
-            // PSU
-            if (part.partCategory == "PSU" && part.fault == PartFault.Broken)
-                return "PSU is dead!\nReplace the power supply.";
-            if (part.partCategory == "PSU" && part.fault == PartFault.Overloaded)
-                return "PSU is overloaded!\nWattage too low for this build.";
-
-            // Motherboard
-            if (part.partCategory == "Motherboard" && part.fault == PartFault.Broken)
-                return "Motherboard is dead!\nReplace the motherboard.";
-            if (part.partCategory == "Motherboard" && part.fault == PartFault.LooseConnection)
-                return "24-pin power cable loose!\nReseat the ATX connection.";
-            if (part.partCategory == "Motherboard" && part.fault == PartFault.Corrupted)
-                return "BIOS is corrupted!\nThe system can't POST.";
-
-            // CPU
-            if (part.partCategory == "CPU" && part.fault == PartFault.Broken)
-                return "CPU is dead!\nReplace the processor.";
-
-            // RAM (prevents POST)
-            if (part.partCategory == "RAM" && part.fault == PartFault.Broken)
-                return "RAM is faulty!\nSystem fails POST — replace the RAM.";
-            if (part.partCategory == "RAM" && part.fault == PartFault.NotSeated)
-                return "RAM not seated properly!\nReseat the memory sticks.";
+            // Short-circuit: NoPower is the worst possible
+            if (worst == PowerResult.NoPower) return worst;
         }
 
-        return null; // No blocking faults — all clear!
+        return worst;
+    }
+
+    PowerResult EvaluatePartFault(InspectableItem part)
+    {
+        if (part.fault == PartFault.None) return PowerResult.Success;
+
+        string cat = part.partCategory;
+
+        // ── TIER 1: NO POWER (won't respond at all) ──
+        if (cat == "PSU" && (part.fault == PartFault.Broken || part.fault == PartFault.Overloaded))
+            return PowerResult.NoPower;
+        if (cat == "Motherboard" && (part.fault == PartFault.Broken || part.fault == PartFault.LooseConnection))
+            return PowerResult.NoPower;
+        if (cat == "CPU" && part.fault == PartFault.Broken)
+            return PowerResult.NoPower;
+
+        // ── TIER 2: FAILED POST (turns on, beeps, shuts off ~3s) ──
+        if (cat == "RAM" && (part.fault == PartFault.Broken || part.fault == PartFault.NotSeated
+                             || part.fault == PartFault.Incompatible))
+            return PowerResult.FailedPOST;
+        if (cat == "Motherboard" && part.fault == PartFault.Corrupted)
+            return PowerResult.FailedPOST;
+
+        // ── TIER 3: NO DISPLAY (fans spin, no picture) ──
+        if (cat == "GPU" && (part.fault == PartFault.Broken || part.fault == PartFault.NotSeated))
+            return PowerResult.NoDisplay;
+
+        // ── TIER 4: BOOTS WITH ISSUES ──
+        // Overheating, dusty, outdated, wrong slot — PC works but has symptoms
+        return PowerResult.BootWithIssues;
+    }
+
+    PowerResult WorstOf(PowerResult a, PowerResult b)
+    {
+        // Lower enum value = more severe
+        return (int)a < (int)b ? b : a;
+    }
+
+    // ── REASON STRING HELPERS ──
+
+    string GetNoPowerReason()
+    {
+        InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
+        foreach (InspectableItem part in allParts)
+        {
+            if (part.isMainObject) continue;
+            if (part.isInventorySlot)
+            {
+                if (part.partCategory == "PSU") return "PSU is missing!\nInstall a power supply first.";
+                if (part.partCategory == "Motherboard") return "Motherboard is missing!\nInstall a motherboard first.";
+                if (part.partCategory == "CPU") return "CPU is missing!\nInstall a processor first.";
+            }
+            if (part.partCategory == "PSU" && part.fault == PartFault.Broken)
+                return "PSU is dead!\nNo power output detected.";
+            if (part.partCategory == "PSU" && part.fault == PartFault.Overloaded)
+                return "PSU is overloaded!\nWattage too low for this build.";
+            if (part.partCategory == "Motherboard" && part.fault == PartFault.Broken)
+                return "Motherboard is dead!\nNo response from the board.";
+            if (part.partCategory == "Motherboard" && part.fault == PartFault.LooseConnection)
+                return "24-pin ATX cable loose!\nNo power reaching the board.";
+            if (part.partCategory == "CPU" && part.fault == PartFault.Broken)
+                return "CPU is dead!\nThe system won't respond.";
+        }
+        return "PC won't turn on — critical component failure.";
+    }
+
+    string GetFailedPOSTReason()
+    {
+        InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
+        foreach (InspectableItem part in allParts)
+        {
+            if (part.isMainObject) continue;
+            if (part.isInventorySlot && part.partCategory == "RAM")
+                return "No RAM installed!\nFans spin briefly, then PC shuts off.";
+            if (part.partCategory == "RAM" && part.fault == PartFault.Broken)
+                return "RAM is faulty!\nPC beeps and shuts off after a few seconds.";
+            if (part.partCategory == "RAM" && part.fault == PartFault.NotSeated)
+                return "RAM not seated properly!\nPOST fails — reseat the sticks.";
+            if (part.partCategory == "RAM" && part.fault == PartFault.Incompatible)
+                return "Incompatible RAM!\nWrong type for this motherboard — POST fails.";
+            if (part.partCategory == "Motherboard" && part.fault == PartFault.Corrupted)
+                return "BIOS corrupted!\nPC turns on but can't POST.";
+        }
+        return "POST failed — system powers on briefly then shuts off.";
+    }
+
+    string GetNoDisplayReason()
+    {
+        InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
+        foreach (InspectableItem part in allParts)
+        {
+            if (part.isMainObject) continue;
+            if (part.isInventorySlot && part.partCategory == "GPU")
+                return "No GPU installed!\nFans spin, system runs, but no display output.";
+            if (part.partCategory == "GPU" && part.fault == PartFault.Broken)
+                return "GPU is dead!\nPC runs but no display — replace the graphics card.";
+            if (part.partCategory == "GPU" && part.fault == PartFault.NotSeated)
+                return "GPU not seated properly!\nNo display — reseat the card.";
+        }
+        return "No display output — check GPU.";
     }
 
     // =============================================

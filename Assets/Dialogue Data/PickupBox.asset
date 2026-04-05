@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: OpeningSequence 1
+  m_Name: PickupBox
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Not bad! You've got the basics down.
-    showOnRightSide: 1
+    text: Job accepted! The customer already dropped off their PC.
+    showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: "Heads up \u2014 a customer is already on their way in right now."
-    showOnRightSide: 1
+    text: See that box near the counter? That's their machine
+    showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: Get to the cashier counter and wait for them to arrive.
+    text: "Pick it up \u2014 hold Q to carry it."
     showOnRightSide: 1

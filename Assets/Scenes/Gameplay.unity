@@ -31293,6 +31293,7 @@ MonoBehaviour:
   cableResolution: 20
   screwdriverSystem: {fileID: 2140102109}
   isInspecting: 0
+  viewOnlyMode: 0
 --- !u!1001 &861304931
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34213,23 +34214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TutorialManager
   dialogueManager: {fileID: 1731476513}
   dayTransitionManager: {fileID: 1174033327}
-  part01_IntroAndWASD: {fileID: 11400000, guid: 807a184a79c4213428e160257e0c7a15, type: 2}
-  part02_GoCashier: {fileID: 11400000, guid: c8429f8cb4b2cfc4fa50c7be08cd5600, type: 2}
-  part03_UseCashierPC: {fileID: 11400000, guid: c0e4246cc730c1442bb445c3143e7906, type: 2}
-  part04_PickupBox: {fileID: 11400000, guid: 2b20c5b538a2ed843a60fed3603c7c14, type: 2}
-  part05_PlaceBox: {fileID: 11400000, guid: b062406600213ff4d9c0a5f29388eb64, type: 2}
-  part06_OpenInspect: {fileID: 11400000, guid: 1f7ffc56a35c5974b813d0de1540623a, type: 2}
-  part07_HoverComponent: {fileID: 11400000, guid: 5046cb53f1bfb43469d74d7049df984a, type: 2}
-  part08_RemoveComponent: {fileID: 11400000, guid: 96db35399a261aa40a8baa4ae4142ca2, type: 2}
-  part09_BuyParts: {fileID: 11400000, guid: e9eb01918fad18c488b089d4621a3d69, type: 2}
-  part10_EndDay: {fileID: 11400000, guid: 9e386ce1ed58e5141b0b3bd1b5d69961, type: 2}
-  part11_DeliveryArrived: {fileID: 11400000, guid: 1895184189c54044eaa3ebb419670a53, type: 2}
-  part12_GoToStorage: {fileID: 11400000, guid: 489991df36bffcf43802136b0dadb467, type: 2}
-  part13_InstallPart: {fileID: 11400000, guid: 6b11e59b01502a244a67a2fd2868cf68, type: 2}
-  part14_FinishBuild: {fileID: 11400000, guid: f81c6a34c400a4546b517ad07078730f, type: 2}
-  part15_PowerTest: {fileID: 11400000, guid: 603f14cb004f0b344a52e883f19bd125, type: 2}
-  part16_GoToEmail: {fileID: 11400000, guid: 63deeaaae46e5e4448f323860862716a, type: 2}
-  part17_WelcomeSpeech: {fileID: 11400000, guid: cc4748c682d46e74fb766314f78b617f, type: 2}
+  partDatabase: {fileID: 11400000, guid: 990bc3f4022393f41bb03754786c6ec1, type: 2}
   tutorialArrow: {fileID: 872536733}
   workstationTarget: {fileID: 1782189665}
   cashierTarget: {fileID: 1877397035}
@@ -34240,6 +34225,24 @@ MonoBehaviour:
   doorTarget: {fileID: 1093221334}
   requiredHoldTime: 2
   tutorialStipend: 15000
+  dlg_Intro: {fileID: 11400000, guid: 807a184a79c4213428e160257e0c7a15, type: 2}
+  dlg_GoCashier: {fileID: 11400000, guid: c8429f8cb4b2cfc4fa50c7be08cd5600, type: 2}
+  dlg_TalkCustomer: {fileID: 11400000, guid: c0e4246cc730c1442bb445c3143e7906, type: 2}
+  dlg_PickupBox: {fileID: 11400000, guid: 2b20c5b538a2ed843a60fed3603c7c14, type: 2}
+  dlg_PlaceBox: {fileID: 11400000, guid: b062406600213ff4d9c0a5f29388eb64, type: 2}
+  dlg_InspectPC: {fileID: 11400000, guid: 1f7ffc56a35c5974b813d0de1540623a, type: 2}
+  dlg_PowerTest: {fileID: 11400000, guid: 34dd52acd7b51e74b93ffd2fc591c067, type: 2}
+  dlg_OpenCase: {fileID: 11400000, guid: bfe72b6d6edb7e44aa7c9d2c0ceb1760, type: 2}
+  dlg_IdentifyFaults: {fileID: 11400000, guid: 4b1ab8c4c5ac4ba4fad6ee594d3abb2d, type: 2}
+  dlg_TestAfterFirstRemoval: {fileID: 11400000, guid: 96297adf459c13c499d2a70caf2d5bee, type: 2}
+  dlg_StillFailing: {fileID: 11400000, guid: 592e264fbd401494eaf24d5b914e0793, type: 2}
+  dlg_FoundAllFaults: {fileID: 11400000, guid: 3e0cc1044f6c9384cb538d9907e7e194, type: 2}
+  dlg_StorageTutorial: {fileID: 11400000, guid: 454b08dbba3b465ab16b758b4c3083c2, type: 2}
+  dlg_InstallParts: {fileID: 11400000, guid: c5b72db324904f62807c9382c112ca84, type: 2}
+  dlg_PowerSuccess: {fileID: 11400000, guid: b1cc118fa70945e38db1cf2024c28170, type: 2}
+  dlg_EmailTutorial: {fileID: 11400000, guid: d92050f904474a42b66c5351cf758191, type: 2}
+  dlg_ShopTutorial: {fileID: 11400000, guid: fd19942540a147528d199c3e03332858, type: 2}
+  dlg_WelcomeSpeech: {fileID: 11400000, guid: 7ef722c8fd3342d1914114182ba0b254, type: 2}
 --- !u!224 &924420259
 RectTransform:
   m_ObjectHideFlags: 0
@@ -61079,6 +61082,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 524a65d32450d78418ef32c19b6bc6f0, type: 2}
   - {fileID: 11400000, guid: 22fe7e23013bd204fa51a31d23b74f79, type: 2}
   - {fileID: 11400000, guid: 0a2edf6b6dd731143b074bebeef43b3c, type: 2}
+  initialStockPerCategory: 3
 --- !u!4 &1685050883
 Transform:
   m_ObjectHideFlags: 0
@@ -65238,7 +65242,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3902761685247904905, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 99.999985
+      value: 99.99998
       objectReference: {fileID: 0}
     - target: {fileID: 4311658720886142225, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_SizeDelta.y
@@ -68683,7 +68687,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3902761685247904905, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.000015
+      value: 100.00002
       objectReference: {fileID: 0}
     - target: {fileID: 4311658720886142225, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_SizeDelta.y
@@ -71892,7 +71896,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3902761685247904905, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.000015
+      value: 99.99999
       objectReference: {fileID: 0}
     - target: {fileID: 4065452133430940504, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -78816,7 +78820,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6761423660927144584, guid: 47c09cc455470474bb19572d0f043263, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.00006
+      value: 100.00004
       objectReference: {fileID: 0}
     - target: {fileID: 7003921606423331044, guid: 47c09cc455470474bb19572d0f043263, type: 3}
       propertyPath: m_SizeDelta.y
@@ -84386,7 +84390,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6761423660927144584, guid: 47c09cc455470474bb19572d0f043263, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.000015
+      value: 99.99999
       objectReference: {fileID: 0}
     - target: {fileID: 7003921606423331044, guid: 47c09cc455470474bb19572d0f043263, type: 3}
       propertyPath: m_SizeDelta.y
@@ -85051,7 +85055,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3902761685247904905, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.00003
+      value: 100.00002
       objectReference: {fileID: 0}
     - target: {fileID: 4311658720886142225, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_SizeDelta.y

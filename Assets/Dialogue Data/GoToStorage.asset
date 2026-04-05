@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
+  m_Name: GoToStorage
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
+  lines:
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: Alright, your replacement parts are already on the storage shelf. Let me
+      walk you through how it works.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: Walk over to the storage shelf. You'll see the product boxes sitting on
+      the shelves.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: When you're close enough, press [E] to open the Storage Panel.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: You'll see all the parts currently in stock. Click on the GPU to move it
+      into your personal inventory.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: Then click the RAM too. You need both.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: Once you've grabbed what you need, press [Esc] to close the panel.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
+    text: Your parts are now in your pocket. You can carry them to any PC and install
+      them during inspection.
+    showOnRightSide: 0

@@ -10,18 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: OpeningSequence 3
+  m_Name: OpenCase
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Job accepted! The customer already dropped off their PC.
+    text: Did you see that? The fans spun for a second, then nothing. No display
+      either.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: That tells us a lot. A PC that won't POST usually means a problem with
+      the RAM, CPU, or motherboard.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: See that box near the counter? That's their machine
+    text: And no display? That could be a dead GPU or the RAM is so bad the system
+      can't even reach the graphics card.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: "Pick it up \u2014 hold Q to carry it."
-    showOnRightSide: 1
+    text: "We can't tell just by looking. We need to test one part at a time. Open
+      the case \u2014 grab your screwdriver with [1] and start unscrewing the side
+      panel."
+    showOnRightSide: 0

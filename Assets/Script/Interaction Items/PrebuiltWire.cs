@@ -27,6 +27,10 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
     [Header("Power Cord")]
     [Tooltip("Check for the mains power cord. Connecting also sets PCPowerSystem.isPowerCordConnected.")]
     public bool isPowerCord = false;
+    [Header("Blocking Behaviour")]
+    [Tooltip("If true, this wire does NOT block removal of its parent component.\n" +
+           "Enable for fan wires — fans can be removed without disconnecting their cable first.")]
+    public bool allowRemoveWithoutDisconnect = false;
 
     [Header("Display Name")]
     [Tooltip("Shown in tooltips (e.g. '8-Pin GPU Power', '24-Pin ATX', 'Power Cord').")]
@@ -78,12 +82,20 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
         InspectableItem parentComponent = FindParentComponent(pcRoot);
         if (parentComponent != null && wireInspectableItem != null)
         {
-            if (parentComponent.blockingParts == null)
-                parentComponent.blockingParts = new List<InspectableItem>();
-            if (!parentComponent.blockingParts.Contains(wireInspectableItem))
+            // Fan wires (and wires flagged allowRemoveWithoutDisconnect) don't block removal
+            if (!allowRemoveWithoutDisconnect)
             {
-                parentComponent.blockingParts.Add(wireInspectableItem);
-                Debug.Log($"[PrebuiltWire] '{wireName}' now blocks removal of '{parentComponent.itemName}'.");
+                if (parentComponent.blockingParts == null)
+                    parentComponent.blockingParts = new List<InspectableItem>();
+                if (!parentComponent.blockingParts.Contains(wireInspectableItem))
+                {
+                    parentComponent.blockingParts.Add(wireInspectableItem);
+                    Debug.Log($"[PrebuiltWire] '{wireName}' now blocks removal of '{parentComponent.itemName}'.");
+                }
+            }
+            else
+            {
+                Debug.Log($"[PrebuiltWire] '{wireName}' connected but does NOT block removal (fan wire).");
             }
         }
 
@@ -95,10 +107,11 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
                 power.isPowerCordConnected = true;
                 power.connectedCord = wireMeshRoot;
                 Debug.Log($"[PrebuiltWire] Power cord connected.");
+
+                if (TutorialManager.Instance != null)
+                    TutorialManager.Instance.NotifyPowerCordConnected();
             }
         }
-
-        Debug.Log($"[PrebuiltWire] '{wireName}' connected.");
     }
 
     public void Disconnect(Transform pcRoot)

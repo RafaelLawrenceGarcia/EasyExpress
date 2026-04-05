@@ -170,29 +170,29 @@ public class PlayerInteract : MonoBehaviour
             Cursor.visible = true;
             return;
         }
-        
+
         Ray ray = mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, interactRange, interactLayer))
         {
             Debug.Log("HIT: " + hit.collider.gameObject.name + " | Tag: " + hit.collider.tag + " | Layer: " + LayerMask.LayerToName(hit.collider.gameObject.layer));
-            NPCWalker cityNPC           = hit.collider.GetComponent<NPCWalker>();
+            NPCWalker cityNPC = hit.collider.GetComponent<NPCWalker>();
             CustomerInside shopCustomer = hit.collider.GetComponent<CustomerInside>();
-            ShopTrigger shopPC          = hit.collider.GetComponent<ShopTrigger>();
-            InspectableItem item        = hit.collider.GetComponent<InspectableItem>();
+            ShopTrigger shopPC = hit.collider.GetComponent<ShopTrigger>();
+            InspectableItem item = hit.collider.GetComponent<InspectableItem>();
 
             DoorInteractionMenu doorMenu = hit.collider.GetComponentInParent<DoorInteractionMenu>();
-            ShopDoor shopDoor            = hit.collider.GetComponentInParent<ShopDoor>();
-            SceneDoor sceneDoor          = hit.collider.GetComponentInParent<SceneDoor>();
+            ShopDoor shopDoor = hit.collider.GetComponentInParent<ShopDoor>();
+            SceneDoor sceneDoor = hit.collider.GetComponentInParent<SceneDoor>();
 
             if (doorMenu == null && shopDoor != null)
                 doorMenu = shopDoor.GetComponentInChildren<DoorInteractionMenu>();
             if (doorMenu == null && sceneDoor != null)
                 doorMenu = sceneDoor.GetComponentInChildren<DoorInteractionMenu>();
 
-            bool isPickupBox       = hit.collider.CompareTag("PickupBox");
-            bool isPickupPC        = hit.collider.CompareTag("PickupPC");
+            bool isPickupBox = hit.collider.CompareTag("PickupBox");
+            bool isPickupPC = hit.collider.CompareTag("PickupPC");
             bool canInspectInWorld = (item != null && item.isMainObject);
             bool readyShopCustomer = (shopCustomer != null && shopCustomer.isAtSpot);
 
@@ -201,7 +201,7 @@ public class PlayerInteract : MonoBehaviour
             // =============================================
             if (doorMenu != null)
             {
-                bool tutActive  = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
+                bool tutActive = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
                 bool endDayStep = TutorialManager.Instance != null && TutorialManager.Instance.IsEndDayStep();
 
                 if (tutActive && !endDayStep)
@@ -239,19 +239,41 @@ public class PlayerInteract : MonoBehaviour
             // =============================================
             else if (canInspectInWorld && isPickupPC)
             {
-                if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithHighlight("E / Q", "E: Inspect | Q: Grab", hit.collider.gameObject);
+                // Check if this is the customer's desk PC (view-only)
+                bool isDeskPC = CustomerDeskManager.Instance != null
+                    && hit.collider.gameObject.name.StartsWith("DeskPC_");
 
-                if (Input.GetKeyDown(KeyCode.E))
+                if (isDeskPC)
                 {
-                    HideAllPrompts();
-                    if (TutorialManager.Instance != null) TutorialManager.Instance.CompletePCTask();
-                    if (inspectionManager != null) inspectionManager.Inspect(item);
+                    // Counter PC — view only, no grabbing
+                    if (pcMenu != null) pcMenu.Hide();
+                    ShowPromptWithHighlight("E", "Preview PC", hit.collider.gameObject);
+
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        HideAllPrompts();
+                        if (TutorialManager.Instance != null)
+                            TutorialManager.Instance.CompleteCashierInspectTask();
+                        if (inspectionManager != null) inspectionManager.InspectViewOnly(item);
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.Q))
+                else
                 {
-                    HideAllPrompts();
-                    PickUpItem(hit.collider.gameObject);
+                    // Normal workstation PC — full inspect + grab
+                    if (pcMenu != null) pcMenu.Hide();
+                    ShowPromptWithHighlight("E / Q", "E: Inspect | Q: Grab", hit.collider.gameObject);
+
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        HideAllPrompts();
+                        if (TutorialManager.Instance != null) TutorialManager.Instance.CompletePCTask();
+                        if (inspectionManager != null) inspectionManager.Inspect(item);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Q))
+                    {
+                        HideAllPrompts();
+                        PickUpItem(hit.collider.gameObject);
+                    }
                 }
             }
             // =============================================
@@ -283,7 +305,7 @@ public class PlayerInteract : MonoBehaviour
             // =============================================
             else if (readyShopCustomer)
             {
-                bool tutActive   = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
+                bool tutActive = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
                 bool cashierStep = TutorialManager.Instance != null && TutorialManager.Instance.IsCashierPCStep();
 
                 if (tutActive && !cashierStep)
@@ -298,10 +320,10 @@ public class PlayerInteract : MonoBehaviour
             // =============================================
             else if (hit.collider.CompareTag("WorkstationMonitor"))
             {
-                bool tutActive   = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
-                bool emailStep   = TutorialManager.Instance != null && TutorialManager.Instance.IsEmailStep();
+                bool tutActive = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
+                bool emailStep = TutorialManager.Instance != null && TutorialManager.Instance.IsEmailStep();
                 bool cashierStep = TutorialManager.Instance != null && TutorialManager.Instance.IsCashierPCStep();
-                bool shopPCStep  = TutorialManager.Instance != null && TutorialManager.Instance.IsShopPCStep();
+                bool shopPCStep = TutorialManager.Instance != null && TutorialManager.Instance.IsShopPCStep();
 
                 if (tutActive && !emailStep && !cashierStep && !shopPCStep)
                 {
@@ -359,10 +381,10 @@ public class PlayerInteract : MonoBehaviour
             // =============================================
             else if (shopPC)
             {
-                bool tutActive   = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
+                bool tutActive = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
                 bool cashierStep = TutorialManager.Instance != null && TutorialManager.Instance.IsCashierPCStep();
-                bool shopPCStep  = TutorialManager.Instance != null && TutorialManager.Instance.IsShopPCStep();
-                bool emailStep   = TutorialManager.Instance != null && TutorialManager.Instance.IsEmailStep();
+                bool shopPCStep = TutorialManager.Instance != null && TutorialManager.Instance.IsShopPCStep();
+                bool emailStep = TutorialManager.Instance != null && TutorialManager.Instance.IsEmailStep();
 
                 if (tutActive && cashierStep) { HideAllPrompts(); return; }
 
@@ -663,11 +685,11 @@ public class PlayerInteract : MonoBehaviour
         {
             if (parentCheck.CompareTag("PickupBox") || parentCheck.CompareTag("PickupPC"))
                 highlightTarget = parentCheck.gameObject;
-            JobBox jb         = obj.GetComponentInParent<JobBox>();
-            DeliveryBox db    = obj.GetComponentInParent<DeliveryBox>();
+            JobBox jb = obj.GetComponentInParent<JobBox>();
+            DeliveryBox db = obj.GetComponentInParent<DeliveryBox>();
             PCCaseBuilder pcb = obj.GetComponentInParent<PCCaseBuilder>();
-            if (jb != null)       highlightTarget = jb.gameObject;
-            else if (db != null)  highlightTarget = db.gameObject;
+            if (jb != null) highlightTarget = jb.gameObject;
+            else if (db != null) highlightTarget = db.gameObject;
             else if (pcb != null) highlightTarget = pcb.gameObject;
         }
 

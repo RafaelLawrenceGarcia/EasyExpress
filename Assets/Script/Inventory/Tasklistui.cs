@@ -324,15 +324,15 @@ public class TaskListUI : MonoBehaviour
         task.textComponent.color = flashColor;
 
         while (elapsed < duration)
-    {
-        if (circleT == null) yield break;
-        elapsed += Time.deltaTime;
-        float t = elapsed / duration;
-        float scale = 1f + Mathf.Sin(t * Mathf.PI) * 0.35f;
-        circleT.localScale = originalScale * scale;
-        yield return null;
-    }
-    if (circleT != null) circleT.localScale = originalScale;
+        {
+            if (circleT == null) yield break;
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            float scale = 1f + Mathf.Sin(t * Mathf.PI) * 0.35f;
+            circleT.localScale = originalScale * scale;
+            yield return null;
+        }
+        if (circleT != null) circleT.localScale = originalScale;
 
         // --- PHASE 2: Settle (text fades to grey + strikethrough) ---
         yield return new WaitForSeconds(0.3f);
@@ -380,6 +380,21 @@ public class TaskListUI : MonoBehaviour
         yield return StartCoroutine(FadeCanvasGroup(taskCanvasGroup != null ? taskCanvasGroup.alpha : 1f, 0f, duration));
         if (taskPanel != null) taskPanel.SetActive(false);
     }
+    /// <summary>
+    /// Updates the text of a specific task without changing its completion state.
+    /// Used by the tutorial to show live progress like "Unscrew side panel (2/4)".
+    /// </summary>
+    public void UpdateTaskText(int index, string newText)
+    {
+        if (index < 0 || index >= currentTasks.Count) return;
+        if (currentTasks[index].isCompleted) return; // Don't update completed tasks
+
+        currentTasks[index].description = newText;
+
+        if (currentTasks[index].textComponent != null)
+            currentTasks[index].textComponent.text = newText;
+    }
+
 }
 
 // =============================================

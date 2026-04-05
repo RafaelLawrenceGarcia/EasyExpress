@@ -81,9 +81,10 @@ public class PCPartDatabase : ScriptableObject
         if (rams != null && rams.Length > 0 && Roll(ramChance))
         {
             int stickCount = Random.Range(minRAMSticks, maxRAMSticks + 1);
-            for (int i = 0; i < stickCount; i++) AddCopiedPart(rams[Random.Range(0, rams.Length)], result.parts);
+            // Pick ONE ram type, then duplicate — no mixed DDR4/DDR5
+            StartingPCComponent chosenRam = rams[Random.Range(0, rams.Length)];
+            for (int i = 0; i < stickCount; i++) AddCopiedPart(chosenRam, result.parts);
         }
-
         TryAddPart(storage, result.parts, Roll(storageChance));
         if (hasCPU) TryAddPart(coolers, result.parts, Roll(coolerChance));
 
@@ -160,8 +161,10 @@ public class PCPartDatabase : ScriptableObject
     {
         if (rams == null || rams.Length == 0) return;
         int count = Random.Range(min, max + 1);
+        // Pick ONE type — all sticks match
+        StartingPCComponent chosenRam = rams[Random.Range(0, rams.Length)];
         for (int i = 0; i < count; i++)
-            AddCopiedPart(rams[Random.Range(0, rams.Length)], parts);
+            AddCopiedPart(chosenRam, parts);
     }
 
     void TryAddFans(List<StartingPCComponent> parts, int min, int max, float chance)

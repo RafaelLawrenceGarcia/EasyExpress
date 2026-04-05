@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: OpeningSequence 5
+  m_Name: dlg_ConnectCord
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Alright, now let's see what we're dealing with.
+    text: "Before we can test anything, the PC needs power."
     showOnRightSide: 0
   - speakerName: Boss
-    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: Look at the PC on the desk and press E to open Inspect Mode.
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "Look at the back of the case — you'll see the power cord connector."
     showOnRightSide: 0
   - speakerName: Boss
-    portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: This lets you see every component inside the machine
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "Click on it to plug in the power cord. Then we can try turning it on."
     showOnRightSide: 0
