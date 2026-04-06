@@ -231,6 +231,7 @@ public class ShopManager : MonoBehaviour
     {
         lastActiveScreen = LastScreen.ItemList;
         currentCategory = categoryName;
+        if (TutorialManager.Instance != null) TutorialManager.Instance.NotifyShopCategoryBrowsed();
 
         categoryScreen.SetActive(false);
         if (productDetailsPanel != null) productDetailsPanel.SetActive(false);
@@ -378,6 +379,7 @@ public class ShopManager : MonoBehaviour
         }
 
         RefreshCartUI();
+        if (TutorialManager.Instance != null) TutorialManager.Instance.NotifyShopItemAddedToCart();
 
         if (activeNotification != null) StopCoroutine(activeNotification);
         activeNotification = StartCoroutine(SlideNotificationCoroutine(itemAdded.itemName + " added to cart!"));
@@ -497,7 +499,7 @@ public class ShopManager : MonoBehaviour
         {
             Debug.Log("Order successfully placed!");
             if (TutorialManager.Instance != null)
-            TutorialManager.Instance.CompleteOrderPartsTask();
+                TutorialManager.Instance.CompleteOrderPartsTask();
             if (activeNotification != null) StopCoroutine(activeNotification);
             activeNotification = StartCoroutine(SlideNotificationCoroutine("Order Placed Successfully!"));
 

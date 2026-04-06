@@ -10,18 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: dlg_ConnectCord
+  m_Name: dlg_SwapGPU
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Before we can test anything, the PC needs power.
+    text: Good, the case is open. Now let's start the swap test.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: As you can see there is an outlet
+    text: The customer said 'no display' — the GPU is the most likely cause.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Click and hold it to plug in the power cord
+    text: Remove the old GPU first. Use the screwdriver — hold click to unscrew it.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: Then install the new GPU from your inventory.
     showOnRightSide: 0

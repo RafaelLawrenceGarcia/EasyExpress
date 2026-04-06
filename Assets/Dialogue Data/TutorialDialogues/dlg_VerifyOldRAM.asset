@@ -10,18 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: dlg_ConnectCord
+  m_Name: dlg_VerifyOldRAM
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Before we can test anything, the PC needs power.
+    text: Here's a pro tip — always verify your diagnosis.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: As you can see there is an outlet
+    text: Put the OLD RAM back in. If the problem returns, we know the RAM was definitely bad.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Click and hold it to plug in the power cord
+    text: If it still works, then only the GPU was faulty.
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: This is how real technicians confirm their findings.
     showOnRightSide: 0

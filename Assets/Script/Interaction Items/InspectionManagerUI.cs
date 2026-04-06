@@ -71,7 +71,7 @@ public partial class InspectionManager
         if (part.isInventorySlot) BeginInstallConfirmation(part);
         else if (part.isRemovable) BeginRemovalConfirmation(part);
         else if (part.isPowerButton) TogglePCPower();
-        else if (part.isWirePort) HandleWirePort(part);
+        //else if (part.isWirePort) HandleWirePort(part);
     }
 
     // ─── Hover & Highlight ───────────────────────────────────────

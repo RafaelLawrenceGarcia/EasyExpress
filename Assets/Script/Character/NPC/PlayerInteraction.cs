@@ -366,7 +366,7 @@ public class PlayerInteract : MonoBehaviour
                         {
                             HideAllPrompts();
                             if (TutorialManager.Instance != null)
-                                TutorialManager.Instance.CompleteEmailTask();
+                                TutorialManager.Instance.CompleteApproachEmailTask();
                             OpenWorkstationMonitor(monitor);
                         }
                     }

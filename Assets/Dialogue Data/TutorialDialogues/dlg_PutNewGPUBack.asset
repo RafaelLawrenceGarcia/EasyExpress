@@ -10,18 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: dlg_ConnectCord
+  m_Name: dlg_PutNewGPUBack
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Before we can test anything, the PC needs power.
+    text: Alright, put the new GPU back in to finish the repair.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: As you can see there is an outlet
-    showOnRightSide: 0
-  - speakerName: Boss
-    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Click and hold it to plug in the power cord
+    text: One last power test and we're done.
     showOnRightSide: 0

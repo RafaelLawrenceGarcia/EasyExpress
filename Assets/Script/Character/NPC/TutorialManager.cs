@@ -2,12 +2,27 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+public enum DiagState
+{
+    // GPU swap
+    RemoveOldGPU, InstallNewGPU, TestAfterGPUSwap,
+    // RAM swap
+    RemoveOldRAM, InstallNewRAM, TestAfterRAMSwap,
+    // RAM verify
+    RemoveNewRAM, InstallOldRAM, TestWithOldRAM,
+    RemoveOldRAMAgain, InstallNewRAMFinal, TestAfterRAMVerify,
+    // GPU verify
+    RemoveNewGPU, InstallOldGPU, TestWithOldGPU,
+    RemoveOldGPUAgain, InstallNewGPUFinal, TestFinal,
+    Done
+}
+
 public partial class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance;
     private const int STEP_DONE = 50;
-     [HideInInspector]
-    public bool waitingForCutscene = false;  // ── ADD THIS ──
+    [HideInInspector] public bool waitingForCutscene = false;
+
     [Header("Managers")]
     public IntroDialogueManager dialogueManager;
     public DayTransitionManager dayTransitionManager;
@@ -31,6 +46,14 @@ public partial class TutorialManager : MonoBehaviour
     [Header("Tutorial Stipend")]
     public float tutorialStipend = 15000f;
 
+    [Header("Tutorial Stock")]
+    [Tooltip("How many of each shop item to pre-stock for the tutorial.")]
+    public int tutorialStockPerItem = 2;
+
+    [Header("Debug")]
+    [Tooltip("Hold this key to fast-forward through dialogues.")]
+    public KeyCode debugSkipKey = KeyCode.F9;
+
     // ─── Dialogue Sequences ──────────────────────────────────────
 
     [Header("Dialogue — Phase 1: Movement & Customer")]
@@ -44,29 +67,43 @@ public partial class TutorialManager : MonoBehaviour
 
     [Header("Dialogue — Phase 3: Diagnosis")]
     public DialogueSequence dlg_InspectPC;
-    [Tooltip("Tells player to connect the power cord before testing.")]
+    [Tooltip("Connect the power cord.")]
     public DialogueSequence dlg_ConnectCord;
     public DialogueSequence dlg_PowerTest;
+    [Tooltip("After first power test — grab parts from storage.")]
+    public DialogueSequence dlg_GrabPartsFirst;
+    [Tooltip("Open the case (screws + panel).")]
     public DialogueSequence dlg_OpenCase;
-    [Tooltip("After panel removed. Explains process of elimination.")]
-    public DialogueSequence dlg_IdentifyFaults;
-    [Tooltip("After GPU removed. Tells player to press power to test.")]
-    public DialogueSequence dlg_TestAfterFirstRemoval;
-    [Tooltip("After mid-diagnosis power test still fails.")]
-    public DialogueSequence dlg_StillFailing;
-    [Tooltip("After all faulty parts removed.")]
-    public DialogueSequence dlg_FoundAllFaults;
 
-    [Header("Dialogue — Phase 4: Storage & Repair")]
-    [Tooltip("Step-by-step storage shelf walkthrough.")]
-    public DialogueSequence dlg_StorageTutorial;
-    public DialogueSequence dlg_InstallParts;
-    public DialogueSequence dlg_PowerSuccess;
+    [Header("Dialogue — Phase 3: Swap-and-Test")]
+    [Tooltip("After panel removed — swap the GPU first.")]
+    public DialogueSequence dlg_SwapGPU;
+    [Tooltip("GPU swap still fails (RAM still bad).")]
+    public DialogueSequence dlg_GPUNotEnough;
+    [Tooltip("Swap the RAM next.")]
+    public DialogueSequence dlg_SwapRAM;
+    [Tooltip("RAM swap — it works!")]
+    public DialogueSequence dlg_RAMFixed;
+    [Tooltip("Boss: put old RAM back to confirm.")]
+    public DialogueSequence dlg_VerifyOldRAM;
+    [Tooltip("RAM confirmed bad. Put new RAM back.")]
+    public DialogueSequence dlg_RAMConfirmed;
+    [Tooltip("Put the new RAM back.")]
+    public DialogueSequence dlg_PutNewRAMBack;
+    [Tooltip("RAM fixed — now verify GPU too.")]
+    public DialogueSequence dlg_NowCheckGPU;
+    [Tooltip("GPU confirmed dead (no display).")]
+    public DialogueSequence dlg_GPUConfirmed;
+    [Tooltip("Put the new GPU back to finish.")]
+    public DialogueSequence dlg_PutNewGPUBack;
 
-    [Header("Dialogue — Phase 5: Email & Shop")]
+    [Header("Dialogue — Phase 4: Email & Shop")]
     public DialogueSequence dlg_EmailTutorial;
     public DialogueSequence dlg_ShopTutorial;
-    public DialogueSequence dlg_WelcomeSpeech;
+    [Tooltip("Troubleshooting patterns.")]
+    public DialogueSequence dlg_TroubleshootGuide;
+    [Tooltip("Final welcome speech.")]
+    public DialogueSequence dlg_FinalWelcome;
 
     // ─── Runtime State ───────────────────────────────────────────
 
@@ -74,23 +111,21 @@ public partial class TutorialManager : MonoBehaviour
     private float wTimer, aTimer, sTimer, dTimer;
     private bool wDone, aDone, sDone, dDone;
     private bool playerReachedCashier, customerReachedCashier;
-    private bool powerOnDone, powerOffDone;
     private int screwsRemoved, totalScrewsOnPanel;
     private bool panelRemoved;
-    private int diagPhase = 0;
-    private int faultyPartsRemoved = 0;
-    private int totalFaultyParts = 0;
+    private DiagState diagState = DiagState.RemoveOldGPU;
+    private bool grabbedGPU, grabbedRAM;
+    private bool shopBrowsed, shopAddedToCart;
 
     // ─── Lifecycle ───────────────────────────────────────────────
 
-    void Awake() 
-{ 
-    Instance = this;
-    bool done = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
-    bool loading = PlayerPrefs.GetInt("IsLoadingGame", 0) == 1;
-    if (!done && !loading)
-        waitingForCutscene = true;
-}
+    void Awake()
+    {
+        Instance = this;
+        bool done = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
+        bool loading = PlayerPrefs.GetInt("IsLoadingGame", 0) == 1;
+        if (!done && !loading) waitingForCutscene = true;
+    }
     void OnEnable() { DayTransitionManager.OnNewDayStarted += OnDayStarted; }
     void OnDisable() { DayTransitionManager.OnNewDayStarted -= OnDayStarted; }
 
@@ -107,23 +142,25 @@ public partial class TutorialManager : MonoBehaviour
         else step = 0;
     }
 
-     void OnDayStarted(int day)     {
-        if (step == 0 && day == 1 && !waitingForCutscene)   // ── CHANGED ──
-             StartCoroutine(DelayedStart());
-   }
+    void OnDayStarted(int day)
+    {
+        if (step == 0 && day == 1 && !waitingForCutscene)
+            StartCoroutine(DelayedStart());
+    }
 
-      /// <summary>
-     /// Called by PreTutorialCutscene when the story cutscene finishes or is skipped.
-   /// Clears the wait flag and starts the tutorial immediately.
-      /// </summary>
-      public void OnCutsceneComplete()                         // ── ADD THIS ──
-     {
-          waitingForCutscene = false;
-          if (step == 0)              StartCoroutine(DelayedStart());
-      }
+    public void OnCutsceneComplete()
+    {
+        waitingForCutscene = false;
+        if (step == 0) StartCoroutine(DelayedStart());
+    }
+
     void Update()
     {
         if (step == 1) UpdateWASD();
+
+        // DEBUG: Hold F9 to fast-skip dialogues
+        if (Input.GetKey(debugSkipKey) && dialogueManager != null && dialogueManager.isDialogueActive)
+            dialogueManager.SendMessage("NextLine", SendMessageOptions.DontRequireReceiver);
     }
 
     // ─── Public Queries ──────────────────────────────────────────
@@ -135,16 +172,25 @@ public partial class TutorialManager : MonoBehaviour
     public bool IsRepairStep() => step >= 11 && step <= 24;
     public bool IsShopPCStep() => step == 26;
     public bool IsCashierPCStep() => step == 5 || step == 6;
-    public bool IsInstallComponentStep() => step == 22;
+    public bool IsInstallComponentStep() => step == 16
+        && (diagState == DiagState.InstallNewGPU
+         || diagState == DiagState.InstallNewRAM
+         || diagState == DiagState.InstallOldRAM
+         || diagState == DiagState.InstallNewRAMFinal
+         || diagState == DiagState.InstallOldGPU
+         || diagState == DiagState.InstallNewGPUFinal);
     public bool IsEndDayStep() => false;
     public bool IsEmailStep() => step == 25;
     public bool IsInspectPCAllowed() => true;
-    public bool IsDiagnosingPC() => step == 15;
+    public bool IsDiagnosingPC() => step == 16;
+    public DiagState GetDiagState() => diagState;
 
     public void HideTaskTemporarily() { TaskListUI.Instance?.HideTemporarily(); }
     public void RestoreTaskIfNeeded() { TaskListUI.Instance?.RestoreIfNeeded(); }
 
-    // ─── Public Completions ──────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    //  PUBLIC COMPLETIONS
+    // ═══════════════════════════════════════════════════════════
 
     public void CompleteGoToCashierTask()
     {
@@ -203,6 +249,7 @@ public partial class TutorialManager : MonoBehaviour
     public void CompleteApproachWorkstationTask()
     {
         if (step == 9) TaskListUI.Instance?.CompleteTask(0);
+        if (step == 15) TaskListUI.Instance?.CompleteTask(0);
     }
 
     public void CompletePlaceBoxTask()
@@ -215,16 +262,23 @@ public partial class TutorialManager : MonoBehaviour
 
     public void CompleteApproachShopPCTask()
     {
-        if (step == 22) TaskListUI.Instance?.CompleteTask(0);
         if (step == 26) TaskListUI.Instance?.CompleteTask(0);
     }
 
     public void CompletePCTask()
     {
-        if (step != 11) return;
-        CompleteAllTasks(); HideArrow();
-        step = 12;
-        Dialogue(0.5f, dlg_ConnectCord, StartStep_ConnectPowerCord);
+        if (step == 11)
+        {
+            CompleteAllTasks(); HideArrow();
+            step = 12;
+            Dialogue(0.5f, dlg_ConnectCord, StartStep_ConnectPowerCord);
+            return;
+        }
+        if (step == 15 && !panelRemoved)
+        {
+            OnReenteredInspect();
+            return;
+        }
     }
 
     public void NotifyPowerCordConnected()
@@ -240,121 +294,121 @@ public partial class TutorialManager : MonoBehaviour
 
     public void CompleteRemoveTask(InspectableItem removedPart)
     {
-        if (step != 14 && step != 15) return;
+        if (step != 15 && step != 16) return;
         HandlePartRemoval(removedPart);
     }
 
     public void OnPlayerExitedInspection()
     {
-        if (step == 5)
-        {
-            CompleteCashierInspectTask();
-            step = 6;
-            StartStep_TalkToCustomer();
-            return;
-        }
-        if (step == 17)
-        {
-            TaskListUI.Instance?.CompleteTask(0);
-            step = 21;
-            Dialogue(0.5f, dlg_StorageTutorial, StartStep_StorageShelf);
-        }
-        else if (step == 24)
+        if (step == 5) { CompleteCashierInspectTask(); step = 6; StartStep_TalkToCustomer(); return; }
+        if (step == 14) { OnExitInspectForStorage(); return; }
+        if (step == 24)
         {
             TaskListUI.Instance?.CompleteTask(0);
             step = 25;
+            Debug.Log($"[Tutorial] Step 24→25. dlg_EmailTutorial is " +
+                      $"{(dlg_EmailTutorial != null ? "ASSIGNED (" + dlg_EmailTutorial.lines.Length + " lines)" : "NULL — assign it in Inspector!")}");
             Dialogue(0.5f, dlg_EmailTutorial, StartStep_EmailTutorial);
+            return;
         }
     }
 
     public void OnPCPowerToggled(bool poweredOn)
     {
-        if (step == 13)
+        if (step == 13 && poweredOn)
         {
-            if (poweredOn)
-            {
-                TaskListUI.Instance?.CompleteTask(0);
-                StartCoroutine(DelayThenAdvanceFromFirstPower());
-            }
+            TaskListUI.Instance?.CompleteTask(0);
+            StartCoroutine(DelayThenAdvanceFromFirstPower());
             return;
         }
-
-        if (step == 15 && diagPhase == 1)
+        if (step == 16)
         {
-            if (poweredOn)
-            {
-                TaskListUI.Instance?.CompleteTask(0);
-                StartCoroutine(DelayThenAdvanceFromDiagPowerTest());
-            }
+            bool isTestState = diagState == DiagState.TestAfterGPUSwap
+                            || diagState == DiagState.TestAfterRAMSwap
+                            || diagState == DiagState.TestWithOldRAM
+                            || diagState == DiagState.TestAfterRAMVerify
+                            || diagState == DiagState.TestWithOldGPU
+                            || diagState == DiagState.TestFinal;
+            if (poweredOn && isTestState) HandleDiagPowerTest();
             return;
-        }
-
-        if (step == 23)
-        {
-            if (poweredOn && !powerOnDone)
-            { powerOnDone = true; TaskListUI.Instance?.CompleteTask(1); }
-            if (!poweredOn && powerOnDone && !powerOffDone)
-            { powerOffDone = true; TaskListUI.Instance?.CompleteTask(2); }
-            if (powerOnDone && powerOffDone)
-            {
-                TaskListUI.Instance?.CompleteTask(0);
-                HideArrow();
-                step = 24;
-                StartStep_ExitInspectForEmail();
-            }
         }
     }
 
+    // ─── Storage (Step 14) ───────────────────────────────────────
+
     public void NotifyStoragePartGrabbed(string partCategory)
     {
-        if (step != 21) return;
+        if (step != 14) return;
         string cat = (partCategory ?? "").Trim().ToUpper();
-        if (cat == "GPU") { TaskListUI.Instance?.CompleteTask(2); }
-        else if (cat == "RAM") { TaskListUI.Instance?.CompleteTask(3); }
+        if (cat == "GPU" && !grabbedGPU) { grabbedGPU = true; TaskListUI.Instance?.CompleteTask(3); }
+        else if (cat == "RAM" && !grabbedRAM) { grabbedRAM = true; TaskListUI.Instance?.CompleteTask(4); }
     }
 
     public void CompleteApproachStorageShelfTask()
     {
-        if (step == 21) TaskListUI.Instance?.CompleteTask(0);
+        if (step == 14) TaskListUI.Instance?.CompleteTask(1);
+    }
+
+    public void NotifyStorageShelfOpened()
+    {
+        if (step == 14) TaskListUI.Instance?.CompleteTask(2);
     }
 
     public void CompleteStorageShelfTask()
     {
-        if (step != 21) return;
-        TaskListUI.Instance?.CompleteTask(0);
-        TaskListUI.Instance?.CompleteTask(1);
-        TaskListUI.Instance?.CompleteTask(4);
-        HideArrow();
-        step = 22;
-        Dialogue(1.0f, dlg_InstallParts, StartStep_InstallComponent);
+        if (step != 14) return;
+        if (!grabbedGPU || !grabbedRAM) { Debug.Log("[Tutorial] Storage closed but not all parts grabbed."); return; }
+        OnStoragePartsGrabbed();
     }
+
+    // ─── Install (Step 16) ───────────────────────────────────────
 
     public void CompleteInstallComponentTask()
     {
-        if (step != 22) return;
-        TaskListUI.Instance?.CompleteTask(2);
-        TaskListUI.Instance?.CompleteTask(3);
-        HideArrow();
-        step = 23;
-        Dialogue(0.5f, dlg_PowerSuccess, StartStep_FinalPowerTest);
+        if (step == 16) { HandlePartInstall_SwapTest(); return; }
     }
 
     public void CompleteAssemblyTask() => CompleteInstallComponentTask();
 
+    // ─── Email (Step 25) ─────────────────────────────────────────
+
     public void CompleteApproachEmailTask()
     {
-        if (step == 25) TaskListUI.Instance?.CompleteTask(0);
+        if (step == 25)
+        {
+            TaskListUI.Instance?.CompleteTask(0);
+            TaskListUI.Instance?.CompleteTask(1);
+        }
     }
 
     public void CompleteEmailTask()
     {
         if (step != 25) return;
+        Debug.Log("[Tutorial] Email job marked complete → advancing to shop tutorial.");
         CompleteAllTasks(); HideArrow();
         step = 26;
         Dialogue(1.0f, dlg_ShopTutorial, StartStep_ShopTutorial);
     }
 
-    public void CompleteOrderPartsTask() { }
+    // ─── Shop (Step 26) ──────────────────────────────────────────
+
+    public void NotifyShopCategoryBrowsed()
+    {
+        if (step != 26) return;
+        if (!shopBrowsed) { shopBrowsed = true; TaskListUI.Instance?.CompleteTask(1); }
+    }
+
+    public void NotifyShopItemAddedToCart()
+    {
+        if (step != 26) return;
+        if (!shopAddedToCart) { shopAddedToCart = true; TaskListUI.Instance?.CompleteTask(2); }
+    }
+
+    public void CompleteOrderPartsTask()
+    {
+        if (step == 26) CompleteShopTutorial();
+    }
+
     public void CompleteApproachDoorTask() { }
     public void CompleteEndDayTask() { }
     public void CompletePickupDeliveryTask() { }
@@ -367,11 +421,11 @@ public partial class TutorialManager : MonoBehaviour
         wTimer = aTimer = sTimer = dTimer = 0f;
         wDone = aDone = sDone = dDone = false;
         playerReachedCashier = customerReachedCashier = false;
-        powerOnDone = powerOffDone = false;
         screwsRemoved = totalScrewsOnPanel = 0;
         panelRemoved = false;
-        diagPhase = 0;
-        faultyPartsRemoved = totalFaultyParts = 0;
+        diagState = DiagState.RemoveOldGPU;
+        grabbedGPU = grabbedRAM = false;
+        shopBrowsed = shopAddedToCart = false;
         HideArrow(); HidePointer();
         StartCoroutine(DelayedStart());
     }

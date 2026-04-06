@@ -231,41 +231,51 @@ public class PCPowerSystem : MonoBehaviour
         InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
         PowerResult worst = PowerResult.Success;
 
+        // ── PASS 1: Count installed (non-ghost) parts per category ──
+        bool hasRAM = false;
+        bool hasGPU = false;
+        bool hasPSU = false;
+        bool hasMotherboard = false;
+        bool hasCPU = false;
+
         foreach (InspectableItem part in allParts)
         {
-            if (part.isMainObject) continue;
+            if (part.isMainObject || part.isInventorySlot) continue;
 
-            // ── MISSING ESSENTIAL PARTS (ghost slots) ──
-            if (part.isInventorySlot)
+            switch (part.partCategory)
             {
-                if (part.partCategory == "PSU" || part.partCategory == "Motherboard"
-                    || part.partCategory == "CPU")
-                {
-                    return PowerResult.NoPower; // Immediately return — can't boot at all
-                }
-
-                // Missing RAM = failed POST (beeps, shuts off)
-                if (part.partCategory == "RAM")
-                    worst = WorstOf(worst, PowerResult.FailedPOST);
-
-                // Missing GPU = no display (but PC still runs)
-                if (part.partCategory == "GPU")
-                    worst = WorstOf(worst, PowerResult.NoDisplay);
-
-                continue;
+                case "RAM": hasRAM = true; break;
+                case "GPU": hasGPU = true; break;
+                case "PSU": hasPSU = true; break;
+                case "Motherboard": hasMotherboard = true; break;
+                case "CPU": hasCPU = true; break;
             }
+        }
 
-            // ── INSTALLED PART FAULTS ──
+        // ── PASS 2: Check for missing essentials ──
+        if (!hasPSU || !hasMotherboard || !hasCPU)
+            return PowerResult.NoPower;
+
+        if (!hasRAM)
+            worst = WorstOf(worst, PowerResult.FailedPOST);
+
+        if (!hasGPU)
+            worst = WorstOf(worst, PowerResult.NoDisplay);
+
+        // ── PASS 3: Check faults on installed parts ──
+        foreach (InspectableItem part in allParts)
+        {
+            if (part.isMainObject || part.isInventorySlot) continue;
+            if (part.fault == PartFault.None) continue;
+
             PowerResult partResult = EvaluatePartFault(part);
             worst = WorstOf(worst, partResult);
 
-            // Short-circuit: NoPower is the worst possible
             if (worst == PowerResult.NoPower) return worst;
         }
 
         return worst;
     }
-
     PowerResult EvaluatePartFault(InspectableItem part)
     {
         if (part.fault == PartFault.None) return PowerResult.Success;
@@ -332,12 +342,22 @@ public class PCPowerSystem : MonoBehaviour
 
     string GetFailedPOSTReason()
     {
+        // Check if RAM is truly missing (no installed RAM at all)
+        bool hasRAM = false;
         InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
         foreach (InspectableItem part in allParts)
         {
-            if (part.isMainObject) continue;
-            if (part.isInventorySlot && part.partCategory == "RAM")
-                return "No RAM installed!\nFans spin briefly, then PC shuts off.";
+            if (part.isMainObject || part.isInventorySlot) continue;
+            if (part.partCategory == "RAM") { hasRAM = true; break; }
+        }
+
+        if (!hasRAM)
+            return "No RAM installed!\nFans spin briefly, then PC shuts off.";
+
+        // Check for faults on installed RAM
+        foreach (InspectableItem part in allParts)
+        {
+            if (part.isMainObject || part.isInventorySlot) continue;
             if (part.partCategory == "RAM" && part.fault == PartFault.Broken)
                 return "RAM is faulty!\nPC beeps and shuts off after a few seconds.";
             if (part.partCategory == "RAM" && part.fault == PartFault.NotSeated)
@@ -352,12 +372,20 @@ public class PCPowerSystem : MonoBehaviour
 
     string GetNoDisplayReason()
     {
+        bool hasGPU = false;
         InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
         foreach (InspectableItem part in allParts)
         {
-            if (part.isMainObject) continue;
-            if (part.isInventorySlot && part.partCategory == "GPU")
-                return "No GPU installed!\nFans spin, system runs, but no display output.";
+            if (part.isMainObject || part.isInventorySlot) continue;
+            if (part.partCategory == "GPU") { hasGPU = true; break; }
+        }
+
+        if (!hasGPU)
+            return "No GPU installed!\nFans spin, system runs, but no display output.";
+
+        foreach (InspectableItem part in allParts)
+        {
+            if (part.isMainObject || part.isInventorySlot) continue;
             if (part.partCategory == "GPU" && part.fault == PartFault.Broken)
                 return "GPU is dead!\nPC runs but no display — replace the graphics card.";
             if (part.partCategory == "GPU" && part.fault == PartFault.NotSeated)

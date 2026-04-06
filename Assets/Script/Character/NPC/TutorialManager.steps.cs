@@ -14,18 +14,34 @@ public partial class TutorialManager
         PCPartDatabase db = GetDatabase();
         if (db != null)
         {
-            db.gpuChance = 100f;
-            db.ramChance = 100f;
-            db.cpuChance = 100f;
-            db.storageChance = 100f;
-            db.coolerChance = 100f;
-            db.buildJobChance = 0f;
+            db.gpuChance = 100f; db.ramChance = 100f;
+            db.cpuChance = 100f; db.storageChance = 100f;
+            db.coolerChance = 100f; db.buildJobChance = 0f;
         }
         else Debug.LogError("[Tutorial] No PCPartDatabase found!");
+
+        PopulateTutorialStock();
 
         if (dialogueManager == null || dlg_Intro == null)
         { step = STEP_DONE; yield break; }
         dialogueManager.PlaySequence(dlg_Intro, StartStep_WASD);
+    }
+
+    void PopulateTutorialStock()
+    {
+        if (ShopSystem.Instance == null) { Debug.LogWarning("[Tutorial] ShopSystem not found."); return; }
+        List<string> ids = ShopSystem.Instance.GetInventoryIDs();
+        List<ItemData> allItems = ShopSystem.Instance.allAvailableItems;
+        if (allItems == null || allItems.Count == 0) { Debug.LogWarning("[Tutorial] No shop items."); return; }
+
+        ids.Clear();
+        int total = 0;
+        foreach (ItemData item in allItems)
+        {
+            if (item == null || item.itemType != ItemCategory.PCPart) continue;
+            for (int i = 0; i < tutorialStockPerItem; i++) { ids.Add(item.id); total++; }
+        }
+        Debug.Log($"[Tutorial] Pre-stocked {total} items ({tutorialStockPerItem} each).");
     }
 
     void StartStep_WASD()
@@ -33,12 +49,9 @@ public partial class TutorialManager
         wDone = aDone = sDone = dDone = false;
         wTimer = aTimer = sTimer = dTimer = 0f;
         SetTask("CALIBRATION",
-            "Hold [W]  — Move Forward",
-            "Hold [A]  — Move Left",
-            "Hold [S]  — Move Backward",
-            "Hold [D]  — Move Right");
-        HideArrow();
-        step = 1;
+            "Hold [W]  — Move Forward", "Hold [A]  — Move Left",
+            "Hold [S]  — Move Backward", "Hold [D]  — Move Right");
+        HideArrow(); step = 1;
     }
 
     void UpdateWASD()
@@ -72,9 +85,7 @@ public partial class TutorialManager
     void StartStep_GoCashier()
     {
         playerReachedCashier = customerReachedCashier = false;
-        SetTask("FIRST CUSTOMER",
-            "Head to the cashier counter",
-            "Wait for the customer to arrive");
+        SetTask("FIRST CUSTOMER", "Head to the cashier counter", "Wait for the customer to arrive");
         if (cashierTarget != null) ShowArrow(cashierTarget);
         else StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.Cashier));
         step = 3;
@@ -86,32 +97,24 @@ public partial class TutorialManager
         foreach (CustomerInside c in FindObjectsOfType<CustomerInside>())
         {
             if (c.isAtSpot)
-            {
-                c.jobRequest = "My PC won't boot. I think the GPU and RAM are faulty — can you check?";
-                break;
-            }
+            { c.jobRequest = "My PC won't boot. I think the GPU and RAM are faulty — can you check?"; break; }
         }
-        HideArrow();
-        step = 4;
+        HideArrow(); step = 4;
         Dialogue(0.5f, dlg_TalkCustomer, StartStep_PreviewCounterPC);
     }
 
     void StartStep_PreviewCounterPC()
     {
         SetTask("PREVIEW CUSTOMER PC",
-            "Walk to the customer's PC on the counter",
-            "Press [E] to preview it (view only)",
-            "Press [Esc] to exit preview",
-            "Press [E] on the customer to talk");
+            "Walk to the customer's PC on the counter", "Press [E] to preview it (view only)",
+            "Press [Esc] to exit preview", "Press [E] on the customer to talk");
         StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.CashierPC));
         step = 5;
     }
 
     void StartStep_TalkToCustomer()
     {
-        SetTask("ACCEPT THE JOB",
-            "Press [E] to talk to the customer",
-            "Accept the job");
+        SetTask("ACCEPT THE JOB", "Press [E] to talk to the customer", "Accept the job");
         StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.Customer));
         step = 6;
     }
@@ -122,57 +125,46 @@ public partial class TutorialManager
 
     void StartStep_PickupBox()
     {
-        SetTask("INTAKE — STEP 1 / 2",
-            "Find the customer's PC box",
-            "Press [Q] to carry it");
+        SetTask("INTAKE — STEP 1 / 2", "Find the customer's PC box", "Press [Q] to carry it");
         StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.Box));
         step = 7;
     }
 
     void StartStep_PlaceBox()
     {
-        SetTask("INTAKE — STEP 2 / 2",
-            "Walk to the workstation desk",
-            "Left-click to set the box down");
-        ShowArrow(workstationTarget);
-        step = 9;
+        SetTask("INTAKE — STEP 2 / 2", "Walk to the workstation desk", "Left-click to set the box down");
+        ShowArrow(workstationTarget); step = 9;
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  PHASE 3 — DIAGNOSIS
+    //  PHASE 3 — DIAGNOSIS (swap-and-test + verify both)
+    //
+    //  Power behavior is handled by PCPowerSystem.EvaluatePowerState()
+    //  which checks actual faults on installed parts:
+    //    Old GPU (Broken) + Old RAM (Broken)  → FailedPOST (3s then off)
+    //    New GPU + Old RAM (Broken)            → FailedPOST (3s then off)
+    //    New GPU + New RAM                     → Success (full boot)
+    //    Old GPU (Broken) + New RAM            → NoDisplay (fans spin, no picture)
     // ═══════════════════════════════════════════════════════════
-
-    // ── Step 11: Enter Inspect Mode ──────────────────────────────
 
     void StartStep_InspectPC()
     {
-        SetTask("DIAGNOSE — INSPECT",
-            "Look at the PC on the desk",
-            "Press [E] to enter Inspect Mode");
-        StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.PC));
-        step = 11;
+        SetTask("DIAGNOSE — INSPECT", "Look at the PC on the desk", "Press [E] to enter Inspect Mode");
+        StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.PC)); step = 11;
     }
-
-    // ── Step 12: Connect Power Cord ──────────────────────────────
 
     void StartStep_ConnectPowerCord()
     {
         SetTask("DIAGNOSE — CONNECT POWER",
             "Click the power cord connector on the back of the PC",
             "The power cord must be plugged in before testing");
-        HideArrow();
-        step = 12;
+        HideArrow(); step = 12;
     }
-
-    // ── Step 13: Power-On Test ───────────────────────────────────
 
     void StartStep_PowerOnTest()
     {
-        SetTask("DIAGNOSE — POWER TEST",
-            "Press the Power Button to turn on the PC",
-            "Observe what happens...");
-        HideArrow();
-        step = 13;
+        SetTask("DIAGNOSE — POWER TEST", "Press the Power Button to turn on the PC", "Observe what happens...");
+        HideArrow(); step = 13;
     }
 
     IEnumerator DelayThenAdvanceFromFirstPower()
@@ -181,83 +173,109 @@ public partial class TutorialManager
         if (step != 13) yield break;
         TaskListUI.Instance?.CompleteTask(1);
         yield return new WaitForSeconds(1.0f);
-        step = 14;
-        Dialogue(0.5f, dlg_OpenCase, StartStep_UnscrewPanel);
+        Dialogue(0.5f, dlg_GrabPartsFirst, StartStep_ExitForStorage);
     }
 
-    // ── Step 14: Unscrew + Remove Panel ──────────────────────────
+    // ── Step 14: Exit → Storage ──────────────────────────────────
 
-    void StartStep_UnscrewPanel()
+    void StartStep_ExitForStorage()
     {
-        screwsRemoved = 0;
-        panelRemoved = false;
+        grabbedGPU = grabbedRAM = false;
+        SetTask("GRAB SPARE PARTS",
+            "Press [Esc] to exit Inspect Mode", "Walk to the storage shelf",
+            "Press [E] to open the Storage Panel", "Click the GPU to grab it", "Click the RAM to grab it");
+        HideArrow(); step = 14;
+    }
+
+    void OnExitInspectForStorage()
+    {
+        TaskListUI.Instance?.CompleteTask(0);
+        if (storageShelfTarget != null) ShowArrow(storageShelfTarget);
+        else StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.StorageShelf));
+    }
+
+    void OnStoragePartsGrabbed()
+    {
+        CompleteAllTasks(); HideArrow(); step = 15;
+        Dialogue(0.5f, dlg_OpenCase, StartStep_ReenterInspectAndOpenCase);
+    }
+
+    // ── Step 15: Re-enter Inspect → Open Case ────────────────────
+
+    void StartStep_ReenterInspectAndOpenCase()
+    {
+        screwsRemoved = 0; panelRemoved = false;
+        SetTask("OPEN THE CASE",
+            "Go back to the PC on the workstation", "Press [E] to enter Inspect Mode",
+            "Select the Screwdriver (press 1)", "Unscrew the side panel screws (0/?)", "Remove the side panel");
+        ShowArrow(workstationTarget); step = 15;
+    }
+
+    void OnReenteredInspect()
+    {
         totalScrewsOnPanel = CountSidePanelScrews();
-
-        SetTask("DIAGNOSE — OPEN CASE",
-            "Select the Screwdriver (press 1)",
-            $"Unscrew the side panel screws (0/{totalScrewsOnPanel})",
-            "Remove the side panel");
-        HideArrow();
-        step = 14;
-    }
-
-    // ── Step 15: DIAGNOSIS LOOP ──────────────────────────────────
-
-    void StartStep_DiagnoseLoop()
-    {
-        diagPhase = 0;
-        faultyPartsRemoved = 0;
-        totalFaultyParts = CountFaultyParts();
-        ShowDiagTask_RemoveFirstSuspect();
-        step = 15;
-    }
-
-    void ShowDiagTask_RemoveFirstSuspect()
-    {
-        SetTask("DIAGNOSE — PROCESS OF ELIMINATION",
-            "Remove the GPU (most likely cause of 'no display')",
-            "Use the screwdriver — hold click to remove");
-        HideArrow();
-    }
-
-    void ShowDiagTask_PowerTestMidDiagnosis()
-    {
-        SetTask("DIAGNOSE — TEST",
-            "Press the Power Button to test without the GPU",
-            "Watch if the symptom changes...");
-        HideArrow();
-    }
-
-    IEnumerator DelayThenAdvanceFromDiagPowerTest()
-    {
-        yield return new WaitForSeconds(3.0f);
-        if (step != 15 || diagPhase != 1) yield break;
+        TaskListUI.Instance?.CompleteTask(0);
         TaskListUI.Instance?.CompleteTask(1);
-        yield return new WaitForSeconds(0.5f);
-        diagPhase = 2;
-        Dialogue(0.5f, dlg_StillFailing, ShowDiagTask_RemoveSecondSuspect);
+        TaskListUI.Instance?.UpdateTaskText(3, $"Unscrew the side panel screws (0/{totalScrewsOnPanel})");
     }
 
-    void ShowDiagTask_RemoveSecondSuspect()
+    // ── Step 16: Swap-and-Test Loop ──────────────────────────────
+
+    void StartStep_SwapAndTest()
     {
-        SetTask("DIAGNOSE — NEXT SUSPECT",
-            "The symptom changed — POST failure means RAM could be bad",
-            "Remove the RAM stick");
-        HideArrow();
+        diagState = DiagState.RemoveOldGPU;
+        ShowSwapTask(); step = 16;
     }
 
-    void OnAllFaultsFound()
+    void ShowSwapTask()
     {
-        CompleteAllTasks();
         HideArrow();
-        Dialogue(0.5f, dlg_FoundAllFaults, () =>
+        switch (diagState)
         {
-            step = 17;
-            StartStep_ExitInspectForStorage();
-        });
+            // GPU swap
+            case DiagState.RemoveOldGPU:
+                SetTask("SWAP TEST — GPU", "Remove the old GPU", "Use the screwdriver — hold click to remove"); break;
+            case DiagState.InstallNewGPU:
+                SetTask("SWAP TEST — GPU", "Press [Tab] to see your parts", "Install the new GPU into the empty slot"); break;
+            case DiagState.TestAfterGPUSwap:
+                SetTask("SWAP TEST — GPU", "Press the Power Button to test", "Watch if the symptom changes..."); break;
+            // RAM swap
+            case DiagState.RemoveOldRAM:
+                SetTask("SWAP TEST — RAM", "Remove the old RAM stick", "Use the screwdriver — hold click to remove"); break;
+            case DiagState.InstallNewRAM:
+                SetTask("SWAP TEST — RAM", "Press [Tab] to see your parts", "Install the new RAM into the empty slot"); break;
+            case DiagState.TestAfterRAMSwap:
+                SetTask("SWAP TEST — RAM", "Press the Power Button to test", "Watch what happens this time..."); break;
+            // RAM verify
+            case DiagState.RemoveNewRAM:
+                SetTask("VERIFY — RAM", "Remove the new RAM you just installed", "We need to confirm the RAM was the problem"); break;
+            case DiagState.InstallOldRAM:
+                SetTask("VERIFY — RAM", "Press [Tab] to see your parts", "Install the OLD RAM (the faulty one)"); break;
+            case DiagState.TestWithOldRAM:
+                SetTask("VERIFY — RAM", "Press the Power Button to test with old RAM", "Does the problem come back?"); break;
+            case DiagState.RemoveOldRAMAgain:
+                SetTask("VERIFY — RAM", "Remove the old RAM again", "RAM confirmed bad — put the good one back"); break;
+            case DiagState.InstallNewRAMFinal:
+                SetTask("VERIFY — RAM", "Press [Tab] to see your parts", "Install the new RAM"); break;
+            case DiagState.TestAfterRAMVerify:
+                SetTask("VERIFY — RAM", "Press the Power Button to confirm the fix", "This should boot clean..."); break;
+            // GPU verify
+            case DiagState.RemoveNewGPU:
+                SetTask("VERIFY — GPU", "Remove the new GPU", "Let's check if the old GPU was also bad"); break;
+            case DiagState.InstallOldGPU:
+                SetTask("VERIFY — GPU", "Press [Tab] to see your parts", "Install the OLD GPU (the original one)"); break;
+            case DiagState.TestWithOldGPU:
+                SetTask("VERIFY — GPU", "Press the Power Button to test with old GPU", "Watch the display output..."); break;
+            case DiagState.RemoveOldGPUAgain:
+                SetTask("FINAL FIX", "Remove the old GPU again", "GPU confirmed bad — put the new one back"); break;
+            case DiagState.InstallNewGPUFinal:
+                SetTask("FINAL FIX", "Press [Tab] to see your parts", "Install the new GPU to finish the repair"); break;
+            case DiagState.TestFinal:
+                SetTask("FINAL FIX", "Press the Power Button for the final test", "This should boot clean!"); break;
+        }
     }
 
-    // ── Part Removal Handler (steps 14 + 15) ─────────────────────
+    // ── Part Removal (steps 15 + 16) ─────────────────────────────
 
     void HandlePartRemoval(InspectableItem part)
     {
@@ -265,124 +283,176 @@ public partial class TutorialManager
         string partName = (part.itemName ?? "").ToLower();
         string partCat = (part.partCategory ?? "").ToLower();
 
-        // ═══ STEP 14: SCREW + PANEL ═══
-        if (step == 14)
+        // ═══ STEP 15: SCREW + PANEL ═══
+        if (step == 15)
         {
             if (!panelRemoved && IsScrew(partName, partCat))
             {
                 screwsRemoved++;
-                TaskListUI.Instance?.UpdateTaskText(1,
+                TaskListUI.Instance?.UpdateTaskText(3,
                     $"Unscrew the side panel screws ({screwsRemoved}/{totalScrewsOnPanel})");
-                if (screwsRemoved == 1) TaskListUI.Instance?.CompleteTask(0);
-                if (screwsRemoved >= totalScrewsOnPanel) TaskListUI.Instance?.CompleteTask(1);
+                if (screwsRemoved == 1) TaskListUI.Instance?.CompleteTask(2);
+                if (screwsRemoved >= totalScrewsOnPanel) TaskListUI.Instance?.CompleteTask(3);
                 return;
             }
             if (!panelRemoved && IsPanel(partName, partCat))
             {
                 panelRemoved = true;
                 CompleteAllTasks();
-                Dialogue(0.5f, dlg_IdentifyFaults, StartStep_DiagnoseLoop);
+                Dialogue(0.5f, dlg_SwapGPU, StartStep_SwapAndTest);
                 return;
             }
             return;
         }
 
-        // ═══ STEP 15: DIAGNOSIS LOOP ═══
-        if (step != 15) return;
+        // ═══ STEP 16: SWAP-AND-TEST ═══
+        if (step != 16) return;
 
-        if (diagPhase == 0 && IsSuspectPart(partCat, "GPU"))
+        switch (diagState)
         {
-            faultyPartsRemoved++;
-            TaskListUI.Instance?.CompleteTask(0);
-            TaskListUI.Instance?.CompleteTask(1);
-            diagPhase = 1;
-            Dialogue(0.5f, dlg_TestAfterFirstRemoval, ShowDiagTask_PowerTestMidDiagnosis);
-            return;
+            case DiagState.RemoveOldGPU:
+                if (!IsSuspectPart(partCat, "gpu")) break;
+                Debug.Log($"[Tutorial] Old GPU removed. fault={part.fault}");
+                CompleteAllTasks(); diagState = DiagState.InstallNewGPU; ShowSwapTask(); return;
+            case DiagState.RemoveOldRAM:
+                if (!IsSuspectPart(partCat, "ram")) break;
+                Debug.Log($"[Tutorial] Old RAM removed. fault={part.fault}");
+                CompleteAllTasks(); diagState = DiagState.InstallNewRAM; ShowSwapTask(); return;
+            case DiagState.RemoveNewRAM:
+                if (!IsSuspectPart(partCat, "ram")) break;
+                CompleteAllTasks(); diagState = DiagState.InstallOldRAM; ShowSwapTask(); return;
+            case DiagState.RemoveOldRAMAgain:
+                if (!IsSuspectPart(partCat, "ram")) break;
+                CompleteAllTasks(); diagState = DiagState.InstallNewRAMFinal; ShowSwapTask(); return;
+            case DiagState.RemoveNewGPU:
+                if (!IsSuspectPart(partCat, "gpu")) break;
+                Debug.Log($"[Tutorial] New GPU removed for verify. fault={part.fault}");
+                CompleteAllTasks(); diagState = DiagState.InstallOldGPU; ShowSwapTask(); return;
+            case DiagState.RemoveOldGPUAgain:
+                if (!IsSuspectPart(partCat, "gpu")) break;
+                CompleteAllTasks(); diagState = DiagState.InstallNewGPUFinal; ShowSwapTask(); return;
         }
 
-        if (diagPhase == 2 && IsSuspectPart(partCat, "RAM"))
+        Debug.Log($"[Tutorial] Removed '{part.itemName}' but DiagState={diagState} — ignoring.");
+    }
+
+    // ── Install Handler (step 16) ────────────────────────────────
+
+    void HandlePartInstall_SwapTest()
+    {
+        switch (diagState)
         {
-            faultyPartsRemoved++;
-            TaskListUI.Instance?.CompleteTask(0);
-            TaskListUI.Instance?.CompleteTask(1);
-            diagPhase = 3;
-            OnAllFaultsFound();
-            return;
+            case DiagState.InstallNewGPU:
+                CompleteAllTasks(); diagState = DiagState.TestAfterGPUSwap; ShowSwapTask(); return;
+            case DiagState.InstallNewRAM:
+                CompleteAllTasks(); diagState = DiagState.TestAfterRAMSwap; ShowSwapTask(); return;
+            case DiagState.InstallOldRAM:
+                CompleteAllTasks(); diagState = DiagState.TestWithOldRAM; ShowSwapTask(); return;
+            case DiagState.InstallNewRAMFinal:
+                CompleteAllTasks(); diagState = DiagState.TestAfterRAMVerify; ShowSwapTask(); return;
+            case DiagState.InstallOldGPU:
+                CompleteAllTasks(); diagState = DiagState.TestWithOldGPU; ShowSwapTask(); return;
+            case DiagState.InstallNewGPUFinal:
+                CompleteAllTasks(); diagState = DiagState.TestFinal; ShowSwapTask(); return;
+        }
+        Debug.Log($"[Tutorial] Part installed but DiagState={diagState} — ignoring.");
+    }
+
+    // ── Power Test Handler (step 16) ─────────────────────────────
+    //
+    //  The engine handles all power results naturally:
+    //    FailedPOST → PC auto-shuts off after ~3s (DelayedShutdown in PCPowerSystem)
+    //    NoDisplay  → PC stays on, fans spin, no picture
+    //    Success    → PC boots fully
+    //
+    //  We just wait, then show the appropriate dialogue.
+
+    void HandleDiagPowerTest()
+    {
+        TaskListUI.Instance?.CompleteTask(0);
+
+        // Log what the engine decided
+        InspectionManager im = FindObjectOfType<InspectionManager>();
+        if (im != null && im.currentClone != null)
+        {
+            PCPowerSystem ps = im.currentClone.GetComponent<PCPowerSystem>();
+            if (ps != null)
+                Debug.Log($"[Tutorial] Power test at {diagState}: result={ps.lastPowerResult}, isPoweredOn={ps.isPoweredOn}");
         }
 
-        Debug.Log($"[Tutorial] Removed '{part.itemName}' but expecting " +
-                  $"{(diagPhase <= 1 ? "GPU" : "RAM")} — ignoring.");
+        StartCoroutine(DelayedDiagPowerAdvance());
     }
 
-    // ── Step 17: Exit Inspection → Storage ───────────────────────
-
-    void StartStep_ExitInspectForStorage()
+    IEnumerator DelayedDiagPowerAdvance()
     {
-        SetTask("DIAGNOSIS COMPLETE",
-            "Press [Esc] to exit Inspect Mode",
-            "Grab replacements from your storage shelf!");
-        HideArrow();
-        step = 17;
+        yield return new WaitForSeconds(3.5f);
+        if (step != 16) yield break;
+
+        TaskListUI.Instance?.CompleteTask(1);
+        yield return new WaitForSeconds(0.5f);
+
+        switch (diagState)
+        {
+            case DiagState.TestAfterGPUSwap:
+                // New GPU + old broken RAM → FailedPOST (auto-shutdown after ~3s)
+                Dialogue(0.5f, dlg_GPUNotEnough, () =>
+                    Dialogue(0.3f, dlg_SwapRAM, () =>
+                    { diagState = DiagState.RemoveOldRAM; ShowSwapTask(); }));
+                break;
+
+            case DiagState.TestAfterRAMSwap:
+                // New GPU + new RAM → Success → it works!
+                Dialogue(0.5f, dlg_RAMFixed, () =>
+                    Dialogue(0.3f, dlg_VerifyOldRAM, () =>
+                    { diagState = DiagState.RemoveNewRAM; ShowSwapTask(); }));
+                break;
+
+            case DiagState.TestWithOldRAM:
+                // New GPU + old broken RAM → FailedPOST → fails again
+                Dialogue(0.5f, dlg_RAMConfirmed, () =>
+                    Dialogue(0.3f, dlg_PutNewRAMBack, () =>
+                    { diagState = DiagState.RemoveOldRAMAgain; ShowSwapTask(); }));
+                break;
+
+            case DiagState.TestAfterRAMVerify:
+                // New GPU + new RAM → Success → now verify GPU
+                Dialogue(0.5f, dlg_NowCheckGPU, () =>
+                { diagState = DiagState.RemoveNewGPU; ShowSwapTask(); });
+                break;
+
+            case DiagState.TestWithOldGPU:
+                // Old broken GPU + new RAM → NoDisplay (fans spin, no picture)
+                // PC stays on — this IS the correct symptom for a dead GPU
+                Dialogue(0.5f, dlg_GPUConfirmed, () =>
+                    Dialogue(0.3f, dlg_PutNewGPUBack, () =>
+                    { diagState = DiagState.RemoveOldGPUAgain; ShowSwapTask(); }));
+                break;
+
+            case DiagState.TestFinal:
+                // New GPU + new RAM → Success → all done!
+                diagState = DiagState.Done;
+                CompleteAllTasks(); HideArrow();
+                step = 24;
+                StartStep_ExitInspectForCompletion();
+                break;
+        }
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  PHASE 4 — STORAGE & REPAIR
+    //  PHASE 4 — COMPLETION
     // ═══════════════════════════════════════════════════════════
 
-    void StartStep_StorageShelf()
+    void StartStep_ExitInspectForCompletion()
     {
-        SetTask("STORAGE — GRAB PARTS",
-            "Walk to the storage shelf",
-            "Press [E] to open the Storage Panel",
-            "Click the GPU to grab it",
-            "Click the RAM to grab it",
-            "Press [Esc] to close the panel");
-        if (storageShelfTarget != null) ShowArrow(storageShelfTarget);
-        else StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.StorageShelf));
-        step = 21;
-    }
-
-    void StartStep_InstallComponent()
-    {
-        SetTask("REPAIR — INSTALL",
-            "Go to the customer's PC on the workstation",
-            "Press [E] to inspect it",
-            "Press [Tab] to see your parts",
-            "Install the new GPU and RAM");
-        ShowArrow(workstationTarget);
-        step = 22;
-    }
-
-    void StartStep_FinalPowerTest()
-    {
-        powerOnDone = powerOffDone = false;
-        SetTask("QUALITY CHECK",
-            "Test the repaired PC",
-            "Press the power button → Turn it ON",
-            "Press the power button → Turn it OFF");
-        StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.PC));
-        step = 23;
-    }
-
-    // ═══════════════════════════════════════════════════════════
-    //  PHASE 5 — EMAIL & SHOP
-    // ═══════════════════════════════════════════════════════════
-
-    void StartStep_ExitInspectForEmail()
-    {
-        SetTask("REPAIR COMPLETE!",
-            "Press [Esc] to exit Inspect Mode");
-        HideArrow();
-        step = 24;
+        SetTask("REPAIR COMPLETE!", "Press [Esc] to exit Inspect Mode");
+        HideArrow(); step = 24;
     }
 
     void StartStep_EmailTutorial()
     {
         SetTask("SUBMIT JOB",
-            "Go to the workstation monitor",
-            "Press [E] to open your emails",
-            "Find the completed job in your inbox",
-            "Mark the job as complete");
+            "Go to the workstation monitor", "Press [E] to open your emails",
+            "Find the completed job in your inbox", "Mark the job as complete");
         if (emailTarget != null) ShowArrow(emailTarget);
         else StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.Email));
         step = 25;
@@ -390,11 +460,10 @@ public partial class TutorialManager
 
     void StartStep_ShopTutorial()
     {
+        shopBrowsed = shopAddedToCart = false;
         SetTask("SHOP TUTORIAL",
-            "Go to the Shop PC",
-            "Browse the different component categories",
-            "Add items to your cart",
-            "Keep your storage stocked!");
+            "Go to the Shop PC", "Browse the different component categories",
+            "Add items to your cart", "Keep your storage stocked!");
         if (shopPCTarget != null) ShowArrow(shopPCTarget);
         else StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.ShopPC));
         step = 26;
@@ -405,7 +474,18 @@ public partial class TutorialManager
         if (step != 26) return;
         CompleteAllTasks(); HideArrow();
         step = 27;
-        Dialogue(1.0f, dlg_WelcomeSpeech, FinishTutorial);
+        Dialogue(1.0f, dlg_TroubleshootGuide, StartStep_TroubleshootGuide);
+    }
+
+    void StartStep_TroubleshootGuide()
+    {
+        SetTask("TROUBLESHOOTING GUIDE", "Pay attention to the common symptoms!");
+        HideArrow(); step = 27;
+        Dialogue(0.5f, dlg_TroubleshootGuide, () =>
+        {
+            CompleteAllTasks(); step = 28;
+            Dialogue(1.0f, dlg_FinalWelcome, FinishTutorial);
+        });
     }
 
     void FinishTutorial() => StartCoroutine(FinalCleanup());
@@ -416,12 +496,8 @@ public partial class TutorialManager
         PCPartDatabase db = GetDatabase();
         if (db != null)
         {
-            db.gpuChance = 75f;
-            db.ramChance = 95f;
-            db.cpuChance = 100f;
-            db.storageChance = 90.6f;
-            db.coolerChance = 93f;
-            db.buildJobChance = 35f;
+            db.gpuChance = 75f; db.ramChance = 95f; db.cpuChance = 100f;
+            db.storageChance = 90.6f; db.coolerChance = 93f; db.buildJobChance = 35f;
         }
         TaskListUI.Instance?.HidePanel();
         HideArrow(); HidePointer();
@@ -440,6 +516,9 @@ public partial class TutorialManager
         foreach (CustomerInside c in FindObjectsOfType<CustomerInside>())
         {
             if (c.assignedJob == null || c.assignedJob.startingParts == null) continue;
+            foreach (StartingPCComponent part in c.assignedJob.startingParts)
+            { part.fault = PartFault.None; part.faultDescription = ""; part.isDusty = false; }
+
             bool gpuDone = false, ramDone = false;
             foreach (StartingPCComponent part in c.assignedJob.startingParts)
             {
@@ -447,21 +526,11 @@ public partial class TutorialManager
                 string name = (part.partName ?? "").ToLower();
                 if (!gpuDone && (cat == "GPU" || name.Contains("gpu") || name.Contains("gtx")
                     || name.Contains("rtx") || name.Contains("radeon") || name.Contains("geforce")))
-                {
-                    part.fault = PartFault.Broken;
-                    part.faultDescription = "GPU has failed — no display output.";
-                    gpuDone = true;
-                }
+                { part.fault = PartFault.Broken; part.faultDescription = "GPU has failed — no display output."; gpuDone = true; }
                 else if (!ramDone && (cat == "RAM" || name.Contains("ram") || name.Contains("ddr")))
-                {
-                    part.fault = PartFault.Broken;
-                    part.faultDescription = "RAM stick is dead — system fails POST.";
-                    ramDone = true;
-                }
+                { part.fault = PartFault.Broken; part.faultDescription = "RAM stick is dead — system fails POST."; ramDone = true; }
             }
-            int faults = 0;
-            foreach (var p in c.assignedJob.startingParts) if (p.fault != PartFault.None) faults++;
-            c.assignedJob.originalFaultCount = faults;
+            c.assignedJob.originalFaultCount = 2;
             c.assignedJob.pcProblems = new string[] { "No Display on Monitor" };
             c.jobRequest = "My PC won't boot. I think the GPU and RAM are dead — can you replace them?";
             break;
@@ -472,21 +541,15 @@ public partial class TutorialManager
     //  HELPERS
     // ═══════════════════════════════════════════════════════════
 
-    bool IsScrew(string name, string category)
-    {
-        return name.Contains("screw") || name.Contains("bolt") || name.Contains("fastener")
-            || category.Contains("screw") || category.Contains("bolt");
-    }
+    bool IsScrew(string name, string cat) =>
+        name.Contains("screw") || name.Contains("bolt") || name.Contains("fastener")
+        || cat.Contains("screw") || cat.Contains("bolt");
 
-    bool IsPanel(string name, string category)
-    {
-        return name.Contains("panel") || category.Contains("panel");
-    }
+    bool IsPanel(string name, string cat) =>
+        name.Contains("panel") || cat.Contains("panel");
 
-    bool IsSuspectPart(string partCategory, string suspectCategory)
-    {
-        return partCategory.Equals(suspectCategory, System.StringComparison.OrdinalIgnoreCase);
-    }
+    bool IsSuspectPart(string partCat, string suspect) =>
+        partCat.Equals(suspect, System.StringComparison.OrdinalIgnoreCase);
 
     int CountSidePanelScrews()
     {
@@ -498,20 +561,6 @@ public partial class TutorialManager
             string c = (item.partCategory ?? "").ToLower();
             if (IsScrew(n, c)) count++;
         }
-        if (count == 0) { count = 4; }
-        return count;
-    }
-
-    int CountFaultyParts()
-    {
-        int count = 0;
-        foreach (CustomerInside c in FindObjectsOfType<CustomerInside>())
-        {
-            if (c.assignedJob == null || c.assignedJob.startingParts == null) continue;
-            foreach (var p in c.assignedJob.startingParts)
-                if (p.fault != PartFault.None) count++;
-            break;
-        }
-        return Mathf.Max(count, 1);
+        return count == 0 ? 4 : count;
     }
 }

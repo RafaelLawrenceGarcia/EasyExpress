@@ -71,9 +71,9 @@ public class StorageRoomShelf : MonoBehaviour
     // slot index → prop GameObject
     private Dictionary<int, GameObject> _slotProps = new Dictionary<int, GameObject>();
 
-    private float   _pollTimer      = 0f;
-    private bool    _playerNearby   = false;
-    private bool    _panelOpen      = false;
+    private float _pollTimer = 0f;
+    private bool _playerNearby = false;
+    private bool _panelOpen = false;
 
     // ─────────────────────────────────────────────────────────────────────────
     //  UNITY LIFECYCLE
@@ -168,12 +168,10 @@ public class StorageRoomShelf : MonoBehaviour
         if (inventoryUI == null) return;
 
         _panelOpen = true;
-
-        // ── SET MODE TO SHELF ── so it only shows shelf items
         inventoryUI.currentMode = InspectionInventoryUI.InventoryMode.ShelfStorage;
 
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible   = true;
+        Cursor.visible = true;
 
         if (inventoryUI.inventoryPanel != null)
             inventoryUI.inventoryPanel.SetActive(true);
@@ -181,6 +179,13 @@ public class StorageRoomShelf : MonoBehaviour
         inventoryUI.RefreshInventory();
 
         if (promptUI != null) promptUI.Hide();
+
+        // Notify tutorial that shelf was opened
+        if (TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.CompleteApproachStorageShelfTask();
+            TutorialManager.Instance.NotifyStorageShelfOpened();
+        }
     }
 
     void CloseShelfUI()
@@ -191,10 +196,12 @@ public class StorageRoomShelf : MonoBehaviour
 
         if (inventoryUI.inventoryPanel != null)
             inventoryUI.inventoryPanel.SetActive(false);
-
+        // Notify tutorial that shelf was closed
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.CompleteStorageShelfTask();
         // Lock cursor again for gameplay
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible   = false;
+        Cursor.visible = false;
 
         if (promptUI != null && _playerNearby)
             promptUI.Show("E", "Open Storage");
@@ -286,7 +293,7 @@ public class StorageRoomShelf : MonoBehaviour
     /// Registers the box GameObject as the visual prop for that slot
     /// so SyncWithShopSystem() knows the slot is occupied.
     /// </summary>
-   public void RegisterBoxOnSlot(Transform slot, GameObject retailBox, ItemData item)
+    public void RegisterBoxOnSlot(Transform slot, GameObject retailBox, ItemData item)
     {
         for (int i = 0; i < slotPositions.Length; i++)
         {
@@ -306,74 +313,74 @@ public class StorageRoomShelf : MonoBehaviour
     // ─────────────────────────────────────────────────────────────────────────
 
     void SpawnProp(int slotIndex, string itemId, ItemData itemData)
-{
-    Transform slot = slotPositions[slotIndex];
-
-    // Pick prop source priority:
-    // 1. deliveryBoxPrefab  ← the retail box (nvidia box, amd box, etc.)
-    // 2. itemIconPrefab     ← custom icon prefab on InspectableItem
-    // 3. prefabToPlace      ← the actual part model shrunk down
-    // 4. genericPropPrefab  ← last resort fallback
-    GameObject propSource = null;
-
-    // Priority 1 — delivery box prefab (the physical retail box)
-    if (itemData.deliveryBoxPrefab != null)
-        propSource = itemData.deliveryBoxPrefab;
-
-    // Priority 2 — item icon prefab on InspectableItem
-    if (propSource == null && itemData.prefabToPlace != null)
     {
-        InspectableItem ii = itemData.prefabToPlace.GetComponent<InspectableItem>();
-        if (ii != null && ii.itemIconPrefab != null)
-            propSource = ii.itemIconPrefab;
+        Transform slot = slotPositions[slotIndex];
+
+        // Pick prop source priority:
+        // 1. deliveryBoxPrefab  ← the retail box (nvidia box, amd box, etc.)
+        // 2. itemIconPrefab     ← custom icon prefab on InspectableItem
+        // 3. prefabToPlace      ← the actual part model shrunk down
+        // 4. genericPropPrefab  ← last resort fallback
+        GameObject propSource = null;
+
+        // Priority 1 — delivery box prefab (the physical retail box)
+        if (itemData.deliveryBoxPrefab != null)
+            propSource = itemData.deliveryBoxPrefab;
+
+        // Priority 2 — item icon prefab on InspectableItem
+        if (propSource == null && itemData.prefabToPlace != null)
+        {
+            InspectableItem ii = itemData.prefabToPlace.GetComponent<InspectableItem>();
+            if (ii != null && ii.itemIconPrefab != null)
+                propSource = ii.itemIconPrefab;
+        }
+
+        // Priority 3 — the actual part model
+        if (propSource == null && itemData.prefabToPlace != null)
+            propSource = itemData.prefabToPlace;
+
+        // Priority 4 — generic fallback
+        if (propSource == null)
+            propSource = genericPropPrefab;
+
+        if (propSource == null)
+        {
+            Debug.LogWarning($"[Shelf] No prop source for '{itemData.itemName}'. " +
+                             "Assign a deliveryBoxPrefab on the ItemData asset.");
+            // Still register the slot so UI works, just no visual
+            string regKey = itemId + "_" + GetShownCountForId(itemId);
+            _shownItemIds[regKey] = slotIndex;
+            return;
+        }
+
+        // Spawn prop
+        GameObject prop = Instantiate(propSource, slot.position, slot.rotation, slot);
+        prop.name = $"Prop_{itemData.itemName}_{slotIndex}";
+        prop.transform.localScale = propScale;
+
+        // Disable colliders (visual only)
+        foreach (Collider c in prop.GetComponentsInChildren<Collider>(true))
+            c.enabled = false;
+
+        // Disable fan spin etc.
+        foreach (PCFanController fan in prop.GetComponentsInChildren<PCFanController>(true))
+            fan.enabled = false;
+
+        // Remove rigidbody so it doesn't fall
+        Rigidbody rb = prop.GetComponent<Rigidbody>();
+        if (rb != null) Destroy(rb);
+
+        // Make sure it's visible
+        foreach (Renderer r in prop.GetComponentsInChildren<Renderer>(true))
+            r.enabled = true;
+
+        // Register
+        string key = itemId + "_" + GetShownCountForId(itemId);
+        _shownItemIds[key] = slotIndex;
+        _slotProps[slotIndex] = prop;
+
+        Debug.Log($"[Shelf] Placed '{itemData.itemName}' on slot {slotIndex}.");
     }
-
-    // Priority 3 — the actual part model
-    if (propSource == null && itemData.prefabToPlace != null)
-        propSource = itemData.prefabToPlace;
-
-    // Priority 4 — generic fallback
-    if (propSource == null)
-        propSource = genericPropPrefab;
-
-    if (propSource == null)
-    {
-        Debug.LogWarning($"[Shelf] No prop source for '{itemData.itemName}'. " +
-                         "Assign a deliveryBoxPrefab on the ItemData asset.");
-        // Still register the slot so UI works, just no visual
-        string regKey = itemId + "_" + GetShownCountForId(itemId);
-        _shownItemIds[regKey] = slotIndex;
-        return;
-    }
-
-    // Spawn prop
-    GameObject prop = Instantiate(propSource, slot.position, slot.rotation, slot);
-    prop.name = $"Prop_{itemData.itemName}_{slotIndex}";
-    prop.transform.localScale = propScale;
-
-    // Disable colliders (visual only)
-    foreach (Collider c in prop.GetComponentsInChildren<Collider>(true))
-        c.enabled = false;
-
-    // Disable fan spin etc.
-    foreach (PCFanController fan in prop.GetComponentsInChildren<PCFanController>(true))
-        fan.enabled = false;
-
-    // Remove rigidbody so it doesn't fall
-    Rigidbody rb = prop.GetComponent<Rigidbody>();
-    if (rb != null) Destroy(rb);
-
-    // Make sure it's visible
-    foreach (Renderer r in prop.GetComponentsInChildren<Renderer>(true))
-        r.enabled = true;
-
-    // Register
-    string key = itemId + "_" + GetShownCountForId(itemId);
-    _shownItemIds[key] = slotIndex;
-    _slotProps[slotIndex] = prop;
-
-    Debug.Log($"[Shelf] Placed '{itemData.itemName}' on slot {slotIndex}.");
-}
 
     void RemoveProp(string key)
     {

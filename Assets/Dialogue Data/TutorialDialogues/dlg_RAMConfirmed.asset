@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
-  m_Name: dlg_ConnectCord
+  m_Name: dlg_RAMConfirmed
   m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
   lines:
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Before we can test anything, the PC needs power.
+    text: And there it is — the problem is back.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: As you can see there is an outlet
+    text: That confirms the RAM was definitely faulty.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
-    text: Click and hold it to plug in the power cord
+    text: Good. Now put the new RAM back in.
     showOnRightSide: 0

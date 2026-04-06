@@ -283,7 +283,7 @@ GameObject:
   - component: {fileID: 2120462810113013764}
   - component: {fileID: 3903847022055083505}
   m_Layer: 6
-  m_Name: Front Panel Screw 2 (1)
+  m_Name: Back Panel Screw 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -785,6 +785,7 @@ MonoBehaviour:
   requiredPartCategory: Case Fan
   proximityRadius: 2
   isPowerCord: 0
+  allowRemoveWithoutDisconnect: 0
   wireName: Fan_Wire_Fan2
   isConnected: 0
   wireInspectableItem: {fileID: 0}
@@ -2475,6 +2476,7 @@ MonoBehaviour:
   requiredPartCategory: PSU
   proximityRadius: 2
   isPowerCord: 1
+  allowRemoveWithoutDisconnect: 0
   wireName: Power Cord
   isConnected: 0
   wireInspectableItem: {fileID: 0}
@@ -3310,6 +3312,7 @@ MonoBehaviour:
   requiredPartCategory: Case Fan
   proximityRadius: 2
   isPowerCord: 0
+  allowRemoveWithoutDisconnect: 0
   wireName: Fan_Wire_Fan4
   isConnected: 0
   wireInspectableItem: {fileID: 0}
@@ -4565,7 +4568,7 @@ GameObject:
   - component: {fileID: 3844395445699433681}
   - component: {fileID: 8943351249337874813}
   m_Layer: 6
-  m_Name: Front Panel Screw 3 (1)
+  m_Name: Back Panel Screw 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4789,7 +4792,7 @@ GameObject:
   - component: {fileID: 5525949555217649288}
   - component: {fileID: 2134154512807595847}
   m_Layer: 6
-  m_Name: Front Panel Screw 4 (1)
+  m_Name: Back Panel Screw 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6757,6 +6760,7 @@ MonoBehaviour:
   requiredPartCategory: Case Fan
   proximityRadius: 2
   isPowerCord: 0
+  allowRemoveWithoutDisconnect: 0
   wireName: Fan_Wire_Fan1
   isConnected: 0
   wireInspectableItem: {fileID: 0}
@@ -7763,6 +7767,7 @@ MonoBehaviour:
   requiredPartCategory: Case Fan
   proximityRadius: 2
   isPowerCord: 0
+  allowRemoveWithoutDisconnect: 0
   wireName: Fan_Wire_Fan3
   isConnected: 0
   wireInspectableItem: {fileID: 0}
@@ -10669,6 +10674,7 @@ MonoBehaviour:
   requiredPartCategory: GPU
   proximityRadius: 2
   isPowerCord: 0
+  allowRemoveWithoutDisconnect: 0
   wireName: Cable_8Pin_GPU_Power
   isConnected: 0
   wireInspectableItem: {fileID: 0}
@@ -10805,6 +10811,7 @@ MonoBehaviour:
   requiredPartCategory: Motherboard
   proximityRadius: 2
   isPowerCord: 0
+  allowRemoveWithoutDisconnect: 0
   wireName: Cable_8Pin_CPU_to_PSU
   isConnected: 0
   wireInspectableItem: {fileID: 0}
@@ -13751,6 +13758,7 @@ MonoBehaviour:
   requiredPartCategory: Storage
   proximityRadius: 2
   isPowerCord: 0
+  allowRemoveWithoutDisconnect: 0
   wireName: Cable_Sata_to_PSU
   isConnected: 0
   wireInspectableItem: {fileID: 0}
@@ -14258,6 +14266,7 @@ MonoBehaviour:
   requiredPartCategory: Motherboard
   proximityRadius: 2
   isPowerCord: 0
+  allowRemoveWithoutDisconnect: 0
   wireName: Cable_24Pin_to_PSU
   isConnected: 0
   wireInspectableItem: {fileID: 0}
@@ -14297,7 +14306,7 @@ GameObject:
   - component: {fileID: 4868265883448134594}
   - component: {fileID: 7409835038176521262}
   m_Layer: 6
-  m_Name: Front Panel Screw 1 (1)
+  m_Name: Back Panel Screw 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15369,6 +15378,7 @@ MonoBehaviour:
   requiredPartCategory: Storage
   proximityRadius: 2
   isPowerCord: 0
+  allowRemoveWithoutDisconnect: 0
   wireName: Cable_SATA_Power
   isConnected: 0
   wireInspectableItem: {fileID: 0}

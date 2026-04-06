@@ -373,6 +373,8 @@ public class EmailManager : MonoBehaviour
         RefreshInboxUI();
 
         Debug.Log($"Job Complete! Rating: {result.starRating}★ | Pay: ₱{result.totalPay:N0}");
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.CompleteEmailTask();
     }
 
     // =============================================
