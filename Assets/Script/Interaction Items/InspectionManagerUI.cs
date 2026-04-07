@@ -7,21 +7,16 @@ using System.Collections.Generic;
 
 public partial class InspectionManager
 {
-    // ─── Click Dispatch ──────────────────────────────────────────
-
     void HandleClickInteractions()
     {
         if (viewOnlyMode) return;
 
-        // Dust blocks all interactions
         DustSystem dust = currentClone != null ? currentClone.GetComponent<DustSystem>() : null;
         if (dust != null && dust.isDusty)
         {
             if (Input.GetMouseButtonDown(0))
-            {
                 if (InspectionToolbarUI.Instance == null || !InspectionToolbarUI.Instance.IsAirCanSelected())
-                    ShowTooltipMessage("Too Dusty!", "Clean the PC with compressed air first.\nPress 2 to equip air can.");
-            }
+                    ShowTooltipMessage("Too Dusty!", "Clean the PC with compressed air first.\nPress 3 to equip air duster.");
             return;
         }
 
@@ -29,7 +24,6 @@ public partial class InspectionManager
         if (isWiring && Input.GetMouseButtonDown(1)) { CancelWiring(); return; }
         if (!Input.GetMouseButtonDown(0)) return;
 
-        // Raycast to find clicked part
         Ray ray = inspectionCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit[] hits = Physics.RaycastAll(ray, 100f, ~0);
         System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
@@ -48,7 +42,6 @@ public partial class InspectionManager
         if (part == null) return;
         if (isPlacingFromInventory && !part.isInventorySlot) return;
 
-        // Pre-built wire port click
         if (part.isWirePort && part.linkedPrebuiltWire != null)
         {
             IPrebuiltWire wire = part.GetPrebuiltWire();
@@ -60,21 +53,16 @@ public partial class InspectionManager
             }
         }
 
-        // Wire mesh click (disconnect)
         if (part.isRemovable && part.linkedPrebuiltWire != null)
         {
             IPrebuiltWire wire = part.GetPrebuiltWire();
             if (wire != null && wire.IsConnected) { HandlePrebuiltWireDisconnect(wire); return; }
         }
 
-        // Dispatch to appropriate handler
-        if (part.isInventorySlot) BeginInstallConfirmation(part);
-        else if (part.isRemovable) BeginRemovalConfirmation(part);
+        if (part.isInventorySlot)    BeginInstallConfirmation(part);
+        else if (part.isRemovable)   BeginRemovalConfirmation(part);
         else if (part.isPowerButton) TogglePCPower();
-        //else if (part.isWirePort) HandleWirePort(part);
     }
-
-    // ─── Hover & Highlight ───────────────────────────────────────
 
     void HandleHover()
     {
@@ -106,7 +94,6 @@ public partial class InspectionManager
             }
             MoveTooltip();
 
-            // Tutorial hover completion
             if (!tutorialHoverDone && TutorialManager.Instance != null
                 && TutorialManager.Instance.GetCurrentStep() == 13)
             {
@@ -131,10 +118,9 @@ public partial class InspectionManager
             if (rend == null) continue;
             if (!originalMaterialCache.ContainsKey(rend))
                 originalMaterialCache.Add(rend, rend.sharedMaterials);
-
-            Material[] currentMats = rend.sharedMaterials;
-            Material[] newMats = new Material[currentMats.Length + 1];
-            for (int i = 0; i < currentMats.Length; i++) newMats[i] = currentMats[i];
+            Material[] mats = rend.sharedMaterials;
+            Material[] newMats = new Material[mats.Length + 1];
+            for (int i = 0; i < mats.Length; i++) newMats[i] = mats[i];
             newMats[newMats.Length - 1] = highlightMaterial;
             rend.sharedMaterials = newMats;
         }
@@ -148,13 +134,10 @@ public partial class InspectionManager
         lastHitObject = null;
     }
 
-    // ─── Tooltip Display ─────────────────────────────────────────
-
     void ShowTooltip(InspectableItem part)
     {
         if (!tooltipPanel) return;
 
-        // Pre-built wire port
         if (part.isWirePort && part.linkedPrebuiltWire != null)
         {
             IPrebuiltWire wire = part.GetPrebuiltWire();
@@ -164,16 +147,15 @@ public partial class InspectionManager
                 tooltipAnchored = false;
                 if (tooltipTitle) tooltipTitle.text = wire.WireName;
                 if (wire.IsConnected)
-                { if (tooltipBody) tooltipBody.text = "Click to disconnect."; }
+                    tooltipBody.text = "Click to disconnect.";
                 else if (!wire.IsRequiredComponentInstalled(currentClone.transform))
-                { if (tooltipBody) tooltipBody.text = $"Install {wire.RequiredPartCategory} first."; }
+                    tooltipBody.text = $"Install {wire.RequiredPartCategory} first.";
                 else
-                { if (tooltipBody) tooltipBody.text = "Click to connect."; }
+                    tooltipBody.text = "Click to connect.";
                 return;
             }
         }
 
-        // Wire mesh hover
         if (part.isRemovable && part.linkedPrebuiltWire != null)
         {
             IPrebuiltWire wire = part.GetPrebuiltWire();
@@ -182,12 +164,11 @@ public partial class InspectionManager
                 tooltipPanel.SetActive(true);
                 tooltipAnchored = false;
                 if (tooltipTitle) tooltipTitle.text = wire.WireName;
-                if (tooltipBody) tooltipBody.text = "Click to disconnect.";
+                if (tooltipBody)  tooltipBody.text  = "Click to disconnect.";
                 return;
             }
         }
 
-        // Standard part tooltip
         string extra = "";
         if (part.isWirePort)
         {
@@ -196,13 +177,15 @@ public partial class InspectionManager
                   + (part.isOccupied ? " - CONNECTED" : " - empty") + "</size>";
         }
         else if (part.isRemovable)
-            extra = "\n<size=75%><color=#FFD84A>Hold to remove</color></size>";
+            extra = part.requiresScrewdriver
+                ? "\n<size=75%><color=#FFD84A>Screwdriver to remove</color></size>"
+                : "\n<size=75%><color=#FFD84A>Hand to grab</color></size>";
         else if (part.isInventorySlot)
-            extra = "\n<size=75%><color=#4AE0FF>Hold to install</color></size>";
+            extra = "\n<size=75%><color=#4AE0FF>Hand to install</color></size>";
 
         tooltipPanel.SetActive(true);
         if (tooltipTitle) tooltipTitle.text = part.itemName;
-        if (tooltipBody) tooltipBody.text = part.itemDescription + extra;
+        if (tooltipBody)  tooltipBody.text  = part.itemDescription + extra;
     }
 
     void MoveTooltip()
@@ -213,17 +196,14 @@ public partial class InspectionManager
             RectTransform rt = tooltipPanel.GetComponent<RectTransform>();
             if (rt != null)
             {
-                rt.anchorMin = new Vector2(1, 1);
-                rt.anchorMax = new Vector2(1, 1);
-                rt.pivot = new Vector2(1, 1);
+                rt.anchorMin        = new Vector2(0.5f, 0.5f);
+                rt.anchorMax        = new Vector2(0.5f, 0.5f);
+                rt.pivot            = new Vector2(0.5f, 0.5f);
+                rt.anchoredPosition = Vector2.zero;
                 tooltipAnchored = true;
             }
         }
-        RectTransform rect = tooltipPanel.GetComponent<RectTransform>();
-        if (rect != null) rect.anchoredPosition = new Vector2(-20, -20);
     }
-
-    // ─── Power Toggle ────────────────────────────────────────────
 
     void TogglePCPower()
     {
@@ -240,10 +220,10 @@ public partial class InspectionManager
             {
                 switch (powerSystem.lastPowerResult)
                 {
-                    case PowerResult.FailedPOST: title = "POST Failed!"; break;
-                    case PowerResult.NoDisplay: title = "No Display!"; break;
+                    case PowerResult.FailedPOST:     title = "POST Failed!";       break;
+                    case PowerResult.NoDisplay:      title = "No Display!";        break;
                     case PowerResult.BootWithIssues: title = "⚠ Issues Detected"; break;
-                    default: title = isPCOn ? "Power On" : "Power Off"; break;
+                    default: title = isPCOn ? "Power On" : "Power Off";            break;
                 }
             }
             ShowTooltipMessage(title, reason);
@@ -251,7 +231,6 @@ public partial class InspectionManager
             return;
         }
 
-        // Fallback
         isPCOn = !isPCOn;
         foreach (PCFanController fan in currentClone.GetComponentsInChildren<PCFanController>())
         {
@@ -261,14 +240,15 @@ public partial class InspectionManager
         if (TutorialManager.Instance != null) TutorialManager.Instance.OnPCPowerToggled(isPCOn);
     }
 
-    // ─── Dust Cleaning ───────────────────────────────────────────
-
     void HandleDustCleaning()
     {
         if (currentClone == null) return;
         DustSystem dust = currentClone.GetComponent<DustSystem>();
         if (dust == null || !dust.isDusty) return;
-        if (InspectionToolbarUI.Instance == null || !InspectionToolbarUI.Instance.IsAirCanSelected()) return;
+
+        bool airCanEquipped = (InspectionToolbarUI.Instance != null && InspectionToolbarUI.Instance.IsAirCanSelected())
+                           || (ToolBelt.Instance != null && ToolBelt.Instance.GetEquipped() == ToolBelt.ToolType.CompressedAir);
+        if (!airCanEquipped) return;
 
         if (Input.GetMouseButton(0))
         {

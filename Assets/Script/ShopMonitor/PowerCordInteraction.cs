@@ -1,5 +1,5 @@
 using UnityEngine;
-
+ 
 /// <summary>
 /// PowerCordInteraction — Attach to the "PowerCord" child object
 /// (the plug end that goes into the PC's PSU port).
@@ -28,14 +28,14 @@ public class PowerCordInteraction : MonoBehaviour
     [Header("Connection State")]
     [Tooltip("Is this cord plugged into a PC's PSU port?")]
     public bool isPluggedIntoPC = false;
-
+ 
     [Header("References (Auto-Linked at Runtime)")]
     [Tooltip("The wall outlet this cord belongs to (found automatically).")]
     public WallOutlet parentOutlet = null;
-
+ 
     [Tooltip("The PC this cord is plugged into (set when player connects it).")]
     public PCPowerSystem connectedPC = null;
-
+ 
     // Remember where we started so we can return there when unplugged
     private Vector3 originalLocalPosition;
     private Quaternion originalLocalRotation;
@@ -46,7 +46,7 @@ public class PowerCordInteraction : MonoBehaviour
         originalLocalPosition = transform.localPosition;
         originalLocalRotation = transform.localRotation;
         originalParent = transform.parent;
-
+ 
         // Auto-find the WallOutlet on the parent (PSU cord3)
         if (transform.parent != null)
         {
@@ -54,17 +54,17 @@ public class PowerCordInteraction : MonoBehaviour
             if (parentOutlet == null)
                 parentOutlet = transform.parent.GetComponentInParent<WallOutlet>();
         }
-
+ 
         if (parentOutlet != null)
             Debug.Log($"[PowerCord] {name} auto-linked to outlet: {parentOutlet.name}");
         else
             Debug.LogWarning($"[PowerCord] {name} could not find a WallOutlet on parent!");
     }
-
+ 
     // =============================================
     //  PLUG INTO PC
     // =============================================
-
+ 
     /// <summary>
     /// Plug this cord into a PC's PSU port.
     /// Since the other end is always in the outlet, power flows immediately.
@@ -72,10 +72,10 @@ public class PowerCordInteraction : MonoBehaviour
     public void PlugIntoPC(PCPowerSystem pc)
     {
         if (pc == null) return;
-
+ 
         isPluggedIntoPC = true;
         connectedPC = pc;
-
+ 
         // Snap the plug to the PC's PSU port
         if (pc.powerCordSnapPoint != null)
         {
@@ -88,23 +88,28 @@ public class PowerCordInteraction : MonoBehaviour
             transform.SetParent(pc.transform);
             transform.localPosition = Vector3.zero;
         }
-
+ 
         gameObject.SetActive(true);
-
+ 
         // Tell the outlet it's in use
         if (parentOutlet != null)
             parentOutlet.PlugIn(this);
-
+ 
         // Power flows — both ends connected
         pc.ConnectPowerCord(gameObject);
-
+        if (TutorialManager.Instance != null)
+        TutorialManager.Instance.NotifyPowerCordConnected();
+ 
         Debug.Log($"[PowerCord] {name} plugged into PC {pc.name} — power flowing!");
+        // Notify tutorial that power cord is connected
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.NotifyPowerCordConnected();
     }
-
+ 
     // =============================================
     //  UNPLUG FROM PC
     // =============================================
-
+ 
     /// <summary>
     /// Unplug from the PC. The cord returns to its resting position on the outlet.
     /// </summary>
@@ -116,23 +121,23 @@ public class PowerCordInteraction : MonoBehaviour
             connectedPC.DisconnectPowerCord();
             connectedPC = null;
         }
-
+ 
         // Tell the outlet it's free
         if (parentOutlet != null)
             parentOutlet.Unplug();
-
+ 
         isPluggedIntoPC = false;
-
+ 
         // Return cord to its original resting spot on the outlet
         ReturnToOutlet();
-
+ 
         Debug.Log($"[PowerCord] {name} unplugged — returned to outlet.");
     }
-
+ 
     // =============================================
     //  HELPERS
     // =============================================
-
+ 
     /// <summary>
     /// Moves the cord back to its original resting position on the outlet.
     /// </summary>
@@ -148,7 +153,7 @@ public class PowerCordInteraction : MonoBehaviour
         {
             transform.SetParent(null);
         }
-
+ 
         gameObject.SetActive(true);
     }
 }

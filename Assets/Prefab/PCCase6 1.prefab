@@ -1235,7 +1235,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: Power Button
   partCategory: Button
   inventoryIcon: {fileID: 0}
@@ -2205,7 +2205,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: Case Fan
   partCategory: Case Fan
   inventoryIcon: {fileID: 0}
@@ -2475,7 +2475,7 @@ MonoBehaviour:
   connectorPort: {fileID: 4564763325939375422}
   requiredPartCategory: PSU
   proximityRadius: 2
-  isPowerCord: 1
+  isPowerCord: 0
   allowRemoveWithoutDisconnect: 0
   wireName: Power Cord
   isConnected: 0
@@ -3732,7 +3732,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: Power Supply
   partCategory: PSU
   inventoryIcon: {fileID: 0}
@@ -5795,7 +5795,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: RAM
   partCategory: RAM
   inventoryIcon: {fileID: 0}
@@ -6382,7 +6382,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: RAM
   partCategory: RAM
   inventoryIcon: {fileID: 0}
@@ -7053,7 +7053,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: Motherboard
   partCategory: Motherboard
   inventoryIcon: {fileID: 0}
@@ -8040,7 +8040,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: RAM
   partCategory: RAM
   inventoryIcon: {fileID: 0}
@@ -8323,7 +8323,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: GPU
   partCategory: GPU
   inventoryIcon: {fileID: 0}
@@ -9708,7 +9708,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: PSU Outlet
   partCategory: Outlet
   inventoryIcon: {fileID: 0}
@@ -11063,7 +11063,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: SATA
   partCategory: Storage
   inventoryIcon: {fileID: 0}
@@ -11991,7 +11991,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: Case Fan
   partCategory: Case Fan
   inventoryIcon: {fileID: 0}
@@ -12217,12 +12217,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.610981, y: 1.2867134, z: 0.7692871}
-  m_Center: {x: -0.05937195, y: 0.4886154, z: -0.02859497}
+  m_Size: {x: 1.610981, y: 1.2867134, z: 1.9274292}
+  m_Center: {x: -0.05937195, y: 0.4886154, z: 0.5504761}
 --- !u!114 &7581245869349441825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12363,7 +12363,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: Case Fan
   partCategory: Case Fan
   inventoryIcon: {fileID: 0}
@@ -13899,7 +13899,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: Case Fan
   partCategory: Case Fan
   inventoryIcon: {fileID: 0}
@@ -14084,7 +14084,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: Unknown Item
   partCategory: Generic
   inventoryIcon: {fileID: 0}
@@ -14901,7 +14901,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: CPU Fan
   partCategory: Cooler
   inventoryIcon: {fileID: 0}
@@ -16755,7 +16755,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: RAM
   partCategory: RAM
   inventoryIcon: {fileID: 0}

@@ -9,7 +9,7 @@ public class CustomerInside : MonoBehaviour
     public string npcName = "Customer";
     public string jobRequest;
     public int reward;
-
+    
     [Tooltip("If you leave this empty, the game will automatically generate a random PC using the lists below!")]
     public EmailData assignedJob;
 
@@ -31,16 +31,15 @@ public class CustomerInside : MonoBehaviour
     public bool isAtSpot    = false;
     public ShopCustomerSpawner mySpawner;
 
+    [Header("Animation")]
+    public Animator animator;
     private NavMeshAgent agent;
     private Transform myQueueSpot;
     private Transform exitPos;
     private bool collisionDisabled = false;
 
-    // ── Desk PC system ────────────────────────────────────────────────────────
     private bool _pcSpawnedOnDesk = false;
 
-    // ─────────────────────────────────────────────────────────────────────────
-    
     public void DisableCollisionUntilAtSpot()
     {
         collisionDisabled = true;
@@ -50,7 +49,10 @@ public class CustomerInside : MonoBehaviour
 
     void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
+        Debug.Log("[Customer] Animator found: " + (animator != null ? animator.gameObject.name : "NULL"));
+        agent    = GetComponent<NavMeshAgent>();
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+        if (animator == null) animator = GetComponent<Animator>();
 
         if (npcName == "Customer")
         {
@@ -61,117 +63,15 @@ public class CustomerInside : MonoBehaviour
         GenerateRandomJob();
     }
 
-    // =========================================================
-    //  INITIALIZE — called by ShopCustomerSpawner.SpawnCustomer
-    //  This is the CORRECT entry point. It sets exitPos so
-    //  customers walk out instead of instantly disappearing.
-    // =========================================================
-    public void Initialize(Transform assignedSpot, Transform exitLocation)
-    {
-        myQueueSpot = assignedSpot;
-        exitPos     = exitLocation;
-        isAtSpot    = false;
-
-        if (willBrowseFirst)
-            StartCoroutine(BrowseStoreRoutine());
-        else
-            WalkToCounter();
-    }
-
-    // =========================================================
-    //  ASSIGN QUEUE SPOT — called when queue shuffles forward
-    //  (e.g. customer 2 moves to spot 1 after customer 1 leaves)
-    // =========================================================
-    public void AssignQueueSpot(Transform spot)
-    {
-        myQueueSpot = spot;
-        isAtSpot    = false;
-        _pcSpawnedOnDesk = false; // reset so desk PC spawns again if needed
-
-        if (!isBrowsing && agent != null && agent.isOnNavMesh)
-        {
-            agent.isStopped = false;
-            agent.SetDestination(myQueueSpot.position);
-        }
-    }
-
-    // =========================================================
-    //  BROWSE — walks to random BrowseSpot tagged objects
-    //  then walks to the counter queue
-    // =========================================================
-    IEnumerator BrowseStoreRoutine()
-{
-    isBrowsing = true;
-
-    GameObject[] spots = GameObject.FindGameObjectsWithTag("BrowseSpot");
-
-    if (spots.Length > 0)
-    {
-        int itemsToBrowse = Random.Range(minItemsToBrowse, maxItemsToBrowse + 1);
-
-        for (int i = 0; i < itemsToBrowse; i++)
-        {
-            // Pick a random browse spot
-            Transform target = spots[Random.Range(0, spots.Length)].transform;
-            currentBrowseSpot = target;
-
-            if (target == null || agent == null || !agent.isOnNavMesh)
-                continue;
-
-            // Walk to the spot
-            agent.SetDestination(target.position);
-
-            // Wait until they actually arrive
-            yield return new WaitUntil(() =>
-                !agent.pathPending &&
-                agent.remainingDistance <= agent.stoppingDistance + 0.3f);
-
-            // Stop and face the shelf
-            agent.velocity = Vector3.zero;
-            agent.isStopped = true;
-
-            // Slowly rotate to face the browse spot direction
-            float lookTimer = 0f;
-            float lookDuration = browseTime;
-            Quaternion targetRot = target.rotation;
-
-            while (lookTimer < lookDuration)
-            {
-                transform.rotation = Quaternion.Slerp(
-                    transform.rotation,
-                    targetRot,
-                    Time.deltaTime * 3f);
-                lookTimer += Time.deltaTime;
-                yield return null;
-            }
-
-            // Resume movement for next spot
-            agent.isStopped = false;
-        }
-    }
-    else
-    {
-        Debug.LogWarning("[CustomerInside] No BrowseSpots found! " +
-                         "Tag your shelf GameObjects with 'BrowseSpot'.");
-        yield return new WaitForSeconds(2f);
-    }
-
-    // Done browsing — now walk to counter and join the queue
-    isBrowsing = false;
-    WalkToCounter();
-}
-
-    void WalkToCounter()
-    {
-        if (myQueueSpot != null && agent != null && agent.isOnNavMesh)
-            agent.SetDestination(myQueueSpot.position);
-    }
-
-    // =========================================================
-    //  UPDATE — check if customer reached their queue spot
-    // =========================================================
     void Update()
     {
+        // ── Drive walk/idle animation from NavMeshAgent speed ──
+        if (animator != null && agent != null)
+        {
+            animator.SetFloat("Speed", agent.velocity.magnitude);
+            animator.SetBool("IsWalking", agent.velocity.magnitude > 0.1f);
+        }
+
         if (isServed || isBrowsing || myQueueSpot == null) return;
 
         float dist = Vector3.Distance(transform.position, myQueueSpot.position);
@@ -180,10 +80,9 @@ public class CustomerInside : MonoBehaviour
         {
             isAtSpot = true;
             if (TutorialManager.Instance != null)
-            TutorialManager.Instance.NotifyCustomerArrivedAtCashier();
+                TutorialManager.Instance.NotifyCustomerArrivedAtCashier();
             RotateTowards(myQueueSpot.forward);
 
-            // Re-enable collision once at spot
             if (collisionDisabled)
             {
                 collisionDisabled = false;
@@ -191,8 +90,6 @@ public class CustomerInside : MonoBehaviour
                 if (col != null) col.enabled = true;
             }
 
-            // ── Spawn PC on desk if this customer is first in line ────────────
-            // CustomerDeskManager checks if this is queue slot 0
             if (!_pcSpawnedOnDesk)
             {
                 _pcSpawnedOnDesk = true;
@@ -205,6 +102,103 @@ public class CustomerInside : MonoBehaviour
         }
     }
 
+    public void Initialize(Transform assignedSpot, Transform exitLocation)
+    {
+        myQueueSpot = assignedSpot;
+        exitPos     = exitLocation;
+        isAtSpot    = false;
+
+        if (willBrowseFirst)
+            StartCoroutine(BrowseStoreRoutine());
+        else
+            WalkToCounter();
+    }
+
+    public void Initialize(Transform assignedSpot, Transform exitLocation, bool skipBrowse)
+    {
+        myQueueSpot = assignedSpot;
+        exitPos     = exitLocation;
+        isAtSpot    = false;
+
+        if (!skipBrowse && willBrowseFirst)
+            StartCoroutine(BrowseStoreRoutine());
+        else
+            WalkToCounter();
+    }
+
+    public void AssignQueueSpot(Transform spot)
+    {
+        myQueueSpot = spot;
+        isAtSpot    = false;
+        _pcSpawnedOnDesk = false;
+
+        if (!isBrowsing && agent != null && agent.isOnNavMesh)
+        {
+            agent.isStopped = false;
+            agent.SetDestination(myQueueSpot.position);
+        }
+    }
+
+    IEnumerator BrowseStoreRoutine()
+    {
+        isBrowsing = true;
+
+        GameObject[] spots = GameObject.FindGameObjectsWithTag("BrowseSpot");
+
+        if (spots.Length > 0)
+        {
+            int itemsToBrowse = Random.Range(minItemsToBrowse, maxItemsToBrowse + 1);
+
+            for (int i = 0; i < itemsToBrowse; i++)
+            {
+                Transform target = spots[Random.Range(0, spots.Length)].transform;
+                currentBrowseSpot = target;
+
+                if (target == null || agent == null || !agent.isOnNavMesh) continue;
+
+                agent.isStopped = false;
+                agent.SetDestination(target.position);
+
+                yield return new WaitUntil(() =>
+                    !agent.pathPending &&
+                    agent.remainingDistance <= agent.stoppingDistance + 0.3f);
+
+                agent.velocity  = Vector3.zero;
+                agent.isStopped = true;
+
+                float lookTimer = 0f;
+                Quaternion targetRot = target.rotation;
+
+                while (lookTimer < browseTime)
+                {
+                    transform.rotation = Quaternion.Slerp(
+                        transform.rotation, targetRot, Time.deltaTime * 3f);
+                    lookTimer += Time.deltaTime;
+                    yield return null;
+                }
+
+                agent.isStopped = false;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[CustomerInside] No BrowseSpots found! Tag shelves with 'BrowseSpot'.");
+            yield return new WaitForSeconds(2f);
+        }
+
+        isBrowsing = false;
+        WalkToCounter();
+    }
+
+    void WalkToCounter()
+    {
+        if (myQueueSpot != null && agent != null && agent.isOnNavMesh)
+        {
+            agent.isStopped = false;
+            agent.SetDestination(myQueueSpot.position);
+        }
+    }
+
     void RotateTowards(Vector3 direction)
     {
         if (direction == Vector3.zero) return;
@@ -212,50 +206,36 @@ public class CustomerInside : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * 5f);
     }
 
-    // =========================================================
-    //  SHOP INTERACTION
-    // =========================================================
-    public void StartShopConversation()  { }
-    public void EndShopConversation()    { }
+    public void StartShopConversation() { }
+    public void EndShopConversation()   { }
 
     public void AcceptJob()
     {
-        // Add the repair/build job to the email inbox
         if (EmailManager.Instance != null && assignedJob != null)
             EmailManager.Instance.ReceiveWalkInJob(assignedJob, npcName);
 
-        // Remove PC from desk
         CustomerDeskManager.Instance?.ClearDeskPC();
-
         LeaveStore();
     }
 
     public void RejectJob()
     {
-        // Remove PC from desk without adding the job
         CustomerDeskManager.Instance?.ClearDeskPC();
-
         LeaveStore();
     }
 
-    // =========================================================
-    //  LEAVE STORE — walks to exit, THEN gets destroyed
-    //  exitPos MUST be set via Initialize() for this to work
-    // =========================================================
     public void LeaveStore()
     {
-        isServed = true;
-        isAtSpot = false;
+        isServed         = true;
+        isAtSpot         = false;
         _pcSpawnedOnDesk = false;
 
-        if (mySpawner != null)
-            mySpawner.CustomerLeft(this);
+        if (mySpawner != null) mySpawner.CustomerLeft(this);
 
         if (exitPos != null && agent != null && agent.isOnNavMesh)
             agent.SetDestination(exitPos.position);
         else
-            Debug.LogWarning($"[CustomerInside] {npcName} has no exitPos assigned! " +
-                             "Make sure ShopCustomerSpawner.exitPoint is set.");
+            Debug.LogWarning($"[CustomerInside] {npcName} has no exitPos!");
 
         StartCoroutine(DestroyWhenOutside());
     }
@@ -264,29 +244,19 @@ public class CustomerInside : MonoBehaviour
     {
         if (exitPos == null)
         {
-            // No exit set — wait a moment then destroy so they at least fade out
             yield return new WaitForSeconds(2f);
             Destroy(gameObject);
             yield break;
         }
 
-        // Wait until they're close to the exit
-        while (Vector3.Distance(transform.position, exitPos.position)
-               > agent.stoppingDistance + 1f)
-        {
+        while (Vector3.Distance(transform.position, exitPos.position) > agent.stoppingDistance + 1f)
             yield return new WaitForSeconds(0.5f);
-        }
 
-        // Walk a bit further past the door so they disappear off-screen
         agent.SetDestination(exitPos.position + exitPos.forward * 5f);
         yield return new WaitForSeconds(3f);
-
         Destroy(gameObject);
     }
 
-    // =========================================================
-    //  RANDOM NAME GENERATOR
-    // =========================================================
     string GenerateRandomCustomerName()
     {
         string[] firstNames = {
@@ -305,24 +275,6 @@ public class CustomerInside : MonoBehaviour
              + " " + lastNames[Random.Range(0, lastNames.Length)];
     }
 
-    // =========================================================
-    //  INITIALIZE (overload for restored customers — no browse)
-    // =========================================================
-    public void Initialize(Transform assignedSpot, Transform exitLocation, bool skipBrowse)
-    {
-        myQueueSpot = assignedSpot;
-        exitPos     = exitLocation;
-        isAtSpot    = false;
-
-        if (!skipBrowse && willBrowseFirst)
-            StartCoroutine(BrowseStoreRoutine());
-        else
-            WalkToCounter();
-    }
-
-    // =========================================================
-    //  JOB GENERATION
-    // =========================================================
     void GenerateRandomJob()
     {
         if (assignedJob != null)
@@ -379,9 +331,9 @@ public class CustomerInside : MonoBehaviour
     {
         switch (purpose)
         {
-            case BuildPurpose.Gaming:  return "for gaming";
-            case BuildPurpose.Office:  return "for office work";
-            default:                   return "for general use";
+            case BuildPurpose.Gaming: return "for gaming";
+            case BuildPurpose.Office: return "for office work";
+            default:                  return "for general use";
         }
     }
 }

@@ -48,7 +48,7 @@ public partial class TutorialManager
     {
         wDone = aDone = sDone = dDone = false;
         wTimer = aTimer = sTimer = dTimer = 0f;
-        SetTask("CALIBRATION",
+        SetTask("TASK",
             "Hold [W]  — Move Forward", "Hold [A]  — Move Left",
             "Hold [S]  — Move Backward", "Hold [D]  — Move Right");
         HideArrow(); step = 1;
@@ -85,7 +85,7 @@ public partial class TutorialManager
     void StartStep_GoCashier()
     {
         playerReachedCashier = customerReachedCashier = false;
-        SetTask("FIRST CUSTOMER", "Head to the cashier counter", "Wait for the customer to arrive");
+        SetTask("TASK", "Head to the cashier counter", "Wait for the customer to arrive");
         if (cashierTarget != null) ShowArrow(cashierTarget);
         else StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.Cashier));
         step = 3;
@@ -105,7 +105,7 @@ public partial class TutorialManager
 
     void StartStep_PreviewCounterPC()
     {
-        SetTask("PREVIEW CUSTOMER PC",
+        SetTask("TASK",
             "Walk to the customer's PC on the counter", "Press [E] to preview it (view only)",
             "Press [Esc] to exit preview", "Press [E] on the customer to talk");
         StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.CashierPC));
@@ -114,7 +114,7 @@ public partial class TutorialManager
 
     void StartStep_TalkToCustomer()
     {
-        SetTask("ACCEPT THE JOB", "Press [E] to talk to the customer", "Accept the job");
+        SetTask("TASK", "Press [E] to talk to the customer", "Accept the job");
         StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.Customer));
         step = 6;
     }
@@ -125,14 +125,14 @@ public partial class TutorialManager
 
     void StartStep_PickupBox()
     {
-        SetTask("INTAKE — STEP 1 / 2", "Find the customer's PC box", "Press [Q] to carry it");
+        SetTask("TASK", "Find the customer's PC box", "Press [Q] to carry it");
         StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.Box));
         step = 7;
     }
 
     void StartStep_PlaceBox()
     {
-        SetTask("INTAKE — STEP 2 / 2", "Walk to the workstation desk", "Left-click to set the box down");
+        SetTask("TASK", "Walk to the workstation desk", "Left-click to set the box down");
         ShowArrow(workstationTarget); step = 9;
 
         // Failsafe: player already placed the box during the dialogue
@@ -156,13 +156,13 @@ public partial class TutorialManager
 
     void StartStep_InspectPC()
     {
-        SetTask("DIAGNOSE — INSPECT", "Look at the PC on the desk", "Press [E] to enter Inspect Mode");
+        SetTask("TASK — INSPECT", "Look at the PC on the desk", "Press [E] to enter Inspect Mode");
         StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.PC)); step = 11;
     }
 
     void StartStep_ConnectPowerCord()
     {
-        SetTask("DIAGNOSE — CONNECT POWER",
+        SetTask("TASK — CONNECT POWER",
             "Click the power cord connector on the back of the PC",
             "The power cord must be plugged in before testing");
         HideArrow(); step = 12;
@@ -170,7 +170,7 @@ public partial class TutorialManager
 
     void StartStep_PowerOnTest()
     {
-        SetTask("DIAGNOSE — POWER TEST", "Press the Power Button to turn on the PC", "Observe what happens...");
+        SetTask("TASK — POWER TEST", "Press the Power Button to turn on the PC", "Observe what happens...");
         HideArrow(); step = 13;
     }
 
@@ -188,7 +188,7 @@ public partial class TutorialManager
     void StartStep_ExitForStorage()
     {
         grabbedGPU = grabbedRAM = false;
-        SetTask("GRAB SPARE PARTS",
+        SetTask("TASK",
             "Press [Esc] to exit Inspect Mode", "Walk to the storage shelf",
             "Press [E] to open the Storage Panel", "Click the GPU to grab it", "Click the RAM to grab it");
         HideArrow(); step = 14;
@@ -212,7 +212,7 @@ public partial class TutorialManager
     void StartStep_ReenterInspectAndOpenCase()
     {
         screwsRemoved = 0; panelRemoved = false;
-        SetTask("OPEN THE CASE",
+        SetTask("TASKE",
             "Go back to the PC on the workstation", "Press [E] to enter Inspect Mode",
             "Select the Screwdriver (press 1)", "Unscrew the side panel screws (0/?)", "Remove the side panel");
         ShowArrow(workstationTarget); step = 15;

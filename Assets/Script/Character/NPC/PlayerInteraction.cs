@@ -21,7 +21,9 @@ public class PlayerInteract : MonoBehaviour
     public DayTransitionManager dayTransitionManager;
 
     [Header("NEW UI")]
-    public InteractionPromptUI interactionPrompt;
+    public InteractionPromptUI interactionPrompt; // optional, legacy
+    [Header("Press E Prompt (assign a TMP Text in Player HUD)")]
+    public TextMeshProUGUI pressEText;            // drag any TMP Text here
     public PCInteractionMenu pcMenu;
 
     [Header("Legacy UI (keep for dialogue)")]
@@ -67,6 +69,7 @@ public class PlayerInteract : MonoBehaviour
         if (computerOS != null) computerOS.gameObject.SetActive(false);
         if (goldHUD != null) goldHUD.SetActive(true);
         if (interactionPrompt != null) interactionPrompt.Hide();
+        if (pressEText != null) pressEText.gameObject.SetActive(false);
         if (pcMenu != null) pcMenu.Hide();
 
         if (computerCanvas != null)
@@ -106,8 +109,10 @@ public class PlayerInteract : MonoBehaviour
 
                 if (hasDeliveryBox)
                 {
-                    if (interactionPrompt != null)
-                        interactionPrompt.Show("E", "Store Item");
+                    if (interactionPrompt != null) interactionPrompt.Show("E", "Store Item");
+                    if (pressEText != null) { pressEText.text = "[E] Store Item"; pressEText.gameObject.SetActive(true); }
+
+
 
                     if (Input.GetKeyDown(KeyCode.E))
                     {
@@ -143,6 +148,7 @@ public class PlayerInteract : MonoBehaviour
 
             if (!stillLookingAtPC) HideAllPrompts();
             if (interactionPrompt != null) interactionPrompt.Hide();
+        if (pressEText != null) pressEText.gameObject.SetActive(false);
             return;
         }
 
@@ -175,10 +181,15 @@ public class PlayerInteract : MonoBehaviour
         Ray ray = mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, interactRange, interactLayer))
+        if (Physics.SphereCast(ray, 0.25f, out hit, interactRange, interactLayer))
         {
             Debug.Log("HIT: " + hit.collider.gameObject.name + " | Tag: " + hit.collider.tag + " | Layer: " + LayerMask.LayerToName(hit.collider.gameObject.layer));
-            NPCWalker cityNPC = hit.collider.GetComponent<NPCWalker>();
+
+            // FIX: Use GetComponentInParent so NPCWalker is found even if the
+            // collider hit belongs to a child object of the NPC prefab.
+            NPCWalker cityNPC = hit.collider.GetComponent<NPCWalker>()
+                             ?? hit.collider.GetComponentInParent<NPCWalker>();
+
             CustomerInside shopCustomer = hit.collider.GetComponent<CustomerInside>();
             ShopTrigger shopPC = hit.collider.GetComponent<ShopTrigger>();
             InspectableItem item = hit.collider.GetComponent<InspectableItem>();
@@ -294,11 +305,19 @@ public class PlayerInteract : MonoBehaviour
             // =============================================
             //  CITY NPC
             // =============================================
-            else if (cityNPC)
+            else if (cityNPC != null)
             {
-                if (pcMenu != null) pcMenu.Hide();
-                ShowPromptWithHighlight("E", "Talk to Citizen", hit.collider.gameObject);
-                if (Input.GetKeyDown(KeyCode.E)) StartCityInteraction(cityNPC);
+                if (cityNPC.isExhausted)
+                {
+                    // NPC is done talking — show a locked prompt, no interaction
+                    ShowPromptWithHighlight("X", "Not interested anymore", hit.collider.gameObject);
+                }
+                else
+                {
+                    if (pcMenu != null) pcMenu.Hide();
+                    ShowPromptWithHighlight("E", "Talk to Citizen", hit.collider.gameObject);
+                    if (Input.GetKeyDown(KeyCode.E)) StartCityInteraction(cityNPC);
+                }
             }
             // =============================================
             //  SHOP CUSTOMER
@@ -448,12 +467,15 @@ public class PlayerInteract : MonoBehaviour
     void ShowPromptWithHighlight(string key, string action, GameObject target)
     {
         if (interactionPrompt != null) interactionPrompt.Show(key, action);
+        if (pressEText != null) { pressEText.text = "[" + key + "] " + action; pressEText.gameObject.SetActive(true); }
         ApplyHighlight(target);
     }
 
     void HideAllPrompts()
     {
         if (interactionPrompt != null) interactionPrompt.Hide();
+        if (pressEText != null) pressEText.gameObject.SetActive(false);
+        if (pressEText != null) pressEText.gameObject.SetActive(false);
         if (pcMenu != null) pcMenu.Hide();
         ClearHighlight();
     }
@@ -501,18 +523,39 @@ public class PlayerInteract : MonoBehaviour
 
     void StartCityInteraction(NPCWalker npc)
     {
-        isInteracting = true; currentCityNPC = npc; currentShopNPC = null;
-        FreezePlayer(true); HideAllPrompts();
+        // FIX: Guard against unassigned UI references so the interaction
+        // doesn't silently crash and leave isInteracting stuck at true.
+        if (dialoguePanel == null || nameText == null || dialogueText == null
+            || option1Button == null || option2Button == null || exitButton == null)
+        {
+            Debug.LogWarning("[PlayerInteract] StartCityInteraction: one or more UI references " +
+                             "are not assigned on this PlayerInteract instance. " +
+                             "Please assign dialoguePanel, nameText, dialogueText, " +
+                             "option1Button, option2Button, and exitButton in the Inspector.");
+            return;
+        }
+
+        isInteracting = true;
+        currentCityNPC = npc;
+        currentShopNPC = null;
+        FreezePlayer(true);
+        HideAllPrompts();
+
         dialoguePanel.SetActive(true);
         option1Button.gameObject.SetActive(true);
         option2Button.gameObject.SetActive(true);
         exitButton.gameObject.SetActive(true);
         if (computerOS != null) computerOS.gameObject.SetActive(false);
-        option1Button.interactable = true; option2Button.interactable = true;
+        option1Button.interactable = true;
+        option2Button.interactable = true;
 
         var btn1Label = option1Button.GetComponentInChildren<TextMeshProUGUI>();
         var btn2Label = option2Button.GetComponentInChildren<TextMeshProUGUI>();
-        if (btn1Label != null) btn1Label.text = "Wanna buy a Pc?";
+        if (btn1Label != null)
+        {
+            int left = npc.InviteAttemptsLeft();
+            btn1Label.text = left > 0 ? "Invite to Shop" : "Invite to Shop";
+        }
         if (btn2Label != null) btn2Label.text = npc.option2Response;
 
         nameText.text = npc.npcName;
@@ -552,7 +595,23 @@ public class PlayerInteract : MonoBehaviour
 
     public void OnOption1Click()
     {
-        if (currentCityNPC != null) dialogueText.text = currentCityNPC.TryInviteToShop();
+        if (currentCityNPC != null)
+        {
+            dialogueText.text = currentCityNPC.TryInviteToShop();
+            // Update button to show remaining attempts
+            var btn1Label = option1Button.GetComponentInChildren<TextMeshProUGUI>();
+            int left = currentCityNPC.InviteAttemptsLeft();
+            if (currentCityNPC.isExhausted || currentCityNPC.isGoingToShop)
+            {
+                // No more attempts or already going — disable the invite button
+                option1Button.interactable = false;
+                if (btn1Label != null) btn1Label.text = "Invite to Shop";
+            }
+            else if (btn1Label != null)
+            {
+                btn1Label.text = "Invite to Shop";
+            }
+        }
         else if (currentShopNPC != null)
         {
             dialogueText.text = "Deal! I'll take a look.";

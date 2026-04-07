@@ -14,7 +14,7 @@ public partial class InspectionManager
 
     void HandlePrebuiltWireConnect(IPrebuiltWire wire)
     {
-        if (!RequireScrewdriver()) return;
+        if (!RequireHand()) return;
 
         if (!wire.IsRequiredComponentInstalled(currentClone.transform))
         {
@@ -47,7 +47,7 @@ public partial class InspectionManager
 
     void HandlePrebuiltWireDisconnect(IPrebuiltWire wire)
     {
-        if (!RequireScrewdriver()) return;
+        if (!RequireHand()) return;
 
         if (screwdriverSystem != null)
         {

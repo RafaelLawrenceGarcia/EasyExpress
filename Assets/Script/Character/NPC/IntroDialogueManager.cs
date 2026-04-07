@@ -23,9 +23,7 @@ public class IntroDialogueManager : MonoBehaviour
     void Update()
     {
         if (isDialogueActive && Input.GetMouseButtonDown(0))
-        {
             NextLine();
-        }
     }
 
     public void PlaySequence(DialogueSequence newSequence, System.Action onFinished)
@@ -36,12 +34,15 @@ public class IntroDialogueManager : MonoBehaviour
         isDialogueActive = true;
         currentLineIndex = 0;
         dialogueUIPanel.SetActive(true);
-        // Hide inspection toolbar so it doesn't cover dialogue
-        GameObject toolbar = GameObject.Find("InspectionToolbarCanvas");
-        if (toolbar != null) toolbar.SetActive(false);
+
+        // FIX: use Hide() instead of SetActive(false) on the whole canvas.
+        // SetActive(false) on the canvas kills the script instance and breaks
+        // InspectionToolbarUI.Instance for the rest of the session.
+        if (InspectionToolbarUI.Instance != null)
+            InspectionToolbarUI.Instance.Hide();
 
         if (playerMovement != null) playerMovement.SetMovementState(false);
-        if (playerCamera != null) playerCamera.SetCameraState(false);
+        if (playerCamera   != null) playerCamera.SetCameraState(false);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -53,7 +54,7 @@ public class IntroDialogueManager : MonoBehaviour
     {
         DialogueLine line = currentSequence.lines[currentLineIndex];
 
-        nameText.text = line.speakerName;
+        nameText.text    = line.speakerName;
         dialogueText.text = line.text;
 
         if (line.portrait != null)
@@ -72,25 +73,27 @@ public class IntroDialogueManager : MonoBehaviour
         currentLineIndex++;
 
         if (currentLineIndex < currentSequence.lines.Length)
-        {
             DisplayCurrentLine();
-        }
         else
-        {
             EndIntro();
-        }
     }
 
     void EndIntro()
     {
         isDialogueActive = false;
         dialogueUIPanel.SetActive(false);
-        // Restore inspection toolbar
-        GameObject toolbar = GameObject.Find("InspectionToolbarCanvas");
-        if (toolbar != null) toolbar.SetActive(true);
+
+        // FIX: only restore toolbar if we're currently inspecting a PC.
+        // If we're not in inspection mode the toolbar should stay hidden.
+        if (InspectionToolbarUI.Instance != null)
+        {
+            InspectionManager im = FindFirstObjectByType<InspectionManager>();
+            if (im != null && im.isInspecting)
+                InspectionToolbarUI.Instance.Show();
+        }
 
         if (playerMovement != null) playerMovement.SetMovementState(true);
-        if (playerCamera != null) playerCamera.SetCameraState(true);
+        if (playerCamera   != null) playerCamera.SetCameraState(true);
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

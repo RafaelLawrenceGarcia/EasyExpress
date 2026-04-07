@@ -461,12 +461,15 @@ public partial class TutorialManager : MonoBehaviour
 
     void Dialogue(float delay, DialogueSequence seq, System.Action callback)
     { StartCoroutine(DialogueCoroutine(delay, seq, callback)); }
-
+    
     IEnumerator DialogueCoroutine(float delay, DialogueSequence seq, System.Action callback)
     {
         yield return new WaitForSeconds(delay);
         TaskListUI.Instance?.HidePanel();
+       InspectionManager im = FindFirstObjectByType<InspectionManager>();
+        if (im != null && im.controlsUI != null) im.controlsUI.SetActive(false);
         yield return new WaitForSeconds(0.3f);
+        
         if (seq != null && dialogueManager != null) dialogueManager.PlaySequence(seq, callback);
         else callback?.Invoke();
     }

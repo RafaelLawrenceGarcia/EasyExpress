@@ -15,6 +15,10 @@ public class NPCWalker : MonoBehaviour
     public string agreeText = "Sure, I'll check out your shop right now!";
     public string refuseText = "No thanks, I'm too busy today.";
 
+    [Header("Invite Limit")]
+    public int maxInviteAttempts = 3;
+    public string maxAttemptsText = "Leave me alone! I said no!";
+
     [Header("Auto-Shopper System")]
     [Range(0f, 100f)] public float autoVisitPercentage = 20f;
     public string autoVisitGreeting = "I'm actually heading to your shop right now!";
@@ -31,22 +35,24 @@ public class NPCWalker : MonoBehaviour
     public bool isGoingToShop = false;
     Transform shopDoorOutside;
 
+    // How many times the player has tried to invite this NPC
+    private int inviteAttempts = 0;
+    // Once maxed out, the NPC refuses to talk anymore
+    public bool isExhausted = false;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         timer = waitTime;
 
         // --- AUTO-NAMING SYSTEM ---
-        if (npcName == "Citizen")
+        if (string.IsNullOrEmpty(npcName) || npcName == "Citizen")
         {
             npcName = GenerateRandomName();
             gameObject.name = "NPC_" + npcName;
         }
 
         // --- AUTO-SHOPPER LOGIC ---
-        // ── BLOCK DURING TUTORIAL ──────────────────────────────
-        // Don't let street NPCs auto-walk into the shop while the
-        // tutorial is still running. They just wander normally instead.
         bool tutorialRunning = TutorialManager.Instance != null
                                && TutorialManager.Instance.IsTutorialActive();
 
@@ -59,7 +65,6 @@ public class NPCWalker : MonoBehaviour
                 GoToShop();
             }
         }
-        // ───────────────────────────────────────────────────────
     }
 
     string GenerateRandomName()
@@ -76,7 +81,6 @@ public class NPCWalker : MonoBehaviour
 
     void Update()
     {
-        // 1. If talking, stop moving
         if (isStopped)
         {
             agent.isStopped = true;
@@ -84,12 +88,8 @@ public class NPCWalker : MonoBehaviour
         }
         agent.isStopped = false;
 
-        // 2. Check if heading to shop
         if (isGoingToShop)
         {
-            // ── BLOCK DURING TUTORIAL ──────────────────────────
-            // If the tutorial started after this NPC was already
-            // heading to the shop, cancel it and make them wander.
             bool tutorialRunning = TutorialManager.Instance != null
                                    && TutorialManager.Instance.IsTutorialActive();
             if (tutorialRunning)
@@ -97,7 +97,6 @@ public class NPCWalker : MonoBehaviour
                 isGoingToShop = false;
                 return;
             }
-            // ───────────────────────────────────────────────────
 
             if (shopDoorOutside == null)
             {
@@ -117,13 +116,9 @@ public class NPCWalker : MonoBehaviour
             return;
         }
 
-        // 3. DEBUG: Force go to shop with 'M'
         if (Input.GetKeyDown(KeyCode.M))
-        {
             GoToShop();
-        }
 
-        // 4. Random Wandering
         timer += Time.deltaTime;
         if (timer >= waitTime)
         {
@@ -157,28 +152,31 @@ public class NPCWalker : MonoBehaviour
 
     public void GoToShop()
     {
-        // ── BLOCK DURING TUTORIAL ──────────────────────────────
         bool tutorialRunning = TutorialManager.Instance != null
                                && TutorialManager.Instance.IsTutorialActive();
         if (tutorialRunning) return;
-        // ───────────────────────────────────────────────────────
 
         isGoingToShop = true;
 
         GameObject door = GameObject.FindGameObjectWithTag("ShopExteriorDoor");
         if (door != null)
-        {
             shopDoorOutside = door.transform;
-        }
         else
-        {
             Debug.LogError("Could not find 'ShopExteriorDoor'. Did you tag your door?");
-        }
     }
 
     public string TryInviteToShop()
     {
         if (isGoingToShop) return "I'm already heading there!";
+
+        // Already used up all attempts — shouldn't normally be called but guard anyway
+        if (inviteAttempts >= maxInviteAttempts)
+        {
+            isExhausted = true;
+            return maxAttemptsText;
+        }
+
+        inviteAttempts++;
 
         float randomRoll = Random.Range(0f, 100f);
         if (randomRoll <= agreePercentage)
@@ -188,7 +186,16 @@ public class NPCWalker : MonoBehaviour
         }
         else
         {
+            // Used last attempt — mark exhausted so player can't talk again
+            if (inviteAttempts >= maxInviteAttempts)
+                isExhausted = true;
+
             return refuseText;
         }
     }
+
+    /// <summary>
+    /// Returns how many invite attempts are left so the UI can show it.
+    /// </summary>
+    public int InviteAttemptsLeft() => maxInviteAttempts - inviteAttempts;
 }

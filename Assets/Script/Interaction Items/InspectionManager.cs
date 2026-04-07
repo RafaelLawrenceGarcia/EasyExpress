@@ -304,6 +304,7 @@ public partial class InspectionManager : MonoBehaviour
             if (item.isWirePort) allPorts.Add(item);
 
         if (InspectionToolbarUI.Instance != null) InspectionToolbarUI.Instance.Show();
+        if (TaskListUI.Instance != null) TaskListUI.Instance.ShowToggleButton(); // ← add this
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -389,6 +390,7 @@ public partial class InspectionManager : MonoBehaviour
         if (controlsUI) controlsUI.SetActive(false);
         tooltipAnchored = false;
         if (InspectionToolbarUI.Instance != null) InspectionToolbarUI.Instance.Hide();
+        if (TaskListUI.Instance != null) TaskListUI.Instance.HideToggleButton();
         if (gameplayUI) gameplayUI.SetActive(true);
         if (inspectionCamera) inspectionCamera.gameObject.SetActive(false);
         if (goldHUD != null) goldHUD.SetActive(true);

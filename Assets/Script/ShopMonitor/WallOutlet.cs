@@ -1,5 +1,5 @@
 using UnityEngine;
-
+ 
 /// <summary>
 /// WallOutlet — Attach to the PSU cord3 ROOT object (the desk outlet).
 ///
@@ -20,10 +20,10 @@ public class WallOutlet : MonoBehaviour
     [Header("State (Read-Only)")]
     [Tooltip("Is the cord currently plugged into a PC?")]
     public bool isOccupied = false;
-
+ 
     // Runtime reference to the cord plugged into a PC from this outlet
     [HideInInspector] public PowerCordInteraction pluggedCord = null;
-
+ 
     /// <summary>
     /// Called when the cord from this outlet is plugged into a PC.
     /// </summary>
@@ -33,7 +33,7 @@ public class WallOutlet : MonoBehaviour
         pluggedCord = cord;
         Debug.Log($"[WallOutlet] {name} — cord is now in use.");
     }
-
+ 
     /// <summary>
     /// Called when the cord is unplugged from the PC.
     /// </summary>
@@ -43,7 +43,7 @@ public class WallOutlet : MonoBehaviour
         pluggedCord = null;
         Debug.Log($"[WallOutlet] {name} — cord is free.");
     }
-
+ 
     /// <summary>
     /// Needed by PowerCordInteraction for compatibility.
     /// Returns this transform as the snap point.

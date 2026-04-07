@@ -233,12 +233,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 128
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.1987462, y: 2.3068295, z: 1}
-  m_Center: {x: 0.5993733, y: 0.6534147, z: -1.1884504e-12}
+  m_Size: {x: 4.7352176, y: 2.3068295, z: 1}
+  m_Center: {x: -0.6688629, y: 0.6534147, z: 3.7445363e-10}
 --- !u!114 &2263872169305648003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -253,7 +253,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::JobBox
   pcCasePrefabToSpawn: {fileID: 5178879464572469348, guid: 5a2627d8cb2e87a4694ca3d738875dc7, type: 3}
   partsToBuild: []
+  sourceEmail: {fileID: 0}
   existingPC: {fileID: 0}
+  labelHeight: 0.4
+  labelCharSize: 0.04
+  labelFontSize: 80
+  labelViewRange: 6
+  labelViewDot: 0.75
 --- !u!1 &8195014231898295406
 GameObject:
   m_ObjectHideFlags: 0

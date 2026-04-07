@@ -94,7 +94,7 @@ public partial class InspectionManager
 
     void BeginRemovalConfirmation(InspectableItem part)
     {
-        if (!RequireScrewdriver()) return;
+        if (!RequireCorrectToolForRemoval(part)) return;
 
         foreach (InspectableItem blocker in part.blockingParts)
         {
@@ -225,7 +225,7 @@ public partial class InspectionManager
 
     void BeginInstallConfirmation(InspectableItem slot)
     {
-        if (!RequireScrewdriver()) return;
+        if (!RequireHand()) return;
 
         GameObject partToInstall = FindPartForSlot(slot);
         if (partToInstall == null) return;
@@ -355,11 +355,27 @@ public partial class InspectionManager
 
     // ─── Helper: Require Screwdriver ─────────────────────────────
 
+    bool RequireCorrectToolForRemoval(InspectableItem part)
+    {
+        if (part.requiresScrewdriver) return RequireScrewdriver();
+        else return RequireHand();
+    }
+
     bool RequireScrewdriver()
     {
         if (InspectionToolbarUI.Instance != null && !InspectionToolbarUI.Instance.IsScrewdriverSelected())
         {
-            ShowTooltipMessage("Tool Required", "Select the Screwdriver first.\nPress 1 to equip.");
+            ShowTooltipMessage("Tool Required", "Equip the Screwdriver first.\nPress 1 to equip.");
+            return false;
+        }
+        return true;
+    }
+
+    bool RequireHand()
+    {
+        if (InspectionToolbarUI.Instance != null && !InspectionToolbarUI.Instance.IsHandSelected())
+        {
+            ShowTooltipMessage("Wrong Tool", "Use your Hand to grab this part.\nPress 4 to equip.");
             return false;
         }
         return true;
