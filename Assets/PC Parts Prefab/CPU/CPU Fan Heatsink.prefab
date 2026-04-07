@@ -306,6 +306,7 @@ GameObject:
   - component: {fileID: 2828462641470840548}
   - component: {fileID: 8392131309534593590}
   - component: {fileID: 5962531227038621935}
+  - component: {fileID: 4776292540174140402}
   m_Layer: 0
   m_Name: CPU Fan Screw 1
   m_TagString: Untagged
@@ -428,6 +429,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
+--- !u!64 &4776292540174140402
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4362226840970717847}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 8552134717624371188, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!1 &4674583895760066850
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,6 +463,7 @@ GameObject:
   - component: {fileID: 9197276060091243591}
   - component: {fileID: 1435941437960444540}
   - component: {fileID: 3627502434333536565}
+  - component: {fileID: 4004780319957700950}
   m_Layer: 0
   m_Name: CPU Fan Screw 4
   m_TagString: Untagged
@@ -562,6 +586,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
+--- !u!64 &4004780319957700950
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4674583895760066850}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5053925668127403250, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!1 &5720220956857060241
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,6 +620,7 @@ GameObject:
   - component: {fileID: 4236977561024981295}
   - component: {fileID: 7284084204295328987}
   - component: {fileID: 1563307339592872989}
+  - component: {fileID: 4154943604433663585}
   m_Layer: 0
   m_Name: CPU Fan Screw 2
   m_TagString: Untagged
@@ -696,6 +743,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
+--- !u!64 &4154943604433663585
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5720220956857060241}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5495902117074765545, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!1 &7762956140255804339
 GameObject:
   m_ObjectHideFlags: 0
@@ -708,6 +777,7 @@ GameObject:
   - component: {fileID: 7611263029548048898}
   - component: {fileID: 5441568514312259629}
   - component: {fileID: 3490587295145330847}
+  - component: {fileID: 4658513111707301131}
   m_Layer: 0
   m_Name: CPU Fan Screw 3
   m_TagString: Untagged
@@ -830,6 +900,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
+--- !u!64 &4658513111707301131
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7762956140255804339}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3329902420748629119, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!1 &8050430242676290261
 GameObject:
   m_ObjectHideFlags: 0

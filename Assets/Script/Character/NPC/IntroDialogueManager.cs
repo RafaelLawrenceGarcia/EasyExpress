@@ -8,7 +8,7 @@ public class IntroDialogueManager : MonoBehaviour
     public GameObject dialogueUIPanel;
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogueText;
-    public Image portraitImage; 
+    public Image portraitImage;
 
     [Header("Player References")]
     public GTAMovement playerMovement;
@@ -17,9 +17,8 @@ public class IntroDialogueManager : MonoBehaviour
     private DialogueSequence currentSequence;
     private int currentLineIndex = 0;
     public bool isDialogueActive = false;
-    
-    // NEW: This tells the Tutorial Manager when we are done talking!
-    private System.Action onDialogueFinished; 
+
+    private System.Action onDialogueFinished;
 
     void Update()
     {
@@ -29,19 +28,21 @@ public class IntroDialogueManager : MonoBehaviour
         }
     }
 
-    // NEW: We call this from the TutorialManager to start a specific conversation
     public void PlaySequence(DialogueSequence newSequence, System.Action onFinished)
     {
         currentSequence = newSequence;
-        onDialogueFinished = onFinished; // Save what to do after it ends
+        onDialogueFinished = onFinished;
 
         isDialogueActive = true;
         currentLineIndex = 0;
         dialogueUIPanel.SetActive(true);
+        // Hide inspection toolbar so it doesn't cover dialogue
+        GameObject toolbar = GameObject.Find("InspectionToolbarCanvas");
+        if (toolbar != null) toolbar.SetActive(false);
 
         if (playerMovement != null) playerMovement.SetMovementState(false);
         if (playerCamera != null) playerCamera.SetCameraState(false);
-        
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -51,7 +52,7 @@ public class IntroDialogueManager : MonoBehaviour
     void DisplayCurrentLine()
     {
         DialogueLine line = currentSequence.lines[currentLineIndex];
-        
+
         nameText.text = line.speakerName;
         dialogueText.text = line.text;
 
@@ -84,18 +85,20 @@ public class IntroDialogueManager : MonoBehaviour
     {
         isDialogueActive = false;
         dialogueUIPanel.SetActive(false);
+        // Restore inspection toolbar
+        GameObject toolbar = GameObject.Find("InspectionToolbarCanvas");
+        if (toolbar != null) toolbar.SetActive(true);
 
         if (playerMovement != null) playerMovement.SetMovementState(true);
         if (playerCamera != null) playerCamera.SetCameraState(true);
-        
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // NEW: Tell the TutorialManager we finished talking!
         if (onDialogueFinished != null)
         {
             onDialogueFinished.Invoke();
-            onDialogueFinished = null; 
+            onDialogueFinished = null;
         }
     }
 }

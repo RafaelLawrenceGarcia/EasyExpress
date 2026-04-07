@@ -65,7 +65,12 @@ public class TutorialUIPointer : MonoBehaviour
 
     void LateUpdate()
     {
+
         if (mode == PointerMode.Hidden || pointerRect == null) return;
+
+        // Always use the current main camera (handles inspection camera swaps)
+        playerCamera = Camera.main;
+        if (playerCamera == null) return;
 
         bounceTimer += Time.deltaTime * bounceSpeed;
         float bounce = Mathf.Sin(bounceTimer) * bounceAmount;

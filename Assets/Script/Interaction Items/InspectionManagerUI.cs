@@ -200,12 +200,6 @@ public partial class InspectionManager
         else if (part.isInventorySlot)
             extra = "\n<size=75%><color=#4AE0FF>Hold to install</color></size>";
 
-        if (part.IsFaulty())
-        {
-            extra += "\n\n<size=80%><color=#FF4444>⚠ FAULT DETECTED</color></size>";
-            extra += $"\n<size=75%><color=#FF8888>{part.faultDescription}</color></size>";
-        }
-
         tooltipPanel.SetActive(true);
         if (tooltipTitle) tooltipTitle.text = part.itemName;
         if (tooltipBody) tooltipBody.text = part.itemDescription + extra;

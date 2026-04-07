@@ -97,7 +97,7 @@ public partial class TutorialManager
         foreach (CustomerInside c in FindObjectsOfType<CustomerInside>())
         {
             if (c.isAtSpot)
-            { c.jobRequest = "My PC won't boot. I think the GPU and RAM are faulty — can you check?"; break; }
+            { c.jobRequest = "My PC won't boot. Can you please fix it?"; break; }
         }
         HideArrow(); step = 4;
         Dialogue(0.5f, dlg_TalkCustomer, StartStep_PreviewCounterPC);
@@ -134,6 +134,13 @@ public partial class TutorialManager
     {
         SetTask("INTAKE — STEP 2 / 2", "Walk to the workstation desk", "Left-click to set the box down");
         ShowArrow(workstationTarget); step = 9;
+
+        // Failsafe: player already placed the box during the dialogue
+        if (boxPlacedEarly)
+        {
+            boxPlacedEarly = false;
+            CompletePlaceBoxTask();
+        }
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -348,30 +355,32 @@ public partial class TutorialManager
                 CompleteAllTasks(); diagState = DiagState.TestAfterRAMSwap; ShowSwapTask(); return;
             case DiagState.InstallOldRAM:
                 CompleteAllTasks(); diagState = DiagState.TestWithOldRAM; ShowSwapTask(); return;
-            case DiagState.InstallNewRAMFinal:
-                CompleteAllTasks(); diagState = DiagState.TestAfterRAMVerify; ShowSwapTask(); return;
+
+            case DiagState.InstallNewGPUFinal:
+                CompleteAllTasks();
+                TrackInstalledPartName("GPU");
+                diagState = DiagState.TestFinal;
+                ShowSwapTask();
+                return;
+
             case DiagState.InstallOldGPU:
                 CompleteAllTasks(); diagState = DiagState.TestWithOldGPU; ShowSwapTask(); return;
-            case DiagState.InstallNewGPUFinal:
-                CompleteAllTasks(); diagState = DiagState.TestFinal; ShowSwapTask(); return;
+            case DiagState.InstallNewRAMFinal:
+                CompleteAllTasks();
+                TrackInstalledPartName("RAM");
+                diagState = DiagState.TestAfterRAMVerify;
+                ShowSwapTask();
+                return;
         }
         Debug.Log($"[Tutorial] Part installed but DiagState={diagState} — ignoring.");
     }
 
     // ── Power Test Handler (step 16) ─────────────────────────────
-    //
-    //  The engine handles all power results naturally:
-    //    FailedPOST → PC auto-shuts off after ~3s (DelayedShutdown in PCPowerSystem)
-    //    NoDisplay  → PC stays on, fans spin, no picture
-    //    Success    → PC boots fully
-    //
-    //  We just wait, then show the appropriate dialogue.
 
     void HandleDiagPowerTest()
     {
         TaskListUI.Instance?.CompleteTask(0);
 
-        // Log what the engine decided
         InspectionManager im = FindObjectOfType<InspectionManager>();
         if (im != null && im.currentClone != null)
         {
@@ -394,42 +403,35 @@ public partial class TutorialManager
         switch (diagState)
         {
             case DiagState.TestAfterGPUSwap:
-                // New GPU + old broken RAM → FailedPOST (auto-shutdown after ~3s)
                 Dialogue(0.5f, dlg_GPUNotEnough, () =>
                     Dialogue(0.3f, dlg_SwapRAM, () =>
                     { diagState = DiagState.RemoveOldRAM; ShowSwapTask(); }));
                 break;
 
             case DiagState.TestAfterRAMSwap:
-                // New GPU + new RAM → Success → it works!
                 Dialogue(0.5f, dlg_RAMFixed, () =>
                     Dialogue(0.3f, dlg_VerifyOldRAM, () =>
                     { diagState = DiagState.RemoveNewRAM; ShowSwapTask(); }));
                 break;
 
             case DiagState.TestWithOldRAM:
-                // New GPU + old broken RAM → FailedPOST → fails again
                 Dialogue(0.5f, dlg_RAMConfirmed, () =>
                     Dialogue(0.3f, dlg_PutNewRAMBack, () =>
                     { diagState = DiagState.RemoveOldRAMAgain; ShowSwapTask(); }));
                 break;
 
             case DiagState.TestAfterRAMVerify:
-                // New GPU + new RAM → Success → now verify GPU
                 Dialogue(0.5f, dlg_NowCheckGPU, () =>
                 { diagState = DiagState.RemoveNewGPU; ShowSwapTask(); });
                 break;
 
             case DiagState.TestWithOldGPU:
-                // Old broken GPU + new RAM → NoDisplay (fans spin, no picture)
-                // PC stays on — this IS the correct symptom for a dead GPU
                 Dialogue(0.5f, dlg_GPUConfirmed, () =>
                     Dialogue(0.3f, dlg_PutNewGPUBack, () =>
                     { diagState = DiagState.RemoveOldGPUAgain; ShowSwapTask(); }));
                 break;
 
             case DiagState.TestFinal:
-                // New GPU + new RAM → Success → all done!
                 diagState = DiagState.Done;
                 CompleteAllTasks(); HideArrow();
                 step = 24;
@@ -507,7 +509,7 @@ public partial class TutorialManager
     }
 
     // ═══════════════════════════════════════════════════════════
-    //  PC SETUP
+    //  PC SETUP — Force GPU + RAM broken, force cooler included
     // ═══════════════════════════════════════════════════════════
 
     IEnumerator ForceMarkGPUAndRAMBroken()
@@ -516,9 +518,12 @@ public partial class TutorialManager
         foreach (CustomerInside c in FindObjectsOfType<CustomerInside>())
         {
             if (c.assignedJob == null || c.assignedJob.startingParts == null) continue;
+
+            // ── Clear all faults first ──
             foreach (StartingPCComponent part in c.assignedJob.startingParts)
             { part.fault = PartFault.None; part.faultDescription = ""; part.isDusty = false; }
 
+            // ── Mark GPU and RAM as broken ──
             bool gpuDone = false, ramDone = false;
             foreach (StartingPCComponent part in c.assignedJob.startingParts)
             {
@@ -530,9 +535,40 @@ public partial class TutorialManager
                 else if (!ramDone && (cat == "RAM" || name.Contains("ram") || name.Contains("ddr")))
                 { part.fault = PartFault.Broken; part.faultDescription = "RAM stick is dead — system fails POST."; ramDone = true; }
             }
+
+            // ── Force cooler — ensure the tutorial PC always has one ──
+            bool hasCooler = false;
+            foreach (StartingPCComponent part in c.assignedJob.startingParts)
+            {
+                if ((part.partCategory ?? "").Trim() == "Cooler")
+                { hasCooler = true; break; }
+            }
+            if (!hasCooler)
+            {
+                PCPartDatabase db = GetDatabase();
+                if (db != null && db.coolers != null && db.coolers.Length > 0)
+                {
+                    StartingPCComponent original = db.coolers[Random.Range(0, db.coolers.Length)];
+                    StartingPCComponent coolerCopy = new StartingPCComponent();
+                    coolerCopy.partCategory = "Cooler";
+                    coolerCopy.partName = original.partName;
+                    coolerCopy.partPrefab = original.partPrefab;
+                    coolerCopy.partIcon = original.partIcon;
+                    coolerCopy.partPrice = original.partPrice;
+                    coolerCopy.compatTags = original.compatTags;
+                    coolerCopy.powerDraw = original.powerDraw;
+                    coolerCopy.maxWattage = original.maxWattage;
+                    coolerCopy.isDusty = false;
+                    coolerCopy.fault = PartFault.None;
+                    coolerCopy.faultDescription = "";
+                    c.assignedJob.startingParts.Add(coolerCopy);
+                    Debug.Log($"[Tutorial] Force-added cooler: {coolerCopy.partName}");
+                }
+            }
+
             c.assignedJob.originalFaultCount = 2;
             c.assignedJob.pcProblems = new string[] { "No Display on Monitor" };
-            c.jobRequest = "My PC won't boot. I think the GPU and RAM are dead — can you replace them?";
+            c.jobRequest = "My PC won't boot. Can you please fix it?";
             break;
         }
     }
@@ -562,5 +598,30 @@ public partial class TutorialManager
             if (IsScrew(n, c)) count++;
         }
         return count == 0 ? 4 : count;
+    }
+
+    /// <summary>
+    /// Captures the name of the part the player just installed so the
+    /// shop tutorial arrow can point at matching items in the store.
+    /// </summary>
+    void TrackInstalledPartName(string category)
+    {
+        InspectionManager im = FindObjectOfType<InspectionManager>();
+        if (im == null || im.currentClone == null) return;
+
+        foreach (InspectableItem part in im.currentClone.GetComponentsInChildren<InspectableItem>())
+        {
+            if (part.isInventorySlot || part.isMainObject) continue;
+            if (part.partCategory != category) continue;
+
+            // Check if this is a NEW part (not faulty = it's the replacement)
+            if (!part.IsFaulty())
+            {
+                if (category == "GPU") tutorialGPUName = part.itemName;
+                else if (category == "RAM") tutorialRAMName = part.itemName;
+                Debug.Log($"[Tutorial] Tracked {category} name: {part.itemName}");
+                return;
+            }
+        }
     }
 }

@@ -116,6 +116,7 @@ public partial class TutorialManager : MonoBehaviour
     private DiagState diagState = DiagState.RemoveOldGPU;
     private bool grabbedGPU, grabbedRAM;
     private bool shopBrowsed, shopAddedToCart;
+    private bool boxPlacedEarly;
 
     // ─── Lifecycle ───────────────────────────────────────────────
 
@@ -254,6 +255,12 @@ public partial class TutorialManager : MonoBehaviour
 
     public void CompletePlaceBoxTask()
     {
+        // Failsafe: player placed the box while dialogue was still playing
+        if (step == 8)
+        {
+            boxPlacedEarly = true;
+            return;
+        }
         if (step != 9) return;
         CompleteAllTasks(); HideArrow();
         step = 10;
@@ -385,7 +392,7 @@ public partial class TutorialManager : MonoBehaviour
     {
         if (step != 25) return;
         Debug.Log("[Tutorial] Email job marked complete → advancing to shop tutorial.");
-        CompleteAllTasks(); HideArrow();
+        CompleteAllTasks(); HideArrow(); StopUIGuide();
         step = 26;
         Dialogue(1.0f, dlg_ShopTutorial, StartStep_ShopTutorial);
     }
@@ -401,6 +408,7 @@ public partial class TutorialManager : MonoBehaviour
     public void NotifyShopItemAddedToCart()
     {
         if (step != 26) return;
+        uiGuideItemAdded = true;
         if (!shopAddedToCart) { shopAddedToCart = true; TaskListUI.Instance?.CompleteTask(2); }
     }
 
@@ -426,6 +434,9 @@ public partial class TutorialManager : MonoBehaviour
         diagState = DiagState.RemoveOldGPU;
         grabbedGPU = grabbedRAM = false;
         shopBrowsed = shopAddedToCart = false;
+        boxPlacedEarly = false;
+        StopUIGuide();
+        uiGuideItemAdded = false;
         HideArrow(); HidePointer();
         StartCoroutine(DelayedStart());
     }

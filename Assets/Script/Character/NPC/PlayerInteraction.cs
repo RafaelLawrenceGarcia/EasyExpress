@@ -30,6 +30,7 @@ public class PlayerInteract : MonoBehaviour
     public PCController computerOS;
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogueText;
+    public Image characterPicture;
 
     [Header("Computer Canvas Transition")]
     public Canvas computerCanvas;
@@ -307,9 +308,13 @@ public class PlayerInteract : MonoBehaviour
             {
                 bool tutActive = TutorialManager.Instance != null && TutorialManager.Instance.IsTutorialActive();
                 bool cashierStep = TutorialManager.Instance != null && TutorialManager.Instance.IsCashierPCStep();
+                bool mustInspectFirst = TutorialManager.Instance != null && TutorialManager.Instance.GetCurrentStep() == 5;
 
-                if (tutActive && !cashierStep)
-                { ShowPromptWithHighlight("X", "Finish your tasks first!", hit.collider.gameObject); return; }
+                if (tutActive && (!cashierStep || mustInspectFirst))
+                {
+                    string msg = mustInspectFirst ? "Inspect the PC first!" : "Finish your tasks first!";
+                    ShowPromptWithHighlight("X", msg, hit.collider.gameObject); return;
+                }
 
                 if (pcMenu != null) pcMenu.Hide();
                 ShowPromptWithHighlight("E", "Talk to Customer", hit.collider.gameObject);
@@ -499,6 +504,9 @@ public class PlayerInteract : MonoBehaviour
         isInteracting = true; currentCityNPC = npc; currentShopNPC = null;
         FreezePlayer(true); HideAllPrompts();
         dialoguePanel.SetActive(true);
+        option1Button.gameObject.SetActive(true);
+        option2Button.gameObject.SetActive(true);
+        exitButton.gameObject.SetActive(true);
         if (computerOS != null) computerOS.gameObject.SetActive(false);
         option1Button.interactable = true; option2Button.interactable = true;
 
@@ -517,6 +525,10 @@ public class PlayerInteract : MonoBehaviour
         isInteracting = true; currentShopNPC = npc; currentCityNPC = null;
         FreezePlayer(true); HideAllPrompts();
         dialoguePanel.SetActive(true);
+        option1Button.gameObject.SetActive(true);
+        option2Button.gameObject.SetActive(true);
+        exitButton.gameObject.SetActive(true);
+        if (characterPicture != null) characterPicture.gameObject.SetActive(false);
         if (computerOS != null) computerOS.gameObject.SetActive(false);
         option1Button.interactable = true; option2Button.interactable = true;
 
@@ -566,6 +578,7 @@ public class PlayerInteract : MonoBehaviour
     {
         isInteracting = false;
         dialoguePanel.SetActive(false);
+        if (characterPicture != null) characterPicture.gameObject.SetActive(true);
         FreezePlayer(false);
         if (currentCityNPC != null) currentCityNPC.EndConversation();
         if (currentShopNPC != null) currentShopNPC.EndShopConversation();
@@ -646,6 +659,8 @@ public class PlayerInteract : MonoBehaviour
         HideAllPrompts();
         if (goldHUD != null) goldHUD.SetActive(false);
         FreezePlayer(true);
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.NotifyMonitorOpenedForTutorial(monitor);
     }
 
     public void CloseWorkstationMonitor()

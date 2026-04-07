@@ -332,17 +332,14 @@ MonoBehaviour:
     fault: 0
     faultDescription: 
   cpuChance: 100
-  gpuChance: 75
-  ramChance: 95
-  storageChance: 90.6
-  coolerChance: 93
+  gpuChance: 100
+  ramChance: 100
+  storageChance: 100
+  coolerChance: 100
   fanChance: 100
-  buildJobChance: 35
+  buildJobChance: 0
   minRAMSticks: 1
   maxRAMSticks: 4
-  markupMultiplier: 1.3
-  labourFee: 300
-  buildLabourMultiplier: 1.5
   fallbackMotherboardPrice: 4500
   fallbackCPUPrice: 6000
   fallbackGPUPrice: 12000

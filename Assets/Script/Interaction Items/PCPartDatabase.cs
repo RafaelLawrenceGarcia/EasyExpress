@@ -1,3 +1,26 @@
+// ============================================================
+//  PCPartDatabase.cs — COMPATIBILITY FIX
+//  
+//  WHAT CHANGED:
+//  1. Added FilterByCompatibility() helper method
+//  2. GenerateRandomPC() now filters CPU/RAM/Cooler by motherboard tags
+//  3. GeneratePCForPurpose() now filters CPU/RAM/Cooler by motherboard tags
+//  4. AddRAMSticks() now accepts a filtered array parameter
+//
+//  HOW IT WORKS:
+//  - After picking a motherboard, we extract its compatTags
+//  - Socket tags (AM4, AM5, LGA1151, LGA1200, LGA1700, etc.)
+//    are used to filter CPUs and Coolers
+//  - Memory tags (DDR3, DDR4, DDR5) are used to filter RAM
+//  - GPU, Storage, PSU, Fans have no socket/memory dependency
+//
+//  IMPORTANT — YOUR PART DATABASE MUST HAVE CORRECT TAGS:
+//  Motherboard compatTags: ["AM5", "DDR5"] or ["LGA1700", "DDR5"] etc.
+//  CPU compatTags:         ["AM5"] or ["LGA1700"] etc.
+//  RAM compatTags:         ["DDR5"] or ["DDR4"] etc.
+//  Cooler compatTags:      ["AM5"] or ["LGA1700"] etc.
+// ============================================================
+
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -40,16 +63,6 @@ public class PCPartDatabase : ScriptableObject
     public int minRAMSticks = 1;
     public int maxRAMSticks = 4;
 
-    [Header("Reward Calculation")]
-    [Tooltip("Markup multiplier on top of component cost (e.g. 1.3 = 30% markup)")]
-    public float markupMultiplier = 1.3f;
-
-    [Tooltip("Flat labour fee added on top of marked-up parts cost")]
-    public float labourFee = 300f;
-
-    [Tooltip("Extra labour multiplier for build jobs (builds pay more labour)")]
-    public float buildLabourMultiplier = 1.5f;
-
     [Header("Fallback Prices (if partPrice is 0)")]
     [Tooltip("Fallback price per category if a part has no price set")]
     public float fallbackMotherboardPrice = 4500f;
@@ -62,7 +75,105 @@ public class PCPartDatabase : ScriptableObject
     public float fallbackFanPrice = 500f;
 
     // =============================================
+    //  COMPATIBILITY TAG SETS
+    //  Used to identify which tags represent sockets
+    //  vs memory types when filtering parts.
+    // =============================================
+
+    // Socket tags — must match between Motherboard ↔ CPU ↔ Cooler
+    private static readonly HashSet<string> SOCKET_TAGS = new HashSet<string>(
+        System.StringComparer.OrdinalIgnoreCase)
+    {
+        "AM4", "AM5", "LGA1151", "LGA1200", "LGA1700", "LGA1851",
+        "TR4", "TRX40", "TRX50", "sTRX4", "sTR5",
+        "LGA2066", "LGA4677"
+    };
+
+    // Memory tags — must match between Motherboard ↔ RAM
+    private static readonly HashSet<string> MEMORY_TAGS = new HashSet<string>(
+        System.StringComparer.OrdinalIgnoreCase)
+    {
+        "DDR3", "DDR4", "DDR5"
+    };
+
+    // =============================================
+    //  COMPATIBILITY FILTER
+    //  Returns only parts whose compatTags share at
+    //  least one tag from the given filter set.
+    // =============================================
+
+    /// <summary>
+    /// Filters a parts array to only those compatible with the given motherboard.
+    /// tagCategory: "socket" filters by socket tags, "memory" filters by memory tags.
+    /// Returns the filtered array. If no matches, returns the original array as fallback.
+    /// </summary>
+    StartingPCComponent[] FilterByCompatibility(
+        StartingPCComponent[] pool,
+        StartingPCComponent motherboard,
+        string tagCategory)
+    {
+        if (pool == null || pool.Length == 0) return pool;
+        if (motherboard == null || motherboard.compatTags == null) return pool;
+
+        // Extract the relevant tags from the motherboard
+        HashSet<string> relevantTagSet = (tagCategory == "memory") ? MEMORY_TAGS : SOCKET_TAGS;
+
+        // Get motherboard's tags that belong to the relevant category
+        HashSet<string> moboRelevantTags = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
+        foreach (string tag in motherboard.compatTags)
+        {
+            string trimmed = tag.Trim();
+            if (relevantTagSet.Contains(trimmed))
+                moboRelevantTags.Add(trimmed);
+        }
+
+        // If motherboard has no tags in this category, skip filtering
+        if (moboRelevantTags.Count == 0)
+        {
+            Debug.LogWarning($"[PCPartDB] Motherboard '{motherboard.partName}' has no {tagCategory} tags — skipping filter.");
+            return pool;
+        }
+
+        // Filter: keep parts that share at least one relevant tag with the motherboard
+        List<StartingPCComponent> compatible = new List<StartingPCComponent>();
+        foreach (StartingPCComponent part in pool)
+        {
+            if (part.compatTags == null || part.compatTags.Length == 0)
+            {
+                // Parts with no tags are treated as universal (backward compat)
+                compatible.Add(part);
+                continue;
+            }
+
+            foreach (string partTag in part.compatTags)
+            {
+                if (moboRelevantTags.Contains(partTag.Trim()))
+                {
+                    compatible.Add(part);
+                    break;
+                }
+            }
+        }
+
+        if (compatible.Count == 0)
+        {
+            // No compatible parts found — fall back to full pool to avoid empty builds
+            Debug.LogWarning($"[PCPartDB] No {tagCategory}-compatible parts found for " +
+                             $"motherboard '{motherboard.partName}' (tags: {string.Join(",", motherboard.compatTags)}). " +
+                             $"Using full pool as fallback.");
+            return pool;
+        }
+
+        Debug.Log($"[PCPartDB] {tagCategory} filter: {compatible.Count}/{pool.Length} parts " +
+                  $"compatible with '{motherboard.partName}' " +
+                  $"(mobo tags: {string.Join(",", moboRelevantTags)})");
+
+        return compatible.ToArray();
+    }
+
+    // =============================================
     //  MASTER API: Generate Random PC (generic)
+    //  NOW WITH COMPATIBILITY FILTERING
     // =============================================
     public RandomPCResult GenerateRandomPC()
     {
@@ -71,33 +182,54 @@ public class PCPartDatabase : ScriptableObject
         if (cases == null || cases.Length == 0) return result;
         result.casePrefab = cases[Random.Range(0, cases.Length)];
 
-        bool hasMotherboard = TryAddPart(motherboards, result.parts, true);
-        if (!hasMotherboard) return result;
+        // ── Step 1: Pick motherboard FIRST (everything depends on it) ──
+        if (motherboards == null || motherboards.Length == 0) return result;
+        StartingPCComponent chosenMotherboard = motherboards[Random.Range(0, motherboards.Length)];
+        AddCopiedPart(chosenMotherboard, result.parts);
 
+        // ── Step 2: PSU (no compatibility constraint) ──
         TryAddPart(psus, result.parts, true);
-        bool hasCPU = TryAddPart(cpus, result.parts, Roll(cpuChance));
+
+        // ── Step 3: CPU (must match motherboard SOCKET) ──
+        StartingPCComponent[] compatCPUs = FilterByCompatibility(cpus, chosenMotherboard, "socket");
+        bool hasCPU = TryAddPart(compatCPUs, result.parts, Roll(cpuChance));
+
+        // ── Step 4: GPU (no socket/memory constraint) ──
         TryAddPart(gpus, result.parts, Roll(gpuChance));
 
-        if (rams != null && rams.Length > 0 && Roll(ramChance))
+        // ── Step 5: RAM (must match motherboard MEMORY type) ──
+        StartingPCComponent[] compatRAM = FilterByCompatibility(rams, chosenMotherboard, "memory");
+        if (compatRAM != null && compatRAM.Length > 0 && Roll(ramChance))
         {
             int stickCount = Random.Range(minRAMSticks, maxRAMSticks + 1);
             // Pick ONE ram type, then duplicate — no mixed DDR4/DDR5
-            StartingPCComponent chosenRam = rams[Random.Range(0, rams.Length)];
+            StartingPCComponent chosenRam = compatRAM[Random.Range(0, compatRAM.Length)];
             for (int i = 0; i < stickCount; i++) AddCopiedPart(chosenRam, result.parts);
         }
-        TryAddPart(storage, result.parts, Roll(storageChance));
-        if (hasCPU) TryAddPart(coolers, result.parts, Roll(coolerChance));
 
+        // ── Step 6: Storage (no constraint) ──
+        TryAddPart(storage, result.parts, Roll(storageChance));
+
+        // ── Step 7: Cooler (must match motherboard SOCKET for mounting) ──
+        if (hasCPU)
+        {
+            StartingPCComponent[] compatCoolers = FilterByCompatibility(coolers, chosenMotherboard, "socket");
+            TryAddPart(compatCoolers, result.parts, Roll(coolerChance));
+        }
+
+        // ── Step 8: Fans (no constraint) ──
         if (fans != null && fans.Length > 0 && Roll(fanChance))
         {
             int fanCount = Random.Range(1, 5);
             for (int i = 0; i < fanCount; i++) AddCopiedPart(fans[Random.Range(0, fans.Length)], result.parts);
         }
+
         return result;
     }
 
     // =============================================
     //  PURPOSE-DRIVEN PC GENERATION (for Build jobs)
+    //  NOW WITH COMPATIBILITY FILTERING
     // =============================================
     public RandomPCResult GeneratePCForPurpose(BuildPurpose purpose)
     {
@@ -106,50 +238,58 @@ public class PCPartDatabase : ScriptableObject
         if (cases == null || cases.Length == 0) return result;
         result.casePrefab = cases[Random.Range(0, cases.Length)];
 
-        // Motherboard and PSU are always required
-        bool hasMotherboard = TryAddPart(motherboards, result.parts, true);
-        if (!hasMotherboard) return result;
+        // ── Pick motherboard FIRST ──
+        if (motherboards == null || motherboards.Length == 0) return result;
+        StartingPCComponent chosenMotherboard = motherboards[Random.Range(0, motherboards.Length)];
+        AddCopiedPart(chosenMotherboard, result.parts);
+
+        // PSU is always required (no compatibility constraint)
         TryAddPart(psus, result.parts, true);
+
+        // ── Filter parts by motherboard compatibility ──
+        StartingPCComponent[] compatCPUs = FilterByCompatibility(cpus, chosenMotherboard, "socket");
+        StartingPCComponent[] compatRAM = FilterByCompatibility(rams, chosenMotherboard, "memory");
+        StartingPCComponent[] compatCoolers = FilterByCompatibility(coolers, chosenMotherboard, "socket");
 
         switch (purpose)
         {
             case BuildPurpose.School:
                 // Basic: CPU always, GPU optional (30%), 1-2 RAM, storage always, cooler likely
-                TryAddPart(cpus, result.parts, true);
+                TryAddPart(compatCPUs, result.parts, true);
                 TryAddPart(gpus, result.parts, Roll(30f));
-                AddRAMSticks(result.parts, 1, 2);
+                AddRAMSticks(result.parts, 1, 2, compatRAM);
                 TryAddPart(storage, result.parts, true);
-                TryAddPart(coolers, result.parts, Roll(80f));
+                TryAddPart(compatCoolers, result.parts, Roll(80f));
                 TryAddFans(result.parts, 1, 2, 50f);
                 break;
 
             case BuildPurpose.Office:
                 // Reliable mid-range: CPU always, GPU likely (60%), 2 RAM, storage always, cooler always
-                TryAddPart(cpus, result.parts, true);
+                TryAddPart(compatCPUs, result.parts, true);
                 TryAddPart(gpus, result.parts, Roll(60f));
-                AddRAMSticks(result.parts, 2, 2);
+                AddRAMSticks(result.parts, 2, 2, compatRAM);
                 TryAddPart(storage, result.parts, true);
-                TryAddPart(coolers, result.parts, true);
+                TryAddPart(compatCoolers, result.parts, true);
                 TryAddFans(result.parts, 1, 3, 60f);
                 break;
 
             case BuildPurpose.Streaming:
                 // Mid-high: CPU always, GPU always, 2-4 RAM, storage always, cooler always, fans
-                TryAddPart(cpus, result.parts, true);
+                TryAddPart(compatCPUs, result.parts, true);
                 TryAddPart(gpus, result.parts, true);
-                AddRAMSticks(result.parts, 2, 4);
+                AddRAMSticks(result.parts, 2, 4, compatRAM);
                 TryAddPart(storage, result.parts, true);
-                TryAddPart(coolers, result.parts, true);
+                TryAddPart(compatCoolers, result.parts, true);
                 TryAddFans(result.parts, 2, 4, 80f);
                 break;
 
             case BuildPurpose.Gaming:
-                // High-end: Everything maxed — CPU, GPU, 2-4 RAM, storage, cooler, fans
-                TryAddPart(cpus, result.parts, true);
+                // High-end: Everything maxed
+                TryAddPart(compatCPUs, result.parts, true);
                 TryAddPart(gpus, result.parts, true);
-                AddRAMSticks(result.parts, 2, 4);
+                AddRAMSticks(result.parts, 2, 4, compatRAM);
                 TryAddPart(storage, result.parts, true);
-                TryAddPart(coolers, result.parts, true);
+                TryAddPart(compatCoolers, result.parts, true);
                 TryAddFans(result.parts, 2, 5, 90f);
                 break;
         }
@@ -157,12 +297,18 @@ public class PCPartDatabase : ScriptableObject
         return result;
     }
 
-    void AddRAMSticks(List<StartingPCComponent> parts, int min, int max)
+    // =============================================
+    //  UPDATED: AddRAMSticks now takes a filtered array
+    // =============================================
+    void AddRAMSticks(List<StartingPCComponent> parts, int min, int max, StartingPCComponent[] ramPool = null)
     {
-        if (rams == null || rams.Length == 0) return;
+        // Use filtered pool if provided, otherwise fall back to master array
+        StartingPCComponent[] pool = (ramPool != null && ramPool.Length > 0) ? ramPool : rams;
+        if (pool == null || pool.Length == 0) return;
+
         int count = Random.Range(min, max + 1);
         // Pick ONE type — all sticks match
-        StartingPCComponent chosenRam = rams[Random.Range(0, rams.Length)];
+        StartingPCComponent chosenRam = pool[Random.Range(0, pool.Length)];
         for (int i = 0; i < count; i++)
             AddCopiedPart(chosenRam, parts);
     }
@@ -181,15 +327,37 @@ public class PCPartDatabase : ScriptableObject
     float CalculateReward(List<StartingPCComponent> parts, bool isBuild)
     {
         float totalComponentCost = 0f;
+        int faultCount = 0;
 
         foreach (var part in parts)
         {
             float price = part.partPrice > 0f ? part.partPrice : GetFallbackPrice(part.partCategory);
-            totalComponentCost += price;
+
+            if (isBuild)
+            {
+                totalComponentCost += price;
+            }
+            else
+            {
+                if (part.fault != PartFault.None && part.fault != PartFault.Dusty
+                    && part.fault != PartFault.NotSeated && part.fault != PartFault.LooseConnection
+                    && part.fault != PartFault.WrongSlot)
+                {
+                    totalComponentCost += price;
+                }
+
+                if (part.fault != PartFault.None)
+                    faultCount++;
+            }
         }
 
-        float markedUp = totalComponentCost * markupMultiplier;
-        float labour = isBuild ? (labourFee * buildLabourMultiplier) : labourFee;
+        float markedUp = totalComponentCost * 1.10f;
+
+        float labour;
+        if (isBuild)
+            labour = 1000f;
+        else
+            labour = faultCount >= 2 ? 1000f : 500f;
 
         return Mathf.Round(markedUp + labour);
     }
@@ -221,7 +389,6 @@ public class PCPartDatabase : ScriptableObject
 
     public EmailData GenerateRandomBuildJob()
     {
-        // Pick a random build purpose
         BuildPurpose[] purposes = { BuildPurpose.School, BuildPurpose.Streaming, BuildPurpose.Gaming, BuildPurpose.Office };
         BuildPurpose purpose = purposes[Random.Range(0, purposes.Length)];
 
@@ -231,7 +398,7 @@ public class PCPartDatabase : ScriptableObject
         job.jobType = JobType.Build;
         job.buildPurpose = purpose;
         job.basePCCasePrefab = desiredPC.casePrefab;
-        job.startingParts = new List<StartingPCComponent>(); // Empty case
+        job.startingParts = new List<StartingPCComponent>();
         job.requestedParts = desiredPC.parts;
 
         job.reward = CalculateReward(desiredPC.parts, true);
@@ -255,7 +422,6 @@ public class PCPartDatabase : ScriptableObject
         job.basePCCasePrefab = pc.casePrefab;
         job.startingParts = pc.parts;
 
-        // Pick a problem that actually matches what parts exist in this PC
         string chosenProblem = PickValidProblem(pc.parts);
         job.pcProblems = new string[] { chosenProblem };
 
@@ -279,23 +445,20 @@ public class PCPartDatabase : ScriptableObject
     }
 
     // =============================================
-    //  SMART PROBLEM PICKER — Only picks problems
-    //  that match parts actually in this PC
+    //  SMART PROBLEM PICKER
     // =============================================
     string PickValidProblem(List<StartingPCComponent> parts)
     {
-        // Build a set of which categories exist
         HashSet<string> categories = new HashSet<string>();
         foreach (var p in parts) categories.Add(p.partCategory);
 
-        // Define which problems require which part categories
         List<ProblemRequirement> allProblems = new List<ProblemRequirement>
         {
             new ProblemRequirement("Blue Screen of Death",  new string[] { "RAM", "Storage" }),
             new ProblemRequirement("No Display on Monitor", new string[] { "GPU", "RAM" }),
             new ProblemRequirement("PC Keeps Overheating",  new string[] { "Cooler", "Fan" }),
             new ProblemRequirement("Won't Turn On",         new string[] { "PSU", "Motherboard" }),
-            new ProblemRequirement("Full of Dust",          new string[] { }),  // Any PC can be dusty
+            new ProblemRequirement("Full of Dust",          new string[] { }),
             new ProblemRequirement("Random Shutdowns",      new string[] { "PSU", "CPU" }),
             new ProblemRequirement("Loud Fan Noise",        new string[] { "Fan", "Cooler" }),
             new ProblemRequirement("Slow Performance",      new string[] { "Storage", "RAM" }),
@@ -303,13 +466,11 @@ public class PCPartDatabase : ScriptableObject
             new ProblemRequirement("No Internet Connection", new string[] { "Motherboard" }),
         };
 
-        // Filter to only problems where at least one required part exists
         List<string> validProblems = new List<string>();
         foreach (var prob in allProblems)
         {
             if (prob.requiredCategories.Length == 0)
             {
-                // "Full of Dust" — always valid
                 validProblems.Add(prob.problemName);
                 continue;
             }
@@ -324,7 +485,6 @@ public class PCPartDatabase : ScriptableObject
             }
         }
 
-        // Fallback (should never happen but just in case)
         if (validProblems.Count == 0) return "Full of Dust";
 
         return validProblems[Random.Range(0, validProblems.Count)];
@@ -600,10 +760,6 @@ public class RandomPCResult
     public List<StartingPCComponent> parts = new List<StartingPCComponent>();
 }
 
-/// <summary>
-/// Maps a problem name to the part categories it requires.
-/// Used by PickValidProblem to filter out impossible problems.
-/// </summary>
 public class ProblemRequirement
 {
     public string problemName;
