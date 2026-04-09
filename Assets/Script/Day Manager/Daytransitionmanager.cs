@@ -32,24 +32,24 @@ public class DayTransitionManager : MonoBehaviour
     public static System.Action<int> OnNewDayStarted;
 
     void Awake()
-{
-    Instance = this;
-
-    if (PlayerPrefs.GetInt("IsLoadingGame", 0) == 1 || PlayerPrefs.GetInt("TutorialDone", 0) == 1)
     {
-        currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
-    }
-    else
-    {
-        currentDay = 1;
-    }
+        Instance = this;
 
-    // If new player, skip Day 1 intro — cutscene plays instead
-    bool tutorialDone = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
-    bool isLoading = PlayerPrefs.GetInt("IsLoadingGame", 0) == 1;
-    if (!tutorialDone && !isLoading)
-        skipIntroForCutscene = true;
-}
+        if (PlayerPrefs.GetInt("IsLoadingGame", 0) == 1 || PlayerPrefs.GetInt("TutorialDone", 0) == 1)
+        {
+            currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
+        }
+        else
+        {
+            currentDay = 1;
+        }
+
+        // If new player, skip Day 1 intro — cutscene plays instead
+        bool tutorialDone = PlayerPrefs.GetInt("TutorialDone", 0) == 1;
+        bool isLoading = PlayerPrefs.GetInt("IsLoadingGame", 0) == 1;
+        if (!tutorialDone && !isLoading)
+            skipIntroForCutscene = true;
+    }
 
     void Start()
     {
@@ -253,6 +253,15 @@ public class DayTransitionManager : MonoBehaviour
         PlayerPrefs.SetInt("CurrentDay", currentDay);
         PlayerPrefs.Save();
 
+        // ── DEMO LOCK ───────────────────────────────────
+        if (DemoLockManager.Instance != null
+            && DemoLockManager.Instance.CheckDemoStatus())
+        {
+            isTransitioning = false;
+            yield break;
+        }
+        // ─────────────────────────────────────────────────;
+
         // ── CHECKPOINT SAVE — before deliveries tick ──
         if (GameSession.IsLoggedIn && CloudDataHandler.Instance != null)
         {
@@ -349,8 +358,8 @@ public class DayTransitionManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            if (transitionCanvas != null && !skipIntroForCutscene) 
-            transitionCanvas.enabled = false;
+            if (transitionCanvas != null && !skipIntroForCutscene)
+                transitionCanvas.enabled = false;
         }
     }
 }

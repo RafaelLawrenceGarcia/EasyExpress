@@ -352,18 +352,25 @@ public class AuthManager : MonoBehaviour
     {
         OnLoginSuccessEvent?.Invoke();
 
-        // Load this account's settings from cloud
         if (PlayerSettingsCloud.Instance != null)
             PlayerSettingsCloud.Instance.LoadSettings();
 
         if (loginOverlay != null) loginOverlay.SetActive(false);
 
+        // Try the assigned reference first, then search the scene as fallback
+        MainMenu menuScript = null;
         if (mainCanvas != null)
         {
             mainCanvas.SetActive(true);
+            menuScript = mainCanvas.GetComponent<MainMenu>();
+        }
+        if (menuScript == null)
+            menuScript = FindFirstObjectByType<MainMenu>(FindObjectsInactive.Include);
 
-            MainMenu menuScript = mainCanvas.GetComponent<MainMenu>();
-            if (menuScript != null) menuScript.ShowMainPanel();
+        if (menuScript != null)
+        {
+            menuScript.gameObject.SetActive(true);
+            menuScript.ShowMainPanel();
         }
     }
 }

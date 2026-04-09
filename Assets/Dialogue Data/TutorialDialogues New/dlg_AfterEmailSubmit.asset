@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
+  m_Name: dlg_AfterEmailSubmit
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
+  lines:
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "Nice! Job submitted and payment collected. That's how every repair cycle works."
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "Now, you used up some parts during that repair. Let's restock from the online shop."
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "Head to the Shop PC and order replacement GPU and RAM parts so you're ready for the next customer."
+    showOnRightSide: 0

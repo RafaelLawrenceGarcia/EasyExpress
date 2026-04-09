@@ -84,6 +84,10 @@ public partial class InspectionManager : MonoBehaviour
     [Header("Screwdriver / Hold-to-Remove & Install")]
     public ScrewdriverInteraction screwdriverSystem;
 
+    [Header("Thermal Paste Applicator")]
+    [Tooltip("Drag the ThermalPasteApplicator component here. " +
+             "Used to fix Overheating faults on Coolers and CPUs.")]
+    public ThermalPasteApplicator thermalPasteApplicator;
     // ─── Shared State (accessed by partial classes) ──────────────
 
     internal bool isConfirmingRemoval = false;
@@ -96,7 +100,7 @@ public partial class InspectionManager : MonoBehaviour
     internal bool isWiring = false;
     internal bool isPCOn = false;
     internal bool tutorialHoverDone = false;
-
+    public static bool BlockExitOneFrame = false;
     // Camera state
     internal Vector3 focusPoint, targetFocusPoint;
     internal float currentDistance, targetDistance;
@@ -151,6 +155,10 @@ public partial class InspectionManager : MonoBehaviour
         if (screwdriverSystem != null && inspectionCamera != null)
             screwdriverSystem.inspectionCamera = inspectionCamera;
     }
+    void LateUpdate()
+    {
+        BlockExitOneFrame = false;
+    }
 
     void SetupCameraStack()
     {
@@ -170,12 +178,40 @@ public partial class InspectionManager : MonoBehaviour
         if (!isInspecting || currentClone == null) return;
         if (isConfirmingRemoval) return;
 
-        if (InspectionToolbarUI.Instance != null) InspectionToolbarUI.Instance.HandleInput();
+        // ── TAB: Toggle inventory ─────────────────────────────────────
+        if (Input.GetKeyDown(KeyCode.Tab) && inventoryUI != null)
+        {
+            inventoryUI.currentMode = InspectionInventoryUI.InventoryMode.PlayerStorage;
+            bool isOpen = inventoryUI.inventoryPanel != null
+                       && inventoryUI.inventoryPanel.activeSelf;
+            if (!isOpen)
+            {
+                inventoryUI.inventoryPanel.SetActive(true);
+                inventoryUI.RefreshInventory();
+            }
+            else
+            {
+                inventoryUI.inventoryPanel.SetActive(false);
+            }
+            return;
+        }
+        // ── Check if an overlay panel (Manual, Summary, Inventory) is open ──
+        bool overlayOpen = IsOverlayPanelOpen();
 
-        HandleInput();         // Camera.cs
-        ApplyCameraMovement(); // Camera.cs
-        HandleHover();         // UI.cs
-        HandleClickInteractions(); // UI.cs
+        // Toolbar input only when no overlay is blocking
+        if (!overlayOpen && InspectionToolbarUI.Instance != null)
+            InspectionToolbarUI.Instance.HandleInput();
+
+        HandleInput();         // Camera.cs — already checks IsOverlayPanelOpen() internally
+        ApplyCameraMovement(); // Camera.cs — always runs (smooth lerp continues)
+
+        // Hover and click only when no overlay is blocking
+        if (!overlayOpen)
+        {
+            HandleHover();             // UI.cs
+            HandleClickInteractions(); // UI.cs
+        }
+
         HandleWireDrawing();   // Wiring.cs
 
         if (inspectCooldown > 0f)
@@ -184,18 +220,41 @@ public partial class InspectionManager : MonoBehaviour
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.R)) ResetView();
-            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.X))
-                StopInspection();
-        }
+            // ── Overlay panels get first crack at Escape ─────────────
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                // Inventory open → close it
+                if (inventoryUI != null
+                    && inventoryUI.inventoryPanel != null
+                    && inventoryUI.inventoryPanel.activeSelf)
+                {
+                    PauseManager.BlockPause = true;
+                    inventoryUI.inventoryPanel.SetActive(false);
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
+                    return;
+                }
 
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            if (inventoryUI != null && !viewOnlyMode) inventoryUI.ToggleInventory();
-        }
+                // Other overlay (Manual, Summary) → let them handle their own Escape
+                if (overlayOpen)
+                {
+                    PauseManager.BlockPause = true;
+                    return;
+                }
+            }
 
-        if (ToolBelt.Instance != null) ToolBelt.Instance.HandleToolInput();
-        HandleDustCleaning(); // UI.cs
+            if (!overlayOpen && !BlockExitOneFrame)
+            {
+                if (Input.GetKeyDown(KeyCode.R)) ResetView();
+                if (Input.GetKeyDown(KeyCode.E)
+                    || Input.GetKeyDown(KeyCode.Escape)
+                    || Input.GetKeyDown(KeyCode.X))
+                {
+                    PauseManager.BlockPause = true;
+                    StopInspection();
+                }
+            }
+        }
     }
 
     // ─── Inspect (enter inspection mode) ─────────────────────────
@@ -322,6 +381,10 @@ public partial class InspectionManager : MonoBehaviour
             if (dust.dustOverlayMaterial == null && dustMaterial != null) dust.dustOverlayMaterial = dustMaterial;
             dust.ApplyDust();
         }
+        // ── ADD THIS at the very end ──────────────────────────────────
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.NotifyInspectionCloneReady(currentClone);
+        // ─────────────────────────────────────────────────────────────
     }
 
     // ─── StopInspection (exit) ───────────────────────────────────
@@ -329,6 +392,7 @@ public partial class InspectionManager : MonoBehaviour
     public void StopInspection()
     {
         if (screwdriverSystem != null) screwdriverSystem.CancelUnscrewing();
+        if (thermalPasteApplicator != null) thermalPasteApplicator.Cancel();
         isConfirmingRemoval = false;
         isInspecting = false;
         viewOnlyMode = false;
@@ -355,7 +419,7 @@ public partial class InspectionManager : MonoBehaviour
 
             foreach (Collider col in currentClone.GetComponents<Collider>()) col.enabled = true;
 
-            string[] caseChildNames = { "case", "case.001", "case.003", "psucase" };
+            string[] caseChildNames = { "case", "Front Panel", "Back Panel", "psucase" };
             foreach (string childName in caseChildNames)
             {
                 Transform caseChild = null;
@@ -373,11 +437,24 @@ public partial class InspectionManager : MonoBehaviour
             currentClone.transform.rotation = savedOriginalRotation;
 
             // Re-enable renderers, then hide ghost slots
-            foreach (Renderer rend in currentClone.GetComponentsInChildren<Renderer>(true)) rend.enabled = true;
+            foreach (Renderer rend in currentClone.GetComponentsInChildren<Renderer>(true))
+                rend.enabled = true;
+
+            // ── Re-hide any wire meshes that are not connected ──────────────
+            // StopInspection() enables ALL renderers above, which accidentally
+            // un-hides disconnected pre-built wire meshes. This corrects that.
+            foreach (MonoBehaviour mb in currentClone.GetComponentsInChildren<MonoBehaviour>(true))
+            {
+                PrebuiltWire wire = mb as PrebuiltWire;
+                if (wire != null) wire.ReapplyVisibility();
+            }
+            // ────────────────────────────────────────────────────────────────
+
             foreach (InspectableItem item in currentClone.GetComponentsInChildren<InspectableItem>(true))
             {
                 if (item.isInventorySlot)
-                    foreach (Renderer rend in item.GetComponentsInChildren<Renderer>(true)) rend.enabled = false;
+                    foreach (Renderer rend in item.GetComponentsInChildren<Renderer>(true))
+                        rend.enabled = false;
             }
         }
 
@@ -418,5 +495,40 @@ public partial class InspectionManager : MonoBehaviour
             if (inventoryUI.inventoryPanel != null) inventoryUI.inventoryPanel.SetActive(true);
             inventoryUI.RefreshInventory();
         }
+    }
+    /// <summary>
+    /// Triggered when the player left-clicks a Cooler or CPU that has
+    /// PartFault.Overheating with a thermal-paste description.
+    /// Delegates to ThermalPasteApplicator for the hold mechanic.
+    /// </summary>
+    void BeginThermalPasteApplication(InspectableItem part)
+    {
+        if (!RequireHand()) return;
+
+        if (thermalPasteApplicator == null)
+        {
+            ShowTooltipMessage("Tool Missing",
+                "No ThermalPasteApplicator component found.\n" +
+                "Assign it in the InspectionManager inspector.");
+            return;
+        }
+
+        isConfirmingRemoval = true;
+
+        thermalPasteApplicator.onCancelled = () =>
+        {
+            isConfirmingRemoval = false;
+        };
+
+        thermalPasteApplicator.BeginApplying(part.transform, () =>
+        {
+            isConfirmingRemoval = false;
+            part.fault = PartFault.None;
+            part.faultDescription = "";
+            ShowTooltipMessage("Thermal Paste Applied!",
+                "Fresh compound applied — the cooler now makes\n" +
+                "proper contact with the CPU.");
+            Debug.Log($"[ThermalPaste] Fixed overheating on '{part.itemName}'.");
+        });
     }
 }

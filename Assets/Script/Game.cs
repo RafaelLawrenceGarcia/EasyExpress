@@ -35,6 +35,10 @@ public class GameManager : MonoBehaviour
     // Called automatically every time a scene finishes loading
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        if (DemoLockManager.Instance != null
+            && DemoLockManager.Instance.CheckDemoStatus())
+            return;
+
         if (PlayerPrefs.GetInt("IsLoadingGame") == 1)
         {
             // ── CLOUD SESSION: load from PlayFab (last end-of-day checkpoint) ──

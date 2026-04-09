@@ -22,8 +22,19 @@ public class IntroDialogueManager : MonoBehaviour
 
     void Update()
     {
-        if (isDialogueActive && Input.GetMouseButtonDown(0))
-            NextLine();
+        if (isDialogueActive)
+        {
+            // FIX: Block Escape while dialogue is playing so PauseManager
+            // doesn't interfere and cause the tutorial to replay dialogue.
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                PauseManager.BlockPause = true;
+                return; // consume the press — do nothing
+            }
+
+            if (Input.GetMouseButtonDown(0))
+                NextLine();
+        }
     }
 
     public void PlaySequence(DialogueSequence newSequence, System.Action onFinished)
@@ -42,7 +53,7 @@ public class IntroDialogueManager : MonoBehaviour
             InspectionToolbarUI.Instance.Hide();
 
         if (playerMovement != null) playerMovement.SetMovementState(false);
-        if (playerCamera   != null) playerCamera.SetCameraState(false);
+        if (playerCamera != null) playerCamera.SetCameraState(false);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -54,7 +65,7 @@ public class IntroDialogueManager : MonoBehaviour
     {
         DialogueLine line = currentSequence.lines[currentLineIndex];
 
-        nameText.text    = line.speakerName;
+        nameText.text = line.speakerName;
         dialogueText.text = line.text;
 
         if (line.portrait != null)
@@ -93,7 +104,7 @@ public class IntroDialogueManager : MonoBehaviour
         }
 
         if (playerMovement != null) playerMovement.SetMovementState(true);
-        if (playerCamera   != null) playerCamera.SetCameraState(true);
+        if (playerCamera != null) playerCamera.SetCameraState(true);
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

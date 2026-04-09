@@ -127,13 +127,19 @@ public class PauseManager : MonoBehaviour
         if (pausePanel != null) pausePanel.SetActive(false);
         if (optionsPanel != null) optionsPanel.SetActive(false);
 
+        // If tutorial was never finished, reset it so it plays next time
+        bool tutorialActuallyDone = TutorialManager.Instance == null
+                                 || TutorialManager.Instance.GetCurrentStep() >= 50;
+        if (!tutorialActuallyDone)
+            PlayerPrefs.SetInt("TutorialDone", 0);
+
         DayTransitionManager.ResetDayFlag();
-        PlayerPrefs.SetFloat("SavedGameTime", 6f);  // ← add this
-        PlayerPrefs.Save();                           // ← add this
+        PlayerPrefs.SetFloat("SavedGameTime", 6f);
+        PlayerPrefs.Save();
 
         Time.timeScale = 1f;
         isPaused = false;
-        Cursor.lockState = CursorLockMode.None;   // ← add this
+        Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         SceneManager.LoadScene(mainMenuSceneName);
     }

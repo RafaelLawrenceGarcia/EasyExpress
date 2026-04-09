@@ -157,12 +157,19 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
         {
             if (part.isMainObject) continue;
             if (part.isInventorySlot) continue;
+            if (part.isWirePort) continue;
             if (part.partCategory == requiredPartCategory)
                 return true;
         }
         return false;
     }
-
+    /// <summary>
+    /// Re-applies correct visibility after InspectionManager re-enables all renderers.
+    /// </summary>
+    public void ReapplyVisibility()
+    {
+        SetWireVisible(isConnected);
+    }
     /// <summary>
     /// Finds the nearest installed part matching the given category.
     /// Uses renderer bounds center as fallback when transforms are at origin.
@@ -181,6 +188,8 @@ public class PrebuiltWire : MonoBehaviour, IPrebuiltWire
         {
             if (part.isMainObject) continue;
             if (part.isInventorySlot) continue;
+            if (part.isWirePort) continue;           // wire ports aren't components
+            if (part == connectorPort) continue;      // don't detect our own port
             if (part.partCategory != category) continue;
 
             Vector3 partPos = GetWorldPosition(part.transform);

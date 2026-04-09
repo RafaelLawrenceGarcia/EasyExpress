@@ -64,7 +64,7 @@ public class CustomerDeskManager : MonoBehaviour
     //  Only spawns if this customer is FIRST in the queue (slot 0).
     // ─────────────────────────────────────────────────────────────────────────
 
-        public void TrySpawnDeskPC(CustomerInside customer)
+    public void TrySpawnDeskPC(CustomerInside customer)
     {
         if (deskSpawnPoint == null)
         {
@@ -89,10 +89,10 @@ public class CustomerDeskManager : MonoBehaviour
         ClearDeskPC();
 
         // Spawn the customer's PC on the desk
-        Vector3 spawnPos     = deskSpawnPoint != null
+        Vector3 spawnPos = deskSpawnPoint != null
             ? deskSpawnPoint.position
             : new Vector3(0f, 1f, 0f);
-        Quaternion spawnRot  = deskSpawnPoint != null
+        Quaternion spawnRot = deskSpawnPoint != null
             ? deskSpawnPoint.rotation
             : Quaternion.identity;
 
@@ -106,13 +106,22 @@ public class CustomerDeskManager : MonoBehaviour
         // Tag it so the player can interact / inspect it
         // Use "PickupPC" so PlayerInteract shows the inspect prompt
         _deskPC.tag = "PickupPC";
+        // ── ADD THIS ──────────────── ─────────────────────────────────
+        // Add TutorialTarget so ShowArrowForType can find it
+        TutorialTarget tt = _deskPC.GetComponent<TutorialTarget>();
+        if (tt == null) tt = _deskPC.AddComponent<TutorialTarget>();
+        tt.type = TutorialTarget.TargetType.CashierPC;
 
+        // Notify tutorial to re-highlight the newly spawned PC
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.NotifyDeskPCSpawned(_deskPC.transform);
+        // ─────────────────────────────────────────────────────────────
         // Make sure the main InspectableItem is set correctly
         InspectableItem rootItem = _deskPC.GetComponent<InspectableItem>();
         if (rootItem != null)
         {
             rootItem.isMainObject = true;
-            rootItem.itemName     = $"{customer.npcName}'s PC";
+            rootItem.itemName = $"{customer.npcName}'s PC";
             rootItem.itemDescription = customer.jobRequest;
         }
 

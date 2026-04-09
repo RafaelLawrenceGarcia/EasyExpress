@@ -162,21 +162,22 @@ public class JobBox : MonoBehaviour
 
     public GameObject UnpackPC(Transform workstationSpot)
     {
-        // SCENARIO 1: Unpacking a previously packed PC
-        if (existingPC != null)
-        {
-            existingPC.SetActive(true);
-            existingPC.transform.position = workstationSpot.position;
-            existingPC.transform.rotation = workstationSpot.rotation;
-            existingPC.transform.SetParent(null);
-            Destroy(gameObject);
-            return existingPC;
-        }
+        if (existingPC != null) { /* ...unchanged... */ }
 
-        // SCENARIO 2: First-time unbox from email job
         if (pcCasePrefabToSpawn == null) return null;
 
-        GameObject newPC = Instantiate(pcCasePrefabToSpawn, workstationSpot.position, workstationSpot.rotation);
+        GameObject newPC = Instantiate(pcCasePrefabToSpawn,
+            workstationSpot.position, workstationSpot.rotation);
+
+        string badNewsReport = "";
+        if (sourceEmail != null && sourceEmail.jobType == JobType.Repair)
+        {
+            // ── Never randomise extra faults during the tutorial ──
+            bool isTutorial = TutorialManager.Instance != null
+                           && TutorialManager.Instance.IsTutorialActive();
+            if (!isTutorial)
+                badNewsReport = ApplyBadNews();
+        }
 
         PCCaseBuilder builder = newPC.GetComponent<PCCaseBuilder>();
         if (builder != null)
@@ -185,38 +186,36 @@ public class JobBox : MonoBehaviour
             builder.linkedEmail = sourceEmail;
         }
 
-        // ── BAD NEWS: apply random faults for Repair jobs ──────────
-        if (sourceEmail != null && sourceEmail.jobType == JobType.Repair)
-        {
-            string badNewsReport = ApplyBadNews(newPC);
-            if (!string.IsNullOrEmpty(badNewsReport))
-                ShowBadNews(sourceEmail.senderName, badNewsReport);
-        }
-        // ────────────────────────────────────────────────────────────
+        if (!string.IsNullOrEmpty(badNewsReport) && sourceEmail != null)
+            ShowBadNews(sourceEmail.senderName, badNewsReport);
 
         Destroy(gameObject);
         return newPC;
     }
-
     // ================================================================
     //  BAD NEWS SYSTEM
     //  Randomly picks 1-2 faults and applies them to the PC's parts.
     //  Returns a summary string to display to the player.
     // ================================================================
-    string ApplyBadNews(GameObject pc)
+    /// <summary>
+    /// Randomly picks 1-2 faults and applies them to partsToBuild DATA.
+    /// Must be called BEFORE BuildFromData so parts are created with correct faults.
+    /// Returns a summary string to display to the player.
+    /// </summary>
+    string ApplyBadNews()
     {
         if (partsToBuild == null || partsToBuild.Count == 0) return "";
 
         // Possible faults that can be randomly assigned
         var faultPool = new List<(PartFault fault, string description)>
-        {
-            (PartFault.Broken,          "completely dead — needs replacement"),
-            (PartFault.Dusty,           "clogged with dust — needs cleaning"),
-            (PartFault.NotSeated,       "not seated properly — needs reseating"),
-            (PartFault.LooseConnection, "has a loose connection"),
-            (PartFault.Overheating,     "thermal paste dried out — overheating risk"),
-            (PartFault.Corrupted,       "has corrupted data"),
-        };
+    {
+        (PartFault.Broken,          "completely dead — needs replacement"),
+        (PartFault.Dusty,           "clogged with dust — needs cleaning"),
+        (PartFault.NotSeated,       "not seated properly — needs reseating"),
+        (PartFault.LooseConnection, "has a loose connection"),
+        (PartFault.Overheating,     "thermal paste dried out — overheating risk"),
+        (PartFault.Corrupted,       "has corrupted data"),
+    };
 
         // How many parts get a fault (1 or 2)
         int faultCount = Random.Range(1, 3);
@@ -242,13 +241,9 @@ public class JobBox : MonoBehaviour
             lines.Add("• " + partsToBuild[idx].partName + ": " + desc);
         }
 
-        // Also apply to the actual built components in the PC
-        PCCaseBuilder builder = pc.GetComponent<PCCaseBuilder>();
-        if (builder != null) builder.BuildFromData(partsToBuild);
-
+        // No BuildFromData here — UnpackPC handles the single build call.
         return string.Join("\n", lines);
     }
-
     void ShowBadNews(string customerName, string faultSummary)
     {
         // Try the directly assigned panel first

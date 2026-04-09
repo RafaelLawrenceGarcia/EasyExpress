@@ -9,7 +9,7 @@ public class CustomerInside : MonoBehaviour
     public string npcName = "Customer";
     public string jobRequest;
     public int reward;
-    
+
     [Tooltip("If you leave this empty, the game will automatically generate a random PC using the lists below!")]
     public EmailData assignedJob;
 
@@ -26,9 +26,9 @@ public class CustomerInside : MonoBehaviour
     private Transform currentBrowseSpot;
 
     [Header("State")]
-    public bool isBrowsing  = false;
-    public bool isServed    = false;
-    public bool isAtSpot    = false;
+    public bool isBrowsing = false;
+    public bool isServed = false;
+    public bool isAtSpot = false;
     public ShopCustomerSpawner mySpawner;
 
     [Header("Animation")]
@@ -50,7 +50,7 @@ public class CustomerInside : MonoBehaviour
     void Awake()
     {
         Debug.Log("[Customer] Animator found: " + (animator != null ? animator.gameObject.name : "NULL"));
-        agent    = GetComponent<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
         if (animator == null) animator = GetComponentInChildren<Animator>();
         if (animator == null) animator = GetComponent<Animator>();
 
@@ -66,12 +66,18 @@ public class CustomerInside : MonoBehaviour
     void Update()
     {
         // ── Drive walk/idle animation from NavMeshAgent speed ──
+        // Normalized to match the player's Animator Controller:
+        //   0.0 = Idle, 0.5 = Walk, 1.0 = Run
         if (animator != null && agent != null)
         {
-            animator.SetFloat("Speed", agent.velocity.magnitude);
-            animator.SetBool("IsWalking", agent.velocity.magnitude > 0.1f);
-        }
+            float velocity = agent.velocity.magnitude;
+            float normalizedSpeed = 0f;
 
+            if (velocity > 0.1f)
+                normalizedSpeed = 0.5f; // walking
+
+            animator.SetFloat("Speed", normalizedSpeed, 0.1f, Time.deltaTime);
+        }
         if (isServed || isBrowsing || myQueueSpot == null) return;
 
         float dist = Vector3.Distance(transform.position, myQueueSpot.position);
@@ -105,8 +111,8 @@ public class CustomerInside : MonoBehaviour
     public void Initialize(Transform assignedSpot, Transform exitLocation)
     {
         myQueueSpot = assignedSpot;
-        exitPos     = exitLocation;
-        isAtSpot    = false;
+        exitPos = exitLocation;
+        isAtSpot = false;
 
         if (willBrowseFirst)
             StartCoroutine(BrowseStoreRoutine());
@@ -117,8 +123,8 @@ public class CustomerInside : MonoBehaviour
     public void Initialize(Transform assignedSpot, Transform exitLocation, bool skipBrowse)
     {
         myQueueSpot = assignedSpot;
-        exitPos     = exitLocation;
-        isAtSpot    = false;
+        exitPos = exitLocation;
+        isAtSpot = false;
 
         if (!skipBrowse && willBrowseFirst)
             StartCoroutine(BrowseStoreRoutine());
@@ -129,7 +135,7 @@ public class CustomerInside : MonoBehaviour
     public void AssignQueueSpot(Transform spot)
     {
         myQueueSpot = spot;
-        isAtSpot    = false;
+        isAtSpot = false;
         _pcSpawnedOnDesk = false;
 
         if (!isBrowsing && agent != null && agent.isOnNavMesh)
@@ -163,7 +169,7 @@ public class CustomerInside : MonoBehaviour
                     !agent.pathPending &&
                     agent.remainingDistance <= agent.stoppingDistance + 0.3f);
 
-                agent.velocity  = Vector3.zero;
+                agent.velocity = Vector3.zero;
                 agent.isStopped = true;
 
                 float lookTimer = 0f;
@@ -207,7 +213,7 @@ public class CustomerInside : MonoBehaviour
     }
 
     public void StartShopConversation() { }
-    public void EndShopConversation()   { }
+    public void EndShopConversation() { }
 
     public void AcceptJob()
     {
@@ -226,8 +232,8 @@ public class CustomerInside : MonoBehaviour
 
     public void LeaveStore()
     {
-        isServed         = true;
-        isAtSpot         = false;
+        isServed = true;
+        isAtSpot = false;
         _pcSpawnedOnDesk = false;
 
         if (mySpawner != null) mySpawner.CustomerLeft(this);
@@ -279,29 +285,29 @@ public class CustomerInside : MonoBehaviour
     {
         if (assignedJob != null)
         {
-            reward     = (int)assignedJob.reward;
+            reward = (int)assignedJob.reward;
             jobRequest = BuildSpokenDialogue(assignedJob);
             return;
         }
 
         if (partDatabase != null)
         {
-            assignedJob            = partDatabase.GenerateRandomJob();
+            assignedJob = partDatabase.GenerateRandomJob();
             assignedJob.senderName = npcName;
-            reward                 = (int)assignedJob.reward;
-            jobRequest             = BuildSpokenDialogue(assignedJob);
+            reward = (int)assignedJob.reward;
+            jobRequest = BuildSpokenDialogue(assignedJob);
             return;
         }
 
         Debug.LogWarning($"[{npcName}] No assignedJob AND no partDatabase!");
-        reward     = Random.Range(500, 3000);
+        reward = Random.Range(500, 3000);
         jobRequest = "Hey, can you take a look at my PC?\n\nReward: " + reward;
     }
 
     string BuildSpokenDialogue(EmailData job)
     {
         string[] openers = { "Hey there!", "Excuse me!", "Hi!", "Good day!" };
-        string opener    = openers[Random.Range(0, openers.Length)];
+        string opener = openers[Random.Range(0, openers.Length)];
 
         if (job.jobType == JobType.Build)
         {
@@ -333,7 +339,7 @@ public class CustomerInside : MonoBehaviour
         {
             case BuildPurpose.Gaming: return "for gaming";
             case BuildPurpose.Office: return "for office work";
-            default:                  return "for general use";
+            default: return "for general use";
         }
     }
 }

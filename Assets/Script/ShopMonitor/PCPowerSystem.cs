@@ -25,13 +25,16 @@ public enum PowerResult
 {
     Success,          // 0 — PC boots fully (least severe)
     BootWithIssues,   // 1 — Boots but has non-critical faults
-    NoDisplay,        // 2 — Fans spin, no picture (GPU issue)
-    FailedPOST,       // 3 — Fans spin briefly then shuts off (RAM/BIOS)
-    NoPower           // 4 — Won't respond at all (most severe)
+    CrashToBSOD,      // 2 — Boots fully to desktop, then crashes to BSOD (NotSeated RAM, Overheating)
+    NoDisplay,        // 3 — Fans spin, no picture (GPU issue)
+    FailedPOST,       // 4 — PC stays on, shows BSOD immediately (Broken RAM, Corrupted BIOS)
+    NoPower           // 5 — Won't respond at all (most severe)
 }
 public class PCPowerSystem : MonoBehaviour
 {
     [HideInInspector] public PowerResult lastPowerResult = PowerResult.Success;
+    [HideInInspector] public string lastBSODCode = "";
+    [HideInInspector] public string lastBSODMessage = "";
     [Header("State (Read-Only in Inspector)")]
     [Tooltip("Is a power cord FULLY connected (outlet + PC)?")]
     public bool isPowerCordConnected = false;
@@ -172,15 +175,24 @@ public class PCPowerSystem : MonoBehaviour
                 Debug.Log($"[PCPowerSystem] Cannot turn on — {reason}");
                 return false;
 
+            case PowerResult.CrashToBSOD:
+                // PC boots fully to desktop, then crashes to BSOD
+                isPoweredOn = true;
+                SetFansState(true);
+                reason = GetCrashToBSODReason();
+                Debug.Log($"[PCPowerSystem] {gameObject.name} ON — will crash to BSOD after reaching desktop.");
+                return true;
+
             case PowerResult.FailedPOST:
-                // PC turns on briefly (fans spin) then shuts off after a few seconds
+                // PC stays on, fans spin, BSOD shown immediately
                 isPoweredOn = true;
                 SetFansState(true);
                 reason = GetFailedPOSTReason();
-                StartCoroutine(DelayedShutdown(3f, "POST failed — system shut down automatically."));
-                Debug.Log($"[PCPowerSystem] POST failed — auto-shutdown in 3s.");
+                Debug.Log($"[PCPowerSystem] {gameObject.name} ON — POST failed, BSOD shown on monitor.");
+                // ── ADD THIS ──
+                StartCoroutine(DelayedShutdown(3.5f, "POST failure — auto shutdown."));
+                // ──────────────
                 return true;
-
             case PowerResult.NoDisplay:
                 // PC stays on (fans spin) but no display — GPU issue
                 isPoweredOn = true;
@@ -290,19 +302,23 @@ public class PCPowerSystem : MonoBehaviour
         if (cat == "CPU" && part.fault == PartFault.Broken)
             return PowerResult.NoPower;
 
-        // ── TIER 2: FAILED POST (turns on, beeps, shuts off ~3s) ──
-        if (cat == "RAM" && (part.fault == PartFault.Broken || part.fault == PartFault.NotSeated
-                             || part.fault == PartFault.Incompatible))
+        // ── TIER 2: FAILED POST — PC stays on, BSOD shown immediately (never reached desktop) ──
+        if (cat == "RAM" && (part.fault == PartFault.Broken || part.fault == PartFault.Incompatible))
             return PowerResult.FailedPOST;
         if (cat == "Motherboard" && part.fault == PartFault.Corrupted)
             return PowerResult.FailedPOST;
+
+        // ── TIER 2b: CRASH TO BSOD — boots fully to desktop, then crashes ──
+        if (cat == "RAM" && part.fault == PartFault.NotSeated)
+            return PowerResult.CrashToBSOD;
+        if (part.fault == PartFault.Overheating)
+            return PowerResult.CrashToBSOD;
 
         // ── TIER 3: NO DISPLAY (fans spin, no picture) ──
         if (cat == "GPU" && (part.fault == PartFault.Broken || part.fault == PartFault.NotSeated))
             return PowerResult.NoDisplay;
 
         // ── TIER 4: BOOTS WITH ISSUES ──
-        // Overheating, dusty, outdated, wrong slot — PC works but has symptoms
         return PowerResult.BootWithIssues;
     }
 
@@ -368,6 +384,19 @@ public class PCPowerSystem : MonoBehaviour
                 return "BIOS corrupted!\nPC turns on but can't POST.";
         }
         return "POST failed — system powers on briefly then shuts off.";
+    }
+    string GetCrashToBSODReason()
+    {
+        InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
+        foreach (InspectableItem part in allParts)
+        {
+            if (part.isMainObject || part.isInventorySlot) continue;
+            if (part.partCategory == "RAM" && part.fault == PartFault.NotSeated)
+                return "RAM not fully seated!\nPC will boot then crash — reseat the sticks.";
+            if (part.fault == PartFault.Overheating)
+                return "Overheating detected!\nPC will boot then crash due to thermal failure.";
+        }
+        return "A critical fault will cause the PC to crash after booting.";
     }
 
     string GetNoDisplayReason()

@@ -59,8 +59,8 @@ public partial class InspectionManager
             if (wire != null && wire.IsConnected) { HandlePrebuiltWireDisconnect(wire); return; }
         }
 
-        if (part.isInventorySlot)    BeginInstallConfirmation(part);
-        else if (part.isRemovable)   BeginRemovalConfirmation(part);
+        if (part.isInventorySlot) BeginInstallConfirmation(part);
+        else if (part.isRemovable) BeginRemovalConfirmation(part);
         else if (part.isPowerButton) TogglePCPower();
     }
 
@@ -164,7 +164,7 @@ public partial class InspectionManager
                 tooltipPanel.SetActive(true);
                 tooltipAnchored = false;
                 if (tooltipTitle) tooltipTitle.text = wire.WireName;
-                if (tooltipBody)  tooltipBody.text  = "Click to disconnect.";
+                if (tooltipBody) tooltipBody.text = "Click to disconnect.";
                 return;
             }
         }
@@ -176,18 +176,23 @@ public partial class InspectionManager
             extra = $"\n<size=80%>[{part.connectorType}] {side} port"
                   + (part.isOccupied ? " - CONNECTED" : " - empty") + "</size>";
         }
+        else if (part.fault == PartFault.Overheating
+                 && (part.partCategory == "Cooler" || part.partCategory == "CPU"))
+            extra = "\n<size=75%><color=#FF8040>Hold to apply thermal paste</color></size>";
         else if (part.isRemovable)
             extra = part.requiresScrewdriver
                 ? "\n<size=75%><color=#FFD84A>Screwdriver to remove</color></size>"
                 : "\n<size=75%><color=#FFD84A>Hand to grab</color></size>";
+
         else if (part.isInventorySlot)
             extra = "\n<size=75%><color=#4AE0FF>Hand to install</color></size>";
 
         tooltipPanel.SetActive(true);
         if (tooltipTitle) tooltipTitle.text = part.itemName;
-        if (tooltipBody)  tooltipBody.text  = part.itemDescription + extra;
+        if (tooltipBody) tooltipBody.text = part.itemDescription + extra;
     }
 
+    // AFTER (upper center, 80px down from top edge)
     void MoveTooltip()
     {
         if (!tooltipPanel) return;
@@ -196,10 +201,10 @@ public partial class InspectionManager
             RectTransform rt = tooltipPanel.GetComponent<RectTransform>();
             if (rt != null)
             {
-                rt.anchorMin        = new Vector2(0.5f, 0.5f);
-                rt.anchorMax        = new Vector2(0.5f, 0.5f);
-                rt.pivot            = new Vector2(0.5f, 0.5f);
-                rt.anchoredPosition = Vector2.zero;
+                rt.anchorMin = new Vector2(0.5f, 1f);
+                rt.anchorMax = new Vector2(0.5f, 1f);
+                rt.pivot = new Vector2(0.5f, 1f);
+                rt.anchoredPosition = new Vector2(0f, -80f);
                 tooltipAnchored = true;
             }
         }
@@ -220,10 +225,10 @@ public partial class InspectionManager
             {
                 switch (powerSystem.lastPowerResult)
                 {
-                    case PowerResult.FailedPOST:     title = "POST Failed!";       break;
-                    case PowerResult.NoDisplay:      title = "No Display!";        break;
+                    case PowerResult.FailedPOST: title = "POST Failed!"; break;
+                    case PowerResult.NoDisplay: title = "No Display!"; break;
                     case PowerResult.BootWithIssues: title = "⚠ Issues Detected"; break;
-                    default: title = isPCOn ? "Power On" : "Power Off";            break;
+                    default: title = isPCOn ? "Power On" : "Power Off"; break;
                 }
             }
             ShowTooltipMessage(title, reason);

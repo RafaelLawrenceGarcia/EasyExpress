@@ -94,6 +94,17 @@ public partial class InspectionManager
 
     void BeginRemovalConfirmation(InspectableItem part)
     {
+        // PC must be powered off before removing any component
+        if (currentClone != null)
+        {
+            PCPowerSystem power = currentClone.GetComponent<PCPowerSystem>();
+            if (power != null && power.isPoweredOn)
+            {
+                ShowTooltipMessage("PC is On!", "Turn off the PC before removing components.\nClick the power button first.");
+                return;
+            }
+        }
+
         if (!RequireCorrectToolForRemoval(part)) return;
 
         foreach (InspectableItem blocker in part.blockingParts)

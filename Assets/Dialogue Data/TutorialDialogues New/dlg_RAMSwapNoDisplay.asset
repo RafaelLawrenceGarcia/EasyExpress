@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
+  m_Name: dlg_RAMSwapNoDisplay
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
+  lines:
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "Interesting! The PC passed POST this time — fans are spinning and it stayed on. That means the old RAM was definitely part of the problem."
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "But wait... there's no display output. The monitor is blank even though the PC is running."
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "We fixed one issue but found another. Press [F] to check the manual for 'No Display on Monitor' and see what to do next."
+    showOnRightSide: 0

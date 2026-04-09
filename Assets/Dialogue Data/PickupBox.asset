@@ -19,7 +19,8 @@ MonoBehaviour:
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}
-    text: See that box near the counter? That's their machine
+    text: The box is already at the back. Just go through the door and you will see
+      it.
     showOnRightSide: 0
   - speakerName: Boss
     portrait: {fileID: -2004239264, guid: f8402f94a4b63d44d90bf003f6ad06e0, type: 3}

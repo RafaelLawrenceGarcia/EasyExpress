@@ -1337,7 +1337,7 @@ RectTransform:
   - {fileID: 4250928497529101473}
   - {fileID: 2397096936164236452}
   - {fileID: 2737861548826985731}
-  m_Father: {fileID: 8759972545884484287}
+  m_Father: {fileID: 5231494885429869167}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2504,7 +2504,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1303794135939819708}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2513,7 +2513,7 @@ RectTransform:
   - {fileID: 6537759101699132110}
   - {fileID: 4491462644810499167}
   - {fileID: 7009398031779563360}
-  m_Father: {fileID: 8759972545884484287}
+  m_Father: {fileID: 5231494885429869167}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3024,7 +3024,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 100.00077}
+  m_AnchoredPosition: {x: 0, y: 100.00002}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1427877532873203302
@@ -6168,7 +6168,7 @@ RectTransform:
   - {fileID: 8057791280625708536}
   - {fileID: 5138138224027203058}
   - {fileID: 2004190549541537166}
-  m_Father: {fileID: 8759972545884484287}
+  m_Father: {fileID: 5231494885429869167}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6412,7 +6412,7 @@ RectTransform:
   - {fileID: 7676212476855201334}
   - {fileID: 6226010908605370450}
   - {fileID: 378099365250527314}
-  m_Father: {fileID: 8759972545884484287}
+  m_Father: {fileID: 5231494885429869167}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -10288,6 +10288,48 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 2}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &4614147711011793443
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5231494885429869167}
+  m_Layer: 5
+  m_Name: ScreenContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5231494885429869167
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4614147711011793443}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 329909957173018117}
+  - {fileID: 1061958795337747932}
+  - {fileID: 1729053396416523964}
+  - {fileID: 515892266438385447}
+  - {fileID: 8482695103621243024}
+  - {fileID: 197112951979488787}
+  - {fileID: 3386708000904221387}
+  m_Father: {fileID: 8759972545884484287}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4646957578444646287
 GameObject:
   m_ObjectHideFlags: 0
@@ -12887,11 +12929,11 @@ RectTransform:
   - {fileID: 7564060010508418252}
   - {fileID: 434407575954016382}
   - {fileID: 2065327278998919608}
-  m_Father: {fileID: 8759972545884484287}
+  m_Father: {fileID: 5231494885429869167}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 15826, y: 1165}
+  m_AnchoredPosition: {x: 15156.001, y: 494.99994}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &261126676307106274
@@ -15168,13 +15210,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 329909957173018117}
-  - {fileID: 1061958795337747932}
-  - {fileID: 1729053396416523964}
-  - {fileID: 515892266438385447}
-  - {fileID: 8482695103621243024}
-  - {fileID: 197112951979488787}
-  - {fileID: 3386708000904221387}
+  - {fileID: 5231494885429869167}
   m_Father: {fileID: 722794889555435394}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -15257,9 +15293,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 538e1a27c9023c443a2b5cc3001673f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PCController
-  screenContainer: {fileID: 6745464396137259669}
+  screenContainer: {fileID: 4614147711011793443}
   desktopPanel: {fileID: 548824138511538369}
   biosPanel: {fileID: 0}
+  bootScreenPanel: {fileID: 0}
+  bootLogoText: {fileID: 0}
+  bootLoadingBar: {fileID: 0}
+  bootStatusText: {fileID: 0}
+  noSignalPanel: {fileID: 0}
+  bsodPanel: {fileID: 0}
+  bsodErrorCodeText: {fileID: 0}
+  bsodMessageText: {fileID: 0}
   storeAppPanel: {fileID: 1303794135939819708}
   storeAppPanel2: {fileID: 5218832083744134878}
   furnitureShopPanel: {fileID: 0}
@@ -15282,9 +15326,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4d428967d1cbe94a8db8a35f430c203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonitorShopBridge
+  searchInputField: {fileID: 2613697899444972433}
   categoryScreen: {fileID: 2425925381579925769}
   itemListScreen: {fileID: 5218832083744134878}
   categoryContentContainer: {fileID: 7781995101556759094}
+  filterCategoriesPanel: {fileID: 3951059641463247926}
+  thisShopPanel: {fileID: 9094626835920561671}
+  previousShopPanel: {fileID: 5218832083744134878}
   contentContainer: {fileID: 5604560376335893551}
   productDetailsPanel: {fileID: 9094626835920561671}
   detailNameText: {fileID: 1673286223242249850}
@@ -15292,18 +15340,19 @@ MonoBehaviour:
   detailPriceText: {fileID: 8533738482912941796}
   detailImage: {fileID: 3750974508624265626}
   detailAddToCartBtn: {fileID: 6732902817158520975}
+  cartIconButtons: []
   cartPanelRect: {fileID: 7009398031779563360}
   cartContentContainer: {fileID: 8708500229684542655}
   totalCostText: {fileID: 5089822029724129822}
-  searchInputField: {fileID: 2613697899444972433}
-  filterCategoriesPanel: {fileID: 3951059641463247926}
+  notificationPanel: {fileID: 8183125619553308694}
+  notificationText: {fileID: 5928357407214196993}
+  notificationRect: {fileID: 197112951979488787}
   inboxContentContainer: {fileID: 7569472226122543084}
-  detailPanel: {fileID: 3561652089345182766}
+  emailDetailPanel: {fileID: 0}
   senderText: {fileID: 8325411243570617659}
   subjectText: {fileID: 5814076543413646411}
   bodyText: {fileID: 6332742692989634465}
-  labourText: {fileID: 1929225389539546264}
-  budgetText: {fileID: 6125541099948970210}
+  rewardText: {fileID: 0}
   objectivesText: {fileID: 1831253159856967331}
   detailProfilePic: {fileID: 6763636211328994512}
   pcStatusPanel: {fileID: 6055029761380059659}
@@ -15319,6 +15368,7 @@ MonoBehaviour:
   completionPay: {fileID: 5896145141850439146}
   completionRating: {fileID: 2838983517770218158}
   completionOKButton: {fileID: 5514647314411443982}
+  pcStatusButton: {fileID: 0}
 --- !u!114 &6125347377758788955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15331,43 +15381,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4d428967d1cbe94a8db8a35f430c203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonitorShopBridge
-  categoryScreen: {fileID: 0}
-  itemListScreen: {fileID: 0}
-  categoryContentContainer: {fileID: 0}
-  contentContainer: {fileID: 0}
-  productDetailsPanel: {fileID: 0}
-  detailNameText: {fileID: 0}
-  detailDescText: {fileID: 0}
-  detailPriceText: {fileID: 0}
-  detailImage: {fileID: 0}
-  detailAddToCartBtn: {fileID: 0}
-  cartPanelRect: {fileID: 0}
-  cartContentContainer: {fileID: 0}
-  totalCostText: {fileID: 0}
-  searchInputField: {fileID: 0}
-  filterCategoriesPanel: {fileID: 0}
-  inboxContentContainer: {fileID: 0}
-  detailPanel: {fileID: 0}
-  senderText: {fileID: 0}
-  subjectText: {fileID: 0}
-  bodyText: {fileID: 0}
-  labourText: {fileID: 0}
-  budgetText: {fileID: 0}
-  objectivesText: {fileID: 0}
-  detailProfilePic: {fileID: 0}
-  pcStatusPanel: {fileID: 0}
+  searchInputField: {fileID: 2613697899444972433}
+  categoryScreen: {fileID: 2425925381579925769}
+  itemListScreen: {fileID: 5218832083744134878}
+  categoryContentContainer: {fileID: 7781995101556759094}
+  filterCategoriesPanel: {fileID: 3951059641463247926}
+  thisShopPanel: {fileID: 9094626835920561671}
+  previousShopPanel: {fileID: 5218832083744134878}
+  contentContainer: {fileID: 5604560376335893551}
+  productDetailsPanel: {fileID: 9094626835920561671}
+  detailNameText: {fileID: 1673286223242249850}
+  detailDescText: {fileID: 1577572111077278838}
+  detailPriceText: {fileID: 8533738482912941796}
+  detailImage: {fileID: 3750974508624265626}
+  detailAddToCartBtn: {fileID: 6732902817158520975}
+  cartIconButtons:
+  - {fileID: 8509101453546277849}
+  - {fileID: 525495359707222351}
+  - {fileID: 3093783120745549914}
+  cartPanelRect: {fileID: 7009398031779563360}
+  cartContentContainer: {fileID: 8708500229684542655}
+  totalCostText: {fileID: 5089822029724129822}
+  notificationPanel: {fileID: 8183125619553308694}
+  notificationText: {fileID: 5928357407214196993}
+  notificationRect: {fileID: 197112951979488787}
+  inboxContentContainer: {fileID: 7569472226122543084}
+  emailDetailPanel: {fileID: 3561652089345182766}
+  senderText: {fileID: 8325411243570617659}
+  subjectText: {fileID: 5814076543413646411}
+  bodyText: {fileID: 6332742692989634465}
+  rewardText: {fileID: 1929225389539546264}
+  objectivesText: {fileID: 1831253159856967331}
+  detailProfilePic: {fileID: 6763636211328994512}
+  pcStatusPanel: {fileID: 6055029761380059659}
   pcProblemsText: {fileID: 0}
   requestedPartsText: {fileID: 0}
   pcSpecsContentContainer: {fileID: 0}
-  acceptButton: {fileID: 0}
-  rejectButton: {fileID: 0}
-  completeButton: {fileID: 0}
-  completionPanel: {fileID: 0}
-  completionTitle: {fileID: 0}
-  completionDetails: {fileID: 0}
-  completionPay: {fileID: 0}
-  completionRating: {fileID: 0}
-  completionOKButton: {fileID: 0}
+  acceptButton: {fileID: 8569713246334994422}
+  rejectButton: {fileID: 2774024053867319212}
+  completeButton: {fileID: 7988476936287175396}
+  completionPanel: {fileID: 7364945652645514953}
+  completionTitle: {fileID: 8995010598700454438}
+  completionDetails: {fileID: 7160520694881959919}
+  completionPay: {fileID: 5896145141850439146}
+  completionRating: {fileID: 2838983517770218158}
+  completionOKButton: {fileID: 5514647314411443982}
+  pcStatusButton: {fileID: 8068676797376462347}
 --- !u!1 &6761223479536944382
 GameObject:
   m_ObjectHideFlags: 0
@@ -19056,7 +19115,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8419570824672654730}
-  m_Father: {fileID: 8759972545884484287}
+  m_Father: {fileID: 5231494885429869167}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -20941,7 +21000,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4833303756641048994}
   m_HandleRect: {fileID: 3578960884010825205}
   m_Direction: 2
-  m_Value: -0.000007476807
+  m_Value: -0.00000015258789
   m_Size: 0.6666667
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -21178,11 +21237,11 @@ RectTransform:
   - {fileID: 4451359507526220042}
   - {fileID: 2384708097374934260}
   - {fileID: 5724643894388253967}
-  m_Father: {fileID: 8759972545884484287}
+  m_Father: {fileID: 5231494885429869167}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 11071.25, y: 1165}
+  m_AnchoredPosition: {x: 10401.25, y: 494.99994}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &3088160012526245622

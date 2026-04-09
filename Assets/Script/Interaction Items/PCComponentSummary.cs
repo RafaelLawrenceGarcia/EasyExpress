@@ -55,7 +55,11 @@ public class PCComponentSummary : MonoBehaviour
         InspectionManager im = FindFirstObjectByType<InspectionManager>();
         if (im == null || !im.isInspecting) return;
         if (Input.GetKeyDown(summaryKey)) Toggle();
-        if (isOpen && Input.GetKeyDown(KeyCode.Escape)) Close();
+        if (isOpen && Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseManager.BlockPause = true;   // ← add this
+            Close();
+        }
     }
 
     public void Toggle() { if (isOpen) Close(); else Open(); }
@@ -71,6 +75,8 @@ public class PCComponentSummary : MonoBehaviour
         HideFixedMetrics();
         EnsureScrollable();
         RefreshSummary(im.currentClone);
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.NotifyPCSummaryOpened();
     }
 
     public void Close()

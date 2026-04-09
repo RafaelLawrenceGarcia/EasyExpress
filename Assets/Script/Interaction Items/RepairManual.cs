@@ -1,6 +1,6 @@
 // ============================================================
 //  RepairManual.cs
-//  Press [F] to open. Freezes player movement + camera.
+//  Press [F] to open. Works both in gameplay AND inspection mode.
 //  Shows troubleshooting procedures for each PC problem.
 // ============================================================
 using UnityEngine;
@@ -65,19 +65,20 @@ public class RepairManual : MonoBehaviour
     {
         if (Input.GetKeyDown(manualKey))
         {
-            // Block during dialogue
+            InspectionManager im = FindFirstObjectByType<InspectionManager>();
+
+
             IntroDialogueManager dlg = FindFirstObjectByType<IntroDialogueManager>();
             if (dlg != null && dlg.isDialogueActive) return;
-
-            // Block during inspection (G key handles its own summary)
-            InspectionManager im = FindFirstObjectByType<InspectionManager>();
-            if (im != null && im.isInspecting) return;
 
             ToggleManual();
         }
 
         if (isOpen && Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseManager.BlockPause = true;   // ← add this
             CloseManual();
+        }
     }
 
     // ─── Public API ──────────────────────────────────────────────
@@ -95,6 +96,10 @@ public class RepairManual : MonoBehaviour
         manualPanel.SetActive(true);
         ShowCategories();
         FreezePlayer(true);
+
+        // Notify tutorial
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.NotifyManualOpened();
     }
 
     public void CloseManual()
@@ -103,6 +108,10 @@ public class RepairManual : MonoBehaviour
         isOpen = false;
         manualPanel.SetActive(false);
         FreezePlayer(false);
+
+        // Notify tutorial
+        if (TutorialManager.Instance != null)
+            TutorialManager.Instance.NotifyManualClosed();
     }
 
     public bool IsOpen() => isOpen;
@@ -111,7 +120,24 @@ public class RepairManual : MonoBehaviour
 
     void FreezePlayer(bool freeze)
     {
-        // Re-find if null (scene reload, etc.)
+        // ── During inspection mode: don't touch player movement or cursor ──
+        // InspectionManager already handles player freeze and cursor state.
+        // We only need the manual panel visible; the camera freeze is handled
+        // by InspectionManager.HandleInput() checking IsOverlayPanelOpen().
+        InspectionManager im = FindFirstObjectByType<InspectionManager>();
+        if (im != null && im.isInspecting)
+        {
+            // Cursor is already visible in inspection — nothing to change.
+            // Block the same Escape press from also exiting inspection.
+            if (!freeze)
+            {
+                PauseManager.BlockPause = true;
+                InspectionManager.BlockExitOneFrame = true;
+            }
+            return;
+        }
+
+        // ── Normal gameplay freeze/unfreeze ──
         if (playerMovement == null) playerMovement = FindFirstObjectByType<GTAMovement>();
         if (playerCamera == null) playerCamera = FindFirstObjectByType<OrbitCamera>();
 
@@ -143,7 +169,6 @@ public class RepairManual : MonoBehaviour
         if (procedurePanel != null) procedurePanel.SetActive(false);
         if (categoryContent == null) return;
 
-        // Show the category scroll view (hidden when procedure was open)
         GetCategoryScrollRoot()?.SetActive(true);
 
         foreach (Transform child in categoryContent)
@@ -165,7 +190,6 @@ public class RepairManual : MonoBehaviour
                 btnObj = CreateSimpleButton(categoryContent);
             }
 
-            // Set label text — search including inactive children
             TextMeshProUGUI label = btnObj.GetComponentInChildren<TextMeshProUGUI>(true);
             if (label != null)
             {
@@ -186,7 +210,6 @@ public class RepairManual : MonoBehaviour
                 btn.onClick.AddListener(() => ShowProcedure(capturedKey));
             }
 
-            // Ensure button is tall enough
             LayoutElement btnLE = btnObj.GetComponent<LayoutElement>();
             if (btnLE == null) btnLE = btnObj.AddComponent<LayoutElement>();
             btnLE.preferredHeight = 72;
@@ -198,13 +221,11 @@ public class RepairManual : MonoBehaviour
     {
         if (!entries.ContainsKey(key) || procedurePanel == null) return;
 
-        // Hide category list so procedure takes its place
         GetCategoryScrollRoot()?.SetActive(false);
 
         ManualEntry entry = entries[key];
         procedurePanel.SetActive(true);
 
-        // Auto-fix layout: ensure ProcedurePanel's VLG controls child heights
         VerticalLayoutGroup procVLG = procedurePanel.GetComponent<VerticalLayoutGroup>();
         if (procVLG != null)
         {
@@ -226,7 +247,6 @@ public class RepairManual : MonoBehaviour
             procedureBody.fontSize = 32;
             procedureBody.alignment = TextAlignmentOptions.TopLeft;
 
-            // Force the body RectTransform to stretch and fill parent width
             RectTransform bodyRt = procedureBody.GetComponent<RectTransform>();
             bodyRt.anchorMin = new Vector2(0, 1);
             bodyRt.anchorMax = new Vector2(1, 1);
@@ -234,17 +254,14 @@ public class RepairManual : MonoBehaviour
             bodyRt.offsetMin = new Vector2(0, bodyRt.offsetMin.y);
             bodyRt.offsetMax = new Vector2(0, bodyRt.offsetMax.y);
 
-            // Ensure the body text fills available space in the layout
             LayoutElement bodyLE = procedureBody.GetComponent<LayoutElement>();
             if (bodyLE == null) bodyLE = procedureBody.gameObject.AddComponent<LayoutElement>();
             bodyLE.flexibleHeight = 1;
             bodyLE.flexibleWidth = 1;
 
-            // Also fix the title alignment
             if (procedureTitle != null)
                 procedureTitle.alignment = TextAlignmentOptions.TopLeft;
 
-            // If inside a scroll view, stretch the viewport and fix scroll LE
             ScrollRect parentScroll = procedureBody.GetComponentInParent<ScrollRect>();
             if (parentScroll != null)
             {
@@ -255,21 +272,15 @@ public class RepairManual : MonoBehaviour
             }
         }
 
-        // Keep cursor visible
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
     // ─── Scroll Root Helper ─────────────────────────────────────
 
-    /// <summary>
-    /// Navigate up from Content → Viewport → CategoryScrollView.
-    /// This lets us hide the entire scroll area when showing a procedure.
-    /// </summary>
     GameObject GetCategoryScrollRoot()
     {
         if (categoryContent == null) return null;
-        // Content → Viewport → CategoryScrollView (or whatever the scroll root is)
         Transform viewport = categoryContent.parent;
         if (viewport == null) return null;
         Transform scrollRoot = viewport.parent;
@@ -310,6 +321,7 @@ public class RepairManual : MonoBehaviour
 
     // ═══════════════════════════════════════════════════════════
     //  MANUAL CONTENT
+    //  (No Internet Connection entry REMOVED)
     // ═══════════════════════════════════════════════════════════
 
     void BuildEntries()
@@ -398,6 +410,29 @@ public class RepairManual : MonoBehaviour
                 "   \u2022 Reseat or replace the cable.\n\n" +
                 "4. <b>Test</b> \u2014 Power on after each change to isolate the problem."
         };
+        entries["failed_post"] = new ManualEntry
+        {
+            title = "Failed POST (Brief Power Then Shutdown)",
+            symptoms = "\u2022 Fans spin for 2-3 seconds then PC shuts itself off\n\u2022 No beep codes or display output\n\u2022 Power button works but system never stays on",
+            procedure =
+        "1. <b>Understand what POST means</b>\n" +
+        "   \u2022 POST = Power-On Self-Test. The motherboard checks RAM,\n" +
+        "     CPU, and basic hardware before booting the OS.\n" +
+        "   \u2022 If POST fails, the system shuts down to protect itself.\n\n" +
+        "2. <b>Check RAM first</b> — This is the #1 cause of POST failure.\n" +
+        "   \u2022 Remove ALL RAM sticks.\n" +
+        "   \u2022 Install ONE known-good stick and test.\n" +
+        "   \u2022 If the PC stays on past 3 seconds, the old RAM was faulty.\n\n" +
+        "3. <b>If RAM swap doesn't fix it</b> — Check the motherboard.\n" +
+        "   \u2022 A corrupted BIOS can cause POST failure.\n" +
+        "   \u2022 The motherboard may need replacement.\n\n" +
+        "4. <b>Check CPU (rare)</b> — A dead CPU can also prevent POST.\n" +
+        "   \u2022 If RAM and motherboard swaps didn't help, try a new CPU.\n\n" +
+        "5. <b>Verify your fix</b>\n" +
+        "   \u2022 Put the OLD part back in and confirm the problem returns.\n" +
+        "   \u2022 Then reinstall the NEW part to complete the repair.\n\n" +
+        "6. <b>Boot to desktop</b> — If the PC boots successfully, you're done."
+        };
 
         entries["dust"] = new ManualEntry
         {
@@ -464,16 +499,6 @@ public class RepairManual : MonoBehaviour
                 "3. <b>Check motherboard</b> \u2014 A corrupted BIOS can cause boot loops.\n" +
                 "   \u2022 The motherboard may need replacement if BIOS is corrupted.\n\n" +
                 "4. <b>Test after each change</b> \u2014 Power on to check if the loop stops."
-        };
-
-        entries["no_internet"] = new ManualEntry
-        {
-            title = "No Internet Connection",
-            symptoms = "\u2022 PC boots normally but cannot connect to network\n\u2022 Ethernet port not detected\n\u2022 Wi-Fi adapter missing",
-            procedure =
-                "1. <b>Check the motherboard</b> \u2014 The onboard network adapter may have failed.\n\n" +
-                "2. <b>If onboard NIC is dead</b> \u2014 Install a PCIe network card as a replacement.\n\n" +
-                "3. <b>Test</b> \u2014 Power on and verify network connectivity."
         };
     }
 }

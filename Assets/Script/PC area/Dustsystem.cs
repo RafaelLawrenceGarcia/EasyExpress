@@ -1,140 +1,305 @@
+// Assets/Script/PC area/Dustsystem.cs  — full replacement
 using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
-/// DustSystem — Attach this to a PC case (same object as PCCaseBuilder).
-/// 
-/// HOW IT WORKS:
-/// - When isDusty = true, a dust overlay material is applied to all parts
-/// - Player must use a compressed air can (DustFilterTool) to clean it
-/// - Hold left-click with the tool active → dust particles blow away → clean
-/// - Some customer PCs arrive dusty (set in EmailData or CustomerInside)
-/// 
-/// SETUP:
-/// 1. Attach this script to your PC case prefab (alongside PCCaseBuilder)
-/// 2. Create a "Dust" material — semi-transparent brownish overlay
-/// 3. Assign it to dustOverlayMaterial
-/// 4. Optionally assign a dust particle system prefab
+/// DustSystem — Attach to a PC case (same object as PCCaseBuilder).
+///
+/// CHANGED TO PER-COMPONENT CLEANING:
+///   Each InspectableItem that has PartFault.Dusty gets its own dust
+///   overlay material instance and its own clean-progress counter.
+///   The player must hover the air duster over each dusty part and
+///   hold left-click to clean it individually.
+///   isDusty becomes false only once every dusty part has been cleaned.
+///
+/// SETUP (same as before):
+///   1. Attach to the PC case prefab alongside PCCaseBuilder.
+///   2. Assign dustOverlayMaterial (from Assets/Materials/PC Parts/DustOverlay).
+///   3. Optionally assign dustParticlesPrefab.
 /// </summary>
 public class DustSystem : MonoBehaviour
 {
+    // ── Inspector ─────────────────────────────────────────────────────
+
     [Header("State")]
     public bool isDusty = false;
 
     [Header("Visuals")]
-    public Material dustOverlayMaterial;     // Semi-transparent dust material
-    public GameObject dustParticlesPrefab;   // Particle effect for dust clouds
-    public Color dustTint = new Color(0.6f, 0.5f, 0.35f, 0.3f); // Brownish tint
+    public Material dustOverlayMaterial;
+    public GameObject dustParticlesPrefab;
+    public Color dustTint = new Color(0.6f, 0.5f, 0.35f, 0.3f);
 
     [Header("Cleaning")]
-    public float cleanDuration = 2.0f;       // How long to hold to fully clean
-    public float cleanProgress = 0f;
+    [Tooltip("Seconds of holding the air duster on a part to fully clean it.")]
+    public float cleanDuration = 2.0f;
 
-    // Runtime
-    private GameObject activeParticles;
-    private bool isCleaning = false;
-    private Material[] originalMaterials;
-    private Renderer[] cachedRenderers;
-    private Material[][] savedMaterialArrays;
-    private bool dustApplied = false;
+    // Legacy field kept so external code that reads cleanProgress still compiles
+    [HideInInspector] public float cleanProgress = 0f;
+
+    // ── Per-component data ────────────────────────────────────────────
+
+    private class PartDustData
+    {
+        public Renderer[] renderers;
+        public Material[][] originalMats;
+        public Material[] dustInstances;  // one unique Material per Renderer
+        public float progress;       // 0-1 clean progress
+    }
+
+    private readonly Dictionary<InspectableItem, PartDustData> _parts
+        = new Dictionary<InspectableItem, PartDustData>();
+
+    private GameObject _activeParticles;
+    private bool _dustApplied = false;
+
+    // ═════════════════════════════════════════════════════════════════
+    //  PUBLIC API
+    // ═════════════════════════════════════════════════════════════════
 
     /// <summary>
-    /// Call this after the PC is built to apply dust if needed.
+    /// Apply dust overlays to every InspectableItem that has PartFault.Dusty.
+    /// Called by InspectionManager.Inspect() when isDusty is true.
     /// </summary>
     public void ApplyDust()
     {
         if (!isDusty || dustOverlayMaterial == null) return;
-        if (dustApplied) return;
+        if (_dustApplied) return;
 
-        cachedRenderers = GetComponentsInChildren<Renderer>(true);
-        savedMaterialArrays = new Material[cachedRenderers.Length][];
-
-        for (int i = 0; i < cachedRenderers.Length; i++)
+        foreach (InspectableItem item in GetComponentsInChildren<InspectableItem>(true))
         {
-            Renderer rend = cachedRenderers[i];
-            savedMaterialArrays[i] = rend.sharedMaterials;
-
-            // Add dust material as an extra layer on top
-            Material[] newMats = new Material[rend.sharedMaterials.Length + 1];
-            for (int j = 0; j < rend.sharedMaterials.Length; j++)
-                newMats[j] = rend.sharedMaterials[j];
-            newMats[newMats.Length - 1] = dustOverlayMaterial;
-            rend.materials = newMats;
+            if (item.isMainObject || item.isInventorySlot) continue;
+            if (item.fault == PartFault.Dusty)
+                ApplyDustToItem(item);
         }
 
-        // Spawn dust particles if we have a prefab
         if (dustParticlesPrefab != null)
         {
-            activeParticles = Instantiate(dustParticlesPrefab, transform);
-            activeParticles.transform.localPosition = Vector3.zero;
+            _activeParticles = Instantiate(dustParticlesPrefab, transform);
+            _activeParticles.transform.localPosition = Vector3.zero;
         }
 
-        dustApplied = true;
+        _dustApplied = true;
     }
 
+    // ─────────────────────────────────────────────────────────────────
+
     /// <summary>
-    /// Remove all dust visuals. Called when cleaning is complete.
+    /// Advance the clean progress on ONE specific part for deltaTime seconds.
+    /// Returns true the moment that part becomes fully clean.
+    /// Called every frame by InspectionManager while the player holds
+    /// the air duster over this particular part.
+    /// </summary>
+    public bool CleanPartTick(InspectableItem part, float deltaTime)
+    {
+        if (part == null || part.fault != PartFault.Dusty) return true;
+
+        // Lazy-apply overlay if the part somehow missed ApplyDust
+        if (!_parts.ContainsKey(part) && dustOverlayMaterial != null)
+            ApplyDustToItem(part);
+
+        if (!_parts.TryGetValue(part, out PartDustData data)) return true;
+
+        data.progress += deltaTime / cleanDuration;
+        data.progress = Mathf.Clamp01(data.progress);
+
+        // Fade this part's own material instances — other parts are unaffected
+        float alpha = dustTint.a * (1f - data.progress);
+        foreach (Material m in data.dustInstances)
+        {
+            if (m == null) continue;
+            Color c = dustTint;
+            c.a = alpha;
+            m.color = c;
+        }
+
+        if (data.progress >= 1f)
+        {
+            RemovePartDust(part);
+            return true;
+        }
+        return false;
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Returns the 0-1 clean progress for a specific part.
+    /// Used by the tooltip to show a percentage.
+    /// </summary>
+    public float GetPartProgress(InspectableItem part)
+    {
+        if (part == null || !_parts.TryGetValue(part, out PartDustData d)) return 0f;
+        return d.progress;
+    }
+
+    /// <summary>Returns true if this specific part still has dust.</summary>
+    public bool IsPartDusty(InspectableItem part)
+    {
+        return part != null && part.fault == PartFault.Dusty;
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Instantly remove dust from ONE component.
+    /// Restores its original materials, clears its fault,
+    /// and checks if the whole PC is now dust-free.
+    /// </summary>
+    public void RemovePartDust(InspectableItem part)
+    {
+        if (part == null) return;
+
+        // Restore this part's renderer materials
+        if (_parts.TryGetValue(part, out PartDustData data))
+        {
+            for (int i = 0; i < data.renderers.Length; i++)
+            {
+                if (data.renderers[i] != null && data.originalMats[i] != null)
+                    data.renderers[i].materials = data.originalMats[i];
+            }
+            // Destroy the material instances we created so we don't leak
+            foreach (Material m in data.dustInstances)
+                if (m != null) Destroy(m);
+
+            _parts.Remove(part);
+        }
+
+        // Clear the Dusty fault on this part
+        if (part.fault == PartFault.Dusty)
+        {
+            part.fault = PartFault.None;
+            part.faultDescription = "";
+        }
+
+        // Fan overheating that was dust-caused is also resolved
+        if (part.partCategory == "Fan" && part.fault == PartFault.Overheating)
+        {
+            part.fault = PartFault.None;
+            part.faultDescription = "";
+        }
+
+        Debug.Log($"[DustSystem] '{part.itemName}' cleaned.");
+        CheckAllPartsClean();
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Instantly clean the entire PC (legacy / admin use).
+    /// Restores all parts and sets isDusty = false.
     /// </summary>
     public void RemoveDust()
     {
-        isDusty = false;
-        cleanProgress = 0f;
-
-        if (cachedRenderers != null && savedMaterialArrays != null)
+        // Restore all tracked parts
+        foreach (var kvp in _parts)
         {
-            for (int i = 0; i < cachedRenderers.Length; i++)
+            for (int i = 0; i < kvp.Value.renderers.Length; i++)
             {
-                if (cachedRenderers[i] != null && savedMaterialArrays[i] != null)
-                {
-                    cachedRenderers[i].materials = savedMaterialArrays[i];
-                }
+                if (kvp.Value.renderers[i] != null && kvp.Value.originalMats[i] != null)
+                    kvp.Value.renderers[i].materials = kvp.Value.originalMats[i];
+            }
+            foreach (Material m in kvp.Value.dustInstances)
+                if (m != null) Destroy(m);
+
+            if (kvp.Key != null && kvp.Key.fault == PartFault.Dusty)
+            {
+                kvp.Key.fault = PartFault.None;
+                kvp.Key.faultDescription = "";
             }
         }
+        _parts.Clear();
 
-        if (activeParticles != null)
+        if (_activeParticles != null) { Destroy(_activeParticles); _activeParticles = null; }
+
+        // Also clear dust-caused Overheating on fans/coolers
+        foreach (InspectableItem part in GetComponentsInChildren<InspectableItem>(true))
         {
-            Destroy(activeParticles);
-            activeParticles = null;
+            if (part.isMainObject || part.isInventorySlot) continue;
+            if (part.fault != PartFault.Overheating) continue;
+
+            bool dustCaused = part.partCategory == "Fan"
+                || (part.faultDescription != null
+                    && part.faultDescription.ToLower().Contains("dust"));
+            if (dustCaused) { part.fault = PartFault.None; part.faultDescription = ""; }
         }
 
-        dustApplied = false;
-        Debug.Log("PC cleaned! Dust removed.");
+        isDusty = false;
+        cleanProgress = 0f;
+        _dustApplied = false;
+        Debug.Log("[DustSystem] PC fully cleaned — all dust removed.");
     }
 
+    /// <summary>Returns true if the PC still needs cleaning.</summary>
+    public bool NeedsCleaning() => isDusty;
+
     /// <summary>
-    /// Called each frame while the player holds the dust can on this PC.
-    /// Returns true when fully cleaned.
+    /// Legacy single-pass CleanTick — cleans every dusty part simultaneously.
+    /// Kept so any older callers still compile.
     /// </summary>
     public bool CleanTick(float deltaTime)
     {
         if (!isDusty) return true;
-
-        cleanProgress += deltaTime / cleanDuration;
-        cleanProgress = Mathf.Clamp01(cleanProgress);
-
-        // Visual feedback: reduce dust tint as cleaning progresses
-        if (dustOverlayMaterial != null)
+        foreach (InspectableItem item in GetComponentsInChildren<InspectableItem>(true))
         {
-            Color fadingDust = dustTint;
-            fadingDust.a = dustTint.a * (1f - cleanProgress);
-            dustOverlayMaterial.color = fadingDust;
+            if (item.isMainObject || item.isInventorySlot) continue;
+            if (item.fault == PartFault.Dusty) CleanPartTick(item, deltaTime);
         }
-
-        // Finished cleaning
-        if (cleanProgress >= 1f)
-        {
-            RemoveDust();
-            return true;
-        }
-
-        return false;
+        return !isDusty;
     }
 
-    /// <summary>
-    /// Check if this PC needs cleaning before work can begin.
-    /// </summary>
-    public bool NeedsCleaning()
+    // ═════════════════════════════════════════════════════════════════
+    //  PRIVATE HELPERS
+    // ═════════════════════════════════════════════════════════════════
+
+    void ApplyDustToItem(InspectableItem item)
     {
-        return isDusty;
+        if (_parts.ContainsKey(item)) return;
+
+        Renderer[] renderers = item.GetComponentsInChildren<Renderer>(true);
+        if (renderers.Length == 0) return;
+
+        Material[][] origMats = new Material[renderers.Length][];
+        Material[] dustInstances = new Material[renderers.Length];
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            origMats[i] = renderers[i].sharedMaterials;
+
+            // Create a UNIQUE dust material instance for this renderer so
+            // fading one part doesn't affect the others
+            Material instance = new Material(dustOverlayMaterial);
+            Color c = dustTint;
+            instance.color = c;
+            dustInstances[i] = instance;
+
+            // Append the dust layer on top of the part's existing materials
+            Material[] newMats = new Material[origMats[i].Length + 1];
+            for (int j = 0; j < origMats[i].Length; j++) newMats[j] = origMats[i][j];
+            newMats[newMats.Length - 1] = instance;
+            renderers[i].materials = newMats;
+        }
+
+        _parts[item] = new PartDustData
+        {
+            renderers = renderers,
+            originalMats = origMats,
+            dustInstances = dustInstances,
+            progress = 0f
+        };
+    }
+
+    void CheckAllPartsClean()
+    {
+        foreach (InspectableItem item in GetComponentsInChildren<InspectableItem>(true))
+        {
+            if (item.isMainObject || item.isInventorySlot) continue;
+            if (item.fault == PartFault.Dusty) return; // still dusty
+        }
+
+        // Every part is clean
+        if (_activeParticles != null) { Destroy(_activeParticles); _activeParticles = null; }
+        isDusty = false;
+        _dustApplied = false;
+        Debug.Log("[DustSystem] All components are clean — PC is dust-free!");
     }
 }

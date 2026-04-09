@@ -26,10 +26,13 @@ public partial class TutorialManager
         // Grab the PC directly — no searching
         activeGuidePC = (monitor != null) ? monitor.localOS : null;
 
+        // Hide task panel during email/shop so it doesn't block the monitor UI
+        if (step == 25 || step == 26)
+            TaskListUI.Instance?.HideTemporarily();
+
         if (step == 25) activeUIGuide = StartCoroutine(EmailUIGuide());
         else if (step == 26) activeUIGuide = StartCoroutine(ShopUIGuide());
     }
-
     void StopUIGuide()
     {
         if (activeUIGuide != null) { StopCoroutine(activeUIGuide); activeUIGuide = null; }

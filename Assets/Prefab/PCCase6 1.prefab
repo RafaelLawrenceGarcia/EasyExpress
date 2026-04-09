@@ -783,7 +783,7 @@ MonoBehaviour:
   wireMeshRoot: {fileID: 472849254375826866}
   connectorPort: {fileID: 6907614452806435366}
   requiredPartCategory: Case Fan
-  proximityRadius: 2
+  proximityRadius: 1
   isPowerCord: 0
   allowRemoveWithoutDisconnect: 0
   wireName: Fan_Wire_Fan2
@@ -2208,7 +2208,7 @@ MonoBehaviour:
   requiresScrewdriver: 0
   itemName: Case Fan
   partCategory: Case Fan
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 43386347a95a9af41be3c4a376003fa9, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -2475,7 +2475,7 @@ MonoBehaviour:
   connectorPort: {fileID: 4564763325939375422}
   requiredPartCategory: PSU
   proximityRadius: 2
-  isPowerCord: 0
+  isPowerCord: 1
   allowRemoveWithoutDisconnect: 0
   wireName: Power Cord
   isConnected: 0
@@ -3310,7 +3310,7 @@ MonoBehaviour:
   wireMeshRoot: {fileID: 1738954080112729022}
   connectorPort: {fileID: 8655055860542403237}
   requiredPartCategory: Case Fan
-  proximityRadius: 2
+  proximityRadius: 1
   isPowerCord: 0
   allowRemoveWithoutDisconnect: 0
   wireName: Fan_Wire_Fan4
@@ -6063,7 +6063,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: SATA Port
   partCategory: Wire Port
   inventoryIcon: {fileID: 0}
@@ -6758,7 +6758,7 @@ MonoBehaviour:
   wireMeshRoot: {fileID: 3859048483598052567}
   connectorPort: {fileID: 5190953766148134593}
   requiredPartCategory: Case Fan
-  proximityRadius: 2
+  proximityRadius: 1
   isPowerCord: 0
   allowRemoveWithoutDisconnect: 0
   wireName: Fan_Wire_Fan1
@@ -7765,7 +7765,7 @@ MonoBehaviour:
   wireMeshRoot: {fileID: 4165496602702724491}
   connectorPort: {fileID: 3434102058944045258}
   requiredPartCategory: Case Fan
-  proximityRadius: 2
+  proximityRadius: 1
   isPowerCord: 0
   allowRemoveWithoutDisconnect: 0
   wireName: Fan_Wire_Fan3
@@ -8326,7 +8326,7 @@ MonoBehaviour:
   requiresScrewdriver: 0
   itemName: GPU
   partCategory: GPU
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -8350,7 +8350,7 @@ MonoBehaviour:
   inventoryEntryId: 
   fault: 0
   faultDescription: 
-  linkedPrebuiltWire: {fileID: 0}
+  linkedPrebuiltWire: {fileID: 6590458310058245243}
 --- !u!64 &5187562831227383448
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -9609,6 +9609,7 @@ GameObject:
   - component: {fileID: 4564763325939375422}
   - component: {fileID: 6688121224656757560}
   - component: {fileID: 4586537883790898338}
+  - component: {fileID: 837502552455550404}
   m_Layer: 6
   m_Name: Outlet
   m_TagString: Untagged
@@ -9778,6 +9779,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5418727948063256036, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
+--- !u!114 &837502552455550404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5221818994451435427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33a9b2af5bf810b4db40d1a2caae718c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
+  type: 2
 --- !u!1 &5279714814167200626
 GameObject:
   m_ObjectHideFlags: 0
@@ -11994,7 +12008,7 @@ MonoBehaviour:
   requiresScrewdriver: 0
   itemName: Case Fan
   partCategory: Case Fan
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 43386347a95a9af41be3c4a376003fa9, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -12366,7 +12380,7 @@ MonoBehaviour:
   requiresScrewdriver: 0
   itemName: Case Fan
   partCategory: Case Fan
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 43386347a95a9af41be3c4a376003fa9, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -13902,7 +13916,7 @@ MonoBehaviour:
   requiresScrewdriver: 0
   itemName: Case Fan
   partCategory: Case Fan
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 43386347a95a9af41be3c4a376003fa9, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -14085,8 +14099,8 @@ MonoBehaviour:
   powerDraw: 0
   maxWattage: 0
   requiresScrewdriver: 0
-  itemName: Unknown Item
-  partCategory: Generic
+  itemName: NvMe M.2
+  partCategory: SSD
   inventoryIcon: {fileID: 0}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
@@ -14904,7 +14918,7 @@ MonoBehaviour:
   requiresScrewdriver: 0
   itemName: CPU Fan
   partCategory: Cooler
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 3840f79b3d77fd34591c34e980f5d548, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -15376,7 +15390,7 @@ MonoBehaviour:
   wireMeshRoot: {fileID: 7980461991301837601}
   connectorPort: {fileID: 3234997813944329568}
   requiredPartCategory: Storage
-  proximityRadius: 2
+  proximityRadius: 0.2
   isPowerCord: 0
   allowRemoveWithoutDisconnect: 0
   wireName: Cable_SATA_Power
@@ -16460,7 +16474,7 @@ MonoBehaviour:
   inventoryEntryId: 
   fault: 0
   faultDescription: 
-  linkedPrebuiltWire: {fileID: 0}
+  linkedPrebuiltWire: {fileID: 2647200753885974452}
 --- !u!1 &8719715943905680612
 GameObject:
   m_ObjectHideFlags: 0

@@ -63,6 +63,9 @@ public class StorageRoomShelf : MonoBehaviour
     [Tooltip("How often (seconds) the shelf checks ShopSystem for new/removed items.")]
     public float pollInterval = 1f;
     private PlacementManager _placementManager;
+    private GTAMovement _movement;
+    private OrbitCamera _camera;
+    private GameObject _goldHUD;
     // ── Runtime ───────────────────────────────────────────────────────────────
 
     // itemId → slot index it's shown on
@@ -104,6 +107,9 @@ public class StorageRoomShelf : MonoBehaviour
 
         // Cache PlacementManager reference
         _placementManager = FindObjectOfType<PlacementManager>();
+        _movement = FindObjectOfType<GTAMovement>();
+        _camera = FindObjectOfType<OrbitCamera>();
+        _goldHUD = GameObject.Find("Gold HUD");
 
         SyncWithShopSystem();
     }
@@ -130,6 +136,19 @@ public class StorageRoomShelf : MonoBehaviour
         // ── Close on Escape ──────────────────────────────────────────────────
         if (_panelOpen && Input.GetKeyDown(KeyCode.Escape))
             CloseShelfUI();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  FIX: LateUpdate runs AFTER all Update() calls, so the prompt survives
+    //  PlayerInteract.HideAllPrompts() which clears it every frame.
+    // ─────────────────────────────────────────────────────────────────────────
+    void LateUpdate()
+    {
+        if (_playerNearby && !_panelOpen)
+        {
+            if (promptUI != null)
+                promptUI.Show("E", "Open Storage");
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -175,6 +194,10 @@ public class StorageRoomShelf : MonoBehaviour
 
         if (inventoryUI.inventoryPanel != null)
             inventoryUI.inventoryPanel.SetActive(true);
+        // Freeze player so scrolling doesn't rotate the camera
+        if (_movement != null) _movement.SetMovementState(false);
+        if (_camera != null) _camera.SetCameraState(false);
+        if (_goldHUD != null) _goldHUD.SetActive(false);
 
         inventoryUI.RefreshInventory();
 
@@ -196,6 +219,10 @@ public class StorageRoomShelf : MonoBehaviour
 
         if (inventoryUI.inventoryPanel != null)
             inventoryUI.inventoryPanel.SetActive(false);
+        // Unfreeze player and restore HUD
+        if (_movement != null) _movement.SetMovementState(true);
+        if (_camera != null) _camera.SetCameraState(true);
+        if (_goldHUD != null) _goldHUD.SetActive(true);
         // Notify tutorial that shelf was closed
         if (TutorialManager.Instance != null)
             TutorialManager.Instance.CompleteStorageShelfTask();

@@ -107,7 +107,7 @@ public class PCPartDatabase : ScriptableObject
     /// tagCategory: "socket" filters by socket tags, "memory" filters by memory tags.
     /// Returns the filtered array. If no matches, returns the original array as fallback.
     /// </summary>
-    StartingPCComponent[] FilterByCompatibility(
+    public StartingPCComponent[] FilterByCompatibility(
         StartingPCComponent[] pool,
         StartingPCComponent motherboard,
         string tagCategory)
@@ -214,13 +214,14 @@ public class PCPartDatabase : ScriptableObject
         if (hasCPU)
         {
             StartingPCComponent[] compatCoolers = FilterByCompatibility(coolers, chosenMotherboard, "socket");
-            TryAddPart(compatCoolers, result.parts, Roll(coolerChance));
+            TryAddPart(compatCoolers, result.parts, true);
         }
 
         // ── Step 8: Fans (no constraint) ──
-        if (fans != null && fans.Length > 0 && Roll(fanChance))
+        // ── Step 8: Fans — always 1 back + 2-3 front = 3-4 total ──
+        if (fans != null && fans.Length > 0)
         {
-            int fanCount = Random.Range(1, 5);
+            int fanCount = Random.Range(3, 5); // 3 or 4
             for (int i = 0; i < fanCount; i++) AddCopiedPart(fans[Random.Range(0, fans.Length)], result.parts);
         }
 
@@ -254,13 +255,13 @@ public class PCPartDatabase : ScriptableObject
         switch (purpose)
         {
             case BuildPurpose.School:
-                // Basic: CPU always, GPU optional (30%), 1-2 RAM, storage always, cooler likely
+                // Basic: CPU always, GPU optional (30%), 1-2 RAM, storage always, cooler always
                 TryAddPart(compatCPUs, result.parts, true);
                 TryAddPart(gpus, result.parts, Roll(30f));
                 AddRAMSticks(result.parts, 1, 2, compatRAM);
                 TryAddPart(storage, result.parts, true);
-                TryAddPart(compatCoolers, result.parts, Roll(80f));
-                TryAddFans(result.parts, 1, 2, 50f);
+                TryAddPart(compatCoolers, result.parts, true);
+                TryAddFans(result.parts, 3, 4, 100f);
                 break;
 
             case BuildPurpose.Office:
@@ -270,7 +271,7 @@ public class PCPartDatabase : ScriptableObject
                 AddRAMSticks(result.parts, 2, 2, compatRAM);
                 TryAddPart(storage, result.parts, true);
                 TryAddPart(compatCoolers, result.parts, true);
-                TryAddFans(result.parts, 1, 3, 60f);
+                TryAddFans(result.parts, 3, 4, 100f);
                 break;
 
             case BuildPurpose.Streaming:
@@ -280,7 +281,7 @@ public class PCPartDatabase : ScriptableObject
                 AddRAMSticks(result.parts, 2, 4, compatRAM);
                 TryAddPart(storage, result.parts, true);
                 TryAddPart(compatCoolers, result.parts, true);
-                TryAddFans(result.parts, 2, 4, 80f);
+                TryAddFans(result.parts, 3, 4, 100f);
                 break;
 
             case BuildPurpose.Gaming:
@@ -290,7 +291,7 @@ public class PCPartDatabase : ScriptableObject
                 AddRAMSticks(result.parts, 2, 4, compatRAM);
                 TryAddPart(storage, result.parts, true);
                 TryAddPart(compatCoolers, result.parts, true);
-                TryAddFans(result.parts, 2, 5, 90f);
+                TryAddFans(result.parts, 3, 4, 100f);
                 break;
         }
 
@@ -324,7 +325,7 @@ public class PCPartDatabase : ScriptableObject
     // =============================================
     //  REWARD CALCULATION
     // =============================================
-    float CalculateReward(List<StartingPCComponent> parts, bool isBuild)
+    public float CalculateReward(List<StartingPCComponent> parts, bool isBuild)
     {
         float totalComponentCost = 0f;
         int faultCount = 0;
@@ -452,20 +453,55 @@ public class PCPartDatabase : ScriptableObject
         HashSet<string> categories = new HashSet<string>();
         foreach (var p in parts) categories.Add(p.partCategory);
 
-        List<ProblemRequirement> allProblems = new List<ProblemRequirement>
-        {
-            new ProblemRequirement("Blue Screen of Death",  new string[] { "RAM", "Storage" }),
-            new ProblemRequirement("No Display on Monitor", new string[] { "GPU", "RAM" }),
-            new ProblemRequirement("PC Keeps Overheating",  new string[] { "Cooler", "Fan" }),
-            new ProblemRequirement("Won't Turn On",         new string[] { "PSU", "Motherboard" }),
-            new ProblemRequirement("Full of Dust",          new string[] { }),
-            new ProblemRequirement("Random Shutdowns",      new string[] { "PSU", "CPU" }),
-            new ProblemRequirement("Loud Fan Noise",        new string[] { "Fan", "Cooler" }),
-            new ProblemRequirement("Slow Performance",      new string[] { "Storage", "RAM" }),
-            new ProblemRequirement("Boot Loop",             new string[] { "RAM", "Motherboard" }),
-            new ProblemRequirement("No Internet Connection", new string[] { "Motherboard" }),
-        };
+        // ═══════════════════════════════════════════════════════
+        //  PROGRESSIVE PROBLEM UNLOCKING
+        //  Problems unlock in tiers every 3 days.
+        //  Each tier ADDS to the pool — previous tiers stay.
+        //
+        //  Day 1-3:   Tier 1 — No Display, Boot Loop (GPU/RAM)
+        //  Day 4-6:   Tier 2 — + Blue Screen, Slow Performance (Storage/RAM)
+        //  Day 7-9:   Tier 3 — + Overheating, Loud Fan (Cooler/Fan)
+        //  Day 10-12: Tier 4 — + Won't Turn On, Random Shutdowns (PSU/Mobo)
+        //  Day 13+:   Tier 5 — + Full of Dust (all problems available)
+        // ═══════════════════════════════════════════════════════
 
+        int currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
+        int tier = Mathf.Clamp(((currentDay - 1) / 3) + 1, 1, 5);
+
+        List<ProblemRequirement> allProblems = new List<ProblemRequirement>();
+
+        // Tier 1 (Day 1-3): GPU/RAM problems — always available
+        allProblems.Add(new ProblemRequirement("No Display on Monitor", new string[] { "GPU", "RAM" }));
+        allProblems.Add(new ProblemRequirement("Boot Loop", new string[] { "RAM", "Motherboard" }));
+
+        // Tier 2 (Day 4+): Storage/RAM problems
+        if (tier >= 2)
+        {
+            allProblems.Add(new ProblemRequirement("Blue Screen of Death", new string[] { "RAM", "Storage" }));
+            allProblems.Add(new ProblemRequirement("Slow Performance", new string[] { "Storage", "RAM" }));
+        }
+
+        // Tier 3 (Day 7+): Cooling problems
+        if (tier >= 3)
+        {
+            allProblems.Add(new ProblemRequirement("PC Keeps Overheating", new string[] { "Cooler", "Fan" }));
+            allProblems.Add(new ProblemRequirement("Loud Fan Noise", new string[] { "Fan", "Cooler" }));
+        }
+
+        // Tier 4 (Day 10+): Power/motherboard problems
+        if (tier >= 4)
+        {
+            allProblems.Add(new ProblemRequirement("Won't Turn On", new string[] { "PSU", "Motherboard" }));
+            allProblems.Add(new ProblemRequirement("Random Shutdowns", new string[] { "PSU", "CPU" }));
+        }
+
+        // Tier 5 (Day 13+): Everything
+        if (tier >= 5)
+        {
+            allProblems.Add(new ProblemRequirement("Full of Dust", new string[] { }));
+        }
+
+        // Filter to problems the PC can actually have (has required parts)
         List<string> validProblems = new List<string>();
         foreach (var prob in allProblems)
         {
@@ -485,9 +521,11 @@ public class PCPartDatabase : ScriptableObject
             }
         }
 
-        if (validProblems.Count == 0) return "Full of Dust";
+        if (validProblems.Count == 0) return "No Display on Monitor";
 
-        return validProblems[Random.Range(0, validProblems.Count)];
+        string chosen = validProblems[Random.Range(0, validProblems.Count)];
+        Debug.Log($"[PCPartDB] Day {currentDay} (Tier {tier}): Picked '{chosen}' from {validProblems.Count} problems.");
+        return chosen;
     }
 
     // =============================================
@@ -538,9 +576,6 @@ public class PCPartDatabase : ScriptableObject
             case "Boot Loop":
                 if (TryFaultByCategory(parts, "RAM", PartFault.NotSeated, "RAM not seated correctly — system fails POST and restarts")) break;
                 TryFaultByCategory(parts, "Motherboard", PartFault.Corrupted, "BIOS corrupted — needs reset or reflash");
-                break;
-            case "No Internet Connection":
-                TryFaultByCategory(parts, "Motherboard", PartFault.Broken, "Onboard network adapter failed — may need a PCIe network card");
                 break;
             default:
                 ApplyRandomFallbackFault(parts);
@@ -706,10 +741,120 @@ public class PCPartDatabase : ScriptableObject
     string GenerateEmailBody(string senderName, string problem, float reward)
     {
         string[] greetings = { "Hi there,", "Hello,", "Hey,", "Good day," };
-        string[] descriptions = { $"My PC has been giving me trouble lately. The issue is: {problem}.", $"Something's wrong with my PC. I think the problem is {problem}." };
-        string[] closings = { $"I can pay ₱{reward:N0} for the repair. Let me know if you can help!", $"I'll pay up to ₱{reward:N0} to get this fixed. Thanks in advance!" };
-        string[] signoffs = { $"Thanks,\n{senderName}", $"Best regards,\n{senderName}" };
-        return greetings[Random.Range(0, greetings.Length)] + "\n\n" + descriptions[Random.Range(0, descriptions.Length)] + "\n\n" + closings[Random.Range(0, closings.Length)] + "\n\n" + signoffs[Random.Range(0, signoffs.Length)];
+        string[] signoffs = { $"Thanks,\n{senderName}", $"Best regards,\n{senderName}",
+                             $"Hoping to hear from you soon,\n{senderName}", $"Cheers,\n{senderName}" };
+
+        // ── Problem-specific symptom paragraphs ─────────────────────────────────
+        string symptomParagraph;
+        switch (problem)
+        {
+            case "No Display on Monitor":
+                symptomParagraph = GetRandom(new[]
+                {
+                "My PC turns on — the fans spin and the lights come on — but nothing appears on my monitor. The screen stays completely black and just shows 'No Signal'. I've already checked the cable and the monitor works fine on another device.",
+                "When I press the power button my computer seems to start up, but my display never gets a picture. The fans are running and there are lights on the motherboard, yet the screen stays dark the whole time.",
+                "I'm getting no picture on my monitor even though the PC itself appears to be running. Everything powers up but no image ever shows. I've tried a different cable and a different monitor — same result."
+            });
+                break;
+
+            case "Blue Screen of Death":
+                symptomParagraph = GetRandom(new[]
+                {
+                "My computer keeps crashing with a blue screen a few minutes after I start using it. It restarts on its own and sometimes I can't even get to the desktop before it crashes again.",
+                "I've been getting random blue screen errors. The PC reboots itself and I keep losing whatever I was working on. It seems to happen more often when I open a browser or run any program.",
+                "My PC randomly crashes to a blue screen and then restarts. This has been happening several times a day and it's making the computer basically unusable for me."
+            });
+                break;
+
+            case "PC Keeps Overheating":
+                symptomParagraph = GetRandom(new[]
+                {
+                "My computer shuts itself off after running for a while, especially when I'm using it heavily. The case feels very warm and the fans seem to be working overtime before it switches off.",
+                "My PC keeps turning off on its own. It usually lasts about ten to twenty minutes before it just cuts out. The fans are really loud too. I suspect it might be overheating.",
+                "My computer has been randomly shutting down. The fans get very loud before it happens and the whole case feels hot. It boots back up fine but then shuts off again after a while."
+            });
+                break;
+
+            case "Won't Turn On":
+                symptomParagraph = GetRandom(new[]
+                {
+                "My PC does absolutely nothing when I press the power button. No fans, no lights, no beeps — just complete silence. It was working yesterday and now it won't respond at all.",
+                "I press the power button and nothing happens. The computer is completely dead — no fans spinning, no LED lights, nothing. I've checked the power outlet and it's fine.",
+                "My computer stopped turning on overnight. I haven't changed anything or dropped it. I press the power button and there's zero response from the machine whatsoever."
+            });
+                break;
+
+            case "Full of Dust":
+                symptomParagraph = GetRandom(new[]
+                {
+                "My PC is running much slower and hotter than usual and the fans are very loud. A friend told me it might need a good clean inside. I haven't opened the case in years so there's probably a lot of dust built up.",
+                "My computer has been running hot and noisy lately. I think it just needs a thorough cleaning — I can see dust coming out of the vents. I'd rather have a professional do it properly.",
+                "The PC runs warm all the time now and the fans never quiet down. I peeked inside and there's dust coating everything. It needs a proper clean but I don't want to accidentally break anything."
+            });
+                break;
+
+            case "Random Shutdowns":
+                symptomParagraph = GetRandom(new[]
+                {
+                "My PC turns off randomly while I'm using it — no warning, no blue screen, just instant power off. It usually happens when I'm doing something intensive like gaming or video editing.",
+                "My computer has been shutting off by itself at random. It doesn't overheat as far as I can tell — it just cuts out suddenly, sometimes after five minutes, sometimes after an hour.",
+                "I've been having random power-offs with no error messages. The computer just dies without warning while I'm in the middle of using it and I have to press the power button to restart."
+            });
+                break;
+
+            case "Loud Fan Noise":
+                symptomParagraph = GetRandom(new[]
+                {
+                "One of the fans inside my PC has started making a grinding or rattling noise. It's been getting louder over the past week and is now impossible to ignore while I'm working.",
+                "My computer has developed a loud rattling noise that I think is coming from a fan. The PC still works, but the noise is really distracting. I'd like it checked and repaired.",
+                "There's a persistent grinding sound coming from inside my case whenever the PC is running. It sounds like a fan bearing has gone bad. The noise is constant and getting worse."
+            });
+                break;
+
+            case "Slow Performance":
+                symptomParagraph = GetRandom(new[]
+                {
+                "My computer has become extremely slow. It takes a very long time to boot and programs take ages to open. It used to be fast but now even basic tasks feel sluggish.",
+                "Everything on my PC has slowed to a crawl. Loading the desktop alone takes several minutes and apps hang or freeze regularly. This has been getting worse over the past few weeks.",
+                "My PC is running far slower than it should. Opening files, launching programs, browsing the web — all of it is painfully slow. I haven't installed anything new but it just keeps getting worse."
+            });
+                break;
+
+            case "Boot Loop":
+                symptomParagraph = GetRandom(new[]
+                {
+                "My computer gets stuck in a restart loop. It shows the startup screen, sometimes gets partway through loading, and then restarts on its own — over and over without ever reaching the desktop.",
+                "My PC keeps restarting itself automatically. It starts to boot, the logo appears, and then it just reboots. It's been cycling like this and I can't get into Windows at all.",
+                "The computer restarts itself every time it tries to load. I see the startup logo briefly and then it reboots. It just keeps cycling and never finishes starting up."
+            });
+                break;
+
+            default:
+                symptomParagraph = $"My PC has been having a problem — specifically: {problem.ToLower()}. It's been happening consistently and I'm not able to fix it on my own.";
+                break;
+        }
+
+        // ── Closing — always explicitly mentions parts + labour ──────────────────
+        string[] closings =
+        {
+        $"I understand a repair like this may require replacement parts as well as labour, and I'm happy to cover both. My total budget for parts and labour is ₱{reward:N0}. Please let me know if you can help!",
+        $"I'm willing to pay for any parts that need replacing on top of your labour fee. I've set aside ₱{reward:N0} in total to cover everything. Looking forward to hearing from you.",
+        $"Please go ahead and replace whatever components need replacing — I just want it working again. The total I can pay for parts and labour combined is ₱{reward:N0}.",
+        $"I know some parts might need to be swapped out and that's absolutely fine with me. As long as the total for parts and labour is around ₱{reward:N0}, I'm ready to proceed."
+    };
+
+        return greetings[Random.Range(0, greetings.Length)]
+             + "\n\n"
+             + symptomParagraph
+             + "\n\n"
+             + closings[Random.Range(0, closings.Length)]
+             + "\n\n"
+             + signoffs[Random.Range(0, signoffs.Length)];
+    }
+
+    static string GetRandom(string[] options)
+    {
+        return options[Random.Range(0, options.Length)];
     }
 
     string[] GenerateObjectives(string problem)
@@ -727,7 +872,6 @@ public class PCPartDatabase : ScriptableObject
             case "Loud Fan Noise": objectives.Add("Inspect fan bearings"); objectives.Add("Clean or replace noisy fans"); break;
             case "Slow Performance": objectives.Add("Check storage health"); objectives.Add("Verify RAM compatibility"); break;
             case "Boot Loop": objectives.Add("Reseat RAM sticks"); objectives.Add("Check BIOS status"); break;
-            case "No Internet Connection": objectives.Add("Test onboard network adapter"); objectives.Add("Consider PCIe network card"); break;
             default: objectives.Add("Replace broken part"); break;
         }
         objectives.Add("Boot to Desktop");

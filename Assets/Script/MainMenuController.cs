@@ -6,6 +6,7 @@ using PlayFab.ClientModels;
 
 public class MainMenu : MonoBehaviour
 {
+    private bool cloudHasSaveData = false;
     [Header("Main Buttons")]
     public Button playButton;
     public Button creditsButton;
@@ -113,20 +114,20 @@ public class MainMenu : MonoBehaviour
     #region Game Logic
     void StartSingleplayer()
     {
+        // Only load cloud save if we CONFIRMED save data exists
         if (GameSession.IsLoggedIn)
-            PlayerPrefs.SetInt("IsLoadingGame", 1);
+            PlayerPrefs.SetInt("IsLoadingGame", cloudHasSaveData ? 1 : 0);
         else
             PlayerPrefs.SetInt("IsLoadingGame", 0);
 
         SceneManager.LoadScene(gameplaySceneName);
     }
-
     void CheckForSaveData()
     {
         if (!GameSession.IsLoggedIn) return;
 
         if (statusText) statusText.text = "Checking Save Data...";
-
+        cloudHasSaveData = false; // ← ADD THIS LINE
         PlayFabClientAPI.GetUserData(new GetUserDataRequest(),
         result =>
         {
@@ -134,6 +135,7 @@ public class MainMenu : MonoBehaviour
 
             if (result.Data != null && result.Data.ContainsKey("GameData"))
             {
+                cloudHasSaveData = true; // ← ADD THIS LINE
                 if (continueButton != null) continueButton.interactable = true;
                 if (statusText) statusText.text = "Welcome Back!";
 

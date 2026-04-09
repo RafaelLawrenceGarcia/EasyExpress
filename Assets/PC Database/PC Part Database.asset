@@ -67,7 +67,7 @@ MonoBehaviour:
   - partCategory: PSU
     partName: 850W 80+ Gold PSU
     partPrefab: {fileID: 825193487274983354, guid: 18b71829982428a42b3e0c07b49cfa78, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: a54265da4b465b94e8fbe8a522ab10ce, type: 3}
     partPrice: 0
     compatTags:
     - ATX_Power
@@ -79,7 +79,7 @@ MonoBehaviour:
   - partCategory: PSU
     partName: 650W 80+ Bronze PSU
     partPrefab: {fileID: 825193487274983354, guid: 18b71829982428a42b3e0c07b49cfa78, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: a54265da4b465b94e8fbe8a522ab10ce, type: 3}
     partPrice: 0
     compatTags:
     - ATX_Power
@@ -91,7 +91,7 @@ MonoBehaviour:
   - partCategory: PSU
     partName: 1000W 80+ Platinum PSU
     partPrefab: {fileID: 825193487274983354, guid: 18b71829982428a42b3e0c07b49cfa78, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: a54265da4b465b94e8fbe8a522ab10ce, type: 3}
     partPrice: 0
     compatTags:
     - ATX_Power
@@ -297,10 +297,10 @@ MonoBehaviour:
     fault: 0
     faultDescription: 
   coolers:
-  - partCategory: Intel CPU Fan
+  - partCategory: Cooler
     partName: CPU Fan
     partPrefab: {fileID: 8050430242676290261, guid: 15a2ff6f27289bf49bdc9e8ee0935b01, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 3840f79b3d77fd34591c34e980f5d548, type: 3}
     partPrice: 700
     compatTags: []
     powerDraw: 3
@@ -323,7 +323,7 @@ MonoBehaviour:
   - partCategory: Case Fan
     partName: 140mm High Airflow Fan
     partPrefab: {fileID: 6981174563034521290, guid: 36df68ff8afd16147afbee70534d3fd9, type: 3}
-    partIcon: {fileID: 21300000, guid: b375ac3ec2fc26f43a8fa02a5a36ddff, type: 3}
+    partIcon: {fileID: 21300000, guid: 43386347a95a9af41be3c4a376003fa9, type: 3}
     partPrice: 0
     compatTags: []
     powerDraw: 4

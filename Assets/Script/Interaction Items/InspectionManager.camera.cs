@@ -1,13 +1,36 @@
 // ============================================================
 //  InspectionManager.Camera.cs  (partial class 2/6)
 //  Camera orbit, pan, zoom, reset
+//  
+//  CHANGE: Camera input is blocked when any overlay panel is
+//  open (Repair Manual, PC Summary, or Inventory).
 // ============================================================
 using UnityEngine;
 
 public partial class InspectionManager
 {
+    /// <summary>
+    /// Returns true if any overlay panel is currently open on top of
+    /// the inspection view. Used to block camera input and prevent
+    /// Escape from exiting inspection while a panel is active.
+    /// </summary>
+    bool IsOverlayPanelOpen()
+    {
+        if (RepairManual.Instance != null && RepairManual.Instance.IsOpen())
+            return true;
+        if (PCComponentSummary.Instance != null && PCComponentSummary.Instance.IsOpen())
+            return true;
+        if (inventoryUI != null && inventoryUI.inventoryPanel != null && inventoryUI.inventoryPanel.activeSelf)
+            return true;
+        return false;
+    }
+
     void HandleInput()
     {
+        // ── Block ALL camera input while an overlay panel is open ──
+        if (IsOverlayPanelOpen())
+            return;
+
         // Right-click drag = orbit
         if (Input.GetMouseButton(1) && !isWiring)
         {

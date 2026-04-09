@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
+  m_Name: dlg_ManualChecked
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
+  lines:
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "Good, you've seen the manual. Each guide tells you what to check and in what order."
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "The key rule is: swap ONE part at a time, then test. This is how you isolate which component is actually broken."
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "You can press [F] anytime to re-check the steps if you forget. Now let's get to work!"
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "First, grab the replacement parts from the storage shelf. Press [Esc] to exit inspection and head over there."
+    showOnRightSide: 0

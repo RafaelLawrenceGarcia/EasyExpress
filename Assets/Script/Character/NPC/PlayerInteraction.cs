@@ -21,9 +21,9 @@ public class PlayerInteract : MonoBehaviour
     public DayTransitionManager dayTransitionManager;
 
     [Header("NEW UI")]
-    public InteractionPromptUI interactionPrompt; // optional, legacy
+    public InteractionPromptUI interactionPrompt;
     [Header("Press E Prompt (assign a TMP Text in Player HUD)")]
-    public TextMeshProUGUI pressEText;            // drag any TMP Text here
+    public TextMeshProUGUI pressEText;
     public PCInteractionMenu pcMenu;
 
     [Header("Legacy UI (keep for dialogue)")]
@@ -91,8 +91,7 @@ public class PlayerInteract : MonoBehaviour
         if (activeDoorMenu != null && activeDoorMenu.IsOpen()) { HideAllPrompts(); return; }
 
         // =============================================
-        //  STORAGE — proximity check, runs before raycast
-        //  When holding a delivery box near the shelf, E stores it
+        //  STORAGE — proximity check
         // =============================================
         if (placementManager != null && placementManager.isHoldingItem
             && StorageRoomShelf.Instance != null)
@@ -111,8 +110,6 @@ public class PlayerInteract : MonoBehaviour
                 {
                     if (interactionPrompt != null) interactionPrompt.Show("E", "Store Item");
                     if (pressEText != null) { pressEText.text = "[E] Store Item"; pressEText.gameObject.SetActive(true); }
-
-
 
                     if (Input.GetKeyDown(KeyCode.E))
                     {
@@ -148,7 +145,7 @@ public class PlayerInteract : MonoBehaviour
 
             if (!stillLookingAtPC) HideAllPrompts();
             if (interactionPrompt != null) interactionPrompt.Hide();
-        if (pressEText != null) pressEText.gameObject.SetActive(false);
+            if (pressEText != null) pressEText.gameObject.SetActive(false);
             return;
         }
 
@@ -181,7 +178,16 @@ public class PlayerInteract : MonoBehaviour
         Ray ray = mainCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
 
-        if (Physics.SphereCast(ray, 0.25f, out hit, interactRange, interactLayer))
+        // ═══════════════════════════════════════════════════════════
+        //  FIX: Two-step detection for close-range interaction.
+        //  SphereCast misses objects when the camera is INSIDE their
+        //  collider (very close). A regular Raycast still detects them.
+        // ═══════════════════════════════════════════════════════════
+        bool hitSomething = Physics.SphereCast(ray, 0.25f, out hit, interactRange, interactLayer);
+        if (!hitSomething)
+            hitSomething = Physics.Raycast(ray, out hit, interactRange, interactLayer);
+
+        if (hitSomething)
         {
             Debug.Log("HIT: " + hit.collider.gameObject.name + " | Tag: " + hit.collider.tag + " | Layer: " + LayerMask.LayerToName(hit.collider.gameObject.layer));
 
@@ -193,7 +199,22 @@ public class PlayerInteract : MonoBehaviour
             CustomerInside shopCustomer = hit.collider.GetComponent<CustomerInside>();
             ShopTrigger shopPC = hit.collider.GetComponent<ShopTrigger>();
             InspectableItem item = hit.collider.GetComponent<InspectableItem>();
-
+            // ── Walk up hierarchy to find the isMainObject root ──────────
+            if (item == null || !item.isMainObject)
+            {
+                Transform parent = hit.collider.transform.parent;
+                while (parent != null)
+                {
+                    InspectableItem parentItem = parent.GetComponent<InspectableItem>();
+                    if (parentItem != null && parentItem.isMainObject)
+                    {
+                        item = parentItem;
+                        break;
+                    }
+                    parent = parent.parent;
+                }
+            }
+            // ─────────────────────────────────────────────────────────────
             DoorInteractionMenu doorMenu = hit.collider.GetComponentInParent<DoorInteractionMenu>();
             ShopDoor shopDoor = hit.collider.GetComponentInParent<ShopDoor>();
             SceneDoor sceneDoor = hit.collider.GetComponentInParent<SceneDoor>();
@@ -253,7 +274,8 @@ public class PlayerInteract : MonoBehaviour
             {
                 // Check if this is the customer's desk PC (view-only)
                 bool isDeskPC = CustomerDeskManager.Instance != null
-                    && hit.collider.gameObject.name.StartsWith("DeskPC_");
+                && (hit.collider.gameObject.name.StartsWith("DeskPC_")
+                || hit.collider.transform.root.gameObject.name.StartsWith("DeskPC_"));
 
                 if (isDeskPC)
                 {
@@ -309,7 +331,6 @@ public class PlayerInteract : MonoBehaviour
             {
                 if (cityNPC.isExhausted)
                 {
-                    // NPC is done talking — show a locked prompt, no interaction
                     ShowPromptWithHighlight("X", "Not interested anymore", hit.collider.gameObject);
                 }
                 else
@@ -321,7 +342,6 @@ public class PlayerInteract : MonoBehaviour
             }
             // =============================================
             //  SHOP CUSTOMER
-            //  Only allowed at step 5 (accept job) during tutorial
             // =============================================
             else if (readyShopCustomer)
             {
@@ -340,7 +360,7 @@ public class PlayerInteract : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.E)) StartShopInteraction(shopCustomer);
             }
             // =============================================
-            //  WORKSTATION MONITOR  (Email / Shop PC / Cashier)
+            //  WORKSTATION MONITOR
             // =============================================
             else if (hit.collider.CompareTag("WorkstationMonitor"))
             {
@@ -349,11 +369,10 @@ public class PlayerInteract : MonoBehaviour
                 bool cashierStep = TutorialManager.Instance != null && TutorialManager.Instance.IsCashierPCStep();
                 bool shopPCStep = TutorialManager.Instance != null && TutorialManager.Instance.IsShopPCStep();
 
-                if (tutActive && !emailStep && !cashierStep && !shopPCStep)
+                bool repairStep = TutorialManager.Instance != null && TutorialManager.Instance.IsRepairStep();
+
+                if (tutActive && !emailStep && !cashierStep && !shopPCStep && !repairStep)
                 {
-                    bool repairStep = TutorialManager.Instance != null && TutorialManager.Instance.IsRepairStep();
-                    if (repairStep) { HideAllPrompts(); return; }
-                    if (cashierStep) { HideAllPrompts(); return; }
                     ShowPromptWithHighlight("X", "Finish your tasks first!", hit.collider.gameObject);
                     return;
                 }
@@ -365,10 +384,8 @@ public class PlayerInteract : MonoBehaviour
                 {
                     if (pcMenu != null) pcMenu.Hide();
 
-                    // Step 5 — player should talk to customer, not use monitor
                     if (cashierStep) { HideAllPrompts(); return; }
 
-                    // Steps 17/24 — shop PC to order or install
                     if (shopPCStep)
                     {
                         ShowPromptWithHighlight("E", "Use Computer", hit.collider.gameObject);
@@ -382,7 +399,6 @@ public class PlayerInteract : MonoBehaviour
                         return;
                     }
 
-                    // Normal flow — step 32 email + post-tutorial
                     if (monitor.CanInteract())
                     {
                         ShowPromptWithHighlight("E", "Use Monitor", hit.collider.gameObject);
@@ -401,7 +417,7 @@ public class PlayerInteract : MonoBehaviour
                 }
             }
             // =============================================
-            //  SHOP COMPUTER  (ShopTrigger)
+            //  SHOP COMPUTER (ShopTrigger)
             // =============================================
             else if (shopPC)
             {
@@ -430,13 +446,11 @@ public class PlayerInteract : MonoBehaviour
 
                 if (dBox != null)
                 {
-                    // Delivery boxes — Q only, carry to storage
                     ShowPromptWithHighlight("Q", "Carry to Storage", hit.collider.gameObject);
                     if (Input.GetKeyDown(KeyCode.Q)) PickUpItem(hit.collider.gameObject);
                 }
                 else
                 {
-                    // Loose components — E to inventory, Q to carry
                     ShowPromptWithHighlight("E / Q", "E: Inventory | Q: Carry", hit.collider.gameObject);
                     if (Input.GetKeyDown(KeyCode.E))
                     {
@@ -523,8 +537,6 @@ public class PlayerInteract : MonoBehaviour
 
     void StartCityInteraction(NPCWalker npc)
     {
-        // FIX: Guard against unassigned UI references so the interaction
-        // doesn't silently crash and leave isInteracting stuck at true.
         if (dialoguePanel == null || nameText == null || dialogueText == null
             || option1Button == null || option2Button == null || exitButton == null)
         {
@@ -598,12 +610,10 @@ public class PlayerInteract : MonoBehaviour
         if (currentCityNPC != null)
         {
             dialogueText.text = currentCityNPC.TryInviteToShop();
-            // Update button to show remaining attempts
             var btn1Label = option1Button.GetComponentInChildren<TextMeshProUGUI>();
             int left = currentCityNPC.InviteAttemptsLeft();
             if (currentCityNPC.isExhausted || currentCityNPC.isGoingToShop)
             {
-                // No more attempts or already going — disable the invite button
                 option1Button.interactable = false;
                 if (btn1Label != null) btn1Label.text = "Invite to Shop";
             }
@@ -626,7 +636,12 @@ public class PlayerInteract : MonoBehaviour
         if (currentCityNPC != null) dialogueText.text = currentCityNPC.option2Response;
         else if (currentShopNPC != null)
         {
-            dialogueText.text = "Sorry, I can't help you.";
+            bool isTutorialCustomer = TutorialManager.Instance != null
+                                   && TutorialManager.Instance.IsTutorialActive()
+                                   && TutorialManager.Instance.GetCurrentStep() == 6;
+            if (isTutorialCustomer) return;
+
+            dialogueText.text = "Oh... alright. I'll try somewhere else.";
             currentShopNPC.RejectJob();
             option1Button.interactable = false; option2Button.interactable = false;
             StartCoroutine(CloseAfterDelay(false));
@@ -682,7 +697,10 @@ public class PlayerInteract : MonoBehaviour
         if (computerOS != null) computerOS.gameObject.SetActive(false);
         if (goldHUD != null) goldHUD.SetActive(true);
         FreezePlayer(false);
-        if (TutorialManager.Instance != null) TutorialManager.Instance.RestoreTaskIfNeeded();
+        if (TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.RestoreTaskIfNeeded(); TutorialManager.Instance.NotifyMonitorClosed();
+        }
     }
 
     // =============================================
@@ -700,18 +718,53 @@ public class PlayerInteract : MonoBehaviour
         {
             originalRenderMode = activeCanvas.renderMode;
             originalWorldCamera = activeCanvas.worldCamera;
-            activeOS.gameObject.SetActive(true);
+
+            activeCanvas.gameObject.SetActive(true);
             activeCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            activeCanvas.sortingOrder = 50;
+
             GraphicRaycaster raycaster = activeCanvas.GetComponent<GraphicRaycaster>();
             if (raycaster != null) raycaster.enabled = true;
+
+            activeOS.gameObject.SetActive(true);
+
             if (monitor.uiBridge != null)
             {
                 monitor.uiBridge.ActivateForShop();
                 monitor.uiBridge.ActivateForEmail();
             }
+
             PCPowerSystem pc = monitor.GetLinkedPC();
-            if (pc != null && pc.HasAnyFault()) activeOS.RestartToBIOS();
-            else activeOS.BootToOS();
+            if (pc != null)
+            {
+                switch (pc.lastPowerResult)
+                {
+                    case PowerResult.NoDisplay:
+                        activeOS.ShowNoSignal();
+                        break;
+                    case PowerResult.FailedPOST:
+                        activeOS.ShowBSOD("POST_FAILURE",
+                            "The system failed to complete POST.\n" +
+                            "A critical hardware component may be defective or missing.");
+                        break;
+                    case PowerResult.CrashToBSOD:
+                        activeOS.StartBootThenCrash("SYSTEM_CRASH",
+                            "A fatal error occurred after the system started.\n" +
+                            "This is often caused by improperly seated RAM or overheating.");
+                        break;
+                    case PowerResult.BootWithIssues:
+                    case PowerResult.Success:
+                        activeOS.StartBoot();
+                        break;
+                    default:
+                        activeOS.ShowNoSignal();
+                        break;
+                }
+            }
+            else
+            {
+                activeOS.StartBoot();
+            }
         }
 
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
@@ -739,7 +792,11 @@ public class PlayerInteract : MonoBehaviour
         PauseManager.BlockPause = false;
         if (goldHUD != null) goldHUD.SetActive(true);
         FreezePlayer(false);
-        if (TutorialManager.Instance != null) TutorialManager.Instance.RestoreTaskIfNeeded();
+        if (TutorialManager.Instance != null)
+        {
+            TutorialManager.Instance.RestoreTaskIfNeeded();
+            TutorialManager.Instance.NotifyMonitorClosed();
+        }
     }
 
     // =============================================

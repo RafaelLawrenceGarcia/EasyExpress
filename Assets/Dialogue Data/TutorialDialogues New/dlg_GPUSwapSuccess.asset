@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddabeb8ea613c6a4e9bfb0c5a3d2dbb9, type: 3}
+  m_Name: dlg_GPUSwapSuccess
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueSequence
+  lines:
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "There it is! The PC booted up with a full display! Both the RAM and GPU were causing problems."
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "But hold on — a good technician always verifies their diagnosis. We need to CONFIRM the old RAM was really broken."
+    showOnRightSide: 0
+  - speakerName: Boss
+    portrait: {fileID: 1984190853, guid: 1be9303cf68adf8469a107b28073a96a, type: 3}
+    text: "Here's how: put the OLD RAM back in and test. If the problem returns, we know for sure it was the RAM."
+    showOnRightSide: 0

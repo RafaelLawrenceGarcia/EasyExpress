@@ -1,6 +1,6 @@
 using UnityEngine.Experimental.Rendering;
 using UnityEngine;
- 
+
 /// <summary>
 /// WorkstationMonitor — Attach to each Monitor object next to a workstation.
 ///
@@ -20,14 +20,14 @@ public class WorkstationMonitor : MonoBehaviour
     [Tooltip("The SlotData of the workstation this monitor is paired with.\n" +
              "The monitor checks this slot's currentItem for a PCPowerSystem.")]
     public SlotData linkedWorkstationSlot;
- 
+
     [Header("Monitor Visuals")]
     [Tooltip("The screen mesh/panel that lights up when the PC is on.")]
     public GameObject monitorScreen;
- 
+
     [Tooltip("(Optional) An error/BSOD screen shown when PC has faults.")]
     public GameObject errorScreen;
- 
+
     [Tooltip("(Optional) A 'No Signal' screen shown when PC is off.")]
     public GameObject noSignalScreen;
     [Header("Unique Monitor UI")]
@@ -50,14 +50,14 @@ public class WorkstationMonitor : MonoBehaviour
     // Add this field to WorkstationMonitor.cs
     [Header("UI Bridge")]
     public MonitorShopBridge uiBridge;
- 
+
     void Update()
     {
         currentPC = FindLinkedPC();
- 
+
         bool isOn = (currentPC != null && currentPC.isPoweredOn);
         bool hasFaults = (currentPC != null && currentPC.HasAnyFault());
- 
+
         if (isOn != wasOn)
         {
             UpdateMonitorVisuals(isOn, hasFaults);
@@ -68,42 +68,46 @@ public class WorkstationMonitor : MonoBehaviour
             // Dynamically update error screen if faults are fixed while PC is on
             errorScreen.SetActive(currentPC.HasAnyFault());
         }
-        // Kill emission on startup — UpdateMonitorVisuals will enable it when PC powers on
-        if (screenRenderer != null)
-        {
-            screenRenderer.material.SetColor("_EmissionColor", offEmissionColor);
-        }
+
+        // ═══════════════════════════════════════════════════════════
+        //  FIX: The old code had an emission kill here that ran
+        //  EVERY FRAME, overriding UpdateMonitorVisuals and keeping
+        //  the monitor permanently black even when the PC was on.
+        //  Removed — Awake() already initializes emission to black,
+        //  and UpdateMonitorVisuals handles on/off state changes.
+        // ═══════════════════════════════════════════════════════════
     }
+
     void Awake()
     {
         RenderTexture uniqueRT = new RenderTexture(1920, 1080, 0);
         uniqueRT.depthStencilFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.D24_UNorm_S8_UInt;
- 
+
         // Clear the texture to black so it doesn't glow white when empty
         RenderTexture prev = RenderTexture.active;
         RenderTexture.active = uniqueRT;
         GL.Clear(true, true, Color.black);
         RenderTexture.active = prev;
- 
+
         if (localUICamera != null)
             localUICamera.targetTexture = uniqueRT;
- 
+
         if (screenRenderer != null)
         {
             Material uniqueMat = new Material(screenRenderer.sharedMaterial);
             uniqueMat.SetTexture("_BaseMap", uniqueRT);
             uniqueMat.SetTexture("_EmissionMap", uniqueRT);
             screenRenderer.material = uniqueMat;
- 
+
             // Start with emission off — UpdateMonitorVisuals will enable it
             uniqueMat.SetColor("_EmissionColor", Color.black);
         }
     }
- 
+
     // =============================================
     //  VISUALS
     // =============================================
- 
+
     void UpdateMonitorVisuals(bool isOn, bool hasFaults)
     {
         if (isOn)
@@ -111,48 +115,107 @@ public class WorkstationMonitor : MonoBehaviour
             if (monitorScreen != null) monitorScreen.SetActive(true);
             if (noSignalScreen != null) noSignalScreen.SetActive(false);
             if (errorScreen != null) errorScreen.SetActive(hasFaults);
- 
+
             if (screenRenderer != null)
             {
                 Material mat = screenRenderer.material;
                 mat.EnableKeyword("_EMISSION");
                 mat.SetColor("_EmissionColor", onEmissionColor);
             }
+
+            // ═══════════════════════════════════════════════════════
+            //  Activate the PCController canvas so the local UI camera
+            //  actually has content to render into the RenderTexture.
+            //  The canvas MUST be ScreenSpaceCamera (not Overlay) so
+            //  localUICamera can capture it into the RT.
+            // ═══════════════════════════════════════════════════════
+            if (localOS != null)
+            {
+                if (localCanvas != null)
+                {
+                    localCanvas.gameObject.SetActive(true);
+                    // Force ScreenSpaceCamera so the RT camera can capture it.
+                    // OpenWorkstationMonitor switches to Overlay for full-screen;
+                    // CloseWorkstationMonitor restores this mode.
+                    localCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    localCanvas.worldCamera = localUICamera;
+                }
+                localOS.gameObject.SetActive(true);
+
+                // Show the right screen based on how the PC booted
+                PCPowerSystem pc = GetLinkedPC();
+                if (pc != null)
+                {
+                    switch (pc.lastPowerResult)
+                    {
+                        case PowerResult.NoDisplay:
+                            localOS.ShowNoSignal();
+                            break;
+                        case PowerResult.FailedPOST:
+                            localOS.ShowBSOD("POST_FAILURE",
+                                "The system failed to complete POST.\n" +
+                                "A critical hardware component may be\n" +
+                                "defective or missing.");
+                            break;
+                        case PowerResult.CrashToBSOD:
+                            localOS.StartBootThenCrash("SYSTEM_CRASH",
+                                "A fatal error occurred after boot.\n" +
+                                "This may be caused by improperly\n" +
+                                "seated RAM or overheating.");
+                            break;
+                        case PowerResult.BootWithIssues:
+                        case PowerResult.Success:
+                            localOS.StartBoot();
+                            break;
+                        default:
+                            localOS.ShowNoSignal();
+                            break;
+                    }
+                }
+                else
+                {
+                    localOS.StartBoot();
+                }
+            }
         }
         else
         {
             if (monitorScreen != null) monitorScreen.SetActive(false);
             if (errorScreen != null) errorScreen.SetActive(false);
- 
+
             // "No Signal" only if a PC exists but is off
             if (noSignalScreen != null)
                 noSignalScreen.SetActive(currentPC != null);
- 
+
             if (screenRenderer != null)
             {
                 Material mat = screenRenderer.material;
                 mat.SetColor("_EmissionColor", offEmissionColor);
             }
+
+            // Turn off OS content when PC powers down
+            if (localOS != null)
+                localOS.PowerOff();
         }
     }
- 
+
     // =============================================
     //  PC LOOKUP
     // =============================================
- 
+
     PCPowerSystem FindLinkedPC()
     {
         if (linkedWorkstationSlot == null) return null;
         if (!linkedWorkstationSlot.isOccupied) return null;
         if (linkedWorkstationSlot.currentItem == null) return null;
- 
+
         return linkedWorkstationSlot.currentItem.GetComponent<PCPowerSystem>();
     }
- 
+
     // =============================================
     //  PUBLIC API (called by PlayerInteract)
     // =============================================
- 
+
     /// <summary>
     /// Returns true if the monitor can be used (PC is powered on).
     /// </summary>
@@ -160,7 +223,7 @@ public class WorkstationMonitor : MonoBehaviour
     {
         return currentPC != null && currentPC.isPoweredOn;
     }
- 
+
     /// <summary>
     /// Returns why the monitor can't be used.
     /// </summary>
@@ -178,7 +241,7 @@ public class WorkstationMonitor : MonoBehaviour
             return "PC is turned off.\nPress the power button in Inspect Mode.";
         return "";
     }
- 
+
     /// <summary>
     /// Returns the PCPowerSystem of the linked PC (or null).
     /// </summary>

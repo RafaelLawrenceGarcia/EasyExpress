@@ -219,14 +219,22 @@ public class PCCaseBuilder : MonoBehaviour
             IPrebuiltWire wire = mb as IPrebuiltWire;
             if (wire == null) continue;
 
-            // Skip the power cord — player connects it manually
+            // Power cord is always player-connected manually
             if (wire.IsPowerCord)
             {
-                Debug.Log($"[PC Builder] Skipping power cord '{wire.WireName}' — player connects manually.");
+                Debug.Log($"[PC Builder] Skipping power cord '{wire.WireName}'.");
                 continue;
             }
 
-            // Check if the required component is installed
+            // ── Guard: skip wires whose required category was never set ──
+            if (string.IsNullOrEmpty(wire.RequiredPartCategory))
+            {
+                Debug.LogWarning($"[PC Builder] Wire '{wire.WireName}' has no " +
+                                 "requiredPartCategory assigned — skipping auto-connect. " +
+                                 "Set the category on its PrebuiltWire component.");
+                continue;
+            }
+
             if (wire.IsRequiredComponentInstalled(transform))
             {
                 wire.Connect(transform);
@@ -235,12 +243,13 @@ public class PCCaseBuilder : MonoBehaviour
             }
             else
             {
-                Debug.Log($"[PC Builder] Skipping '{wire.WireName}' — {wire.RequiredPartCategory} not installed.");
+                Debug.Log($"[PC Builder] Skipping '{wire.WireName}' — " +
+                          $"{wire.RequiredPartCategory} not installed.");
             }
         }
 
         if (connectedCount > 0)
-            Debug.Log($"[PC Builder] Auto-connected {connectedCount} internal wire(s).");
+            Debug.Log($"[PC Builder] Auto-connected {connectedCount} wire(s).");
     }
 
     private void SetLayerRecursively(GameObject obj, int newLayer)
