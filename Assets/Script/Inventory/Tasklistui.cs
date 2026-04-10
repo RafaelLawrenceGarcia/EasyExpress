@@ -6,13 +6,15 @@ using System.Collections.Generic;
 
 /// <summary>
 /// TaskListUI — Professional task panel with animated completion.
-/// Now includes a toggle button to show/hide the task list.
 ///
-/// SETUP — add a toggle button:
-///   1. Create a Button inside TaskCanvas (NOT inside TaskPanel) — e.g. anchor top-right, above the panel
-///   2. Give it a label TMP child that shows "Hide" / "Show"
-///   3. Drag the Button into "toggleButton" and the label into "toggleButtonLabel"
-///   4. Wire the Button's OnClick() to TaskListUI.TogglePanel()
+/// NEW: MONITOR MODE
+///   When the player opens a workstation monitor, the task panel
+///   repositions to the RIGHT side of the screen and its canvas
+///   sort order is boosted above the monitor overlay (sort 50).
+///   Press [T] to toggle visibility while in the monitor.
+///
+///   TutorialManager calls EnterMonitorMode() / ExitMonitorMode()
+///   automatically from NotifyMonitorOpenedForTutorial / NotifyMonitorClosed.
 /// </summary>
 public class TaskListUI : MonoBehaviour
 {
@@ -36,29 +38,162 @@ public class TaskListUI : MonoBehaviour
     public GameObject taskRowPrefab;
 
     [Header("Colors")]
-    public Color pendingCircleColor   = new Color(1f, 1f, 1f, 0.2f);
+    public Color pendingCircleColor = new Color(1f, 1f, 1f, 0.2f);
     public Color completedCircleColor = new Color(0.365f, 0.792f, 0.647f, 1f);
-    public Color completedCircleBG    = new Color(0.365f, 0.792f, 0.647f, 0.15f);
-    public Color pendingTextColor     = new Color(1f, 1f, 1f, 0.85f);
-    public Color completedTextColor   = new Color(1f, 1f, 1f, 0.3f);
-    public Color flashColor           = new Color(0.365f, 0.792f, 0.647f, 1f);
+    public Color completedCircleBG = new Color(0.365f, 0.792f, 0.647f, 0.15f);
+    public Color pendingTextColor = new Color(1f, 1f, 1f, 0.85f);
+    public Color completedTextColor = new Color(1f, 1f, 1f, 0.3f);
+    public Color flashColor = new Color(0.365f, 0.792f, 0.647f, 1f);
 
-    private List<TaskRowData> currentTasks    = new List<TaskRowData>();
-    private bool isVisible            = false;
-    private bool isTemporarilyHidden  = false;
-    private bool userCollapsed        = false; // player manually hid it
+    [Header("Monitor Mode Settings")]
+    [Tooltip("Key to toggle task panel while monitor is open.")]
+    public KeyCode monitorToggleKey = KeyCode.T;
+
+    [Tooltip("Sort order for the task canvas when in monitor mode.\n" +
+             "Must be higher than the monitor overlay (50).")]
+    public int monitorSortOrder = 120;
+
+    private List<TaskRowData> currentTasks = new List<TaskRowData>();
+    private bool isVisible = false;
+    private bool isTemporarilyHidden = false;
+    private bool userCollapsed = false;
+
+    // ── Monitor mode state ───────────────────────────────────
+    private bool isInMonitorMode = false;
+    private Canvas _taskCanvas;
+    private int _originalSortOrder;
+    private Vector2 _savedAnchorMin;
+    private Vector2 _savedAnchorMax;
+    private Vector2 _savedPivot;
+    private Vector2 _savedAnchoredPos;
+    private Vector2 _savedSizeDelta;
 
     void Awake() { Instance = this; }
 
     void Start()
     {
-        if (taskPanel != null)       taskPanel.SetActive(false);
+        if (taskPanel != null) taskPanel.SetActive(false);
         if (taskCanvasGroup != null) taskCanvasGroup.alpha = 0f;
-        if (toggleButton != null)    toggleButton.gameObject.SetActive(false);
+        if (toggleButton != null) toggleButton.gameObject.SetActive(false);
         UpdateToggleLabel();
     }
 
-    // ── Public API — Show / Hide ─────────────────────────────────
+    void Update()
+    {
+        // ── Monitor mode toggle key ──────────────────────────────
+        if (isInMonitorMode && isVisible && Input.GetKeyDown(monitorToggleKey))
+        {
+            TogglePanel();
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  MONITOR MODE — show task panel over the monitor overlay
+    // ═══════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Called when the player opens a workstation monitor.
+    /// Repositions the task panel to the right side and boosts
+    /// the canvas sort order above the monitor (50).
+    /// </summary>
+    public void EnterMonitorMode()
+    {
+        if (isInMonitorMode) return;
+        isInMonitorMode = true;
+
+        // ── Find or cache the canvas ─────────────────────────────
+        if (_taskCanvas == null && taskPanel != null)
+            _taskCanvas = taskPanel.GetComponentInParent<Canvas>();
+
+        if (_taskCanvas == null) return;
+
+        // ── Save original canvas state ───────────────────────────
+        _originalSortOrder = _taskCanvas.sortingOrder;
+
+        // ── Boost sort order above the monitor overlay ───────────
+        _taskCanvas.sortingOrder = monitorSortOrder;
+
+        // ── Save original panel position ─────────────────────────
+        RectTransform rt = taskPanel.GetComponent<RectTransform>();
+        if (rt != null)
+        {
+            _savedAnchorMin = rt.anchorMin;
+            _savedAnchorMax = rt.anchorMax;
+            _savedPivot = rt.pivot;
+            _savedAnchoredPos = rt.anchoredPosition;
+            _savedSizeDelta = rt.sizeDelta;
+
+            // ── Reposition to right side of screen ───────────────
+            rt.anchorMin = new Vector2(1, 0.3f);
+            rt.anchorMax = new Vector2(1, 0.85f);
+            rt.pivot = new Vector2(1, 0.5f);
+            rt.anchoredPosition = new Vector2(-20, 0);
+            // Keep existing width, auto height from anchors
+            rt.sizeDelta = new Vector2(_savedSizeDelta.x > 0 ? _savedSizeDelta.x : 280, 0);
+        }
+
+        // ── Restore visibility ───────────────────────────────────
+        isTemporarilyHidden = false;
+        userCollapsed = false;
+
+        if (isVisible)
+        {
+            if (taskPanel != null) taskPanel.SetActive(true);
+            if (taskCanvasGroup != null)
+                StartCoroutine(FadeCanvasGroup(taskCanvasGroup.alpha, 1f, 0.3f));
+        }
+
+        // Show toggle button with monitor key hint
+        if (toggleButton != null) toggleButton.gameObject.SetActive(true);
+        UpdateToggleLabel();
+
+        Debug.Log("[TaskListUI] Entered monitor mode — panel on right, sort order " + monitorSortOrder);
+    }
+
+    /// <summary>
+    /// Called when the player closes the workstation monitor.
+    /// Restores the task panel to its original position and sort order.
+    /// </summary>
+    public void ExitMonitorMode()
+    {
+        if (!isInMonitorMode) return;
+        isInMonitorMode = false;
+
+        // ── Restore canvas sort order ────────────────────────────
+        if (_taskCanvas != null)
+            _taskCanvas.sortingOrder = _originalSortOrder;
+
+        // ── Restore panel position ───────────────────────────────
+        RectTransform rt = taskPanel != null ? taskPanel.GetComponent<RectTransform>() : null;
+        if (rt != null)
+        {
+            rt.anchorMin = _savedAnchorMin;
+            rt.anchorMax = _savedAnchorMax;
+            rt.pivot = _savedPivot;
+            rt.anchoredPosition = _savedAnchoredPos;
+            rt.sizeDelta = _savedSizeDelta;
+        }
+
+        // ── Restore collapsed state ──────────────────────────────
+        userCollapsed = false;
+
+        if (isVisible)
+        {
+            if (taskPanel != null) taskPanel.SetActive(true);
+            if (taskCanvasGroup != null)
+                StartCoroutine(FadeCanvasGroup(taskCanvasGroup.alpha, 1f, 0.3f));
+        }
+
+        UpdateToggleLabel();
+        Debug.Log("[TaskListUI] Exited monitor mode — restored original position.");
+    }
+
+    /// <summary>Is the task panel currently in monitor mode?</summary>
+    public bool IsInMonitorMode() => isInMonitorMode;
+
+    // ═══════════════════════════════════════════════════════════
+    //  PUBLIC API — Show / Hide
+    // ═══════════════════════════════════════════════════════════
 
     public void SetTitle(string title)
     {
@@ -76,12 +211,9 @@ public class TaskListUI : MonoBehaviour
 
     public void ShowPanel()
     {
-        isVisible           = true;
+        isVisible = true;
         isTemporarilyHidden = false;
 
-        // Show the toggle button whenever a task panel is active
-
-        // Only actually show the panel if the player hasn't manually collapsed it
         if (!userCollapsed)
         {
             if (taskPanel != null) taskPanel.SetActive(true);
@@ -94,9 +226,9 @@ public class TaskListUI : MonoBehaviour
 
     public void HidePanel()
     {
-        isVisible           = false;
+        isVisible = false;
         isTemporarilyHidden = false;
-        userCollapsed       = false;
+        userCollapsed = false;
 
         if (toggleButton != null) toggleButton.gameObject.SetActive(false);
 
@@ -109,17 +241,17 @@ public class TaskListUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Called by the toggle button — lets the player show/hide the task panel manually.
+    /// Called by the toggle button OR the monitor toggle key.
+    /// Lets the player show/hide the task panel manually.
     /// </summary>
     public void TogglePanel()
     {
-        if (!isVisible) return; // no tasks active, nothing to toggle
+        if (!isVisible) return;
 
         userCollapsed = !userCollapsed;
 
         if (userCollapsed)
         {
-            // Collapse
             if (taskCanvasGroup != null)
                 StartCoroutine(FadeAndDisablePanel(0.2f));
             else if (taskPanel != null)
@@ -127,7 +259,6 @@ public class TaskListUI : MonoBehaviour
         }
         else
         {
-            // Expand
             if (taskPanel != null) taskPanel.SetActive(true);
             if (taskCanvasGroup != null)
                 StartCoroutine(FadeCanvasGroup(0f, 1f, 0.2f));
@@ -138,6 +269,9 @@ public class TaskListUI : MonoBehaviour
 
     public void HideTemporarily()
     {
+        // ── In monitor mode, DON'T hide — the panel stays visible ──
+        if (isInMonitorMode) return;
+
         if (!isVisible) return;
         isTemporarilyHidden = true;
 
@@ -151,9 +285,11 @@ public class TaskListUI : MonoBehaviour
 
     public void RestoreIfNeeded()
     {
+        // ── In monitor mode, panel is already visible — skip ──
+        if (isInMonitorMode) return;
+
         if (!isVisible || !isTemporarilyHidden) return;
         isTemporarilyHidden = false;
-
 
         if (!userCollapsed)
         {
@@ -170,10 +306,24 @@ public class TaskListUI : MonoBehaviour
     void UpdateToggleLabel()
     {
         if (toggleButtonLabel == null) return;
-        toggleButtonLabel.text = userCollapsed ? "Show" : "Hide";
+
+        if (isInMonitorMode)
+        {
+            // Show the toggle key hint in monitor mode
+            string keyName = monitorToggleKey.ToString();
+            toggleButtonLabel.text = userCollapsed
+                ? $"[{keyName}] Show Tasks"
+                : $"[{keyName}] Hide Tasks";
+        }
+        else
+        {
+            toggleButtonLabel.text = userCollapsed ? "Show" : "Hide";
+        }
     }
 
-    // ── Public API — Complete Tasks ──────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    //  PUBLIC API — Complete Tasks
+    // ═══════════════════════════════════════════════════════════
 
     public void CompleteTask(int index)
     {
@@ -216,7 +366,9 @@ public class TaskListUI : MonoBehaviour
             currentTasks[index].textComponent.text = newText;
     }
 
-    // ── Internal — Spawning ──────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    //  INTERNAL — Spawning
+    // ═══════════════════════════════════════════════════════════
 
     void SpawnTaskRow(string description)
     {
@@ -225,9 +377,9 @@ public class TaskListUI : MonoBehaviour
         GameObject row = Instantiate(taskRowPrefab, taskContainer);
 
         TextMeshProUGUI text = null;
-        Image circle         = null;
+        Image circle = null;
         GameObject checkmark = null;
-        CanvasGroup rowCG    = row.GetComponent<CanvasGroup>();
+        CanvasGroup rowCG = row.GetComponent<CanvasGroup>();
 
         Transform circleTransform = row.transform.Find("Circle");
         if (circleTransform != null)
@@ -240,7 +392,7 @@ public class TaskListUI : MonoBehaviour
         Transform textTransform = row.transform.Find("TaskText");
         if (textTransform != null) text = textTransform.GetComponent<TextMeshProUGUI>();
 
-        if (text != null)     text.text = description;
+        if (text != null) text.text = description;
         if (checkmark != null) checkmark.SetActive(false);
         if (circle != null)
         {
@@ -250,13 +402,13 @@ public class TaskListUI : MonoBehaviour
 
         currentTasks.Add(new TaskRowData
         {
-            description      = description,
-            rowObject        = row,
-            textComponent    = text,
-            circleImage      = circle,
-            checkmarkObject  = checkmark,
-            rowCanvasGroup   = rowCG,
-            isCompleted      = false
+            description = description,
+            rowObject = row,
+            textComponent = text,
+            circleImage = circle,
+            checkmarkObject = checkmark,
+            rowCanvasGroup = rowCG,
+            isCompleted = false
         });
     }
 
@@ -274,7 +426,9 @@ public class TaskListUI : MonoBehaviour
         counterText.text = GetCompletedCount() + "/" + currentTasks.Count;
     }
 
-    // ── Animation ────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    //  ANIMATION
+    // ═══════════════════════════════════════════════════════════
 
     IEnumerator AnimateCompletion(TaskRowData task)
     {
@@ -285,8 +439,8 @@ public class TaskListUI : MonoBehaviour
         task.circleImage.color = completedCircleBG;
 
         float elapsed = 0f, duration = 0.3f;
-        Transform circleT  = task.circleImage.transform;
-        Vector3 origScale  = circleT.localScale;
+        Transform circleT = task.circleImage.transform;
+        Vector3 origScale = circleT.localScale;
 
         if (task.checkmarkObject != null) task.checkmarkObject.SetActive(true);
         task.textComponent.color = flashColor;
@@ -317,12 +471,14 @@ public class TaskListUI : MonoBehaviour
 
         if (task.textComponent != null)
         {
-            task.textComponent.color     = completedTextColor;
+            task.textComponent.color = completedTextColor;
             task.textComponent.fontStyle = FontStyles.Strikethrough;
         }
     }
 
-    // ── Utility ──────────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════
+    //  UTILITY
+    // ═══════════════════════════════════════════════════════════
 
     IEnumerator FadeCanvasGroup(float from, float to, float duration)
     {
@@ -359,11 +515,10 @@ public class TaskListUI : MonoBehaviour
     {
         if (toggleButton != null) toggleButton.gameObject.SetActive(false);
 
-        // If the player had collapsed the panel, restore it when leaving inspection
         if (userCollapsed)
         {
             userCollapsed = false;
-            if (!isTemporarilyHidden && isVisible)
+            if (!isTemporarilyHidden && isVisible && !isInMonitorMode)
             {
                 if (taskPanel != null) taskPanel.SetActive(true);
                 if (taskCanvasGroup != null)

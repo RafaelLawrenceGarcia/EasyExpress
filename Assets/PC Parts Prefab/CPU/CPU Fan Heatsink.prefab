@@ -419,6 +419,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -576,6 +577,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -733,6 +735,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -890,6 +893,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -1054,6 +1058,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}

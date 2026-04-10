@@ -380,7 +380,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 3ce0cc987931ee849932cf9f9a021a21, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -923,7 +923,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 3ce0cc987931ee849932cf9f9a021a21, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -4665,7 +4665,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 3ce0cc987931ee849932cf9f9a021a21, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -4889,7 +4889,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 3ce0cc987931ee849932cf9f9a021a21, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -5612,8 +5612,8 @@ MonoBehaviour:
   requiresScrewdriver: 0
   itemName: Back Panel
   partCategory: Generic
-  inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
+  inventoryIcon: {fileID: 21300000, guid: 7b0f07d907610be459b0ed5951b18752, type: 3}
+  itemDescription: Side panel covering the back of the components
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
   isMainObject: 0
@@ -5968,6 +5968,7 @@ GameObject:
   - component: {fileID: 5722338548879469877}
   - component: {fileID: 5198739681445935882}
   - component: {fileID: 3234997813944329568}
+  - component: {fileID: 1479961004975910028}
   m_Layer: 6
   m_Name: SATA
   m_TagString: Untagged
@@ -6067,7 +6068,7 @@ MonoBehaviour:
   itemName: SATA Port
   partCategory: Wire Port
   inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
+  itemDescription: Port to Connect Motherboard to SATA
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
   isMainObject: 0
@@ -6090,6 +6091,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 467332742522557028}
+--- !u!64 &1479961004975910028
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3530311343963595276}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3113630942668186504, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!1 &3547153844541531886
 GameObject:
   m_ObjectHideFlags: 0
@@ -9735,7 +9758,7 @@ MonoBehaviour:
   inventoryEntryId: 
   fault: 0
   faultDescription: 
-  linkedPrebuiltWire: {fileID: 0}
+  linkedPrebuiltWire: {fileID: 5028059735822629291}
 --- !u!65 &6688121224656757560
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10308,7 +10331,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 3ce0cc987931ee849932cf9f9a021a21, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -12758,7 +12781,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 3ce0cc987931ee849932cf9f9a021a21, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -12915,7 +12938,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 3ce0cc987931ee849932cf9f9a021a21, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -14417,7 +14440,7 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 3ce0cc987931ee849932cf9f9a021a21, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -14543,6 +14566,7 @@ GameObject:
   - component: {fileID: 6100468379432661495}
   - component: {fileID: 3787841304287380336}
   - component: {fileID: 1905050923296186981}
+  - component: {fileID: 5898059911762722197}
   m_Layer: 6
   m_Name: '8 Pin '
   m_TagString: Untagged
@@ -14643,7 +14667,7 @@ MonoBehaviour:
   itemName: 8 Pin Port
   partCategory: Wire Port
   inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
+  itemDescription: '8 Pin to connect to PSU '
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
   isMainObject: 0
@@ -14666,6 +14690,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 4339872438377751075}
+--- !u!64 &5898059911762722197
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7460737181265617961}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8966240210908763828, guid: 2f83772ddc690be40a16a93ff8dcc0ec, type: 3}
 --- !u!1 &7479246436774403006
 GameObject:
   m_ObjectHideFlags: 0
@@ -14918,7 +14964,7 @@ MonoBehaviour:
   requiresScrewdriver: 0
   itemName: CPU Fan
   partCategory: Cooler
-  inventoryIcon: {fileID: 21300000, guid: 3840f79b3d77fd34591c34e980f5d548, type: 3}
+  inventoryIcon: {fileID: 21300000, guid: b6208d743b70b994c9faeb6d06e37729, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
@@ -15077,8 +15123,8 @@ MonoBehaviour:
   requiresScrewdriver: 0
   itemName: Front Panel
   partCategory: Generic
-  inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
+  inventoryIcon: {fileID: 21300000, guid: 7b0f07d907610be459b0ed5951b18752, type: 3}
+  itemDescription: Glass Side panel covering the components
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
   isMainObject: 0
@@ -15702,6 +15748,7 @@ GameObject:
   - component: {fileID: 5961916773930309159}
   - component: {fileID: 3288402890756825943}
   - component: {fileID: 4235370329605709941}
+  - component: {fileID: 410201869008211664}
   m_Layer: 6
   m_Name: 24 Pins
   m_TagString: Untagged
@@ -15801,7 +15848,7 @@ MonoBehaviour:
   itemName: 24 Pin Port
   partCategory: Wire Port
   inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
+  itemDescription: 24 Pin to Connect to PSU
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
   isMainObject: 0
@@ -15824,6 +15871,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
+--- !u!64 &410201869008211664
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8229533437044140155}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6662361529629875484, guid: 2f83772ddc690be40a16a93ff8dcc0ec, type: 3}
 --- !u!1 &8307265826458300101
 GameObject:
   m_ObjectHideFlags: 0

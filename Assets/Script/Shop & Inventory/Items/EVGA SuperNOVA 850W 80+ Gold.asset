@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: psu_evga_supernova
   itemName: EVGA SuperNOVA 850W 80+ Gold
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: a68f614376a13054797cec0ad17f15f3, type: 3}
   category: PSU
   description: A highly efficient, fully modular power supply with plenty of safe
     headroom for high-end graphics cards.

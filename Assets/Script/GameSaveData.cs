@@ -49,6 +49,7 @@ public class SavedJob
 [Serializable]
 public class SavedPart
 {
+    public string sourceOwner = "";  // ← add here
     public string partCategory;
     public string partName;
     public string prefabName;

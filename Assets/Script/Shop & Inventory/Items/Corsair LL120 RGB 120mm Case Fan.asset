@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: case_fan_corsair_ll120
   itemName: Corsair LL120 RGB 120mm Case Fan
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 85ff230b912251a4d834ed28f779f268, type: 3}
   category: Case Fan
   description: Adds a premium pop of customizable color and steady airflow to any
     gaming chassis.

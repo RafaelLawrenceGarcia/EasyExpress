@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: ssd_crucial_mx500
   itemName: Crucial MX500 1TB SATA SSD
-  icon: {fileID: 21300000, guid: 757db9207bb7a4a438d4bffb26377261, type: 3}
-  category: SSD
+  icon: {fileID: 21300000, guid: 73b1438058e4063419a81f1147c54726, type: 3}
+  category: Storage
   description: Slower than NVMe, but a massive step up from traditional spinning
     hard drives.
   specs: 'Type: SATA III | Speed: 560 MB/s Read | Capacity: 1TB | Power Draw: 5W'

@@ -66,6 +66,7 @@ public class InspectableItem : MonoBehaviour
     [HideInInspector] public bool isOccupied = false;
     [HideInInspector] public InspectableItem connectedTo = null;
     [HideInInspector] public GameObject attachedWire = null;
+    public string sourceOwner = "";
 
     [Header("Wiring - Ribbon Spread")]
     [Tooltip("World-space axis along which strands fan out.")]

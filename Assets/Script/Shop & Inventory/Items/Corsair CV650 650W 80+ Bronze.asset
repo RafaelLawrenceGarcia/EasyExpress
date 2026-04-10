@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: psu_cv650
   itemName: Corsair CV650 650W 80+ Bronze
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 5de91d331012b5440bfd4772129484fc, type: 3}
   category: PSU
   description: A solid budget power supply for entry-level and mid-range PCs.
   specs: 'Max Wattage: 650W | Rating: 80+ Bronze | Form Factor: ATX'

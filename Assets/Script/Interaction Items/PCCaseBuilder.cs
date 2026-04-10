@@ -53,6 +53,9 @@ public class PCCaseBuilder : MonoBehaviour
                     // Transfer fault data
                     partScript.fault = part.fault;
                     partScript.faultDescription = part.faultDescription;
+                    // Transfer icon from StartingPCComponent if available
+                    if (part.partIcon != null && partScript.cachedShopIcon == null)
+                        partScript.cachedShopIcon = part.partIcon;
 
                     // Rename direct children that still have the prefab's default name
                     foreach (InspectableItem child in realPart.GetComponentsInChildren<InspectableItem>(true))
@@ -197,10 +200,45 @@ public class PCCaseBuilder : MonoBehaviour
             powerSystem.powerCordSnapPoint = cordSlot;
 
         Debug.Log($"[PC Builder] PCPowerSystem added — PC starts OFF, fans disabled.");
+        // =============================================
+        //  AUTO-ASSIGN SHOP ICONS TO SPAWNED PARTS
+        // =============================================
+        if (ShopSystem.Instance != null)
+        {
+            foreach (InspectableItem part in GetComponentsInChildren<InspectableItem>(true))
+            {
+                if (part.isMainObject || part.isInventorySlot) continue;
+                if (part.cachedShopIcon != null) continue;
 
-        // =============================================
-        //  AUTO-CONNECT PRE-BUILT WIRES
-        // =============================================
+                // Pass 1: exact category + name match
+                foreach (ItemData item in ShopSystem.Instance.allAvailableItems)
+                {
+                    if (item == null || item.icon == null) continue;
+                    if (item.category == part.partCategory
+                        && item.itemName.Equals(part.itemName, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        part.cachedShopIcon = item.icon;
+                        break;
+                    }
+                }
+
+                // Pass 2: category-only fallback (so at least something shows)
+                if (part.cachedShopIcon == null)
+                {
+                    foreach (ItemData item in ShopSystem.Instance.allAvailableItems)
+                    {
+                        if (item == null || item.icon == null) continue;
+                        if (item.category == part.partCategory)
+                        {
+                            part.cachedShopIcon = item.icon;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Auto-connect wires (existing line)
         AutoConnectPrebuiltWires();
     }
 

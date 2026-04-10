@@ -5,6 +5,9 @@ using System.Collections;
 
 public class PCController : MonoBehaviour
 {
+    private bool hasBootedToDesktop = false;
+
+    public bool HasBootedToDesktop => hasBootedToDesktop;
     [Header("Main System")]
     public GameObject screenContainer;
     public GameObject desktopPanel;
@@ -45,13 +48,13 @@ public class PCController : MonoBehaviour
 
     private void Start()
     {
-        // Hide everything on start — OpenWorkstationMonitor triggers the boot
-        HideAllScreens();
+        // Only hide if no boot was already started by OpenWorkstationMonitor
+        if (bootCoroutine == null)
+            HideAllScreens();
 
         if (searchInput != null)
             searchInput.onValueChanged.AddListener(FilterApps);
     }
-
     // ─────────────────────────────────────────────────────────────────
     //  SCREEN STATES
     // ─────────────────────────────────────────────────────────────────
@@ -74,6 +77,11 @@ public class PCController : MonoBehaviour
         HideAllScreens();
         if (bootCoroutine != null) StopCoroutine(bootCoroutine);
         bootCoroutine = StartCoroutine(BootSequence());
+
+        Debug.Log($"[PCController] StartBoot — bootScreenPanel={bootScreenPanel}, " +
+                  $"screenContainer={screenContainer}, " +
+                  $"bootLogoText={bootLogoText}, " +
+                  $"bootLoadingBar={bootLoadingBar}");
     }
     /// <summary>
     /// Called when PC has a crash fault (NotSeated RAM, Overheating).
@@ -211,6 +219,7 @@ public class PCController : MonoBehaviour
 
     public void PowerOff()
     {
+        hasBootedToDesktop = false;
         isPoweredOn = false;
         if (bootCoroutine != null) { StopCoroutine(bootCoroutine); bootCoroutine = null; }
         HideAllScreens();
@@ -225,6 +234,7 @@ public class PCController : MonoBehaviour
 
     public void BootToOS()
     {
+        hasBootedToDesktop = true;
         isPoweredOn = true;
         if (biosPanel != null) biosPanel.SetActive(false);
         if (bootScreenPanel != null) bootScreenPanel.SetActive(false);

@@ -48,15 +48,17 @@ public class EmailManager : MonoBehaviour
     public Transform shippingZone;
     public float shippingRadius = 2.0f;
 
-    [Header("Completion Popup UI")]
+    [Header("Completion Popup UI (Legacy Fallback)")]
     public GameObject completionPanel;
     public TextMeshProUGUI completionTitle;
     public TextMeshProUGUI completionDetails;
     public TextMeshProUGUI completionPay;
     public TextMeshProUGUI completionRating;
     public Button completionOKButton;
+
     [Header("PC Status Button")]
     public Button pcStatusButton;
+
     public void SetActiveMonitorUI(
         Transform newInboxContainer,
         GameObject newDetailPanel,
@@ -104,7 +106,6 @@ public class EmailManager : MonoBehaviour
         completionRating = newCompletionRating;
         completionOKButton = newCompletionOKButton;
 
-        // Refresh with new UI
         if (detailPanel != null) detailPanel.SetActive(false);
         if (pcStatusPanel != null) pcStatusPanel.SetActive(false);
         if (completionPanel != null) completionPanel.SetActive(false);
@@ -115,6 +116,7 @@ public class EmailManager : MonoBehaviour
             pcStatusButton.onClick.AddListener(TogglePCStatusPanel);
         RefreshInboxUI();
     }
+
     void Awake() { Instance = this; }
 
     void Start()
@@ -125,7 +127,6 @@ public class EmailManager : MonoBehaviour
         if (pcStatusPanel != null) pcStatusPanel.SetActive(false);
         if (completionPanel != null) completionPanel.SetActive(false);
         RefreshInboxUI();
-
     }
 
     public void OpenEmailApp()
@@ -334,6 +335,18 @@ public class EmailManager : MonoBehaviour
         Debug.Log("Job Rejected: " + email.subjectLine);
     }
 
+    // =============================================
+    //  COMPLETE JOB
+    //
+    //  Flow:
+    //  1. Find the PC in the shipping zone
+    //  2. Evaluate repair/build quality
+    //  3. Add gold to wallet
+    //  4. Show completion popup (new UI or legacy)
+    //  5. Track stats for leaderboard
+    //  6. Destroy PC, remove job, refresh inbox
+    //  7. Notify tutorial
+    // =============================================
     public void CompleteJob(EmailData email)
     {
         if (shippingZone == null) return;
@@ -360,19 +373,36 @@ public class EmailManager : MonoBehaviour
             return;
         }
 
+        // ── 1. Evaluate the job ──────────────────────────────────
         JobCompletionResult result = EvaluateRepair(pcToShip, email);
 
+        // ── 2. Add gold to wallet ────────────────────────────────
         PlayerWallet wallet = FindObjectOfType<PlayerWallet>();
         if (wallet != null) wallet.AddGold(result.totalPay);
 
-        ShowCompletionPopup(result);
+        // ── 3. Show completion popup ─────────────────────────────
+        //  JobCompletionUI canvas (sort order 200) renders on top
+        //  of the monitor overlay (sort order 50), so it works
+        //  while the player is still using the workstation monitor.
+        if (JobCompletionUI.Instance != null)
+            JobCompletionUI.Instance.Show(result);
+        else
+            ShowCompletionPopup(result);
 
+        // ── 4. Track stats for leaderboard ───────────────────────
+        int bonusPoints = result.starRating * 20;
+        if (PlayFabStatSync.Instance != null)
+            PlayFabStatSync.Instance.OnPCRepaired(bonusPoints);
+
+        // ── 5. Clean up ──────────────────────────────────────────
         Destroy(pcToShip.gameObject);
         acceptedJobs.Remove(email);
         if (detailPanel != null) detailPanel.SetActive(false);
         RefreshInboxUI();
 
         Debug.Log($"Job Complete! Rating: {result.starRating}★ | Pay: ₱{result.totalPay:N0}");
+
+        // ── 6. Notify tutorial ───────────────────────────────────
         if (TutorialManager.Instance != null)
             TutorialManager.Instance.CompleteEmailTask();
     }
@@ -523,7 +553,6 @@ public class EmailManager : MonoBehaviour
         else if (score >= 0.40f) result.starRating = 2;
         else result.starRating = 1;
 
-        // Reward is now a single value — scale it by score
         float baseReward = email.reward;
         float earnedReward = baseReward * score;
 
@@ -537,6 +566,10 @@ public class EmailManager : MonoBehaviour
         result.totalPay = Mathf.Round(earnedReward + tipBonus);
     }
 
+    // =============================================
+    //  LEGACY COMPLETION POPUP
+    //  Used only when JobCompletionUI is not in scene.
+    // =============================================
     void ShowCompletionPopup(JobCompletionResult result)
     {
         if (completionPanel == null) return;

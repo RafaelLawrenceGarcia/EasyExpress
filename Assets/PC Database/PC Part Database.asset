@@ -18,7 +18,7 @@ MonoBehaviour:
   - partCategory: Motherboard
     partName: B550M Aorus Pro (AMD)
     partPrefab: {fileID: 6659405790919455895, guid: 3de402d7915161542a157fef528b79c3, type: 3}
-    partIcon: {fileID: 21300000, guid: 94cbfac0e6d546c45ada88ded4120688, type: 3}
+    partIcon: {fileID: 21300000, guid: bb9613b05c78f054582b3be13a83ce8e, type: 3}
     partPrice: 0
     compatTags:
     - AM4
@@ -34,7 +34,7 @@ MonoBehaviour:
   - partCategory: Motherboard
     partName: X670E ROG Hero (AMD)
     partPrefab: {fileID: 6659405790919455895, guid: 3de402d7915161542a157fef528b79c3, type: 3}
-    partIcon: {fileID: 21300000, guid: 94cbfac0e6d546c45ada88ded4120688, type: 3}
+    partIcon: {fileID: 21300000, guid: 0f76534e114355443b3162d8e870fbaa, type: 3}
     partPrice: 0
     compatTags:
     - AM5
@@ -50,7 +50,7 @@ MonoBehaviour:
   - partCategory: Motherboard
     partName: Z790 Tomahawk (Intel)
     partPrefab: {fileID: 6659405790919455895, guid: 3de402d7915161542a157fef528b79c3, type: 3}
-    partIcon: {fileID: 21300000, guid: 38f85c78622c60146980bf4fde2c6fa4, type: 3}
+    partIcon: {fileID: 21300000, guid: eb3cf9a384f5bb94085b01385a67772a, type: 3}
     partPrice: 0
     compatTags:
     - LGA1700
@@ -65,9 +65,9 @@ MonoBehaviour:
     faultDescription: 
   psus:
   - partCategory: PSU
-    partName: 850W 80+ Gold PSU
+    partName: EVGA SuperNOVA 850W 80+ Gold
     partPrefab: {fileID: 825193487274983354, guid: 18b71829982428a42b3e0c07b49cfa78, type: 3}
-    partIcon: {fileID: 21300000, guid: a54265da4b465b94e8fbe8a522ab10ce, type: 3}
+    partIcon: {fileID: 21300000, guid: a68f614376a13054797cec0ad17f15f3, type: 3}
     partPrice: 0
     compatTags:
     - ATX_Power
@@ -77,9 +77,9 @@ MonoBehaviour:
     fault: 0
     faultDescription: 
   - partCategory: PSU
-    partName: 650W 80+ Bronze PSU
+    partName: Corsair CV650 650W 80+ Bronze
     partPrefab: {fileID: 825193487274983354, guid: 18b71829982428a42b3e0c07b49cfa78, type: 3}
-    partIcon: {fileID: 21300000, guid: a54265da4b465b94e8fbe8a522ab10ce, type: 3}
+    partIcon: {fileID: 21300000, guid: 5de91d331012b5440bfd4772129484fc, type: 3}
     partPrice: 0
     compatTags:
     - ATX_Power
@@ -89,9 +89,9 @@ MonoBehaviour:
     fault: 0
     faultDescription: 
   - partCategory: PSU
-    partName: 1000W 80+ Platinum PSU
+    partName: Seasonic Vertex GX-1000 1000W 80+ Gold
     partPrefab: {fileID: 825193487274983354, guid: 18b71829982428a42b3e0c07b49cfa78, type: 3}
-    partIcon: {fileID: 21300000, guid: a54265da4b465b94e8fbe8a522ab10ce, type: 3}
+    partIcon: {fileID: 21300000, guid: d3599e9690115c84fb162ee0d11a3fd8, type: 3}
     partPrice: 0
     compatTags:
     - ATX_Power
@@ -104,7 +104,7 @@ MonoBehaviour:
   - partCategory: CPU
     partName: Intel Core i5-12600K
     partPrefab: {fileID: 7747259706899601607, guid: 5f24875d15347264f9f8e50baf8b631d, type: 3}
-    partIcon: {fileID: 21300000, guid: 562b1719a5fa5574ab2e85b2dba065c2, type: 3}
+    partIcon: {fileID: 21300000, guid: b12fa3df9cf6b664b830785ed442c926, type: 3}
     partPrice: 0
     compatTags:
     - LGA1700
@@ -116,7 +116,7 @@ MonoBehaviour:
   - partCategory: CPU
     partName: Intel Core i7-13700K
     partPrefab: {fileID: 7747259706899601607, guid: 5f24875d15347264f9f8e50baf8b631d, type: 3}
-    partIcon: {fileID: 0}
+    partIcon: {fileID: 21300000, guid: 3792ddcbe7ebf074fbd4fda7fef7b434, type: 3}
     partPrice: 0
     compatTags:
     - LGA1700
@@ -128,7 +128,7 @@ MonoBehaviour:
   - partCategory: CPU
     partName: Intel Core i9-14900K
     partPrefab: {fileID: 7747259706899601607, guid: 5f24875d15347264f9f8e50baf8b631d, type: 3}
-    partIcon: {fileID: 21300000, guid: 562b1719a5fa5574ab2e85b2dba065c2, type: 3}
+    partIcon: {fileID: 21300000, guid: ec0a7b96c708c7341ada58a91091320f, type: 3}
     partPrice: 0
     compatTags:
     - LGA1700
@@ -140,7 +140,7 @@ MonoBehaviour:
   - partCategory: CPU
     partName: AMD Ryzen 5 5600X
     partPrefab: {fileID: 7747259706899601607, guid: 5f24875d15347264f9f8e50baf8b631d, type: 3}
-    partIcon: {fileID: 21300000, guid: 8b1e3e5cd9d204443b6f2f1f76ef8fcb, type: 3}
+    partIcon: {fileID: 21300000, guid: fe44784fa9b4f6345a28c07bdaa60330, type: 3}
     partPrice: 0
     compatTags:
     - AM4
@@ -152,7 +152,7 @@ MonoBehaviour:
   - partCategory: CPU
     partName: AMD Ryzen 5 7600X
     partPrefab: {fileID: 7747259706899601607, guid: 5f24875d15347264f9f8e50baf8b631d, type: 3}
-    partIcon: {fileID: 21300000, guid: 8b1e3e5cd9d204443b6f2f1f76ef8fcb, type: 3}
+    partIcon: {fileID: 21300000, guid: 8d243ae05c6d53c45afa2e5e3c99aed3, type: 3}
     partPrice: 0
     compatTags:
     - AM5
@@ -164,7 +164,7 @@ MonoBehaviour:
   - partCategory: CPU
     partName: AMD Ryzen 7 7800X3D
     partPrefab: {fileID: 7747259706899601607, guid: 5f24875d15347264f9f8e50baf8b631d, type: 3}
-    partIcon: {fileID: 21300000, guid: 8b1e3e5cd9d204443b6f2f1f76ef8fcb, type: 3}
+    partIcon: {fileID: 21300000, guid: 07da71587806aa74ea8b8d535ad52d4d, type: 3}
     partPrice: 0
     compatTags:
     - AM5
@@ -176,7 +176,7 @@ MonoBehaviour:
   - partCategory: CPU
     partName: AMD Ryzen 9 5900X
     partPrefab: {fileID: 7747259706899601607, guid: 5f24875d15347264f9f8e50baf8b631d, type: 3}
-    partIcon: {fileID: 21300000, guid: 562b1719a5fa5574ab2e85b2dba065c2, type: 3}
+    partIcon: {fileID: 21300000, guid: 454199baaaada044083017e7fa199b1c, type: 3}
     partPrice: 0
     compatTags:
     - AM4
@@ -189,7 +189,7 @@ MonoBehaviour:
   - partCategory: GPU
     partName: GTX 1660 Super 6GB
     partPrefab: {fileID: 7539906692983069053, guid: 7737de23fb91530478829c28dc08bdf0, type: 3}
-    partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
+    partIcon: {fileID: 21300000, guid: 05c742828b156924bb6ddb451e4f22b2, type: 3}
     partPrice: 0
     compatTags:
     - PCIe_x16
@@ -201,7 +201,7 @@ MonoBehaviour:
   - partCategory: GPU
     partName: RTX 3060 12GB
     partPrefab: {fileID: 7539906692983069053, guid: 7737de23fb91530478829c28dc08bdf0, type: 3}
-    partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
+    partIcon: {fileID: 21300000, guid: 49868928dbecdd349a9b7fb98e46d419, type: 3}
     partPrice: 0
     compatTags:
     - PCIe_x16
@@ -213,7 +213,7 @@ MonoBehaviour:
   - partCategory: GPU
     partName: RX 6700 XT 12GB
     partPrefab: {fileID: 7539906692983069053, guid: 7737de23fb91530478829c28dc08bdf0, type: 3}
-    partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
+    partIcon: {fileID: 21300000, guid: d9cd4465ed7b8804790ad92c3408723a, type: 3}
     partPrice: 0
     compatTags:
     - PCIe_x16
@@ -225,7 +225,7 @@ MonoBehaviour:
   - partCategory: GPU
     partName: RTX 4070 12GB
     partPrefab: {fileID: 7539906692983069053, guid: 7737de23fb91530478829c28dc08bdf0, type: 3}
-    partIcon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
+    partIcon: {fileID: 21300000, guid: 4b45504cdb307c14b9db36065e4ff44a, type: 3}
     partPrice: 0
     compatTags:
     - PCIe_x16
@@ -236,9 +236,9 @@ MonoBehaviour:
     faultDescription: 
   rams:
   - partCategory: RAM
-    partName: 16GB DDR4-3200
+    partName: Corsair Vengeance DDR4 8GB
     partPrefab: {fileID: 4379802468972624886, guid: 436a5818e183a6f4085a23e3ffc52fb0, type: 3}
-    partIcon: {fileID: 21300000, guid: 97735e69c457eee44a68a2896cd43912, type: 3}
+    partIcon: {fileID: 21300000, guid: bff3e687cbff91542b3664945d7032df, type: 3}
     partPrice: 0
     compatTags:
     - DDR4
@@ -248,9 +248,9 @@ MonoBehaviour:
     fault: 0
     faultDescription: 
   - partCategory: RAM
-    partName: 32GB  DDR4-3600
+    partName: G.Skill Trident Z5 16GB  DDR5-6000
     partPrefab: {fileID: 4379802468972624886, guid: 436a5818e183a6f4085a23e3ffc52fb0, type: 3}
-    partIcon: {fileID: 21300000, guid: 97735e69c457eee44a68a2896cd43912, type: 3}
+    partIcon: {fileID: 21300000, guid: dc02805b11691964693fb96ce0c9beb1, type: 3}
     partPrice: 0
     compatTags:
     - DDR4
@@ -260,9 +260,9 @@ MonoBehaviour:
     fault: 0
     faultDescription: 
   - partCategory: RAM
-    partName: 32GB  DDR5-6000
+    partName: Kingston FURY Beast 16GB DDR4-3600
     partPrefab: {fileID: 4379802468972624886, guid: 436a5818e183a6f4085a23e3ffc52fb0, type: 3}
-    partIcon: {fileID: 21300000, guid: 97735e69c457eee44a68a2896cd43912, type: 3}
+    partIcon: {fileID: 21300000, guid: c84479ea3733c484982a055e74d34827, type: 3}
     partPrice: 0
     compatTags:
     - DDR5
@@ -272,10 +272,10 @@ MonoBehaviour:
     fault: 0
     faultDescription: 
   storage:
-  - partCategory: SSD
-    partName: 1TB NVMe M.2 Gen4
-    partPrefab: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
-    partIcon: {fileID: 21300000, guid: 5a690ea349d130142801e90f97aa4a9f, type: 3}
+  - partCategory: Storage
+    partName: Crucial MX500 1TB SATA SSD
+    partPrefab: {fileID: 671365937383816078, guid: 625c192bb9e437d4384ebf49f36360e4, type: 3}
+    partIcon: {fileID: 21300000, guid: 73b1438058e4063419a81f1147c54726, type: 3}
     partPrice: 0
     compatTags:
     - M.2
@@ -287,7 +287,7 @@ MonoBehaviour:
   - partCategory: SSD
     partName: 2TB NVMe M.2 Gen4
     partPrefab: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
-    partIcon: {fileID: 21300000, guid: 5a690ea349d130142801e90f97aa4a9f, type: 3}
+    partIcon: {fileID: 21300000, guid: 2fd2388a29be9c1469da5049a9b3c34e, type: 3}
     partPrice: 0
     compatTags:
     - M.2
@@ -298,21 +298,34 @@ MonoBehaviour:
     faultDescription: 
   coolers:
   - partCategory: Cooler
-    partName: CPU Fan
+    partName: Intel Laminar RM1 Stock Cooler
     partPrefab: {fileID: 8050430242676290261, guid: 15a2ff6f27289bf49bdc9e8ee0935b01, type: 3}
-    partIcon: {fileID: 21300000, guid: 3840f79b3d77fd34591c34e980f5d548, type: 3}
-    partPrice: 700
-    compatTags: []
-    powerDraw: 3
+    partIcon: {fileID: 21300000, guid: b6208d743b70b994c9faeb6d06e37729, type: 3}
+    partPrice: 800
+    compatTags:
+    - LGA1700
+    powerDraw: 4
+    maxWattage: 0
+    isDusty: 0
+    fault: 0
+    faultDescription: 
+  - partCategory: Cooler
+    partName: AMD Wraith Prism RGB Cooler
+    partPrefab: {fileID: 8050430242676290261, guid: 15a2ff6f27289bf49bdc9e8ee0935b01, type: 3}
+    partIcon: {fileID: 21300000, guid: b16a02c9fa8b67d468020d3db5e00de7, type: 3}
+    partPrice: 800
+    compatTags:
+    - AM4, AM5
+    powerDraw: 6
     maxWattage: 0
     isDusty: 0
     fault: 0
     faultDescription: 
   fans:
   - partCategory: Case Fan
-    partName: 120mm RGB Case Fan
+    partName: Corsair LL120 RGB 120mm Case Fan
     partPrefab: {fileID: 6981174563034521290, guid: 36df68ff8afd16147afbee70534d3fd9, type: 3}
-    partIcon: {fileID: 21300000, guid: 43386347a95a9af41be3c4a376003fa9, type: 3}
+    partIcon: {fileID: 21300000, guid: 85ff230b912251a4d834ed28f779f268, type: 3}
     partPrice: 0
     compatTags: []
     powerDraw: 3
@@ -321,9 +334,9 @@ MonoBehaviour:
     fault: 0
     faultDescription: 
   - partCategory: Case Fan
-    partName: 140mm High Airflow Fan
+    partName: Arctic P14 140mm High Airflow Fan
     partPrefab: {fileID: 6981174563034521290, guid: 36df68ff8afd16147afbee70534d3fd9, type: 3}
-    partIcon: {fileID: 21300000, guid: 43386347a95a9af41be3c4a376003fa9, type: 3}
+    partIcon: {fileID: 21300000, guid: c14f85dad509f1642b704d6020048adf, type: 3}
     partPrice: 0
     compatTags: []
     powerDraw: 4

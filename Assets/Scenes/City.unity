@@ -616,7 +616,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6092c4132545b094e93a608fbe6ebdcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCSpawner
-  npcPrefab: {fileID: 4424671086720457251, guid: 176deaef559200e48b6199322e9aad92, type: 3}
+  npcPrefab: {fileID: 2487654066907869622, guid: 1a660d159f6583246ba6369e326c8c61, type: 3}
   maxNPCs: 10
   spawnInterval: 5
   spawnRadius: 10

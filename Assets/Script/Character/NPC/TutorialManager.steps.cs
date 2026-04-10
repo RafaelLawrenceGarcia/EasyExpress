@@ -264,23 +264,27 @@ public partial class TutorialManager
         HideArrow();
         switch (diagState)
         {
-            // RAM swap (first)
+            // RAM swap — PC already off from auto-shutdown, no "Turn off" needed
             case DiagState.RemoveOldRAM:
-                SetTask("SWAP TEST — RAM", "Turn off the PC (click Power Button)", "Remove the old RAM stick", "Use the screwdriver — hold click to remove"); break;
+                SetTask("SWAP TEST — RAM", "Remove the old RAM stick", "Use the screwdriver — hold click to remove"); break;
             case DiagState.InstallNewRAM:
                 SetTask("SWAP TEST — RAM", "Press [Tab] to see your parts", "Install the new RAM into the empty slot"); break;
             case DiagState.TestAfterRAMSwap:
                 SetTask("SWAP TEST — RAM", "Press the Power Button to test", "Watch what happens..."); break;
 
-            // GPU swap (after checking manual for No Display)
+            // GPU wire disconnect (NEW)
+            case DiagState.DisconnectGPUWire:
+                SetTask("SWAP TEST — GPU", "Turn off the PC (click Power Button)", "Disconnect the GPU power cable", "Click and hold the GPU wire port"); break;
+
+            // GPU swap — PC already off from DisconnectGPUWire step
             case DiagState.RemoveOldGPU:
-                SetTask("SWAP TEST — GPU", "Turn off the PC (click Power Button)", "Remove the old GPU", "Use the screwdriver — hold click to remove"); break;
+                SetTask("SWAP TEST — GPU", "Remove the old GPU", "Use the screwdriver — hold click to remove"); break;
             case DiagState.InstallNewGPU:
                 SetTask("SWAP TEST — GPU", "Press [Tab] to see your parts", "Install the new GPU into the empty slot"); break;
             case DiagState.TestAfterGPUSwap:
                 SetTask("SWAP TEST — GPU", "Press the Power Button to test", "Watch the display this time..."); break;
 
-            // RAM verify
+            // RAM verify — PC stays on after Success, needs manual turn off
             case DiagState.RemoveNewRAM:
                 SetTask("VERIFY — RAM", "Turn off the PC (click Power Button)", "Remove the new RAM you just installed", "We need to confirm the old RAM was the problem"); break;
             case DiagState.InstallOldRAM:
@@ -288,9 +292,9 @@ public partial class TutorialManager
             case DiagState.TestWithOldRAM:
                 SetTask("VERIFY — RAM", "Press the Power Button to test with old RAM", "Does the problem come back?"); break;
 
-            // Final fix
+            // Final fix — PC already off from auto-shutdown
             case DiagState.RemoveOldRAMAgain:
-                SetTask("FINAL FIX", "Turn off the PC (click Power Button)", "Remove the old RAM again", "RAM confirmed bad — put the good one back"); break;
+                SetTask("FINAL FIX", "Remove the old RAM again", "RAM confirmed bad — put the good one back"); break;
             case DiagState.InstallNewRAMFinal:
                 SetTask("FINAL FIX", "Press [Tab] to see your parts", "Install the new RAM to finish the repair"); break;
             case DiagState.TestFinal:
@@ -643,7 +647,7 @@ public partial class TutorialManager
                 StartingPCComponent targetRAM = null;
                 foreach (StartingPCComponent ram in compatRAM)
                 {
-                    if (ram.partName != null && ram.partName.Contains("16"))
+                    if (ram.partName != null && ram.partName.Contains("8"))
                     { targetRAM = ram; break; }
                 }
                 if (targetRAM == null) targetRAM = compatRAM[0];

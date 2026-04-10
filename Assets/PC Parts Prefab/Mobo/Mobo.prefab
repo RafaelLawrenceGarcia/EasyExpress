@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8384746229563871789}
   - component: {fileID: 436425526331606289}
   - component: {fileID: 2591469311152288754}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 4.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,6 +90,140 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1013438401228227403
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 16434491609881337}
+  - component: {fileID: 2229466242845785329}
+  - component: {fileID: 3602666540141169558}
+  - component: {fileID: 5914075884537442210}
+  m_Layer: 6
+  m_Name: MB_Screw_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &16434491609881337
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013438401228227403}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.0001746118, z: 1, w: 0}
+  m_LocalPosition: {x: 0.0050059664, y: -0.00003, z: -0.00215}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7087263985452505545}
+  m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 180}
+--- !u!33 &2229466242845785329
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013438401228227403}
+  m_Mesh: {fileID: 866025654867859042, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
+--- !u!23 &3602666540141169558
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013438401228227403}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 85b4f08012b5e124cbaf04ced130942c, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5914075884537442210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1013438401228227403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
+  itemName: Screws
+  partCategory: Screws
+  inventoryIcon: {fileID: 0}
+  itemDescription: No description available.
+  itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
+  isMainObject: 0
+  isRemovable: 1
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  ribbonAxis: {x: 0, y: 1, z: 0}
+  placeHeadHere: 0
+  wireHead: {fileID: 0}
+  blockingParts: []
+  childPartsToDetach: []
+  isInventorySlot: 0
+  inventoryEntryId: 
+  fault: 0
+  faultDescription: 
+  linkedPrebuiltWire: {fileID: 0}
 --- !u!1 &1031947920877518044
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,7 +236,8 @@ GameObject:
   - component: {fileID: 4427843765690935554}
   - component: {fileID: 6722456158321482629}
   - component: {fileID: 8335022038156638864}
-  m_Layer: 0
+  - component: {fileID: 3959165893972034808}
+  m_Layer: 6
   m_Name: '8 Pin '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,7 +337,7 @@ MonoBehaviour:
   itemName: 8 Pin Port
   partCategory: Wire Port
   inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
+  itemDescription: '8 Pin to connect to PSU '
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
   isMainObject: 0
@@ -225,6 +360,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
+--- !u!64 &3959165893972034808
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031947920877518044}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8966240210908763828, guid: 2f83772ddc690be40a16a93ff8dcc0ec, type: 3}
 --- !u!1 &1214085863751238673
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,7 +393,7 @@ GameObject:
   - component: {fileID: 2916085630239979345}
   - component: {fileID: 3608483007108520572}
   - component: {fileID: 5148686780304065733}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HDMI Port
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -328,7 +485,7 @@ GameObject:
   - component: {fileID: 4544328605934466696}
   - component: {fileID: 85397180060477181}
   - component: {fileID: 1536602433590697163}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PCIE Lane 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -418,7 +575,7 @@ GameObject:
   - component: {fileID: 8563639942880150202}
   - component: {fileID: 1076160055128579154}
   - component: {fileID: 2360182977951629594}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: USB 3.0 & Ethernet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -510,7 +667,7 @@ GameObject:
   - component: {fileID: 475944092014386652}
   - component: {fileID: 8157118773372428075}
   - component: {fileID: 7772381533383520404}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 4 Pin (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -602,7 +759,8 @@ GameObject:
   - component: {fileID: 4280408032450875090}
   - component: {fileID: 4934021987058334626}
   - component: {fileID: 5988913415695448192}
-  m_Layer: 0
+  - component: {fileID: 2106250912430800297}
+  m_Layer: 6
   m_Name: 24 Pins
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -701,7 +859,7 @@ MonoBehaviour:
   itemName: 24 Pin Port
   partCategory: Wire Port
   inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
+  itemDescription: 24 Pin to Connect to PSU
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
   isMainObject: 0
@@ -724,6 +882,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
+--- !u!64 &2106250912430800297
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2012764704686911630}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6662361529629875484, guid: 2f83772ddc690be40a16a93ff8dcc0ec, type: 3}
 --- !u!1 &2344352248727264848
 GameObject:
   m_ObjectHideFlags: 0
@@ -735,7 +915,7 @@ GameObject:
   - component: {fileID: 39245476012552098}
   - component: {fileID: 8209654317585562292}
   - component: {fileID: 5545983064762521192}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 10 Pin (10th Missing) (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -827,7 +1007,7 @@ GameObject:
   - component: {fileID: 6281615916307046609}
   - component: {fileID: 5480474345569612766}
   - component: {fileID: 6417622154611226560}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MB_Screw_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -960,7 +1140,7 @@ GameObject:
   - component: {fileID: 4267769930199329630}
   - component: {fileID: 8870066974831376372}
   - component: {fileID: 7691636831675547104}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 3.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1050,7 +1230,7 @@ GameObject:
   - component: {fileID: 299871691695178244}
   - component: {fileID: 7384595008968616067}
   - component: {fileID: 4842456996064490650}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1140,7 +1320,7 @@ GameObject:
   - component: {fileID: 4064560684832235718}
   - component: {fileID: 6361066511408733405}
   - component: {fileID: 3697321623536792783}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 10 Pin(4th Pin Pin Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1231,7 +1411,7 @@ GameObject:
   - component: {fileID: 7120117936296843017}
   - component: {fileID: 2300018301405481983}
   - component: {fileID: 8083047099556177420}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 5 Pin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1325,7 +1505,7 @@ GameObject:
   - component: {fileID: 1972361260557407782}
   - component: {fileID: 707184148851970898}
   - component: {fileID: 3343231169114165379}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Slot_CPU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1507,7 +1687,7 @@ GameObject:
   - component: {fileID: 6812296383266710019}
   - component: {fileID: 5435636959279454383}
   - component: {fileID: 7658387629304198089}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1597,7 +1777,7 @@ GameObject:
   - component: {fileID: 9005995991078500918}
   - component: {fileID: 2869727775040230366}
   - component: {fileID: 6363546652863498242}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 2.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1687,7 +1867,7 @@ GameObject:
   - component: {fileID: 7226575322396076761}
   - component: {fileID: 4505264933432994806}
   - component: {fileID: 2994303905382405637}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Display Port
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1779,7 +1959,7 @@ GameObject:
   - component: {fileID: 4901524873358306936}
   - component: {fileID: 2341147724790930826}
   - component: {fileID: 5709356238873440782}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Heatsink 1 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1869,7 +2049,7 @@ GameObject:
   - component: {fileID: 8159521359298940119}
   - component: {fileID: 4191197062301793822}
   - component: {fileID: 5167364728669903391}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 4 Pin (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1961,7 +2141,7 @@ GameObject:
   - component: {fileID: 2914135455765571494}
   - component: {fileID: 1557109924049496789}
   - component: {fileID: 8886561305462049463}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MB_Screw_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2094,7 +2274,7 @@ GameObject:
   - component: {fileID: 704186271259439322}
   - component: {fileID: 3301705802358306632}
   - component: {fileID: 4118235776008566912}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Heatsink 2 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2184,7 +2364,7 @@ GameObject:
   - component: {fileID: 5105910344226630955}
   - component: {fileID: 1002551307813498949}
   - component: {fileID: 3790046966023660594}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: USB 3.0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2276,7 +2456,7 @@ GameObject:
   - component: {fileID: 1638428328395840784}
   - component: {fileID: 3432350492674565227}
   - component: {fileID: 297999348115024221}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MB_Screw_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2409,7 +2589,7 @@ GameObject:
   - component: {fileID: 553891567953368131}
   - component: {fileID: 5276552355035166724}
   - component: {fileID: 4515731212091223881}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'Audio/Mic '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2502,7 +2682,7 @@ GameObject:
   - component: {fileID: 2079568171678068288}
   - component: {fileID: 9071699906687883126}
   - component: {fileID: 6082510896945097297}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 4 Pin (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2593,7 +2773,7 @@ GameObject:
   - component: {fileID: 1953700262033724745}
   - component: {fileID: 7797874562139742468}
   - component: {fileID: 8412447426946786755}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: '10 Pin (10th Missing) (2) '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2684,7 +2864,7 @@ GameObject:
   - component: {fileID: 3254818025659177099}
   - component: {fileID: 2968717494911379195}
   - component: {fileID: 6669517163872491996}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 4.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2774,7 +2954,7 @@ GameObject:
   - component: {fileID: 1348194246426033750}
   - component: {fileID: 5449408647534941737}
   - component: {fileID: 3596745082872608118}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CPU BACKFRAME
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2865,7 +3045,7 @@ GameObject:
   - component: {fileID: 1359907960444123254}
   - component: {fileID: 3049287060306783670}
   - component: {fileID: 547243080875661027}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 1.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2955,7 +3135,7 @@ GameObject:
   - component: {fileID: 7638564476662417474}
   - component: {fileID: 695094361993484718}
   - component: {fileID: 1824167470092907859}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: USB 2.0 w/ PS/2 Port
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3049,7 +3229,7 @@ GameObject:
   - component: {fileID: 5110247038325486159}
   - component: {fileID: 7276278478562128219}
   - component: {fileID: 1390147045729998851}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3139,7 +3319,7 @@ GameObject:
   - component: {fileID: 6749188845358832873}
   - component: {fileID: 5854561658855561339}
   - component: {fileID: 6528377640965531359}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PCIE Lane 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3229,7 +3409,9 @@ GameObject:
   - component: {fileID: 7533039003811873633}
   - component: {fileID: 2788360719828366784}
   - component: {fileID: 2449476510553629695}
-  m_Layer: 0
+  - component: {fileID: 7498328516258418601}
+  - component: {fileID: 6906249368124597323}
+  m_Layer: 6
   m_Name: SATA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3308,6 +3490,71 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7498328516258418601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6423756687232137977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 0
+  itemName: SATA Port
+  partCategory: Wire Port
+  inventoryIcon: {fileID: 0}
+  itemDescription: Port to Connect Motherboard to SATA
+  itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
+  isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 1
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  ribbonAxis: {x: 0, y: 1, z: 0}
+  placeHeadHere: 0
+  wireHead: {fileID: 0}
+  blockingParts: []
+  childPartsToDetach: []
+  isInventorySlot: 0
+  inventoryEntryId: 
+  fault: 0
+  faultDescription: 
+  linkedPrebuiltWire: {fileID: 0}
+--- !u!64 &6906249368124597323
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6423756687232137977}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3113630942668186504, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!1 &6659405790919455895
 GameObject:
   m_ObjectHideFlags: 0
@@ -3322,7 +3569,7 @@ GameObject:
   - component: {fileID: 2725673560273078850}
   - component: {fileID: 621408812781806924}
   - component: {fileID: 7585846715790634219}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Mobo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3466,7 +3713,7 @@ MonoBehaviour:
   requiredTags: []
   powerDraw: 0
   maxWattage: 0
-  requiresScrewdriver: 1
+  requiresScrewdriver: 0
   itemName: Motherboard
   partCategory: Motherboard
   inventoryIcon: {fileID: 0}
@@ -3486,7 +3733,8 @@ MonoBehaviour:
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
-  blockingParts: []
+  blockingParts:
+  - {fileID: 0}
   childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
@@ -3547,7 +3795,7 @@ GameObject:
   - component: {fileID: 7201574587540296526}
   - component: {fileID: 4940514351598579567}
   - component: {fileID: 8930569946354333185}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 10 Pin(5th Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3638,7 +3886,7 @@ GameObject:
   - component: {fileID: 8381780501602801106}
   - component: {fileID: 6403907147829411399}
   - component: {fileID: 4919504283469897803}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 1.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3729,8 +3977,7 @@ GameObject:
   - component: {fileID: 7133620516744964982}
   - component: {fileID: 1322683458348684211}
   - component: {fileID: 8863329079035341253}
-  - component: {fileID: 277533679491870110}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CPU Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3852,28 +4099,6 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
---- !u!64 &277533679491870110
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7169989032857910984}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -1990054044491915879, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!1 &7241713936521430419
 GameObject:
   m_ObjectHideFlags: 0
@@ -3886,8 +4111,7 @@ GameObject:
   - component: {fileID: 4385885808181300619}
   - component: {fileID: 6177797691700275570}
   - component: {fileID: 624326346134399190}
-  - component: {fileID: 6472798499739127555}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CPU Cover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4010,28 +4234,6 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
---- !u!64 &6472798499739127555
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7241713936521430419}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 2522795928661360507, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!1 &7403527413008650402
 GameObject:
   m_ObjectHideFlags: 0
@@ -4043,7 +4245,7 @@ GameObject:
   - component: {fileID: 696517142818886112}
   - component: {fileID: 4574497915864226963}
   - component: {fileID: 8761807057697275994}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 2.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4133,7 +4335,7 @@ GameObject:
   - component: {fileID: 5744200455434176259}
   - component: {fileID: 2036535629628663171}
   - component: {fileID: 7779573768469965408}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4223,7 +4425,7 @@ GameObject:
   - component: {fileID: 5735725538284260653}
   - component: {fileID: 2678906754724109493}
   - component: {fileID: 2197838502858168252}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 14 pin (1st Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4314,7 +4516,7 @@ GameObject:
   - component: {fileID: 4931579405225668775}
   - component: {fileID: 8655028748005114072}
   - component: {fileID: 1375128676582111289}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4404,7 +4606,7 @@ GameObject:
   - component: {fileID: 4667271571704414362}
   - component: {fileID: 4087619147364385241}
   - component: {fileID: 1829251653205257270}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CMOS Battery
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4494,7 +4696,7 @@ GameObject:
   - component: {fileID: 3112673948329528048}
   - component: {fileID: 7651478647463645039}
   - component: {fileID: 4304383840203111580}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 4 Pin (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4585,7 +4787,7 @@ GameObject:
   - component: {fileID: 1431605819644954636}
   - component: {fileID: 215082899693483437}
   - component: {fileID: 8252750792376651964}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM Slot 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4675,7 +4877,7 @@ GameObject:
   - component: {fileID: 7850814954802259095}
   - component: {fileID: 4114975812736451402}
   - component: {fileID: 4639139949255913319}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SSD Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4765,7 +4967,7 @@ GameObject:
   - component: {fileID: 1742808562955380287}
   - component: {fileID: 3628136524977608025}
   - component: {fileID: 4231733319134375294}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RAM SLOT 3.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4855,7 +5057,7 @@ GameObject:
   - component: {fileID: 7095296808051393929}
   - component: {fileID: 551094570909176376}
   - component: {fileID: 1284815272895150349}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 4 Pin (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4946,7 +5148,7 @@ GameObject:
   - component: {fileID: 7535757900494358311}
   - component: {fileID: 3030018027148254841}
   - component: {fileID: 2830718567378924966}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 10 Pin (6th Missing)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5037,7 +5239,7 @@ GameObject:
   - component: {fileID: 7857854019536622959}
   - component: {fileID: 1385878249048420844}
   - component: {fileID: 3293338065798673265}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 'SATA '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5116,65 +5318,3 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1001 &4622772730574161764
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 7087263985452505545}
-    m_Modifications:
-    - target: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.0050059664
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.00003
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.00215
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.0001746118
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -89.98
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 5635999387693777967, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-      propertyPath: m_Name
-      value: MB_Screw_1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 8398a85155866a04cabcbb566297d998, type: 3}
---- !u!4 &16434491609881337 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4619849183883746717, guid: 8398a85155866a04cabcbb566297d998, type: 3}
-  m_PrefabInstance: {fileID: 4622772730574161764}
-  m_PrefabAsset: {fileID: 0}

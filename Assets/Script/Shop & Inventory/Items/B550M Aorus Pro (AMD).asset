@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: mobo_b550m
   itemName: B550M Aorus Pro (AMD)
-  icon: {fileID: 21300000, guid: 94cbfac0e6d546c45ada88ded4120688, type: 3}
+  icon: {fileID: 21300000, guid: bb9613b05c78f054582b3be13a83ce8e, type: 3}
   category: Motherboard
   description: A highly reliable mid-range board for older AM4 Ryzen builds.
   specs: 'Socket: AM4 | Memory: DDR4 | Form Factor: Micro-ATX | Power Draw: 15W'

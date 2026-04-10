@@ -3,6 +3,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Item", menuName = "EasyExpress/Shop Item")]
 public class ItemData : ScriptableObject
 {
+    [Header("Bundle Delivery")]
+    [Tooltip("If set, this item delivers multiples of this prefab instead of itself.")]
+    public GameObject bundlePrefab;
+
+    [Tooltip("How many of the bundle prefab to deliver (e.g. 2 for a 2-stick RAM kit).")]
+    public int bundleQuantity = 1;
+
+    [Tooltip("The ItemData of the individual part (for inventory tracking).")]
+    public ItemData bundleItemData;
     [Header("Item Info")]
     public string id; // Unique ID (e.g., "gpu_1080")
     public string itemName;

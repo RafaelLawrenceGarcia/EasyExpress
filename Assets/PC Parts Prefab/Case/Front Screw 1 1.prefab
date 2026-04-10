@@ -110,8 +110,8 @@ MonoBehaviour:
   requiresScrewdriver: 1
   itemName: Screws
   partCategory: Screws
-  inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
+  inventoryIcon: {fileID: 21300000, guid: 3ce0cc987931ee849932cf9f9a021a21, type: 3}
+  itemDescription: Srews used to lock the components
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
   isMainObject: 0

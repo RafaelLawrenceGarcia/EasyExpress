@@ -30,9 +30,6 @@ public class WorkstationMonitor : MonoBehaviour
 
     [Tooltip("(Optional) A 'No Signal' screen shown when PC is off.")]
     public GameObject noSignalScreen;
-    [Header("Unique Monitor UI")]
-    public Canvas monitorCanvas;     // The specific Canvas for THIS monitor
-    public PCController monitorOS;
     [Header("Monitor Emission")]
     [Tooltip("The renderer whose emission should glow when on.")]
     public Renderer screenRenderer;
@@ -165,10 +162,10 @@ public class WorkstationMonitor : MonoBehaviour
                             break;
                         case PowerResult.BootWithIssues:
                         case PowerResult.Success:
-                            localOS.StartBoot();
-                            break;
-                        default:
-                            localOS.ShowNoSignal();
+                            if (localOS.HasBootedToDesktop)
+                                localOS.BootToOS();
+                            else
+                                localOS.StartBoot();
                             break;
                     }
                 }

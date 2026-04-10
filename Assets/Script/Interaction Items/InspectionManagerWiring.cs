@@ -59,11 +59,21 @@ public partial class InspectionManager
                 isConfirmingRemoval = false;
                 wire.Disconnect(currentClone.transform);
                 ShowTooltipMessage("Disconnected", wire.IsPowerCord ? "Power cord unplugged." : $"{wire.WireName} disconnected.");
+
+                // Notify tutorial about wire disconnect
+                if (TutorialManager.Instance != null)
+                    TutorialManager.Instance.NotifyPrebuiltWireDisconnected(wire);
             });
         }
-        else wire.Disconnect(currentClone.transform);
-    }
+        else
+        {
+            wire.Disconnect(currentClone.transform);
 
+            // Notify tutorial about wire disconnect
+            if (TutorialManager.Instance != null)
+                TutorialManager.Instance.NotifyPrebuiltWireDisconnected(wire);
+        }
+    }
     void AutoDisconnectPrebuiltWires(InspectableItem removedPart)
     {
         if (currentClone == null) return;

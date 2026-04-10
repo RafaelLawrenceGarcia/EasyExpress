@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: mobo_msi_Z790
   itemName: MSI MAG Z790 Tomahawk (Intel)
-  icon: {fileID: 21300000, guid: 38f85c78622c60146980bf4fde2c6fa4, type: 3}
+  icon: {fileID: 21300000, guid: eb3cf9a384f5bb94085b01385a67772a, type: 3}
   category: Motherboard
   description: A durable and feature-rich motherboard built to handle modern Intel
     Core processors.

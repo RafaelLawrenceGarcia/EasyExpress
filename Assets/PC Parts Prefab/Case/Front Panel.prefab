@@ -112,7 +112,7 @@ MonoBehaviour:
   requiresScrewdriver: 0
   itemName: Front Panel
   partCategory: Generic
-  inventoryIcon: {fileID: 0}
+  inventoryIcon: {fileID: 21300000, guid: 7b0f07d907610be459b0ed5951b18752, type: 3}
   itemDescription: No description available.
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}

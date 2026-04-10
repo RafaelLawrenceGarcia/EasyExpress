@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: arctic_p14
   itemName: Arctic P14 140mm High Airflow Fan
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: c14f85dad509f1642b704d6020048adf, type: 3}
   category: Case Fan
   description: A quiet, no-nonsense case fan that pushes massive amounts of air out
     of the chassis.

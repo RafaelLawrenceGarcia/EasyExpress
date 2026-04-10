@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: cpu_i5_12600
   itemName: Intel Core i5-12600K
-  icon: {fileID: 21300000, guid: 562b1719a5fa5574ab2e85b2dba065c2, type: 3}
+  icon: {fileID: 21300000, guid: b12fa3df9cf6b664b830785ed442c926, type: 3}
   category: CPU
   description: Excellent mid-range performance for 1080p gaming and daily multitasking.
   specs: 'Socket: LGA1700 | Cores: 10 | Base Clock: 3.7 GHz | Power Draw: 150W'

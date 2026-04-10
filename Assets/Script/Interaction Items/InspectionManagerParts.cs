@@ -94,6 +94,19 @@ public partial class InspectionManager
 
     void BeginRemovalConfirmation(InspectableItem part)
     {
+        // ── GUARD: Prebuilt wires → connect/disconnect, never remove ──
+        IPrebuiltWire wire = part.GetPrebuiltWire();
+        if (wire == null && part.linkedPrebuiltWire != null)
+            wire = part.linkedPrebuiltWire as IPrebuiltWire;
+        if (wire != null)
+        {
+            if (wire.IsConnected)
+                HandlePrebuiltWireDisconnect(wire);
+            else
+                HandlePrebuiltWireConnect(wire);
+            return;
+        }
+
         // PC must be powered off before removing any component
         if (currentClone != null)
         {
@@ -131,6 +144,21 @@ public partial class InspectionManager
 
     void TryRemovePart(InspectableItem part)
     {
+
+        // ── GUARD: Never send prebuilt wires to inventory ──
+        // They are connect/disconnect only — not removable parts.
+        IPrebuiltWire wire = part.GetPrebuiltWire();
+        if (wire == null && part.linkedPrebuiltWire != null)
+            wire = part.linkedPrebuiltWire as IPrebuiltWire;
+        if (wire != null)
+        {
+            if (wire.IsConnected)
+                HandlePrebuiltWireDisconnect(wire);
+            else
+                HandlePrebuiltWireConnect(wire);
+            return;
+        }
+
         foreach (InspectableItem blocker in part.blockingParts)
             if (blocker != null && !blocker.isInventorySlot) return;
 
@@ -179,6 +207,19 @@ public partial class InspectionManager
                 storedScript.faultDescription = "";
             }
         }
+        // Track which customer this part came from
+        if (currentClone != null)
+        {
+            PCCaseBuilder builder = currentClone.GetComponent<PCCaseBuilder>();
+            if (builder != null && builder.linkedEmail != null
+                && !string.IsNullOrEmpty(builder.linkedEmail.senderName))
+            {
+                InspectableItem storedItem = storedPart.GetComponent<InspectableItem>();
+                if (storedItem != null)
+                    storedItem.sourceOwner = builder.linkedEmail.senderName;
+            }
+        }
+
         playerStorage.Add(storedPart);
 
         // Animate fly-away
@@ -236,6 +277,17 @@ public partial class InspectionManager
 
     void BeginInstallConfirmation(InspectableItem slot)
     {
+        // PC must be powered off before installing any component
+        if (currentClone != null)
+        {
+            PCPowerSystem power = currentClone.GetComponent<PCPowerSystem>();
+            if (power != null && power.isPoweredOn)
+            {
+                ShowTooltipMessage("PC is On!", "Turn off the PC before installing components.\nClick the power button first.");
+                return;
+            }
+        }
+
         if (!RequireHand()) return;
 
         GameObject partToInstall = FindPartForSlot(slot);

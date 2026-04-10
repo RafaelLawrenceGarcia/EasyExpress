@@ -710,6 +710,8 @@ public class PlayerInteract : MonoBehaviour
 
     void OpenWorkstationMonitor(WorkstationMonitor monitor)
     {
+        Debug.Log($"[OpenMonitor] localCanvas={monitor.localCanvas}, localOS={monitor.localOS}, " +
+            $"canvasActive={monitor.localCanvas?.gameObject.activeInHierarchy}");
         activeWorkstationMonitor = monitor; isInteracting = true; isUsingComputer = true;
         Canvas activeCanvas = monitor.localCanvas;
         PCController activeOS = monitor.localOS;
@@ -754,10 +756,10 @@ public class PlayerInteract : MonoBehaviour
                         break;
                     case PowerResult.BootWithIssues:
                     case PowerResult.Success:
-                        activeOS.StartBoot();
-                        break;
-                    default:
-                        activeOS.ShowNoSignal();
+                        if (activeOS.HasBootedToDesktop)
+                            activeOS.BootToOS();   // skip boot animation, go straight to desktop
+                        else
+                            activeOS.StartBoot();
                         break;
                 }
             }
@@ -770,6 +772,13 @@ public class PlayerInteract : MonoBehaviour
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
         HideAllPrompts();
         if (goldHUD != null) goldHUD.SetActive(false);
+        Debug.Log($"[OpenMonitor] AFTER SETUP — " +
+    $"canvasRenderMode={activeCanvas.renderMode}, " +
+    $"canvasSortOrder={activeCanvas.sortingOrder}, " +
+    $"noSignal={activeOS.noSignalPanel?.activeSelf}, " +
+    $"bootPanel={activeOS.bootScreenPanel?.activeSelf}, " +
+    $"screenContainer={activeOS.screenContainer?.activeSelf}, " +
+    $"bsodPanel={activeOS.bsodPanel?.activeSelf}");
         FreezePlayer(true);
         if (TutorialManager.Instance != null)
             TutorialManager.Instance.NotifyMonitorOpenedForTutorial(monitor);
@@ -789,7 +798,6 @@ public class PlayerInteract : MonoBehaviour
             }
         }
         activeWorkstationMonitor = null; isInteracting = false; isUsingComputer = false;
-        PauseManager.BlockPause = false;
         if (goldHUD != null) goldHUD.SetActive(true);
         FreezePlayer(false);
         if (TutorialManager.Instance != null)

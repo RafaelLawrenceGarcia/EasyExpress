@@ -535,6 +535,9 @@ public class CloudDataHandler : MonoBehaviour
             item.maxWattage = saved.maxWattage;
             item.fault = (PartFault)saved.fault;
             item.faultDescription = saved.faultDescription;
+            item.sourceOwner = saved.sourceOwner;
+
+
             item.isRemovable = true;
         }
 

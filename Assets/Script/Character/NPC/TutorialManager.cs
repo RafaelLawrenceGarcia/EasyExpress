@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public enum DiagState
 {
     // RAM swap (first)
-    RemoveOldRAM, InstallNewRAM, TestAfterRAMSwap,
+    RemoveOldRAM, InstallNewRAM, TestAfterRAMSwap, DisconnectGPUWire,
     // GPU swap (second, after checking manual for No Display)
     RemoveOldGPU, InstallNewGPU, TestAfterGPUSwap,
     // RAM verify (put old RAM back to confirm it was broken)
@@ -215,8 +215,8 @@ public partial class TutorialManager : MonoBehaviour
     public bool IsDiagnosingPC() => step == 16;
     public DiagState GetDiagState() => diagState;
 
-    public void HideTaskTemporarily() { TaskListUI.Instance?.HideTemporarily(); }
-    public void RestoreTaskIfNeeded() { TaskListUI.Instance?.RestoreIfNeeded(); }
+    public void HideTaskTemporarily() { TaskListUI.Instance?.EnterMonitorMode(); }
+    public void RestoreTaskIfNeeded() { TaskListUI.Instance?.ExitMonitorMode(); }
 
     // ═══════════════════════════════════════════════════════════
     //  PUBLIC COMPLETIONS
@@ -411,8 +411,12 @@ public partial class TutorialManager : MonoBehaviour
     // NEW: Called by PlayerInteract.CloseWorkstationMonitor()
     public void NotifyMonitorClosed()
     {
-        // Restore task panel when leaving the monitor
-        TaskListUI.Instance?.RestoreIfNeeded();
+        // Exit monitor mode — restores task panel position & sort order
+        TaskListUI.Instance?.ExitMonitorMode();
+
+        // Clear any button highlight ring on the monitor
+        if (MonitorButtonHighlight.Instance != null)
+            MonitorButtonHighlight.Instance.ClearHighlight();
 
         // Stop any active UI guide arrow
         StopUIGuide();
@@ -485,7 +489,7 @@ public partial class TutorialManager : MonoBehaviour
             TaskListUI.Instance?.CompleteTask(0);
             Dialogue(0.5f, dlg_CheckManualNoDisplay, () =>
             {
-                diagState = DiagState.RemoveOldGPU;
+                diagState = DiagState.DisconnectGPUWire;  // ← was RemoveOldGPU
                 ShowSwapTask();
             });
         }
@@ -580,6 +584,9 @@ public partial class TutorialManager : MonoBehaviour
         tutorialInspectionHighlight?.Hide();
         if (TutorialWorldHighlight.Instance != null)
             TutorialWorldHighlight.Instance.Hide();
+        if (MonitorButtonHighlight.Instance != null)
+            MonitorButtonHighlight.Instance.ClearHighlight();
+        TaskListUI.Instance?.ExitMonitorMode();
         step = 0;
         wTimer = aTimer = sTimer = dTimer = 0f;
         wDone = aDone = sDone = dDone = false;
@@ -609,6 +616,23 @@ public partial class TutorialManager : MonoBehaviour
     void ShowArrow(Transform target) { tutorialHighlighter?.ShowAt(target); }
     void HideArrow() { tutorialHighlighter?.Hide(); }
     void HidePointer() { if (TutorialUIPointer.Instance != null) TutorialUIPointer.Instance.Hide(); }
+
+    /// <summary>
+    /// Highlights a button on the monitor with a pulsing ring.
+    /// Called by TutorialManager.uiguide.cs PointAt() alongside
+    /// the existing TutorialUIPointer arrow.
+    /// </summary>
+    void HighlightMonitorButton(UnityEngine.RectTransform target, string label = null)
+    {
+        if (MonitorButtonHighlight.Instance != null)
+            MonitorButtonHighlight.Instance.HighlightButton(target, label);
+    }
+
+    void ClearMonitorHighlight()
+    {
+        if (MonitorButtonHighlight.Instance != null)
+            MonitorButtonHighlight.Instance.ClearHighlight();
+    }
 
     void CompleteAllTasks()
     {
@@ -751,6 +775,17 @@ public partial class TutorialManager : MonoBehaviour
         if (target != null)
             tutorialInspectionHighlight?.ShowAt(target);
     }
+    public void NotifyPrebuiltWireDisconnected(IPrebuiltWire wire)
+    {
+        if (step != 16 || diagState != DiagState.DisconnectGPUWire) return;
+        string cat = wire.RequiredPartCategory ?? "";
+        if (cat == "GPU")
+        {
+            CompleteAllTasks();
+            diagState = DiagState.RemoveOldGPU;
+            ShowSwapTask();
+        }
+    }
 
     /// <summary>
     /// Returns the child transform to highlight inside the inspection clone
@@ -807,25 +842,24 @@ public partial class TutorialManager : MonoBehaviour
                     }
                 }
                 return null;
-
             case 16:
-                // ── REMOVAL STATES: highlight power button if PC is still on,
-                //    then switch to the part once it's turned off ──
-                bool isRemovalState = diagState == DiagState.RemoveOldRAM
-                                   || diagState == DiagState.RemoveOldGPU
-                                   || diagState == DiagState.RemoveNewRAM
-                                   || diagState == DiagState.RemoveOldRAMAgain;
-
-                if (isRemovalState)
+                // ── GPU WIRE DISCONNECT: highlight power button first, then wire port ──
+                if (diagState == DiagState.DisconnectGPUWire)
                 {
-                    PCPowerSystem power = clone.GetComponent<PCPowerSystem>();
-                    if (power != null && power.isPoweredOn)
+                    PCPowerSystem pw = clone.GetComponent<PCPowerSystem>();
+                    if (pw != null && pw.isPoweredOn)
                     {
-                        // PC still on — highlight power button first
                         foreach (InspectableItem item in clone.GetComponentsInChildren<InspectableItem>(true))
                             if (item.isPowerButton) return item.transform;
                     }
-                    // PC is off — fall through to highlight the part to remove
+                    // PC is off — highlight the GPU wire connector port
+                    foreach (MonoBehaviour mb in clone.GetComponentsInChildren<MonoBehaviour>(true))
+                    {
+                        IPrebuiltWire w = mb as IPrebuiltWire;
+                        if (w != null && w.IsConnected && w.RequiredPartCategory == "GPU" && w.ConnectorPort != null)
+                            return w.ConnectorPort.transform;
+                    }
+                    return null;
                 }
 
                 // ── RAM-related states (swap, verify, final fix) ──

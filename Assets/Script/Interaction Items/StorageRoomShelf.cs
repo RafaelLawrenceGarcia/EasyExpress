@@ -44,7 +44,8 @@ public class StorageRoomShelf : MonoBehaviour
     [Header("UI Reference")]
     [Tooltip("Drag your InspectionInventoryUI here. " +
              "This is the SAME panel the player uses during inspection (Tab key).")]
-    public InspectionInventoryUI inventoryUI;
+    // NEW:
+    public InventoryUIManager inventoryUI;
 
     [Tooltip("Optional — drag your InteractionPromptUI here to show 'Press E' hint.")]
     public InteractionPromptUI promptUI;
@@ -103,7 +104,7 @@ public class StorageRoomShelf : MonoBehaviour
     void Start()
     {
         if (inventoryUI == null)
-            inventoryUI = FindObjectOfType<InspectionInventoryUI>();
+            inventoryUI = FindFirstObjectByType<InventoryUIManager>();
 
         // Cache PlacementManager reference
         _placementManager = FindObjectOfType<PlacementManager>();
@@ -187,20 +188,15 @@ public class StorageRoomShelf : MonoBehaviour
         if (inventoryUI == null) return;
 
         _panelOpen = true;
-        inventoryUI.currentMode = InspectionInventoryUI.InventoryMode.ShelfStorage;
-
+        inventoryUI.OpenStorage();
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        if (inventoryUI.inventoryPanel != null)
-            inventoryUI.inventoryPanel.SetActive(true);
+
         // Freeze player so scrolling doesn't rotate the camera
         if (_movement != null) _movement.SetMovementState(false);
         if (_camera != null) _camera.SetCameraState(false);
         if (_goldHUD != null) _goldHUD.SetActive(false);
-
-        inventoryUI.RefreshInventory();
-
         if (promptUI != null) promptUI.Hide();
 
         // Notify tutorial that shelf was opened
@@ -217,8 +213,7 @@ public class StorageRoomShelf : MonoBehaviour
 
         _panelOpen = false;
 
-        if (inventoryUI.inventoryPanel != null)
-            inventoryUI.inventoryPanel.SetActive(false);
+        inventoryUI.Close();
         // Unfreeze player and restore HUD
         if (_movement != null) _movement.SetMovementState(true);
         if (_camera != null) _camera.SetCameraState(true);

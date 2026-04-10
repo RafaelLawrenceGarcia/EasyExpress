@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: amd_ryzen_7600
   itemName: AMD Ryzen 5 7600X
-  icon: {fileID: 21300000, guid: 8b1e3e5cd9d204443b6f2f1f76ef8fcb, type: 3}
+  icon: {fileID: 21300000, guid: 8d243ae05c6d53c45afa2e5e3c99aed3, type: 3}
   category: CPU
   description: The perfect, high-speed entry point into the next-generation AM5 platform.
   specs: 'Socket: AM5 | Cores: 6 | Base Clock: 4.7 GHz | Power Draw: 105W'

@@ -20,7 +20,8 @@ using System.Collections;
 public partial class InspectionManager : MonoBehaviour
 {
     // ─── Inspector Fields ────────────────────────────────────────
-
+    [Header("New Inventory UI")]
+    public InventoryUIManager newInventoryUI;
     [Header("UI Reference")]
     public GameObject controlsUI;
     public GameObject infoPanel;
@@ -179,20 +180,12 @@ public partial class InspectionManager : MonoBehaviour
         if (isConfirmingRemoval) return;
 
         // ── TAB: Toggle inventory ─────────────────────────────────────
-        if (Input.GetKeyDown(KeyCode.Tab) && inventoryUI != null)
+        if (Input.GetKeyDown(KeyCode.Tab) && newInventoryUI != null)
         {
-            inventoryUI.currentMode = InspectionInventoryUI.InventoryMode.PlayerStorage;
-            bool isOpen = inventoryUI.inventoryPanel != null
-                       && inventoryUI.inventoryPanel.activeSelf;
-            if (!isOpen)
-            {
-                inventoryUI.inventoryPanel.SetActive(true);
-                inventoryUI.RefreshInventory();
-            }
+            if (newInventoryUI.IsOpen())
+                newInventoryUI.Close();
             else
-            {
-                inventoryUI.inventoryPanel.SetActive(false);
-            }
+                newInventoryUI.OpenInspection();
             return;
         }
         // ── Check if an overlay panel (Manual, Summary, Inventory) is open ──

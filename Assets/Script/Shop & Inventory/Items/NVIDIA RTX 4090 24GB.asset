@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: gpu_rtx_4090
   itemName: NVIDIA RTX 4090 24GB
-  icon: {fileID: 21300000, guid: 7cf3c173a5d58ca4ebb62db624028334, type: 3}
+  icon: {fileID: 21300000, guid: 4b45504cdb307c14b9db36065e4ff44a, type: 3}
   category: GPU
   description: The absolute pinnacle of gaming performance. Extremely expensive and
     power-hungry.

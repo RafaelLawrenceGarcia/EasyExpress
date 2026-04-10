@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   id: ssd_990_m2
   itemName: Samsung 990 PRO 2TB NVMe M.2
-  icon: {fileID: 21300000, guid: 5a690ea349d130142801e90f97aa4a9f, type: 3}
+  icon: {fileID: 21300000, guid: 2fd2388a29be9c1469da5049a9b3c34e, type: 3}
   category: SSD
   description: Blistering fast storage that completely eliminates loading screens.
   specs: 'Type: NVMe M.2 Gen4 | Speed: 7450 MB/s Read | Capacity: 2TB | Power Draw:
