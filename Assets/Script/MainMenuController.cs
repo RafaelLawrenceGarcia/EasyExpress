@@ -137,7 +137,7 @@ public class MainMenu : MonoBehaviour
             {
                 cloudHasSaveData = true; // ← ADD THIS LINE
                 if (continueButton != null) continueButton.interactable = true;
-                if (statusText) statusText.text = "Welcome Back!";
+                if (statusText) statusText.text = "Welcome!";
 
                 string json = result.Data["GameData"].Value;
                 if (!string.IsNullOrEmpty(json) && saveInfoText != null)

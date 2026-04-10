@@ -342,7 +342,7 @@ public class AuthManager : MonoBehaviour
         loginMessageText.text = "Loading Player Profile...";
         yield return new WaitForSeconds(1.5f);
 
-        loginMessageText.text = "Welcome Back!";
+        loginMessageText.text = "Welcome!";
         yield return new WaitForSeconds(1.0f);
 
         FinalizeLogin();

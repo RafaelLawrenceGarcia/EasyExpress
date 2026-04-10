@@ -2709,7 +2709,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 100}
+  m_AnchoredPosition: {x: 0, y: 100.00002}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &900078635420788461
@@ -9227,8 +9227,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1467085264218317815}
   m_HandleRect: {fileID: 5780592800262608396}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 0.6666624
+  m_Value: -0.00000030517577
+  m_Size: 0.6661644
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -25796,7 +25796,7 @@ GameObject:
   - component: {fileID: 3916841115420659031}
   - component: {fileID: 5857053478203396869}
   m_Layer: 0
-  m_Name: Quad
+  m_Name: monitorScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

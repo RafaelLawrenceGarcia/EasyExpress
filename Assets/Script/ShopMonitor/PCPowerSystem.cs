@@ -1,40 +1,22 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-/// <summary>
-/// PCPowerSystem — Attach to the same GameObject as PCCaseBuilder.
-///
-/// Controls whether the PC can turn on. Checks:
-///   1. Is a power cord FULLY connected? (both outlet + PC ends)
-///   2. Does the PC have critical faults that prevent booting?
-///
-/// The PowerCordInteraction script calls ConnectPowerCord() only
-/// when BOTH ends of the cord are plugged in (outlet + PSU port).
-///
-/// SETUP:
-///   1. Add this to your PC Case prefab (same object as PCCaseBuilder).
-///      It will also be auto-added at runtime by the PCCaseBuilder change.
-///   2. Create an empty child called "PowerCordSlot":
-///      - Position it at the PSU power inlet on the back of the case
-///      - Add a small Box Collider
-///      - Tag it as "PowerCordSlot"
-///      - Put it on the interactable layer
-///   3. Drag that child into the "powerCordSnapPoint" field.
-/// </summary>
 public enum PowerResult
 {
     Success,          // 0 — PC boots fully (least severe)
     BootWithIssues,   // 1 — Boots but has non-critical faults
-    CrashToBSOD,      // 2 — Boots fully to desktop, then crashes to BSOD (NotSeated RAM, Overheating)
+    CrashToBSOD,      // 2 — Boots fully to desktop, then crashes to BSOD
     NoDisplay,        // 3 — Fans spin, no picture (GPU issue)
-    FailedPOST,       // 4 — PC stays on, shows BSOD immediately (Broken RAM, Corrupted BIOS)
+    FailedPOST,       // 4 — PC stays on, shows BSOD immediately
     NoPower           // 5 — Won't respond at all (most severe)
 }
+
 public class PCPowerSystem : MonoBehaviour
 {
     [HideInInspector] public PowerResult lastPowerResult = PowerResult.Success;
     [HideInInspector] public string lastBSODCode = "";
     [HideInInspector] public string lastBSODMessage = "";
+
     [Header("State (Read-Only in Inspector)")]
     [Tooltip("Is a power cord FULLY connected (outlet + PC)?")]
     public bool isPowerCordConnected = false;
@@ -50,12 +32,31 @@ public class PCPowerSystem : MonoBehaviour
     [Tooltip("Drag the 'PowerCordSlot' child transform here.")]
     public Transform powerCordSnapPoint;
 
+    // ═══════════════════════════════════════════════════════
+    //  MONITOR BACKLIGHT
+    //  Drag the monitor screen Renderer here. The screen
+    //  shows a faint backlight glow when the PC is on but
+    //  has no display signal (NoDisplay result).
+    // ═══════════════════════════════════════════════════════
+    [Header("Monitor Screen (Backlight Effect)")]
+    [Tooltip("The Renderer on the monitor screen mesh/quad. " +
+             "Leave empty if this PC case has no attached monitor.")]
+    public Renderer monitorScreen;
+
+    [Tooltip("Emission colour when the monitor is on but has no signal.\n" +
+             "A very dark blue-gray simulates LCD backlight bleed.")]
+    public Color noSignalEmission = new Color(0.015f, 0.015f, 0.025f);
+
+    [Tooltip("Emission colour when the monitor displays a working desktop.")]
+    public Color desktopEmission = new Color(0.25f, 0.28f, 0.35f);
+
+    [Tooltip("Base colour when the monitor is completely off.")]
+    public Color screenOffColor = Color.black;
+
     [HideInInspector] public bool skipStartReset = false;
 
     void Start()
     {
-
-        // Auto-find PowerCordSlot if not assigned (works for ALL PCs)
         if (powerCordSnapPoint == null)
         {
             foreach (Transform child in GetComponentsInChildren<Transform>(true))
@@ -68,13 +69,33 @@ public class PCPowerSystem : MonoBehaviour
                 }
             }
         }
+
+        // Auto-find monitor screen if not assigned
+        if (monitorScreen == null)
+        {
+            foreach (Transform child in GetComponentsInChildren<Transform>(true))
+            {
+                string n = child.name.ToLower();
+                if (n.Contains("screen") || n.Contains("display") || n.Contains("monitor_screen"))
+                {
+                    Renderer r = child.GetComponent<Renderer>();
+                    if (r != null)
+                    {
+                        monitorScreen = r;
+                        Debug.Log($"[PCPowerSystem] Auto-found monitor screen: {child.name}");
+                        break;
+                    }
+                }
+            }
+        }
+
         if (skipStartReset) return;
 
         isPoweredOn = false;
         isPowerCordConnected = false;
         SetFansState(false);
+        SetMonitorState(PowerResult.NoPower);
 
-        // Auto-find PowerCordSlot if not assigned in Inspector
         if (powerCordSnapPoint == null)
         {
             foreach (Transform child in GetComponentsInChildren<Transform>(true))
@@ -91,13 +112,8 @@ public class PCPowerSystem : MonoBehaviour
 
     // =============================================
     //  POWER CORD CONNECTION
-    //  (Called by PowerCordInteraction when BOTH
-    //   ends are connected — outlet + PC)
     // =============================================
 
-    /// <summary>
-    /// Called by PowerCordInteraction when both ends are plugged in.
-    /// </summary>
     public void ConnectPowerCord(GameObject cord)
     {
         isPowerCordConnected = true;
@@ -105,10 +121,6 @@ public class PCPowerSystem : MonoBehaviour
         Debug.Log($"[PCPowerSystem] Power cord delivering power to {gameObject.name}.");
     }
 
-    /// <summary>
-    /// Called when the cord is disconnected from either end.
-    /// Forces the PC off if it was running.
-    /// </summary>
     public void DisconnectPowerCord()
     {
         bool wasOn = isPoweredOn;
@@ -119,6 +131,7 @@ public class PCPowerSystem : MonoBehaviour
         {
             isPoweredOn = false;
             SetFansState(false);
+            SetMonitorState(PowerResult.NoPower);
             Debug.Log($"[PCPowerSystem] Power lost — {gameObject.name} forced OFF.");
         }
 
@@ -126,36 +139,24 @@ public class PCPowerSystem : MonoBehaviour
     }
 
     // =============================================
-    //  POWER TOGGLE (called by InspectionManager)
+    //  POWER TOGGLE
     // =============================================
 
-    /// <summary>
-    /// Attempts to toggle the PC on/off.
-    /// Returns true if the action succeeded.
-    /// 'reason' is filled with a user-friendly message.
-    /// </summary>
-    // ── NEW ──────────────────────────────────────────
-    /// <summary>
-    /// Attempts to toggle the PC on/off.
-    /// Returns true if the button press resulted in a state change.
-    /// 'reason' is filled with a user-friendly message.
-    /// </summary>
     public bool TryTogglePower(out string reason)
     {
-        // --- TURNING OFF (always allowed) ---
+        // --- TURNING OFF ---
         if (isPoweredOn)
         {
             isPoweredOn = false;
             SetFansState(false);
+            SetMonitorState(PowerResult.NoPower);
             lastPowerResult = PowerResult.Success;
             reason = "PC powered off.";
             Debug.Log($"[PCPowerSystem] {gameObject.name} turned OFF.");
             return true;
         }
 
-        // --- TURNING ON: CHECK REQUIREMENTS ---
-
-        // 1. Power cord must be fully connected (outlet + PC)
+        // --- TURNING ON ---
         if (!isPowerCordConnected)
         {
             lastPowerResult = PowerResult.NoPower;
@@ -164,7 +165,6 @@ public class PCPowerSystem : MonoBehaviour
             return false;
         }
 
-        // 2. Evaluate all faults with the tiered system
         PowerResult result = EvaluatePowerState();
         lastPowerResult = result;
 
@@ -176,52 +176,48 @@ public class PCPowerSystem : MonoBehaviour
                 return false;
 
             case PowerResult.CrashToBSOD:
-                // PC boots fully to desktop, then crashes to BSOD
                 isPoweredOn = true;
                 SetFansState(true);
+                SetMonitorState(result);
                 reason = GetCrashToBSODReason();
-                Debug.Log($"[PCPowerSystem] {gameObject.name} ON — will crash to BSOD after reaching desktop.");
+                Debug.Log($"[PCPowerSystem] {gameObject.name} ON — will crash to BSOD.");
                 return true;
 
             case PowerResult.FailedPOST:
-                // PC stays on, fans spin, BSOD shown immediately
                 isPoweredOn = true;
                 SetFansState(true);
+                SetMonitorState(result);
                 reason = GetFailedPOSTReason();
-                Debug.Log($"[PCPowerSystem] {gameObject.name} ON — POST failed, BSOD shown on monitor.");
-                // ── ADD THIS ──
+                Debug.Log($"[PCPowerSystem] {gameObject.name} ON — POST failed.");
                 StartCoroutine(DelayedShutdown(3.5f, "POST failure — auto shutdown."));
-                // ──────────────
                 return true;
+
             case PowerResult.NoDisplay:
-                // PC stays on (fans spin) but no display — GPU issue
                 isPoweredOn = true;
                 SetFansState(true);
+                SetMonitorState(result);  // ← backlit black screen
                 reason = GetNoDisplayReason();
                 Debug.Log($"[PCPowerSystem] {gameObject.name} ON but no display.");
                 return true;
 
             case PowerResult.BootWithIssues:
-                // PC boots but has non-critical issues
                 isPoweredOn = true;
                 SetFansState(true);
+                SetMonitorState(result);
                 reason = "PC powered on.\n⚠ Warning: Non-critical issues detected.";
                 Debug.Log($"[PCPowerSystem] {gameObject.name} ON with issues.");
                 return true;
 
-            default: // PowerResult.Success
+            default: // Success
                 isPoweredOn = true;
                 SetFansState(true);
+                SetMonitorState(result);
                 reason = "PC powered on successfully!";
                 Debug.Log($"[PCPowerSystem] {gameObject.name} turned ON.");
                 return true;
         }
     }
 
-    /// <summary>
-    /// Coroutine: Fans spin for a few seconds, then the PC shuts itself off.
-    /// Simulates a failed POST — the motherboard detects bad RAM / corrupted BIOS.
-    /// </summary>
     System.Collections.IEnumerator DelayedShutdown(float delay, string shutdownReason)
     {
         yield return new WaitForSeconds(delay);
@@ -230,20 +226,76 @@ public class PCPowerSystem : MonoBehaviour
         {
             isPoweredOn = false;
             SetFansState(false);
+            SetMonitorState(PowerResult.NoPower);
             Debug.Log($"[PCPowerSystem] Auto-shutdown: {shutdownReason}");
         }
     }
 
+    // =============================================
+    //  MONITOR BACKLIGHT CONTROL
+    // =============================================
+
     /// <summary>
-    /// Evaluates all parts and returns the worst power result tier.
-    /// Priority: NoPower > FailedPOST > NoDisplay > BootWithIssues > Success
+    /// Sets the monitor screen material to match the current power state.
+    /// - NoPower: screen completely dark (off)
+    /// - NoDisplay: faint backlight glow (on but no signal)
+    /// - Success/BootWithIssues: bright desktop emission
+    /// - FailedPOST/CrashToBSOD: handled by WorkstationMonitor (BSOD)
     /// </summary>
+    void SetMonitorState(PowerResult result)
+    {
+        if (monitorScreen == null) return;
+
+        Material mat = monitorScreen.material;
+
+        switch (result)
+        {
+            case PowerResult.NoPower:
+                // Screen completely off — no glow at all
+                mat.SetColor("_BaseColor", screenOffColor);
+                mat.SetColor("_Color", screenOffColor);           // fallback for Standard
+                mat.EnableKeyword("_EMISSION");
+                mat.SetColor("_EmissionColor", Color.black);
+                break;
+
+            case PowerResult.NoDisplay:
+                // Screen is ON but no signal — faint dark backlight
+                mat.SetColor("_BaseColor", screenOffColor);
+                mat.SetColor("_Color", screenOffColor);
+                mat.EnableKeyword("_EMISSION");
+                mat.SetColor("_EmissionColor", noSignalEmission);
+                break;
+
+            case PowerResult.FailedPOST:
+            case PowerResult.CrashToBSOD:
+                // These show BSOD — handled by WorkstationMonitor.
+                // We just make the screen lit so it doesn't look dead.
+                mat.SetColor("_BaseColor", screenOffColor);
+                mat.SetColor("_Color", screenOffColor);
+                mat.EnableKeyword("_EMISSION");
+                mat.SetColor("_EmissionColor", desktopEmission);
+                break;
+
+            case PowerResult.Success:
+            case PowerResult.BootWithIssues:
+                // Working display — bright backlight
+                mat.SetColor("_BaseColor", screenOffColor);
+                mat.SetColor("_Color", screenOffColor);
+                mat.EnableKeyword("_EMISSION");
+                mat.SetColor("_EmissionColor", desktopEmission);
+                break;
+        }
+    }
+
+    // =============================================
+    //  FAULT EVALUATION
+    // =============================================
+
     PowerResult EvaluatePowerState()
     {
         InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
         PowerResult worst = PowerResult.Success;
 
-        // ── PASS 1: Count installed (non-ghost) parts per category ──
         bool hasRAM = false;
         bool hasGPU = false;
         bool hasPSU = false;
@@ -264,7 +316,6 @@ public class PCPowerSystem : MonoBehaviour
             }
         }
 
-        // ── PASS 2: Check for missing essentials ──
         if (!hasPSU || !hasMotherboard || !hasCPU)
             return PowerResult.NoPower;
 
@@ -274,7 +325,6 @@ public class PCPowerSystem : MonoBehaviour
         if (!hasGPU)
             worst = WorstOf(worst, PowerResult.NoDisplay);
 
-        // ── PASS 3: Check faults on installed parts ──
         foreach (InspectableItem part in allParts)
         {
             if (part.isMainObject || part.isInventorySlot) continue;
@@ -288,13 +338,17 @@ public class PCPowerSystem : MonoBehaviour
 
         return worst;
     }
+
     PowerResult EvaluatePartFault(InspectableItem part)
     {
         if (part.fault == PartFault.None) return PowerResult.Success;
 
+        // Dusty alone is cosmetic — never causes boot issues
+        if (part.fault == PartFault.Dusty) return PowerResult.Success;
+
         string cat = part.partCategory;
 
-        // ── TIER 1: NO POWER (won't respond at all) ──
+        // TIER 1: NO POWER
         if (cat == "PSU" && (part.fault == PartFault.Broken || part.fault == PartFault.Overloaded))
             return PowerResult.NoPower;
         if (cat == "Motherboard" && (part.fault == PartFault.Broken || part.fault == PartFault.LooseConnection))
@@ -302,29 +356,31 @@ public class PCPowerSystem : MonoBehaviour
         if (cat == "CPU" && part.fault == PartFault.Broken)
             return PowerResult.NoPower;
 
-        // ── TIER 2: FAILED POST — PC stays on, BSOD shown immediately (never reached desktop) ──
+        // TIER 2: FAILED POST
         if (cat == "RAM" && (part.fault == PartFault.Broken || part.fault == PartFault.Incompatible))
             return PowerResult.FailedPOST;
         if (cat == "Motherboard" && part.fault == PartFault.Corrupted)
             return PowerResult.FailedPOST;
 
-        // ── TIER 2b: CRASH TO BSOD — boots fully to desktop, then crashes ──
+        // TIER 2b: CRASH TO BSOD
         if (cat == "RAM" && part.fault == PartFault.NotSeated)
             return PowerResult.CrashToBSOD;
-        if (part.fault == PartFault.Overheating)
+        if ((cat == "CPU" || cat == "Cooler") && part.fault == PartFault.Overheating)
             return PowerResult.CrashToBSOD;
 
-        // ── TIER 3: NO DISPLAY (fans spin, no picture) ──
+        // TIER 3: NO DISPLAY
         if (cat == "GPU" && (part.fault == PartFault.Broken || part.fault == PartFault.NotSeated))
             return PowerResult.NoDisplay;
 
-        // ── TIER 4: BOOTS WITH ISSUES ──
+        // ═══ DEBUG: Log exactly what's falling through ═══
+        Debug.LogWarning($"[PCPowerSystem] Unhandled fault: '{part.itemName}' " +
+                         $"cat={cat} fault={part.fault} desc='{part.faultDescription}'");
+
+        // TIER 4: BOOTS WITH ISSUES
         return PowerResult.BootWithIssues;
     }
-
     PowerResult WorstOf(PowerResult a, PowerResult b)
     {
-        // Lower enum value = more severe
         return (int)a < (int)b ? b : a;
     }
 
@@ -358,7 +414,6 @@ public class PCPowerSystem : MonoBehaviour
 
     string GetFailedPOSTReason()
     {
-        // Check if RAM is truly missing (no installed RAM at all)
         bool hasRAM = false;
         InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
         foreach (InspectableItem part in allParts)
@@ -370,7 +425,6 @@ public class PCPowerSystem : MonoBehaviour
         if (!hasRAM)
             return "No RAM installed!\nFans spin briefly, then PC shuts off.";
 
-        // Check for faults on installed RAM
         foreach (InspectableItem part in allParts)
         {
             if (part.isMainObject || part.isInventorySlot) continue;
@@ -385,6 +439,7 @@ public class PCPowerSystem : MonoBehaviour
         }
         return "POST failed — system powers on briefly then shuts off.";
     }
+
     string GetCrashToBSODReason()
     {
         InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
@@ -433,7 +488,6 @@ public class PCPowerSystem : MonoBehaviour
         {
             fan.enabled = on;
 
-            // Always kill emission directly on the renderer
             Renderer r = fan.GetComponentInChildren<Renderer>();
             if (r != null)
             {
@@ -450,10 +504,6 @@ public class PCPowerSystem : MonoBehaviour
     //  HELPERS (used by WorkstationMonitor)
     // =============================================
 
-    /// <summary>
-    /// Returns true if any installed part has a fault.
-    /// Used by WorkstationMonitor to show error screens.
-    /// </summary>
     public bool HasAnyFault()
     {
         InspectableItem[] allParts = GetComponentsInChildren<InspectableItem>(true);
@@ -465,9 +515,6 @@ public class PCPowerSystem : MonoBehaviour
         return false;
     }
 
-    /// <summary>
-    /// Returns descriptions of all current faults.
-    /// </summary>
     public List<string> GetAllFaultDescriptions()
     {
         List<string> faults = new List<string>();

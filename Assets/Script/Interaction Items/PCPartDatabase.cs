@@ -1,24 +1,5 @@
 // ============================================================
-//  PCPartDatabase.cs — COMPATIBILITY FIX
-//  
-//  WHAT CHANGED:
-//  1. Added FilterByCompatibility() helper method
-//  2. GenerateRandomPC() now filters CPU/RAM/Cooler by motherboard tags
-//  3. GeneratePCForPurpose() now filters CPU/RAM/Cooler by motherboard tags
-//  4. AddRAMSticks() now accepts a filtered array parameter
-//
-//  HOW IT WORKS:
-//  - After picking a motherboard, we extract its compatTags
-//  - Socket tags (AM4, AM5, LGA1151, LGA1200, LGA1700, etc.)
-//    are used to filter CPUs and Coolers
-//  - Memory tags (DDR3, DDR4, DDR5) are used to filter RAM
-//  - GPU, Storage, PSU, Fans have no socket/memory dependency
-//
-//  IMPORTANT — YOUR PART DATABASE MUST HAVE CORRECT TAGS:
-//  Motherboard compatTags: ["AM5", "DDR5"] or ["LGA1700", "DDR5"] etc.
-//  CPU compatTags:         ["AM5"] or ["LGA1700"] etc.
-//  RAM compatTags:         ["DDR5"] or ["DDR4"] etc.
-//  Cooler compatTags:      ["AM5"] or ["LGA1700"] etc.
+//  PCPartDatabase.cs — COMPATIBILITY FIX + FAULT FIX
 // ============================================================
 
 using UnityEngine;
@@ -76,11 +57,8 @@ public class PCPartDatabase : ScriptableObject
 
     // =============================================
     //  COMPATIBILITY TAG SETS
-    //  Used to identify which tags represent sockets
-    //  vs memory types when filtering parts.
     // =============================================
 
-    // Socket tags — must match between Motherboard ↔ CPU ↔ Cooler
     private static readonly HashSet<string> SOCKET_TAGS = new HashSet<string>(
         System.StringComparer.OrdinalIgnoreCase)
     {
@@ -89,7 +67,6 @@ public class PCPartDatabase : ScriptableObject
         "LGA2066", "LGA4677"
     };
 
-    // Memory tags — must match between Motherboard ↔ RAM
     private static readonly HashSet<string> MEMORY_TAGS = new HashSet<string>(
         System.StringComparer.OrdinalIgnoreCase)
     {
@@ -98,15 +75,8 @@ public class PCPartDatabase : ScriptableObject
 
     // =============================================
     //  COMPATIBILITY FILTER
-    //  Returns only parts whose compatTags share at
-    //  least one tag from the given filter set.
     // =============================================
 
-    /// <summary>
-    /// Filters a parts array to only those compatible with the given motherboard.
-    /// tagCategory: "socket" filters by socket tags, "memory" filters by memory tags.
-    /// Returns the filtered array. If no matches, returns the original array as fallback.
-    /// </summary>
     public StartingPCComponent[] FilterByCompatibility(
         StartingPCComponent[] pool,
         StartingPCComponent motherboard,
@@ -115,10 +85,8 @@ public class PCPartDatabase : ScriptableObject
         if (pool == null || pool.Length == 0) return pool;
         if (motherboard == null || motherboard.compatTags == null) return pool;
 
-        // Extract the relevant tags from the motherboard
         HashSet<string> relevantTagSet = (tagCategory == "memory") ? MEMORY_TAGS : SOCKET_TAGS;
 
-        // Get motherboard's tags that belong to the relevant category
         HashSet<string> moboRelevantTags = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
         foreach (string tag in motherboard.compatTags)
         {
@@ -127,20 +95,17 @@ public class PCPartDatabase : ScriptableObject
                 moboRelevantTags.Add(trimmed);
         }
 
-        // If motherboard has no tags in this category, skip filtering
         if (moboRelevantTags.Count == 0)
         {
             Debug.LogWarning($"[PCPartDB] Motherboard '{motherboard.partName}' has no {tagCategory} tags — skipping filter.");
             return pool;
         }
 
-        // Filter: keep parts that share at least one relevant tag with the motherboard
         List<StartingPCComponent> compatible = new List<StartingPCComponent>();
         foreach (StartingPCComponent part in pool)
         {
             if (part.compatTags == null || part.compatTags.Length == 0)
             {
-                // Parts with no tags are treated as universal (backward compat)
                 compatible.Add(part);
                 continue;
             }
@@ -157,7 +122,6 @@ public class PCPartDatabase : ScriptableObject
 
         if (compatible.Count == 0)
         {
-            // No compatible parts found — fall back to full pool to avoid empty builds
             Debug.LogWarning($"[PCPartDB] No {tagCategory}-compatible parts found for " +
                              $"motherboard '{motherboard.partName}' (tags: {string.Join(",", motherboard.compatTags)}). " +
                              $"Using full pool as fallback.");
@@ -173,7 +137,6 @@ public class PCPartDatabase : ScriptableObject
 
     // =============================================
     //  MASTER API: Generate Random PC (generic)
-    //  NOW WITH COMPATIBILITY FILTERING
     // =============================================
     public RandomPCResult GenerateRandomPC()
     {
@@ -182,46 +145,36 @@ public class PCPartDatabase : ScriptableObject
         if (cases == null || cases.Length == 0) return result;
         result.casePrefab = cases[Random.Range(0, cases.Length)];
 
-        // ── Step 1: Pick motherboard FIRST (everything depends on it) ──
         if (motherboards == null || motherboards.Length == 0) return result;
         StartingPCComponent chosenMotherboard = motherboards[Random.Range(0, motherboards.Length)];
         AddCopiedPart(chosenMotherboard, result.parts);
 
-        // ── Step 2: PSU (no compatibility constraint) ──
         TryAddPart(psus, result.parts, true);
 
-        // ── Step 3: CPU (must match motherboard SOCKET) ──
         StartingPCComponent[] compatCPUs = FilterByCompatibility(cpus, chosenMotherboard, "socket");
         bool hasCPU = TryAddPart(compatCPUs, result.parts, Roll(cpuChance));
 
-        // ── Step 4: GPU (no socket/memory constraint) ──
         TryAddPart(gpus, result.parts, Roll(gpuChance));
 
-        // ── Step 5: RAM (must match motherboard MEMORY type) ──
         StartingPCComponent[] compatRAM = FilterByCompatibility(rams, chosenMotherboard, "memory");
         if (compatRAM != null && compatRAM.Length > 0 && Roll(ramChance))
         {
             int stickCount = Random.Range(minRAMSticks, maxRAMSticks + 1);
-            // Pick ONE ram type, then duplicate — no mixed DDR4/DDR5
             StartingPCComponent chosenRam = compatRAM[Random.Range(0, compatRAM.Length)];
             for (int i = 0; i < stickCount; i++) AddCopiedPart(chosenRam, result.parts);
         }
 
-        // ── Step 6: Storage (no constraint) ──
         TryAddPart(storage, result.parts, Roll(storageChance));
 
-        // ── Step 7: Cooler (must match motherboard SOCKET for mounting) ──
         if (hasCPU)
         {
             StartingPCComponent[] compatCoolers = FilterByCompatibility(coolers, chosenMotherboard, "socket");
             TryAddPart(compatCoolers, result.parts, true);
         }
 
-        // ── Step 8: Fans (no constraint) ──
-        // ── Step 8: Fans — always 1 back + 2-3 front = 3-4 total ──
         if (fans != null && fans.Length > 0)
         {
-            int fanCount = Random.Range(3, 5); // 3 or 4
+            int fanCount = Random.Range(3, 5);
             for (int i = 0; i < fanCount; i++) AddCopiedPart(fans[Random.Range(0, fans.Length)], result.parts);
         }
 
@@ -230,7 +183,6 @@ public class PCPartDatabase : ScriptableObject
 
     // =============================================
     //  PURPOSE-DRIVEN PC GENERATION (for Build jobs)
-    //  NOW WITH COMPATIBILITY FILTERING
     // =============================================
     public RandomPCResult GeneratePCForPurpose(BuildPurpose purpose)
     {
@@ -239,15 +191,12 @@ public class PCPartDatabase : ScriptableObject
         if (cases == null || cases.Length == 0) return result;
         result.casePrefab = cases[Random.Range(0, cases.Length)];
 
-        // ── Pick motherboard FIRST ──
         if (motherboards == null || motherboards.Length == 0) return result;
         StartingPCComponent chosenMotherboard = motherboards[Random.Range(0, motherboards.Length)];
         AddCopiedPart(chosenMotherboard, result.parts);
 
-        // PSU is always required (no compatibility constraint)
         TryAddPart(psus, result.parts, true);
 
-        // ── Filter parts by motherboard compatibility ──
         StartingPCComponent[] compatCPUs = FilterByCompatibility(cpus, chosenMotherboard, "socket");
         StartingPCComponent[] compatRAM = FilterByCompatibility(rams, chosenMotherboard, "memory");
         StartingPCComponent[] compatCoolers = FilterByCompatibility(coolers, chosenMotherboard, "socket");
@@ -255,7 +204,6 @@ public class PCPartDatabase : ScriptableObject
         switch (purpose)
         {
             case BuildPurpose.School:
-                // Basic: CPU always, GPU optional (30%), 1-2 RAM, storage always, cooler always
                 TryAddPart(compatCPUs, result.parts, true);
                 TryAddPart(gpus, result.parts, Roll(30f));
                 AddRAMSticks(result.parts, 1, 2, compatRAM);
@@ -265,7 +213,6 @@ public class PCPartDatabase : ScriptableObject
                 break;
 
             case BuildPurpose.Office:
-                // Reliable mid-range: CPU always, GPU likely (60%), 2 RAM, storage always, cooler always
                 TryAddPart(compatCPUs, result.parts, true);
                 TryAddPart(gpus, result.parts, Roll(60f));
                 AddRAMSticks(result.parts, 2, 2, compatRAM);
@@ -275,7 +222,6 @@ public class PCPartDatabase : ScriptableObject
                 break;
 
             case BuildPurpose.Streaming:
-                // Mid-high: CPU always, GPU always, 2-4 RAM, storage always, cooler always, fans
                 TryAddPart(compatCPUs, result.parts, true);
                 TryAddPart(gpus, result.parts, true);
                 AddRAMSticks(result.parts, 2, 4, compatRAM);
@@ -285,7 +231,6 @@ public class PCPartDatabase : ScriptableObject
                 break;
 
             case BuildPurpose.Gaming:
-                // High-end: Everything maxed
                 TryAddPart(compatCPUs, result.parts, true);
                 TryAddPart(gpus, result.parts, true);
                 AddRAMSticks(result.parts, 2, 4, compatRAM);
@@ -299,16 +244,14 @@ public class PCPartDatabase : ScriptableObject
     }
 
     // =============================================
-    //  UPDATED: AddRAMSticks now takes a filtered array
+    //  RAM / FAN HELPERS
     // =============================================
     void AddRAMSticks(List<StartingPCComponent> parts, int min, int max, StartingPCComponent[] ramPool = null)
     {
-        // Use filtered pool if provided, otherwise fall back to master array
         StartingPCComponent[] pool = (ramPool != null && ramPool.Length > 0) ? ramPool : rams;
         if (pool == null || pool.Length == 0) return;
 
         int count = Random.Range(min, max + 1);
-        // Pick ONE type — all sticks match
         StartingPCComponent chosenRam = pool[Random.Range(0, pool.Length)];
         for (int i = 0; i < count; i++)
             AddCopiedPart(chosenRam, parts);
@@ -380,7 +323,7 @@ public class PCPartDatabase : ScriptableObject
     }
 
     // =============================================
-    //  MASTER JOB GENERATOR (Calls Build or Repair)
+    //  MASTER JOB GENERATOR
     // =============================================
     public EmailData GenerateRandomJob()
     {
@@ -394,6 +337,14 @@ public class PCPartDatabase : ScriptableObject
         BuildPurpose purpose = purposes[Random.Range(0, purposes.Length)];
 
         RandomPCResult desiredPC = GeneratePCForPurpose(purpose);
+
+        // ═══ CLEAR ALL FAULTS — build jobs have no faults ═══
+        foreach (var part in desiredPC.parts)
+        {
+            part.fault = PartFault.None;
+            part.faultDescription = "";
+            part.isDusty = false;
+        }
 
         EmailData job = ScriptableObject.CreateInstance<EmailData>();
         job.jobType = JobType.Build;
@@ -417,6 +368,19 @@ public class PCPartDatabase : ScriptableObject
     public EmailData GenerateRandomEmailJob()
     {
         RandomPCResult pc = GenerateRandomPC();
+
+        // ═══════════════════════════════════════════════════════════
+        //  CRITICAL FIX: Clear ALL inherited faults from database
+        //  entries BEFORE ApplyFaultToPC assigns the real ones.
+        //  Without this, parts from the Inspector that have stale
+        //  fault values (e.g. Corrupted on fans) bleed through.
+        // ═══════════════════════════════════════════════════════════
+        foreach (var part in pc.parts)
+        {
+            part.fault = PartFault.None;
+            part.faultDescription = "";
+            part.isDusty = false;
+        }
 
         EmailData job = ScriptableObject.CreateInstance<EmailData>();
         job.jobType = JobType.Repair;
@@ -455,14 +419,11 @@ public class PCPartDatabase : ScriptableObject
 
         // ═══════════════════════════════════════════════════════
         //  PROGRESSIVE PROBLEM UNLOCKING
-        //  Problems unlock in tiers every 3 days.
-        //  Each tier ADDS to the pool — previous tiers stay.
-        //
         //  Day 1-3:   Tier 1 — No Display, Boot Loop (GPU/RAM)
-        //  Day 4-6:   Tier 2 — + Blue Screen, Slow Performance (Storage/RAM)
-        //  Day 7-9:   Tier 3 — + Overheating, Loud Fan (Cooler/Fan)
-        //  Day 10-12: Tier 4 — + Won't Turn On, Random Shutdowns (PSU/Mobo)
-        //  Day 13+:   Tier 5 — + Full of Dust (all problems available)
+        //  Day 4-6:   Tier 2 — + Blue Screen, Slow Performance
+        //  Day 7-9:   Tier 3 — + Overheating, Loud Fan
+        //  Day 10-12: Tier 4 — + Won't Turn On, Random Shutdowns
+        //  Day 13+:   Tier 5 — + Full of Dust
         // ═══════════════════════════════════════════════════════
 
         int currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
@@ -470,38 +431,37 @@ public class PCPartDatabase : ScriptableObject
 
         List<ProblemRequirement> allProblems = new List<ProblemRequirement>();
 
-        // Tier 1 (Day 1-3): GPU/RAM problems — always available
+        // Tier 1 (Day 1-3): GPU/RAM problems
         allProblems.Add(new ProblemRequirement("No Display on Monitor", new string[] { "GPU", "RAM" }));
-        allProblems.Add(new ProblemRequirement("Boot Loop", new string[] { "RAM", "Motherboard" }));
+        allProblems.Add(new ProblemRequirement("Boot Loop", new string[] { "RAM", "Motherboard", "GPU" }));
 
-        // Tier 2 (Day 4+): Storage/RAM problems
+        // Tier 2 (Day 4+)
         if (tier >= 2)
         {
             allProblems.Add(new ProblemRequirement("Blue Screen of Death", new string[] { "RAM", "Storage" }));
             allProblems.Add(new ProblemRequirement("Slow Performance", new string[] { "Storage", "RAM" }));
         }
 
-        // Tier 3 (Day 7+): Cooling problems
+        // Tier 3 (Day 7+)
         if (tier >= 3)
         {
             allProblems.Add(new ProblemRequirement("PC Keeps Overheating", new string[] { "Cooler", "Fan" }));
             allProblems.Add(new ProblemRequirement("Loud Fan Noise", new string[] { "Fan", "Cooler" }));
         }
 
-        // Tier 4 (Day 10+): Power/motherboard problems
+        // Tier 4 (Day 10+)
         if (tier >= 4)
         {
             allProblems.Add(new ProblemRequirement("Won't Turn On", new string[] { "PSU", "Motherboard" }));
             allProblems.Add(new ProblemRequirement("Random Shutdowns", new string[] { "PSU", "CPU" }));
         }
 
-        // Tier 5 (Day 13+): Everything
+        // Tier 5 (Day 13+)
         if (tier >= 5)
         {
             allProblems.Add(new ProblemRequirement("Full of Dust", new string[] { }));
         }
 
-        // Filter to problems the PC can actually have (has required parts)
         List<string> validProblems = new List<string>();
         foreach (var prob in allProblems)
         {
@@ -530,6 +490,16 @@ public class PCPartDatabase : ScriptableObject
 
     // =============================================
     //  FAULT ASSIGNMENT
+    //
+    //  RULES:
+    //  - Only ONE primary fault per problem (the first TryFault
+    //    that succeeds breaks out of the switch).
+    //  - Fans NEVER get Corrupted — they're mechanical parts.
+    //    Valid fan faults: Broken (bearing worn out), Dusty
+    //    (blades clogged), LooseConnection (cable loose).
+    //  - Overheating / thermal paste only assigned by Tier 3+
+    //    problems (PC Keeps Overheating, Random Shutdowns).
+    //  - GPU NotSeated can cause both No Display AND Boot Loop.
     // =============================================
     void ApplyFaultToPC(string problem, List<StartingPCComponent> parts)
     {
@@ -537,22 +507,47 @@ public class PCPartDatabase : ScriptableObject
 
         switch (problem)
         {
-            case "Blue Screen of Death":
-                if (TryFaultByCategory(parts, "RAM", PartFault.NotSeated, "RAM stick not seated properly — push until it clicks")) break;
-                TryFaultByCategory(parts, "Storage", PartFault.Corrupted, "Storage drive has corrupted sectors");
-                break;
             case "No Display on Monitor":
-                if (TryFaultByCategory(parts, "GPU", PartFault.NotSeated, "GPU not fully inserted into PCIe slot")) break;
-                TryFaultByCategory(parts, "RAM", PartFault.Broken, "Faulty RAM stick preventing POST");
+                if (Roll(60f))
+                {
+                    if (TryFaultByCategory(parts, "GPU", PartFault.NotSeated,
+                        "GPU not fully inserted into PCIe slot")) break;
+                }
+                TryFaultByCategory(parts, "GPU", PartFault.Broken,
+                    "GPU is dead — no display output");
                 break;
+
+            case "Boot Loop":
+                if (Roll(35f))
+                {
+                    if (TryFaultByCategory(parts, "GPU", PartFault.NotSeated,
+                        "GPU not seated properly — system keeps restarting")) break;
+                }
+                TryFaultByCategory(parts, "RAM", PartFault.NotSeated,
+                    "RAM not seated correctly — system fails POST and restarts");
+                break;
+
+            case "Blue Screen of Death":
+                if (TryFaultByCategory(parts, "RAM", PartFault.NotSeated,
+                    "RAM stick not seated properly — push until it clicks")) break;
+                TryFaultByCategory(parts, "Storage", PartFault.Corrupted,
+                    "Storage drive has corrupted sectors");
+                break;
+
             case "PC Keeps Overheating":
-                if (TryFaultByCategory(parts, "Cooler", PartFault.Overheating, "Thermal paste dried out — cooler not making proper contact")) break;
-                TryFaultByCategory(parts, "Fan", PartFault.Dusty, "Fan blades clogged with dust — not spinning properly");
+                if (TryFaultByCategory(parts, "Cooler", PartFault.Overheating,
+                    "Thermal paste dried out — cooler not making proper contact")) break;
+                TryFaultByCategory(parts, "Fan", PartFault.Dusty,
+                    "Fan blades clogged with dust — barely spinning");
                 break;
+
             case "Won't Turn On":
-                if (TryFaultByCategory(parts, "PSU", PartFault.Broken, "PSU is dead — no power output detected")) break;
-                TryFaultByCategory(parts, "Motherboard", PartFault.LooseConnection, "24-pin ATX power cable loose — reseat the connection");
+                if (TryFaultByCategory(parts, "PSU", PartFault.Broken,
+                    "PSU is dead — no power output detected")) break;
+                TryFaultByCategory(parts, "Motherboard", PartFault.LooseConnection,
+                    "24-pin ATX power cable loose — reseat the connection");
                 break;
+
             case "Full of Dust":
                 foreach (var p in parts)
                 {
@@ -561,25 +556,50 @@ public class PCPartDatabase : ScriptableObject
                     p.faultDescription = "Covered in dust — needs cleaning";
                 }
                 break;
+
             case "Random Shutdowns":
-                if (TryFaultByCategory(parts, "PSU", PartFault.Overloaded, "PSU wattage too low for this build — causes random shutdowns")) break;
-                TryFaultByCategory(parts, "CPU", PartFault.Overheating, "CPU throttling due to heat — shuts down to protect itself");
+                if (TryFaultByCategory(parts, "PSU", PartFault.Overloaded,
+                    "PSU wattage too low for this build — causes random shutdowns")) break;
+                TryFaultByCategory(parts, "CPU", PartFault.Overheating,
+                    "CPU throttling due to heat — shuts down to protect itself");
                 break;
+
             case "Loud Fan Noise":
-                if (TryFaultByCategory(parts, "Fan", PartFault.Broken, "Fan bearing worn out — grinding noise")) break;
-                TryFaultByCategory(parts, "Cooler", PartFault.Dusty, "Cooler fan clogged with dust — running at max RPM");
+                if (TryFaultByCategory(parts, "Fan", PartFault.Broken,
+                    "Fan bearing worn out — grinding noise")) break;
+                TryFaultByCategory(parts, "Cooler", PartFault.Dusty,
+                    "Cooler fan clogged with dust — running at max RPM");
                 break;
+
             case "Slow Performance":
-                if (TryFaultByCategory(parts, "Storage", PartFault.Outdated, "Old HDD failing — extremely slow read/write speeds")) break;
-                TryFaultByCategory(parts, "RAM", PartFault.Incompatible, "RAM running at wrong speed — not compatible with this motherboard");
+                if (TryFaultByCategory(parts, "Storage", PartFault.Outdated,
+                    "Old HDD failing — extremely slow read/write speeds")) break;
+                TryFaultByCategory(parts, "RAM", PartFault.Incompatible,
+                    "RAM running at wrong speed — not compatible with this motherboard");
                 break;
-            case "Boot Loop":
-                if (TryFaultByCategory(parts, "RAM", PartFault.NotSeated, "RAM not seated correctly — system fails POST and restarts")) break;
-                TryFaultByCategory(parts, "Motherboard", PartFault.Corrupted, "BIOS corrupted — needs reset or reflash");
-                break;
+
             default:
-                ApplyRandomFallbackFault(parts);
+                // Do NOT assign random faults — unknown problems get no fault
+                Debug.LogWarning($"[PCPartDB] Unknown problem '{problem}' — no fault assigned.");
                 break;
+        }
+
+        // ═══ SAFETY SWEEP: strip invalid faults ═══
+        foreach (var p in parts)
+        {
+            if (p.fault == PartFault.None) continue;
+
+            // Fans are mechanical — never Corrupted, Incompatible, Outdated, or Overheating
+            if (p.partCategory == "Fan" &&
+                (p.fault == PartFault.Corrupted ||
+                 p.fault == PartFault.Incompatible ||
+                 p.fault == PartFault.Outdated ||
+                 p.fault == PartFault.Overheating))
+            {
+                Debug.LogWarning($"[PCPartDB] Stripped invalid fault '{p.fault}' from fan '{p.partName}'");
+                p.fault = PartFault.None;
+                p.faultDescription = "";
+            }
         }
     }
 
@@ -597,9 +617,22 @@ public class PCPartDatabase : ScriptableObject
     void ApplyRandomFallbackFault(List<StartingPCComponent> parts)
     {
         if (parts.Count == 0) return;
-        StartingPCComponent target = parts[Random.Range(0, parts.Count)];
+        // Exclude fans from random fallback faults — only mechanical issues
+        List<StartingPCComponent> candidates = new List<StartingPCComponent>();
+        foreach (var p in parts)
+        {
+            if (p.partCategory != "Fan") candidates.Add(p);
+        }
+        if (candidates.Count == 0) candidates.AddRange(parts);
+
+        StartingPCComponent target = candidates[Random.Range(0, candidates.Count)];
         PartFault[] possibleFaults = { PartFault.NotSeated, PartFault.Broken, PartFault.Dusty, PartFault.LooseConnection };
-        string[] descriptions = { $"{target.partCategory} not seated properly", $"{target.partCategory} appears to be defective", $"{target.partCategory} is covered in dust", $"{target.partCategory} has a loose connection" };
+        string[] descriptions = {
+            $"{target.partName}: not seated properly",
+            $"{target.partName}: appears to be defective",
+            $"{target.partName}: covered in dust",
+            $"{target.partName}: has a loose connection"
+        };
         int pick = Random.Range(0, possibleFaults.Length);
         target.fault = possibleFaults[pick];
         target.faultDescription = descriptions[pick];
@@ -626,9 +659,10 @@ public class PCPartDatabase : ScriptableObject
         copy.compatTags = original.compatTags;
         copy.powerDraw = original.powerDraw;
         copy.maxWattage = original.maxWattage;
-        copy.isDusty = original.isDusty;
-        copy.fault = original.fault;
-        copy.faultDescription = original.faultDescription;
+        // Always copy as clean — faults are applied later by ApplyFaultToPC
+        copy.isDusty = false;
+        copy.fault = PartFault.None;
+        copy.faultDescription = "";
         targetList.Add(copy);
     }
 
@@ -744,7 +778,6 @@ public class PCPartDatabase : ScriptableObject
         string[] signoffs = { $"Thanks,\n{senderName}", $"Best regards,\n{senderName}",
                              $"Hoping to hear from you soon,\n{senderName}", $"Cheers,\n{senderName}" };
 
-        // ── Problem-specific symptom paragraphs ─────────────────────────────────
         string symptomParagraph;
         switch (problem)
         {
@@ -834,7 +867,6 @@ public class PCPartDatabase : ScriptableObject
                 break;
         }
 
-        // ── Closing — always explicitly mentions parts + labour ──────────────────
         string[] closings =
         {
         $"I understand a repair like this may require replacement parts as well as labour, and I'm happy to cover both. My total budget for parts and labour is ₱{reward:N0}. Please let me know if you can help!",
@@ -871,7 +903,7 @@ public class PCPartDatabase : ScriptableObject
             case "Random Shutdowns": objectives.Add("Check PSU wattage capacity"); objectives.Add("Monitor CPU temperatures"); break;
             case "Loud Fan Noise": objectives.Add("Inspect fan bearings"); objectives.Add("Clean or replace noisy fans"); break;
             case "Slow Performance": objectives.Add("Check storage health"); objectives.Add("Verify RAM compatibility"); break;
-            case "Boot Loop": objectives.Add("Reseat RAM sticks"); objectives.Add("Check BIOS status"); break;
+            case "Boot Loop": objectives.Add("Reseat RAM and GPU"); objectives.Add("Check BIOS status"); break;
             default: objectives.Add("Replace broken part"); break;
         }
         objectives.Add("Boot to Desktop");

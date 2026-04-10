@@ -214,6 +214,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -350,6 +351,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -872,6 +874,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -1119,6 +1122,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -1622,6 +1626,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -2253,6 +2258,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -2568,6 +2574,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -3523,6 +3530,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -3730,6 +3738,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -3977,6 +3986,7 @@ GameObject:
   - component: {fileID: 7133620516744964982}
   - component: {fileID: 1322683458348684211}
   - component: {fileID: 8863329079035341253}
+  - component: {fileID: 7746460186217149723}
   m_Layer: 6
   m_Name: CPU Lock
   m_TagString: Untagged
@@ -4089,6 +4099,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -4099,6 +4110,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
+--- !u!64 &7746460186217149723
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7169989032857910984}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1990054044491915879, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!1 &7241713936521430419
 GameObject:
   m_ObjectHideFlags: 0
@@ -4111,6 +4144,7 @@ GameObject:
   - component: {fileID: 4385885808181300619}
   - component: {fileID: 6177797691700275570}
   - component: {fileID: 624326346134399190}
+  - component: {fileID: 467299883656859278}
   m_Layer: 6
   m_Name: CPU Cover
   m_TagString: Untagged
@@ -4223,6 +4257,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -4234,6 +4269,28 @@ MonoBehaviour:
   fault: 0
   faultDescription: 
   linkedPrebuiltWire: {fileID: 0}
+--- !u!64 &467299883656859278
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7241713936521430419}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2522795928661360507, guid: 4bb9bea9e0ff46c45afbe002accd2fef, type: 3}
 --- !u!1 &7403527413008650402
 GameObject:
   m_ObjectHideFlags: 0

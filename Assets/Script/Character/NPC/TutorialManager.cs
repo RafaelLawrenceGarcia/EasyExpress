@@ -12,6 +12,8 @@ public enum DiagState
     RemoveNewRAM, InstallOldRAM, TestWithOldRAM,
     // Final fix (put new RAM back)
     RemoveOldRAMAgain, InstallNewRAMFinal, TestFinal,
+    // Close up the PC after repair is verified
+    TurnOffForClose, CloseUpPC,
     Done
 }
 
@@ -105,7 +107,12 @@ public partial class TutorialManager : MonoBehaviour
     [Tooltip("POST failed — old RAM confirmed broken.")]
     public DialogueSequence dlg_RAMVerifiedBroken;
 
-    [Header("Dialogue — Phase 3g: Repair Complete")]
+    [Header("Dialogue — Phase 3g: Close Up PC")]
+    [Tooltip("Turn off PC and reinstall side panel + screws before shipping.\n" +
+             "Create a DialogueSequence asset and drag it here.")]
+    public DialogueSequence dlg_CloseUpPC;
+
+    [Header("Dialogue — Phase 3h: Repair Complete")]
     [Tooltip("All fixed — exit inspection and submit via email.")]
     public DialogueSequence dlg_RepairComplete;
 
@@ -208,7 +215,8 @@ public partial class TutorialManager : MonoBehaviour
         && (diagState == DiagState.InstallNewRAM
          || diagState == DiagState.InstallNewGPU
          || diagState == DiagState.InstallOldRAM
-         || diagState == DiagState.InstallNewRAMFinal);
+         || diagState == DiagState.InstallNewRAMFinal
+         || diagState == DiagState.CloseUpPC);
     public bool IsEndDayStep() => false;
     public bool IsEmailStep() => step == 25;
     public bool IsInspectPCAllowed() => true;
@@ -320,13 +328,6 @@ public partial class TutorialManager : MonoBehaviour
         if (step == 26) TaskListUI.Instance?.CompleteTask(0);
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  FIX 1: Guard OnReenteredInspect against null clone
-    //  CompletePCTask is called by PlayerInteract BEFORE Inspect()
-    //  runs, so im.currentClone may not exist yet.
-    //  NotifyInspectionCloneReady (called at the end of Inspect)
-    //  will handle initialization when the clone IS ready.
-    // ═══════════════════════════════════════════════════════════
     public void CompletePCTask()
     {
         if (step == 11)
@@ -338,9 +339,6 @@ public partial class TutorialManager : MonoBehaviour
         }
         if (step == 15 && !panelRemoved)
         {
-            // Only run OnReenteredInspect if the clone already exists.
-            // If Inspect() hasn't created the clone yet, NotifyInspectionCloneReady
-            // will handle step-15 setup once the clone is ready.
             InspectionManager im = FindFirstObjectByType<InspectionManager>();
             if (im != null && im.currentClone != null)
                 OnReenteredInspect();
@@ -379,22 +377,16 @@ public partial class TutorialManager : MonoBehaviour
             {
                 CompleteAllTasks();
                 step = 6;
-                // FIX: Go straight to the task — dlg_TalkCustomer already
-                // played at step 4 and doesn't need to repeat.
                 StartStep_TalkToCustomer();
             }
             else
             {
-                // Player exited without pressing G — remind them
                 SetTask("TASK",
                     "Press [E] on the PC to inspect it again",
                     "Press [G] to open the PC Summary Panel",
                     "Press [Esc] to exit when done");
                 HideArrow();
                 StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.CashierPC));
-                // FIX: Do NOT reset summaryDialoguePlayed here.
-                // The PC Summary intro dialogue should only play once.
-                // Resetting it caused the dialogue to replay every re-entry.
             }
             return;
         }
@@ -439,6 +431,16 @@ public partial class TutorialManager : MonoBehaviour
         }
         if (step == 16)
         {
+            // Close-up: turn off PC before reinstalling panel + screws
+            if (!poweredOn && diagState == DiagState.TurnOffForClose)
+            {
+                TaskListUI.Instance?.CompleteTask(0);
+                TaskListUI.Instance?.CompleteTask(1);
+                diagState = DiagState.CloseUpPC;
+                ShowSwapTask();
+                return;
+            }
+
             // Complete "Turn off the PC" task when player powers off during removal steps
             bool isRemovalState = diagState == DiagState.RemoveOldRAM
                                || diagState == DiagState.RemoveOldGPU
@@ -489,7 +491,7 @@ public partial class TutorialManager : MonoBehaviour
             TaskListUI.Instance?.CompleteTask(0);
             Dialogue(0.5f, dlg_CheckManualNoDisplay, () =>
             {
-                diagState = DiagState.DisconnectGPUWire;  // ← was RemoveOldGPU
+                diagState = DiagState.DisconnectGPUWire;
                 ShowSwapTask();
             });
         }
@@ -617,11 +619,6 @@ public partial class TutorialManager : MonoBehaviour
     void HideArrow() { tutorialHighlighter?.Hide(); }
     void HidePointer() { if (TutorialUIPointer.Instance != null) TutorialUIPointer.Instance.Hide(); }
 
-    /// <summary>
-    /// Highlights a button on the monitor with a pulsing ring.
-    /// Called by TutorialManager.uiguide.cs PointAt() alongside
-    /// the existing TutorialUIPointer arrow.
-    /// </summary>
     void HighlightMonitorButton(UnityEngine.RectTransform target, string label = null)
     {
         if (MonitorButtonHighlight.Instance != null)
@@ -682,10 +679,6 @@ public partial class TutorialManager : MonoBehaviour
         return c != null ? c.partDatabase : null;
     }
 
-    /// <summary>
-    /// Called by CustomerDeskManager after the desk PC is spawned.
-    /// Re-applies the highlight to the actual spawned object.
-    /// </summary>
     public void NotifyDeskPCSpawned(Transform deskPC)
     {
         if (step == 5 && deskPC != null)
@@ -695,24 +688,6 @@ public partial class TutorialManager : MonoBehaviour
         }
     }
 
-    // ═══════════════════════════════════════════════════════════
-    //  FIX 2: NotifyInspectionCloneReady
-    //
-    //  Two changes:
-    //  A) Step 12: Highlight the power cord connector port INSIDE
-    //     the inspection clone instead of the world-space WallOutlet
-    //     (which is invisible during inspection because the camera
-    //     only renders InspectLayer).
-    //
-    //  B) Step 15: If totalScrewsOnPanel is still 0 (because
-    //     OnReenteredInspect ran before the clone existed), count
-    //     the screws now and update the task UI.
-    // ═══════════════════════════════════════════════════════════
-
-    /// <summary>
-    /// Called by InspectionManager once the inspection clone is fully built.
-    /// Highlights the relevant part based on current tutorial step.
-    /// </summary>
     public void NotifyInspectionCloneReady(GameObject clone)
     {
         if (clone == null) return;
@@ -725,10 +700,6 @@ public partial class TutorialManager : MonoBehaviour
 
         Debug.Log($"[Tutorial] NotifyInspectionCloneReady — step={step}, diagState={diagState}");
 
-        // ── Step 12: Highlight the power cord connector port INSIDE the clone ──
-        // The WallOutlet lives in world space and is NOT visible during inspection
-        // (camera only renders InspectLayer). Instead, find the PrebuiltWire that
-        // has isPowerCord and highlight its connector port on the inspection clone.
         if (step == 12)
         {
             foreach (MonoBehaviour mb in clone.GetComponentsInChildren<MonoBehaviour>(true))
@@ -741,7 +712,6 @@ public partial class TutorialManager : MonoBehaviour
                     return;
                 }
             }
-            // Fallback: search by name if no IPrebuiltWire found
             Transform powerPort = FindChildByNameContains(clone.transform, "PowerCord", "power cord", "Power Cord");
             if (powerPort != null)
             {
@@ -755,10 +725,6 @@ public partial class TutorialManager : MonoBehaviour
             return;
         }
 
-        // ── Step 15: Ensure screw count is initialized ──
-        // OnReenteredInspect may have run before the clone existed (CompletePCTask
-        // is called by PlayerInteract BEFORE Inspect). If so, totalScrewsOnPanel
-        // is still 0. Initialize it now that the clone is ready.
         if (step == 15 && totalScrewsOnPanel == 0)
         {
             totalScrewsOnPanel = CountSidePanelScrews();
@@ -787,36 +753,29 @@ public partial class TutorialManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Returns the child transform to highlight inside the inspection clone
-    /// for the given tutorial step.
-    /// </summary>
     private Transform FindInspectionTarget(GameObject clone, int currentStep)
     {
         switch (currentStep)
         {
             case 12:
-                return null; // handled directly in NotifyInspectionCloneReady
+                return null;
 
-            case 13: // Power button — find by isPowerButton flag; name search as fallback
+            case 13:
                 foreach (InspectableItem item in clone.GetComponentsInChildren<InspectableItem>(true))
                 {
                     if (item.isPowerButton) return item.transform;
                 }
                 return FindChildByNameContains(clone.transform, "Power", "Button", "power");
 
-            case 15: // Open case — highlight panel screw first, then the panel itself
+            case 15:
                 if (screwsRemoved < totalScrewsOnPanel)
                 {
-                    // FIX: Find the first unremoved panel screw, checking BOTH
-                    // itemName AND gameObject.name (e.g. "Front Panel Screw 1")
                     foreach (InspectableItem item in clone.GetComponentsInChildren<InspectableItem>(true))
                     {
                         if (item.isInventorySlot || item.isMainObject) continue;
                         string n = (item.itemName ?? "").ToLower();
                         string c = (item.partCategory ?? "").ToLower();
                         string gn = item.gameObject.name.ToLower();
-                        // Combine so either field can satisfy the check
                         string combined = n + " " + gn;
                         bool isPanelScrew =
                             (combined.Contains("screw") || combined.Contains("bolt") || combined.Contains("fastener")
@@ -828,7 +787,6 @@ public partial class TutorialManager : MonoBehaviour
                 }
                 else if (!panelRemoved)
                 {
-                    // All screws done — highlight the panel itself (front/side only, not back)
                     foreach (InspectableItem item in clone.GetComponentsInChildren<InspectableItem>(true))
                     {
                         if (item.isInventorySlot || item.isMainObject) continue;
@@ -843,7 +801,6 @@ public partial class TutorialManager : MonoBehaviour
                 }
                 return null;
             case 16:
-                // ── GPU WIRE DISCONNECT: highlight power button first, then wire port ──
                 if (diagState == DiagState.DisconnectGPUWire)
                 {
                     PCPowerSystem pw = clone.GetComponent<PCPowerSystem>();
@@ -852,7 +809,6 @@ public partial class TutorialManager : MonoBehaviour
                         foreach (InspectableItem item in clone.GetComponentsInChildren<InspectableItem>(true))
                             if (item.isPowerButton) return item.transform;
                     }
-                    // PC is off — highlight the GPU wire connector port
                     foreach (MonoBehaviour mb in clone.GetComponentsInChildren<MonoBehaviour>(true))
                     {
                         IPrebuiltWire w = mb as IPrebuiltWire;
@@ -862,7 +818,6 @@ public partial class TutorialManager : MonoBehaviour
                     return null;
                 }
 
-                // ── RAM-related states (swap, verify, final fix) ──
                 if (diagState == DiagState.RemoveOldRAM
                  || diagState == DiagState.InstallNewRAM
                  || diagState == DiagState.RemoveNewRAM
@@ -871,12 +826,10 @@ public partial class TutorialManager : MonoBehaviour
                  || diagState == DiagState.InstallNewRAMFinal)
                     return FindPartByCategory(clone.transform, "RAM");
 
-                // ── GPU-related states ──
                 if (diagState == DiagState.RemoveOldGPU
                  || diagState == DiagState.InstallNewGPU)
                     return FindPartByCategory(clone.transform, "GPU");
 
-                // ── TEST STATES: always highlight the power button ──
                 if (diagState == DiagState.TestAfterRAMSwap
                  || diagState == DiagState.TestAfterGPUSwap
                  || diagState == DiagState.TestWithOldRAM
@@ -885,6 +838,17 @@ public partial class TutorialManager : MonoBehaviour
                     foreach (InspectableItem item in clone.GetComponentsInChildren<InspectableItem>(true))
                         if (item.isPowerButton) return item.transform;
                 }
+
+                // ── TURN OFF FOR CLOSE: highlight power button ──
+                if (diagState == DiagState.TurnOffForClose)
+                {
+                    foreach (InspectableItem item in clone.GetComponentsInChildren<InspectableItem>(true))
+                        if (item.isPowerButton) return item.transform;
+                }
+
+                // ── CLOSE UP PC: highlight panel / screw ghost slots ──
+                if (diagState == DiagState.CloseUpPC)
+                    return FindNextPanelGhost(clone.transform);
 
                 return null;
 
@@ -895,10 +859,6 @@ public partial class TutorialManager : MonoBehaviour
 
     private Transform FindPartByCategory(Transform root, string category)
     {
-        // Pass 1: Find an installed (non-ghost) part with matching category,
-        // then walk UP the hierarchy to find the component root.
-        // PCCaseBuilder copies partCategory to all children, so a deep child
-        // mesh may match first — walking up ensures we get the full component.
         foreach (InspectableItem item in root.GetComponentsInChildren<InspectableItem>(true))
         {
             if (item.isInventorySlot || item.isMainObject) continue;
@@ -906,9 +866,6 @@ public partial class TutorialManager : MonoBehaviour
                 return FindComponentRoot(item.transform, root, category);
         }
 
-        // Pass 2: Find ghost slots (empty slots for installation).
-        // During install states the part has been removed and the slot is
-        // flagged isInventorySlot — highlight it so the player sees where to click.
         foreach (InspectableItem item in root.GetComponentsInChildren<InspectableItem>(true))
         {
             if (item.isMainObject) continue;
@@ -919,12 +876,6 @@ public partial class TutorialManager : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// Walks UP from a child InspectableItem to find the topmost ancestor
-    /// that shares the same partCategory. This is the component ROOT placed
-    /// by PCCaseBuilder — highlighting it will cover every child renderer
-    /// (the full RAM stick, the full GPU, etc.) instead of just one sub-mesh.
-    /// </summary>
     private Transform FindComponentRoot(Transform start, Transform cloneRoot, string category)
     {
         Transform best = start;
@@ -936,7 +887,7 @@ public partial class TutorialManager : MonoBehaviour
             if (ii != null && !ii.isMainObject && !ii.isInventorySlot
                 && ii.partCategory == category)
             {
-                best = current; // found a higher ancestor with same category
+                best = current;
             }
             current = current.parent;
         }
@@ -961,19 +912,12 @@ public partial class TutorialManager : MonoBehaviour
 
     private void RefreshInspectionHighlight()
     {
-        // Clear first so ShowAt() same-target guard doesn't block the refresh
         tutorialInspectionHighlight?.Hide();
         InspectionManager im = FindFirstObjectByType<InspectionManager>();
         if (im != null && im.currentClone != null)
             NotifyInspectionCloneReady(im.currentClone);
     }
 
-    /// <summary>
-    /// FIX: Deferred highlight refresh — waits one frame so TryRemovePart
-    /// finishes converting the just-removed part to a ghost slot before
-    /// FindInspectionTarget searches for the next screw to highlight.
-    /// Without this, the search finds the same (not-yet-ghosted) screw again.
-    /// </summary>
     private IEnumerator RefreshHighlightNextFrame()
     {
         yield return null; // wait one frame for TryRemovePart to complete
@@ -981,5 +925,71 @@ public partial class TutorialManager : MonoBehaviour
         InspectionManager im = FindFirstObjectByType<InspectionManager>();
         if (im != null && im.currentClone != null)
             NotifyInspectionCloneReady(im.currentClone);
+    }
+
+    // ═══════════════════════════════════════════════════════════
+    //  CLOSE-UP HELPERS — panel + screw ghost slot tracking
+    // ═══════════════════════════════════════════════════════════
+
+    /// <summary>
+    /// Counts how many front/side panel + panel-screw ghost slots remain.
+    /// Returns 0 when the case is fully closed up.
+    /// </summary>
+    int CountRemainingPanelGhosts()
+    {
+        InspectionManager im = FindFirstObjectByType<InspectionManager>();
+        if (im == null || im.currentClone == null) return 0;
+
+        int count = 0;
+        foreach (InspectableItem item in im.currentClone.GetComponentsInChildren<InspectableItem>(true))
+        {
+            if (!item.isInventorySlot) continue;
+            string n = (item.itemName ?? "").ToLower();
+            string gn = item.gameObject.name.ToLower();
+            string combined = n + " " + gn;
+            string c = (item.partCategory ?? "").ToLower();
+
+            // Count panel ghost slots (front/side only, not back)
+            if (IsPanel(combined, c) && !combined.Contains("back"))
+                count++;
+            // Count ANY screw ghost slot — during CloseUpPC the only screws
+            // removed were the panel screws from step 15, so all screw ghosts
+            // are relevant. Using IsScrew instead of IsPanelScrew because
+            // screw names may not contain "panel"/"front"/"side" keywords.
+            else if (IsScrew(combined, c))
+                count++;
+        }
+        return count;
+    }
+
+    /// <summary>
+    /// Finds the next panel or screw ghost slot to highlight during CloseUpPC.
+    /// Prioritises the panel first (must go on before screws), then screws.
+    /// </summary>
+    Transform FindNextPanelGhost(Transform cloneRoot)
+    {
+        // Pass 1: panel ghost slot (must be installed before screws)
+        foreach (InspectableItem item in cloneRoot.GetComponentsInChildren<InspectableItem>(true))
+        {
+            if (!item.isInventorySlot) continue;
+            string n = (item.itemName ?? "").ToLower();
+            string gn = item.gameObject.name.ToLower();
+            string combined = n + " " + gn;
+            string c = (item.partCategory ?? "").ToLower();
+            if (IsPanel(combined, c) && !combined.Contains("back"))
+                return item.transform;
+        }
+        // Pass 2: panel installed — find the first remaining screw ghost
+        foreach (InspectableItem item in cloneRoot.GetComponentsInChildren<InspectableItem>(true))
+        {
+            if (!item.isInventorySlot) continue;
+            string n = (item.itemName ?? "").ToLower();
+            string gn = item.gameObject.name.ToLower();
+            string combined = n + " " + gn;
+            string c = (item.partCategory ?? "").ToLower();
+            if (IsScrew(combined, c))
+                return item.transform;
+        }
+        return null;
     }
 }

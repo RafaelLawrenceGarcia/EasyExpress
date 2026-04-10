@@ -119,7 +119,6 @@ public partial class TutorialManager
             "Press [E] on the customer to talk");
         StartCoroutine(ShowArrowForType(TutorialTarget.TargetType.CashierPC));
         step = 5;
-        // Dialogue plays ONLY when player enters inspection (CompleteCashierInspectTask)
     }
 
     void StartStep_TalkToCustomer()
@@ -201,8 +200,6 @@ public partial class TutorialManager
             "Press [F] to open the Repair Manual",
             "Find the troubleshooting guide for the customer's problem");
         HideArrow();
-        // step stays at 13 — we use waitingForManualOpen flag
-        // NotifyManualClosed() handles the transition
     }
 
     // ── Step 14: Exit → Storage ──────────────────────────────────
@@ -246,7 +243,7 @@ public partial class TutorialManager
         TaskListUI.Instance?.CompleteTask(0);
         TaskListUI.Instance?.CompleteTask(1);
         TaskListUI.Instance?.UpdateTaskText(3, $"Unscrew the side panel screws (0/{totalScrewsOnPanel})");
-        RefreshInspectionHighlight(); // ← now that totalScrewsOnPanel is set, highlight the first screw
+        RefreshInspectionHighlight();
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -299,8 +296,101 @@ public partial class TutorialManager
                 SetTask("FINAL FIX", "Press [Tab] to see your parts", "Install the new RAM to finish the repair"); break;
             case DiagState.TestFinal:
                 SetTask("FINAL FIX", "Press the Power Button for the final test", "This should boot clean!"); break;
+
+            // Close up — reinstall side panel and screws before shipping
+            case DiagState.TurnOffForClose:
+                SetTask("CLOSE UP", "Turn off the PC (click Power Button)", "Time to close up the case"); break;
+            case DiagState.CloseUpPC:
+                {
+                    int remaining = CountRemainingPanelGhosts();
+                    int totalParts = totalScrewsOnPanel + 1;
+                    int done = totalParts - remaining;
+                    SetTask("CLOSE UP",
+                        $"Reinstall the side panel and screws ({done}/{totalParts})",
+                        "Press [Tab] to grab parts from inventory",
+                        "Click the highlighted ghost slot to install");
+                    break;
+                }
         }
+        // Delay by one frame so task UI settles and highlight targets are findable.
+        // This fixes the RAM highlight not appearing for RemoveOldRAM.
+        StartCoroutine(PostShowSwapSetup());
+    }
+
+    /// <summary>
+    /// Runs one frame after ShowSwapTask sets up the task list.
+    /// Refreshes the inspection highlight, then auto-completes any
+    /// tasks the player already finished before reaching this state.
+    /// </summary>
+    IEnumerator PostShowSwapSetup()
+    {
+        yield return null; // wait one frame for UI to settle
         RefreshInspectionHighlight();
+        CheckSwapAutoComplete();
+    }
+
+    /// <summary>
+    /// Auto-completes tasks the player already did before the tutorial
+    /// told them to, preventing soft-locks.
+    /// </summary>
+    void CheckSwapAutoComplete()
+    {
+        if (step != 16) return;
+
+        InspectionManager im = FindFirstObjectByType<InspectionManager>();
+        if (im == null || im.currentClone == null) return;
+
+        PCPowerSystem ps = im.currentClone.GetComponent<PCPowerSystem>();
+        bool pcOff = ps == null || !ps.isPoweredOn;
+
+        switch (diagState)
+        {
+            case DiagState.DisconnectGPUWire:
+                if (pcOff)
+                {
+                    TaskListUI.Instance?.CompleteTask(0);
+                    bool wireStillConnected = false;
+                    foreach (MonoBehaviour mb in im.currentClone.GetComponentsInChildren<MonoBehaviour>(true))
+                    {
+                        IPrebuiltWire w = mb as IPrebuiltWire;
+                        if (w != null && w.IsConnected && w.RequiredPartCategory == "GPU")
+                        { wireStillConnected = true; break; }
+                    }
+                    if (!wireStillConnected)
+                    { CompleteAllTasks(); diagState = DiagState.RemoveOldGPU; ShowSwapTask(); }
+                    else
+                    { StartCoroutine(RefreshHighlightNextFrame()); }
+                }
+                break;
+
+            case DiagState.RemoveNewRAM:
+                if (pcOff)
+                { TaskListUI.Instance?.CompleteTask(0); StartCoroutine(RefreshHighlightNextFrame()); }
+                break;
+
+            case DiagState.TurnOffForClose:
+                if (pcOff)
+                {
+                    TaskListUI.Instance?.CompleteTask(0);
+                    TaskListUI.Instance?.CompleteTask(1);
+                    diagState = DiagState.CloseUpPC;
+                    ShowSwapTask();
+                }
+                break;
+
+            case DiagState.CloseUpPC:
+                if (CountRemainingPanelGhosts() <= 0)
+                {
+                    CompleteAllTasks();
+                    diagState = DiagState.Done;
+                    Dialogue(0.5f, dlg_RepairComplete, () =>
+                    {
+                        step = 24;
+                        StartStep_ExitInspectForCompletion();
+                    });
+                }
+                break;
+        }
     }
 
     // ── Part Removal (steps 15 + 16) ─────────────────────────────
@@ -309,8 +399,6 @@ public partial class TutorialManager
     {
         if (part == null) return;
 
-        // FIX: Combine itemName AND gameObject.name so either can match.
-        // e.g. itemName may be "Screw" but gameObject.name is "Front Panel Screw 1"
         string partName = ((part.itemName ?? "") + " " + part.gameObject.name).ToLower();
         string partCat = (part.partCategory ?? "").ToLower();
 
@@ -324,12 +412,9 @@ public partial class TutorialManager
                     $"Unscrew the side panel screws ({screwsRemoved}/{totalScrewsOnPanel})");
                 if (screwsRemoved == 1) TaskListUI.Instance?.CompleteTask(2);
                 if (screwsRemoved >= totalScrewsOnPanel) TaskListUI.Instance?.CompleteTask(3);
-                // FIX: Defer by one frame so TryRemovePart finishes converting this
-                // screw to a ghost slot before FindInspectionTarget searches for the next one
                 StartCoroutine(RefreshHighlightNextFrame());
                 return;
             }
-            // FIX: Only accept front/side panel removal, NOT back panel
             if (!panelRemoved && IsPanel(partName, partCat) && !partName.Contains("back"))
             {
                 panelRemoved = true;
@@ -392,8 +477,43 @@ public partial class TutorialManager
 
             case DiagState.InstallNewRAMFinal:
                 CompleteAllTasks(); diagState = DiagState.TestFinal; ShowSwapTask(); return;
+
+            case DiagState.CloseUpPC:
+                // Delay by one frame — TryInstallPart calls Destroy(slot)
+                // which is deferred to end-of-frame, so CountRemainingPanelGhosts
+                // would still see the just-destroyed ghost on this frame.
+                StartCoroutine(CheckCloseUpNextFrame());
+                return;
         }
         Debug.Log($"[Tutorial] Part installed but DiagState={diagState} — ignoring.");
+    }
+
+    /// <summary>
+    /// Waits one frame for Destroy() to complete, then counts remaining
+    /// panel/screw ghost slots and advances or updates the task text.
+    /// </summary>
+    IEnumerator CheckCloseUpNextFrame()
+    {
+        yield return null; // wait for Destroy() to finish
+        int remaining = CountRemainingPanelGhosts();
+        if (remaining <= 0)
+        {
+            CompleteAllTasks(); HideArrow();
+            diagState = DiagState.Done;
+            Dialogue(0.5f, dlg_RepairComplete, () =>
+            {
+                step = 24;
+                StartStep_ExitInspectForCompletion();
+            });
+        }
+        else
+        {
+            int totalParts = totalScrewsOnPanel + 1;
+            int done = totalParts - remaining;
+            TaskListUI.Instance?.UpdateTaskText(0,
+                $"Reinstall the side panel and screws ({done}/{totalParts})");
+            StartCoroutine(RefreshHighlightNextFrame());
+        }
     }
 
     // ── Power Test Handler (step 16) ─────────────────────────────
@@ -428,12 +548,10 @@ public partial class TutorialManager
             case DiagState.TestAfterRAMSwap:
                 Dialogue(0.5f, dlg_RAMSwapNoDisplay, () =>
                 {
-                    // Tell player to check manual for No Display
                     waitingForManualNoDisplay = true;
                     manualNoDisplayOpened = false;
                     SetTask("CHECK MANUAL",
                         "Press [F] to check the manual for 'No Display' problems");
-                    // NotifyManualClosed() will advance to RemoveOldGPU
                 });
                 break;
 
@@ -455,14 +573,13 @@ public partial class TutorialManager
                 });
                 break;
 
-            // ── Final test: Success → repair complete! ──
+            // ── Final test: Success → close up the PC before completing! ──
             case DiagState.TestFinal:
-                diagState = DiagState.Done;
                 CompleteAllTasks(); HideArrow();
-                Dialogue(0.5f, dlg_RepairComplete, () =>
+                Dialogue(0.5f, dlg_CloseUpPC, () =>
                 {
-                    step = 24;
-                    StartStep_ExitInspectForCompletion();
+                    diagState = DiagState.TurnOffForClose;
+                    ShowSwapTask();
                 });
                 break;
         }
@@ -538,13 +655,9 @@ public partial class TutorialManager
         {
             if (c.assignedJob == null || c.assignedJob.startingParts == null) continue;
 
-            // ── Clear all faults first ──
             foreach (StartingPCComponent part in c.assignedJob.startingParts)
             { part.fault = PartFault.None; part.faultDescription = ""; part.isDusty = false; }
 
-            // ══════════════════════════════════════════════════════════
-            //  REPLACE GPU with 1660 Super (Broken)
-            // ══════════════════════════════════════════════════════════
             if (db != null && db.gpus != null && db.gpus.Length > 0)
             {
                 c.assignedJob.startingParts.RemoveAll(p =>
@@ -565,9 +678,6 @@ public partial class TutorialManager
                 Debug.Log($"[Tutorial] Forced GPU: {gpuCopy.partName} (Broken)");
             }
 
-            // ══════════════════════════════════════════════════════════
-            //  ENSURE CPU matches motherboard socket
-            // ══════════════════════════════════════════════════════════
             {
                 StartingPCComponent mobo = null;
                 foreach (StartingPCComponent p in c.assignedJob.startingParts)
@@ -599,9 +709,6 @@ public partial class TutorialManager
                 }
             }
 
-            // ══════════════════════════════════════════════════════════
-            //  REPLACE RAM with exactly 1x 16GB stick (Broken)
-            // ══════════════════════════════════════════════════════════
             if (db != null && db.rams != null && db.rams.Length > 0)
             {
                 c.assignedJob.startingParts.RemoveAll(p =>
@@ -661,9 +768,6 @@ public partial class TutorialManager
                           $"for motherboard {mobo?.partName ?? "unknown"}");
             }
 
-            // ══════════════════════════════════════════════════════════
-            //  FORCE exactly 4 fans
-            // ══════════════════════════════════════════════════════════
             if (db != null && db.fans != null && db.fans.Length > 0)
             {
                 c.assignedJob.startingParts.RemoveAll(p =>
@@ -678,9 +782,6 @@ public partial class TutorialManager
                 Debug.Log("[Tutorial] Forced 4 fans.");
             }
 
-            // ══════════════════════════════════════════════════════════
-            //  FORCE cooler (if missing)
-            // ══════════════════════════════════════════════════════════
             bool hasCooler = false;
             foreach (StartingPCComponent part in c.assignedJob.startingParts)
             {
@@ -707,9 +808,6 @@ public partial class TutorialManager
         }
     }
 
-    /// <summary>
-    /// Creates a clean copy of a StartingPCComponent with no faults.
-    /// </summary>
     StartingPCComponent CopyPartClean(StartingPCComponent original)
     {
         StartingPCComponent copy = new StartingPCComponent();
@@ -738,12 +836,6 @@ public partial class TutorialManager
     bool IsPanel(string name, string cat) =>
         name.Contains("panel") || cat.Contains("panel");
 
-    // ═══════════════════════════════════════════════════════════
-    //  FIX: Panel screw = a screw whose name contains "panel",
-    //  "front", or "side" — but NOT "back".
-    //  This prevents back panel screws from being counted
-    //  during the tutorial's side panel removal step.
-    // ═══════════════════════════════════════════════════════════
     bool IsPanelScrew(string name, string cat) =>
         IsScrew(name, cat)
         && (name.Contains("panel") || name.Contains("front") || name.Contains("side"))
@@ -761,9 +853,6 @@ public partial class TutorialManager
         foreach (InspectableItem item in im.currentClone.GetComponentsInChildren<InspectableItem>(true))
         {
             if (item == null || !item.isRemovable) continue;
-            // FIX: Combine itemName + gameObject.name for robust detection
-            // Handles cases where itemName is generic ("Screw") but the
-            // gameObject is named "Front Panel Screw 1"
             string n = (item.itemName ?? "").ToLower();
             string c = (item.partCategory ?? "").ToLower();
             string gn = item.gameObject.name.ToLower();
@@ -773,10 +862,6 @@ public partial class TutorialManager
         return count == 0 ? 4 : count;
     }
 
-    /// <summary>
-    /// Captures the name of the part the player just installed so the
-    /// shop tutorial arrow can point at matching items in the store.
-    /// </summary>
     void TrackInstalledPartName(string category)
     {
         InspectionManager im = FindObjectOfType<InspectionManager>();
@@ -787,7 +872,6 @@ public partial class TutorialManager
             if (part.isInventorySlot || part.isMainObject) continue;
             if (part.partCategory != category) continue;
 
-            // Check if this is a NEW part (not faulty = it's the replacement)
             if (!part.IsFaulty())
             {
                 if (category == "GPU") tutorialGPUName = part.itemName;
@@ -798,9 +882,6 @@ public partial class TutorialManager
         }
     }
 
-    /// <summary>
-    /// Checks if a part shares at least one socket or memory tag with the motherboard.
-    /// </summary>
     bool IsTagCompatible(StartingPCComponent part, StartingPCComponent mobo, string tagType)
     {
         if (part.compatTags == null || mobo.compatTags == null) return true;

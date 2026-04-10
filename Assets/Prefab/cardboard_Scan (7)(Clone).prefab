@@ -234,12 +234,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 128
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5.6325173, y: 2.3068295, z: 1}
-  m_Center: {x: -0.7546565, y: 0.6534147, z: 3.210125e-10}
+  m_Size: {x: 2.271027, y: 1.8268816, z: 1.0496057}
+  m_Center: {x: -0.027144553, y: 0.9059962, z: 0.030338764}
 --- !u!114 &2263872169305648003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,6 +261,10 @@ MonoBehaviour:
   labelFontSize: 80
   labelViewRange: 10
   labelViewDot: 0.85
+  badNewsPanel: {fileID: 0}
+  badNewsTitleText: {fileID: 0}
+  badNewsBodyText: {fileID: 0}
+  badNewsDisplayTime: 5
 --- !u!114 &-5225081585764485490
 MonoBehaviour:
   m_ObjectHideFlags: 0

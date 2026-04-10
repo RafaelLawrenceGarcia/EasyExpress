@@ -58,20 +58,20 @@ public class PCCaseBuilder : MonoBehaviour
                         partScript.cachedShopIcon = part.partIcon;
 
                     // Rename direct children that still have the prefab's default name
+                    // Rename direct children that still have the prefab's default name
                     foreach (InspectableItem child in realPart.GetComponentsInChildren<InspectableItem>(true))
                     {
                         if (child == partScript) continue;
-
-                        // Skip children placed by earlier iterations
                         if (child.isRemovable && child.partCategory != part.partCategory) continue;
 
-                        // Only update children with the same default name
                         if (child.itemName == prefabDefaultName)
-                        {
                             child.itemName = part.partName;
-                        }
-                    }
 
+                        // ═══ ALWAYS propagate fault state to ALL children ═══
+                        child.fault = part.fault;
+                        child.faultDescription = part.faultDescription;
+                        // DELETE the child.isDusty line — InspectableItem has no isDusty field
+                    }
                     // Transfer the blocking rules to the real part
                     InspectableItem dummyScript = matchingDummy.GetComponent<InspectableItem>();
                     if (dummyScript != null && dummyScript.blockingParts != null)
@@ -234,6 +234,35 @@ public class PCCaseBuilder : MonoBehaviour
                             break;
                         }
                     }
+                }
+            }
+        }
+        // ═══════════════════════════════════════════════════════════════
+        //  NUCLEAR FAULT SWEEP: Clear ALL faults on every InspectableItem
+        //  in the built PC, then re-apply ONLY the intended faults from
+        //  the StartingPCComponent data. This kills any stale prefab faults.
+        // ═══════════════════════════════════════════════════════════════
+        foreach (InspectableItem item in GetComponentsInChildren<InspectableItem>(true))
+        {
+            if (item.isMainObject || item.isInventorySlot) continue;
+            item.fault = PartFault.None;
+            item.faultDescription = "";
+        }
+
+        // Re-apply only the intended faults from the parts list
+        foreach (StartingPCComponent part in partsToInstall)
+        {
+            if (part.fault == PartFault.None) continue;
+
+            foreach (InspectableItem item in GetComponentsInChildren<InspectableItem>(true))
+            {
+                if (item.isMainObject || item.isInventorySlot) continue;
+                if (item.partCategory == part.partCategory && item.itemName == part.partName)
+                {
+                    item.fault = part.fault;
+                    item.faultDescription = part.faultDescription;
+                    Debug.Log($"[PC Builder] Re-applied fault {part.fault} to '{item.itemName}'");
+                    break;
                 }
             }
         }
