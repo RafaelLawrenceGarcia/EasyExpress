@@ -392,10 +392,8 @@ public class InspectionInventoryUI : MonoBehaviour
 
         InspectableItem newPartData = newPartObj.GetComponent<InspectableItem>();
         if (newPartData == null)
-        {
-            Destroy(newPartObj);
-            return;
-        }
+            newPartData = newPartObj.GetComponentInChildren<InspectableItem>();
+        if (newPartData == null) { Destroy(newPartObj); return; }
 
         if (newPartData.partCategory == "Generic" || string.IsNullOrEmpty(newPartData.partCategory))
             newPartData.partCategory = currentlySelectedShopItem.category;

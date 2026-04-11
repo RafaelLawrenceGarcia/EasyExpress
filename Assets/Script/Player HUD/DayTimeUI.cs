@@ -12,17 +12,18 @@ public class DayTimeUI : MonoBehaviour
     public TextMeshProUGUI timeText;
 
     [Header("Time Settings")]
-    public float dayLengthInMinutes = 10f;
+    public float dayLengthInMinutes = 30f;
+
+    [Header("Day Boundaries")]
+    public float dayStartHour = 6f;    // 6:00 AM
+    public float dayEndHour = 19f;   // 7:00 PM
 
     private float currentTime;
     private int currentDay = 1;
+    private bool endDayTriggered = false;
 
     public float GetCurrentTime() { return currentTime; }
 
-    /// <summary>
-    /// Called by CloudDataHandler to restore the saved game time directly,
-    /// in case Start() already ran and defaulted to 6:00 AM.
-    /// </summary>
     public void SetTime(float time)
     {
         currentTime = time;
@@ -35,38 +36,32 @@ public class DayTimeUI : MonoBehaviour
         if (PlayerPrefs.HasKey("SavedGameTime"))
         {
             currentTime = PlayerPrefs.GetFloat("SavedGameTime");
-            // Don't delete the key — it needs to survive for room changes.
-            // SceneDoor overwrites it on each scene transition anyway.
         }
         else
         {
-            currentTime = 6f;
+            currentTime = dayStartHour;
         }
+
+        endDayTriggered = false;
     }
 
-    void OnEnable() { DayTransitionManager.OnNewDayStarted += SetDay; }
+    void OnEnable()
+    {
+        DayTransitionManager.OnNewDayStarted += SetDay;
+        endDayTriggered = false;
+    }
     void OnDisable() { DayTransitionManager.OnNewDayStarted -= SetDay; }
 
-    /// <summary>
-    /// Called when OnNewDayStarted fires. Only updates the day number.
-    /// Time is NOT reset here — EndDaySequence handles that via ResetTimeForNewDay().
-    /// This prevents the saved time from being overwritten on first load.
-    /// </summary>
     void SetDay(int newDay)
     {
         currentDay = newDay;
-        // Time is NOT reset to 6 AM here.
-        // For new days, DayTransitionManager calls ResetTimeForNewDay() explicitly.
+        endDayTriggered = false;
     }
 
-    /// <summary>
-    /// Called by DayTransitionManager.EndDaySequence to reset clock to 6:00 AM
-    /// at the start of a genuinely new day.
-    /// </summary>
     public void ResetTimeForNewDay()
     {
-        currentTime = 6f;
-        // Also update PlayerPrefs so room changes get the correct time
+        currentTime = dayStartHour;
+        endDayTriggered = false;
         PlayerPrefs.SetFloat("SavedGameTime", currentTime);
         PlayerPrefs.Save();
     }
@@ -81,16 +76,27 @@ public class DayTimeUI : MonoBehaviour
         if (dayText != null) dayText.gameObject.SetActive(!tutorialActive);
         if (timeText != null) timeText.gameObject.SetActive(!tutorialActive);
 
-        if (tutorialActive) return; // Don't update time during tutorial
+        if (tutorialActive) return;
         // ─────────────────────────────────────────────────────
 
-        float hoursPerSecond = 24f / (dayLengthInMinutes * 60f);
+        // Playable window = dayEndHour - dayStartHour (13 hours: 6AM→7PM)
+        // Spread across dayLengthInMinutes real minutes
+        float playableHours = dayEndHour - dayStartHour;
+        float hoursPerSecond = playableHours / (dayLengthInMinutes * 60f);
         currentTime += hoursPerSecond * Time.deltaTime;
 
-        if (currentTime >= 24f)
+        // ── AUTO END DAY AT 7 PM ──
+        if (currentTime >= dayEndHour && !endDayTriggered)
         {
-            currentTime -= 24f;
-            currentDay++;
+            endDayTriggered = true;
+            currentTime = dayEndHour; // clamp — don't overshoot
+
+            if (DayTransitionManager.Instance != null
+                && !DayTransitionManager.Instance.IsTransitioning())
+            {
+                Debug.Log("[DayTimeUI] 7:00 PM reached — ending day automatically.");
+                DayTransitionManager.Instance.EndDay();
+            }
         }
 
         bool isDaytime = currentTime >= 6f && currentTime < 18f;

@@ -473,6 +473,16 @@ public class ShopManager : MonoBehaviour
                 string dayLabel = currentItem.deliveryDays == 1 ? "Day" : "Days";
                 arrivalObj.GetComponent<TextMeshProUGUI>().text = "Time of Arrival: " + currentItem.deliveryDays + " " + dayLabel;
             }
+            Transform imgObj = t.Find("Item Image");
+            if (imgObj != null)
+            {
+                Image img = imgObj.GetComponent<Image>();
+                if (img != null && currentItem.item.icon != null)
+                {
+                    img.sprite = currentItem.item.icon;
+                    img.color = Color.white;
+                }
+            }
         }
 
         CalculateCartTotal();

@@ -252,15 +252,14 @@ public class DayTransitionManager : MonoBehaviour
         currentDay++;
         PlayerPrefs.SetInt("CurrentDay", currentDay);
         PlayerPrefs.Save();
-
-        // ── DEMO LOCK ───────────────────────────────────
-        if (DemoLockManager.Instance != null
-            && DemoLockManager.Instance.CheckDemoStatus())
+        // ── Demo lock check ──
+        if (DemoLockManager.Instance != null && DemoLockManager.Instance.CheckDemoLock(currentDay))
         {
+            Debug.Log("[DayTransition] Demo locked at Day " + currentDay);
+            if (transitionCanvas != null) transitionCanvas.enabled = false;
             isTransitioning = false;
             yield break;
         }
-        // ─────────────────────────────────────────────────;
 
         // ── CHECKPOINT SAVE — before deliveries tick ──
         if (GameSession.IsLoggedIn && CloudDataHandler.Instance != null)

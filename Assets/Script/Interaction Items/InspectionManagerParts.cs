@@ -120,6 +120,28 @@ public partial class InspectionManager
 
         if (!RequireCorrectToolForRemoval(part)) return;
 
+        // ── GUARD: Block if a connected PrebuiltWire targets this part's category ──
+        if (currentClone != null)
+        {
+            foreach (MonoBehaviour mb in currentClone.GetComponentsInChildren<MonoBehaviour>(true))
+            {
+                IPrebuiltWire w = mb as IPrebuiltWire;
+                if (w == null || !w.IsConnected) continue;
+                if (w.IsPowerCord) continue;
+
+                PrebuiltWire pw = mb as PrebuiltWire;
+                if (pw != null && pw.allowRemoveWithoutDisconnect) continue;
+
+                if (!string.IsNullOrEmpty(w.RequiredPartCategory)
+                    && w.RequiredPartCategory == part.partCategory)
+                {
+                    ShowTooltipMessage("Cable Connected!",
+                        $"Disconnect the {w.WireName} first.");
+                    return;
+                }
+            }
+        }
+
         foreach (InspectableItem blocker in part.blockingParts)
         {
             if (blocker != null && !blocker.isInventorySlot)

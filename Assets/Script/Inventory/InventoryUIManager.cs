@@ -713,6 +713,8 @@ public class InventoryUIManager : MonoBehaviour
         newPartObj.SetActive(false);
 
         InspectableItem newPartData = newPartObj.GetComponent<InspectableItem>();
+        if (newPartData == null)
+            newPartData = newPartObj.GetComponentInChildren<InspectableItem>();
         if (newPartData == null) { Destroy(newPartObj); return; }
 
         if (string.IsNullOrEmpty(newPartData.partCategory) || newPartData.partCategory == "Generic")

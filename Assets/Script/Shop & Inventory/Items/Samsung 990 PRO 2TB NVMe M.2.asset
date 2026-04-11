@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4acf12c8453c514298be3922e99cb26, type: 3}
   m_Name: Samsung 990 PRO 2TB NVMe M.2
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  bundlePrefab: {fileID: 0}
+  bundleQuantity: 1
+  bundleItemData: {fileID: 0}
   id: ssd_990_m2
   itemName: Samsung 990 PRO 2TB NVMe M.2
   icon: {fileID: 21300000, guid: 2fd2388a29be9c1469da5049a9b3c34e, type: 3}
@@ -21,7 +24,7 @@ MonoBehaviour:
     8W'
   price: 10500
   itemType: 0
-  prefabToPlace: {fileID: 2409526990387310036, guid: 86029257c8fca054799dae7e794e3084, type: 3}
+  prefabToPlace: {fileID: 5087210724111898959, guid: 3b4eaabaca458ff419c493406eb8deb5, type: 3}
   isTool: 0
   deliveryBoxPrefab: {fileID: 7783733196365189470, guid: 6ac2167ccbcc89a469b947b3d80c891d, type: 3}
   retailBoxPrefab: {fileID: 0}

@@ -342,22 +342,22 @@ public class PCPowerSystem : MonoBehaviour
     PowerResult EvaluatePartFault(InspectableItem part)
     {
         if (part.fault == PartFault.None) return PowerResult.Success;
-
-        // Dusty alone is cosmetic — never causes boot issues
         if (part.fault == PartFault.Dusty) return PowerResult.Success;
 
         string cat = part.partCategory;
 
         // TIER 1: NO POWER
-        if (cat == "PSU" && (part.fault == PartFault.Broken || part.fault == PartFault.Overloaded))
+        if (cat == "PSU" && (part.fault == PartFault.Broken || part.fault == PartFault.Overloaded
+                          || part.fault == PartFault.NotSeated || part.fault == PartFault.LooseConnection))
             return PowerResult.NoPower;
         if (cat == "Motherboard" && (part.fault == PartFault.Broken || part.fault == PartFault.LooseConnection))
             return PowerResult.NoPower;
-        if (cat == "CPU" && part.fault == PartFault.Broken)
+        if (cat == "CPU" && (part.fault == PartFault.Broken || part.fault == PartFault.NotSeated))
             return PowerResult.NoPower;
 
         // TIER 2: FAILED POST
-        if (cat == "RAM" && (part.fault == PartFault.Broken || part.fault == PartFault.Incompatible))
+        if (cat == "RAM" && (part.fault == PartFault.Broken || part.fault == PartFault.Incompatible
+                          || part.fault == PartFault.LooseConnection))
             return PowerResult.FailedPOST;
         if (cat == "Motherboard" && part.fault == PartFault.Corrupted)
             return PowerResult.FailedPOST;
@@ -367,16 +367,19 @@ public class PCPowerSystem : MonoBehaviour
             return PowerResult.CrashToBSOD;
         if ((cat == "CPU" || cat == "Cooler") && part.fault == PartFault.Overheating)
             return PowerResult.CrashToBSOD;
+        if (cat == "GPU" && (part.fault == PartFault.Overheating || part.fault == PartFault.Corrupted))
+            return PowerResult.CrashToBSOD;
+        if (cat == "Storage" && (part.fault == PartFault.Broken || part.fault == PartFault.Corrupted))
+            return PowerResult.CrashToBSOD;
+        if ((cat == "Cooler" || cat == "Fan") && part.fault == PartFault.Broken)
+            return PowerResult.CrashToBSOD; // thermal failure
 
         // TIER 3: NO DISPLAY
-        if (cat == "GPU" && (part.fault == PartFault.Broken || part.fault == PartFault.NotSeated))
+        if (cat == "GPU" && (part.fault == PartFault.Broken || part.fault == PartFault.NotSeated
+                          || part.fault == PartFault.LooseConnection))
             return PowerResult.NoDisplay;
 
-        // ═══ DEBUG: Log exactly what's falling through ═══
-        Debug.LogWarning($"[PCPowerSystem] Unhandled fault: '{part.itemName}' " +
-                         $"cat={cat} fault={part.fault} desc='{part.faultDescription}'");
-
-        // TIER 4: BOOTS WITH ISSUES
+        // Anything else is cosmetic / non-critical
         return PowerResult.BootWithIssues;
     }
     PowerResult WorstOf(PowerResult a, PowerResult b)

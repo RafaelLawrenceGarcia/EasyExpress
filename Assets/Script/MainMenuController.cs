@@ -73,9 +73,9 @@ public class MainMenu : MonoBehaviour
         if (optionsBackButton != null) optionsBackButton.onClick.AddListener(ShowMainPanel);
 
         if (GameSession.IsLoggedIn)
-        {
-            AuthManager.OnLoginSuccessEvent += CheckForSaveData;
-        }
+            CheckForSaveData();  // already logged in — check now
+        else
+            AuthManager.OnLoginSuccessEvent += CheckForSaveData;  // wait for login
     }
 
     void OnDestroy() => AuthManager.OnLoginSuccessEvent -= CheckForSaveData;
@@ -114,14 +114,25 @@ public class MainMenu : MonoBehaviour
     #region Game Logic
     void StartSingleplayer()
     {
-        // Only load cloud save if we CONFIRMED save data exists
-        if (GameSession.IsLoggedIn)
-            PlayerPrefs.SetInt("IsLoadingGame", cloudHasSaveData ? 1 : 0);
+        DayTransitionManager.ResetDayFlag();
+        if (GameSession.IsLoggedIn && cloudHasSaveData)
+        {
+            if (CloudDataHandler.Instance != null)
+            {
+                CloudDataHandler.Instance.PreloadAndContinue(gameplaySceneName);
+                return;
+            }
+            PlayerPrefs.SetInt("IsLoadingGame", 1);
+        }
         else
+        {
             PlayerPrefs.SetInt("IsLoadingGame", 0);
+        }
 
         SceneManager.LoadScene(gameplaySceneName);
     }
+
+
     void CheckForSaveData()
     {
         if (!GameSession.IsLoggedIn) return;
@@ -184,10 +195,20 @@ public class MainMenu : MonoBehaviour
 
     void ContinueGame()
     {
+        DayTransitionManager.ResetDayFlag();
         if (GameSession.IsLoggedIn)
+        {
+            if (CloudDataHandler.Instance != null)
+            {
+                CloudDataHandler.Instance.PreloadAndContinue(gameplaySceneName);
+                return;
+            }
             PlayerPrefs.SetInt("IsLoadingGame", 1);
+        }
         else
+        {
             PlayerPrefs.SetInt("IsLoadingGame", 0);
+        }
 
         SceneManager.LoadScene(gameplaySceneName);
     }

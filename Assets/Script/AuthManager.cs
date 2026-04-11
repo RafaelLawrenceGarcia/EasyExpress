@@ -156,23 +156,16 @@ public class AuthManager : MonoBehaviour
 
     public void ShowRegisterPanel()
     {
-        if (loginPanel != null) loginPanel.SetActive(false);
-        if (registerPanel != null) registerPanel.SetActive(true);
-        if (registerMessageText != null)
-        {
-            registerMessageText.text = "Create an Account";
-            registerMessageText.color = Color.white;
-        }
-        if (registerUsernameInput != null) registerUsernameInput.text = "";
-        if (registerEmailInput != null) registerEmailInput.text = "";
-        if (registerPasswordInput != null) registerPasswordInput.text = "";
-        if (registerConfirmPasswordInput != null) registerConfirmPasswordInput.text = "";
-        if (registerShowPasswordToggle != null) registerShowPasswordToggle.isOn = false;
+        Application.OpenURL("https://easy-express-sites-rafcows-projects.vercel.app/");
     }
 
     public void BackToLogin()
     {
         ShowLoginPanel();
+    }
+    public void ForgotPassword()
+    {
+        Application.OpenURL("https://easy-express-sites-rafcows-projects.vercel.app/#/reset-password");
     }
 
     public void LoginButton()

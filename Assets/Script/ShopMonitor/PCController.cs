@@ -22,6 +22,8 @@ public class PCController : MonoBehaviour
     [Header("No Signal Screen")]
     public GameObject noSignalPanel;
 
+    [Header("No Display Screen")]
+    public GameObject noDisplayPanel;
     [Header("BSOD Screen")]
     public GameObject bsodPanel;
     public TextMeshProUGUI bsodErrorCodeText;
@@ -65,6 +67,7 @@ public class PCController : MonoBehaviour
         if (biosPanel != null) biosPanel.SetActive(false);
         if (bootScreenPanel != null) bootScreenPanel.SetActive(false);
         if (noSignalPanel != null) noSignalPanel.SetActive(false);
+        if (noDisplayPanel != null) noDisplayPanel.SetActive(false);
         if (bsodPanel != null) bsodPanel.SetActive(false);
     }
 

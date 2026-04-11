@@ -45,7 +45,7 @@ public class EmailManager : MonoBehaviour
     public GameObject deliveryBoxPrefab;
 
     [Header("Shipping / Drop-off")]
-    public Transform shippingZone;
+    public Transform[] shippingZones;
     public float shippingRadius = 2.0f;
 
     [Header("Completion Popup UI (Legacy Fallback)")]
@@ -349,7 +349,7 @@ public class EmailManager : MonoBehaviour
     // =============================================
     public void CompleteJob(EmailData email)
     {
-        if (shippingZone == null) return;
+        if (shippingZones == null || shippingZones.Length == 0) return;
 
         PCCaseBuilder[] allPCs = FindObjectsOfType<PCCaseBuilder>();
         PCCaseBuilder pcToShip = null;
@@ -358,12 +358,17 @@ public class EmailManager : MonoBehaviour
         {
             if (pc.linkedEmail == email)
             {
-                float dist = Vector3.Distance(pc.transform.position, shippingZone.position);
-                if (dist <= shippingRadius)
+                foreach (Transform zone in shippingZones)
                 {
-                    pcToShip = pc;
-                    break;
+                    if (zone == null) continue;
+                    float dist = Vector3.Distance(pc.transform.position, zone.position);
+                    if (dist <= shippingRadius)
+                    {
+                        pcToShip = pc;
+                        break;
+                    }
                 }
+                if (pcToShip != null) break;
             }
         }
 

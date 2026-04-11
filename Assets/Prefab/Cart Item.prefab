@@ -925,7 +925,7 @@ GameObject:
   - component: {fileID: 5283966186114354434}
   - component: {fileID: 2675953666103796513}
   m_Layer: 5
-  m_Name: Cart Image
+  m_Name: Item Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

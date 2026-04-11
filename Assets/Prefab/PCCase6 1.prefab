@@ -394,6 +394,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -937,6 +938,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -1115,6 +1117,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -1252,6 +1255,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -1700,6 +1704,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -1856,6 +1861,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -2080,6 +2086,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -2222,6 +2229,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -3465,6 +3473,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -3749,6 +3758,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -4679,6 +4689,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -4903,6 +4914,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -5400,6 +5412,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -5626,6 +5639,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -5812,6 +5826,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -6066,7 +6081,7 @@ MonoBehaviour:
   maxWattage: 0
   requiresScrewdriver: 0
   itemName: SATA Port
-  partCategory: Wire Port
+  partCategory: SATA Port
   inventoryIcon: {fileID: 0}
   itemDescription: Port to Connect Motherboard to SATA
   itemIconPrefab: {fileID: 0}
@@ -6076,11 +6091,12 @@ MonoBehaviour:
   isPowerButton: 0
   isWirePort: 1
   parentComponent: {fileID: 0}
-  connectorType: 
+  connectorType: SATA
   isPSUPort: 0
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -6422,6 +6438,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -7093,6 +7110,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -7491,6 +7509,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -7941,6 +7960,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -8080,6 +8100,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -8363,6 +8384,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -9093,6 +9115,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -9362,6 +9385,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -9608,6 +9632,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -9749,6 +9774,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -10210,6 +10236,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -10345,6 +10372,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -10501,6 +10529,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -11117,6 +11146,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -11566,6 +11596,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -11883,6 +11914,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -12045,6 +12077,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -12207,6 +12240,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -12417,6 +12451,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -12795,6 +12830,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -12952,6 +12988,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -13220,6 +13257,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -13953,6 +13991,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -14129,7 +14168,7 @@ MonoBehaviour:
   itemIconPrefab: {fileID: 0}
   cachedShopIcon: {fileID: 0}
   isMainObject: 0
-  isRemovable: 0
+  isRemovable: 1
   isPowerButton: 0
   isWirePort: 0
   parentComponent: {fileID: 0}
@@ -14138,6 +14177,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -14454,6 +14494,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -14675,11 +14716,12 @@ MonoBehaviour:
   isPowerButton: 0
   isWirePort: 1
   parentComponent: {fileID: 0}
-  connectorType: 
+  connectorType: 8-Pin EPS
   isPSUPort: 0
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -14836,6 +14878,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -14978,6 +15021,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -15137,6 +15181,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -15318,6 +15363,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -15856,11 +15902,12 @@ MonoBehaviour:
   isPowerButton: 0
   isWirePort: 1
   parentComponent: {fileID: 0}
-  connectorType: 
+  connectorType: 24-Pin
   isPSUPort: 0
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -16356,7 +16403,6 @@ GameObject:
   - component: {fileID: 6040605021791067559}
   - component: {fileID: 1761307035814862484}
   - component: {fileID: 7847863285144733999}
-  - component: {fileID: 1144420501381871397}
   m_Layer: 6
   m_Name: SATA Port
   m_TagString: Untagged
@@ -16485,59 +16531,17 @@ MonoBehaviour:
   isPowerButton: 0
   isWirePort: 1
   parentComponent: {fileID: 0}
-  connectorType: 
+  connectorType: SATA Power
   isPSUPort: 0
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
   blockingParts:
   - {fileID: 1659634889234165411}
-  childPartsToDetach: []
-  isInventorySlot: 0
-  inventoryEntryId: 
-  fault: 0
-  faultDescription: 
-  linkedPrebuiltWire: {fileID: 2647200753885974452}
---- !u!114 &1144420501381871397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8606896582316912681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  compatTags: []
-  requiredTags: []
-  powerDraw: 0
-  maxWattage: 0
-  requiresScrewdriver: 1
-  itemName: Unknown Item
-  partCategory: Generic
-  inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
-  itemIconPrefab: {fileID: 0}
-  cachedShopIcon: {fileID: 0}
-  isMainObject: 0
-  isRemovable: 0
-  isPowerButton: 0
-  isWirePort: 0
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts: []
   childPartsToDetach: []
   isInventorySlot: 0
   inventoryEntryId: 
@@ -16855,6 +16859,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}

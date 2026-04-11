@@ -121,6 +121,24 @@ public class PCCaseBuilder : MonoBehaviour
                         dummySlots.Add(newChild);
                 }
 
+                // ── Rescue wire ports before destroying the dummy ──
+                // Ports like SATA Port live on the dummy slot. Move them to
+                // the real spawned part so the PrebuiltWire connectorPort
+                // reference survives. When the player removes the part,
+                // the port goes with it and AutoDisconnectPrebuiltWires fires.
+                foreach (InspectableItem portChild in matchingDummy.GetComponentsInChildren<InspectableItem>(true))
+                {
+                    if (portChild.isWirePort)
+                    {
+                        Vector3 worldPos = portChild.transform.position;
+                        Quaternion worldRot = portChild.transform.rotation;
+                        portChild.transform.SetParent(realPart.transform, true);
+                        portChild.transform.position = worldPos;
+                        portChild.transform.rotation = worldRot;
+                        Debug.Log($"[PC Builder] Rescued wire port '{portChild.itemName}' from dummy '{matchingDummy.name}' → '{realPart.name}'");
+                    }
+                }
+
                 Destroy(matchingDummy.gameObject);
 
                 Debug.Log($"[PC Builder] Placed {part.partCategory} into {matchingDummy.name}.");
@@ -242,12 +260,19 @@ public class PCCaseBuilder : MonoBehaviour
         //  in the built PC, then re-apply ONLY the intended faults from
         //  the StartingPCComponent data. This kills any stale prefab faults.
         // ═══════════════════════════════════════════════════════════════
+        int cleared = 0;
         foreach (InspectableItem item in GetComponentsInChildren<InspectableItem>(true))
         {
             if (item.isMainObject || item.isInventorySlot) continue;
+            if (item.fault != PartFault.None)
+            {
+                Debug.LogWarning($"[PC Builder] SWEEP clearing stale fault on '{item.itemName}' cat={item.partCategory} fault={item.fault} desc='{item.faultDescription}'");
+                cleared++;
+            }
             item.fault = PartFault.None;
             item.faultDescription = "";
         }
+        Debug.Log($"[PC Builder] Nuclear sweep cleared {cleared} stale fault(s).");
 
         // Re-apply only the intended faults from the parts list
         foreach (StartingPCComponent part in partsToInstall)
@@ -269,6 +294,7 @@ public class PCCaseBuilder : MonoBehaviour
 
         // Auto-connect wires (existing line)
         AutoConnectPrebuiltWires();
+        LinkSpawnedPortsToPrebuiltWires();
     }
 
     /// <summary>
@@ -324,5 +350,84 @@ public class PCCaseBuilder : MonoBehaviour
         obj.layer = newLayer;
         foreach (Transform child in obj.transform)
             SetLayerRecursively(child.gameObject, newLayer);
+    }
+    /// <summary>
+    /// After parts are spawned, their wire ports have no linkedPrebuiltWire.
+    /// This scans every PrebuiltWire and links any nearby spawned port whose
+    /// parent part matches the wire's requiredPartCategory.
+    /// </summary>
+    void LinkSpawnedPortsToPrebuiltWires()
+    {
+        int linked = 0;
+
+        foreach (MonoBehaviour mb in GetComponentsInChildren<MonoBehaviour>(true))
+        {
+            IPrebuiltWire iw = mb as IPrebuiltWire;
+            if (iw == null || iw.ConnectorPort == null) continue;
+
+            PrebuiltWire pw = mb as PrebuiltWire;
+            if (pw == null) continue;
+
+            string targetCat = pw.requiredPartCategory;
+            if (string.IsNullOrEmpty(targetCat)) continue;
+
+            Vector3 portPos = iw.ConnectorPort.transform.position;
+            string wireConnectorType = iw.ConnectorPort.connectorType;
+
+            InspectableItem bestMatch = null;
+            float bestDist = 0.3f;
+
+            foreach (InspectableItem item in GetComponentsInChildren<InspectableItem>(true))
+            {
+                if (!item.isWirePort) continue;
+                if (item == iw.ConnectorPort) continue;
+                if (item.linkedPrebuiltWire != null) continue;
+
+                // Connector type must match
+                bool typeMatch = !string.IsNullOrEmpty(wireConnectorType)
+                              && !string.IsNullOrEmpty(item.connectorType)
+                              && item.connectorType == wireConnectorType;
+                if (!typeMatch) continue;
+
+                // Accept if parent category matches OR port is a PSU-side port
+                if (!item.isPSUPort)
+                {
+                    InspectableItem parentPart = FindPartParent(item);
+                    if (parentPart == null || parentPart.partCategory != targetCat) continue;
+                }
+
+                float dist = Vector3.Distance(item.transform.position, portPos);
+                if (dist >= bestDist) continue;
+
+                bestMatch = item;
+                bestDist = dist;
+            }
+
+            if (bestMatch != null)
+            {
+                bestMatch.linkedPrebuiltWire = pw;
+                linked++;
+                Debug.Log($"[PC Builder] Linked spawned port '{bestMatch.itemName}' ({bestMatch.connectorType}) → PrebuiltWire '{pw.wireName}'");
+            }
+        }
+
+        if (linked > 0)
+            Debug.Log($"[PC Builder] Linked {linked} spawned port(s) to PrebuiltWires.");
+    }
+
+    /// <summary>
+    /// Walks up the hierarchy to find the nearest non-port, non-slot InspectableItem.
+    /// </summary>
+    InspectableItem FindPartParent(InspectableItem port)
+    {
+        Transform t = port.transform.parent;
+        while (t != null)
+        {
+            InspectableItem item = t.GetComponent<InspectableItem>();
+            if (item != null && !item.isWirePort && !item.isInventorySlot && !item.isMainObject)
+                return item;
+            t = t.parent;
+        }
+        return null;
     }
 }

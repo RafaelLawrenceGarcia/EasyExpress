@@ -432,8 +432,8 @@ public class PCPartDatabase : ScriptableObject
         List<ProblemRequirement> allProblems = new List<ProblemRequirement>();
 
         // Tier 1 (Day 1-3): GPU/RAM problems
-        allProblems.Add(new ProblemRequirement("No Display on Monitor", new string[] { "GPU", "RAM" }));
-        allProblems.Add(new ProblemRequirement("Boot Loop", new string[] { "RAM", "Motherboard", "GPU" }));
+        allProblems.Add(new ProblemRequirement("No Display on Monitor", new string[] { "GPU" }));
+        allProblems.Add(new ProblemRequirement("Boot Loop", new string[] { "RAM", "GPU" }));
 
         // Tier 2 (Day 4+)
         if (tier >= 2)
@@ -513,18 +513,21 @@ public class PCPartDatabase : ScriptableObject
                     if (TryFaultByCategory(parts, "GPU", PartFault.NotSeated,
                         "GPU not fully inserted into PCIe slot")) break;
                 }
-                TryFaultByCategory(parts, "GPU", PartFault.Broken,
-                    "GPU is dead — no display output");
+                if (TryFaultByCategory(parts, "GPU", PartFault.Broken,
+                    "GPU is dead — no display output")) break;
+                TryFaultByCategory(parts, "RAM", PartFault.NotSeated,
+                    "RAM not seated properly — no display output");
                 break;
 
+            // ApplyFaultToPC — "Boot Loop" case (line 23528-23536)
             case "Boot Loop":
-                if (Roll(35f))
+                if (Roll(50f))
                 {
-                    if (TryFaultByCategory(parts, "GPU", PartFault.NotSeated,
-                        "GPU not seated properly — system keeps restarting")) break;
+                    if (TryFaultByCategory(parts, "RAM", PartFault.NotSeated,
+                        "RAM not seated correctly — system fails POST and restarts")) break;
                 }
-                TryFaultByCategory(parts, "RAM", PartFault.NotSeated,
-                    "RAM not seated correctly — system fails POST and restarts");
+                TryFaultByCategory(parts, "GPU", PartFault.NotSeated,
+                    "GPU not seated properly — system keeps restarting");
                 break;
 
             case "Blue Screen of Death":

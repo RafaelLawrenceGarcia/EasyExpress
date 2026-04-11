@@ -176,7 +176,11 @@ public class JobBox : MonoBehaviour
             bool isTutorial = TutorialManager.Instance != null
                            && TutorialManager.Instance.IsTutorialActive();
             if (!isTutorial)
-                badNewsReport = ApplyBadNews();
+            {
+                int currentDay = PlayerPrefs.GetInt("CurrentDay", 1);
+                if (currentDay > 3)
+                    badNewsReport = ApplyBadNews();
+            }
         }
 
         PCCaseBuilder builder = newPC.GetComponent<PCCaseBuilder>();

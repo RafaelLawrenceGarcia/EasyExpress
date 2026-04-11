@@ -346,7 +346,7 @@ MonoBehaviour:
   isPowerButton: 0
   isWirePort: 1
   parentComponent: {fileID: 0}
-  connectorType: 
+  connectorType: 8-Pin EPS
   isPSUPort: 0
   isOccupied: 0
   connectedTo: {fileID: 0}
@@ -869,7 +869,7 @@ MonoBehaviour:
   isPowerButton: 0
   isWirePort: 1
   parentComponent: {fileID: 0}
-  connectorType: 
+  connectorType: 24-Pin
   isPSUPort: 0
   isOccupied: 0
   connectedTo: {fileID: 0}
@@ -3515,7 +3515,7 @@ MonoBehaviour:
   maxWattage: 0
   requiresScrewdriver: 0
   itemName: SATA Port
-  partCategory: Wire Port
+  partCategory: SATA Port
   inventoryIcon: {fileID: 0}
   itemDescription: Port to Connect Motherboard to SATA
   itemIconPrefab: {fileID: 0}
@@ -3525,7 +3525,7 @@ MonoBehaviour:
   isPowerButton: 0
   isWirePort: 1
   parentComponent: {fileID: 0}
-  connectorType: 
+  connectorType: SATA
   isPSUPort: 0
   isOccupied: 0
   connectedTo: {fileID: 0}

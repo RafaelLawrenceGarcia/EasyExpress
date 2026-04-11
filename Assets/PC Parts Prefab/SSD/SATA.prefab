@@ -134,6 +134,7 @@ MonoBehaviour:
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}
@@ -200,7 +201,6 @@ GameObject:
   - component: {fileID: 1469624382259338666}
   - component: {fileID: 6899733153908924057}
   - component: {fileID: 3123417618124359970}
-  - component: {fileID: 5210772196251957032}
   m_Layer: 6
   m_Name: SATA Port
   m_TagString: Untagged
@@ -329,54 +329,12 @@ MonoBehaviour:
   isPowerButton: 0
   isWirePort: 1
   parentComponent: {fileID: 0}
-  connectorType: 
+  connectorType: SATA
   isPSUPort: 0
   isOccupied: 0
   connectedTo: {fileID: 0}
   attachedWire: {fileID: 0}
-  ribbonAxis: {x: 0, y: 1, z: 0}
-  placeHeadHere: 0
-  wireHead: {fileID: 0}
-  blockingParts: []
-  childPartsToDetach: []
-  isInventorySlot: 0
-  inventoryEntryId: 
-  fault: 0
-  faultDescription: 
-  linkedPrebuiltWire: {fileID: 0}
---- !u!114 &5210772196251957032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3512942960253333540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
-  compatTags: []
-  requiredTags: []
-  powerDraw: 0
-  maxWattage: 0
-  requiresScrewdriver: 1
-  itemName: Unknown Item
-  partCategory: Generic
-  inventoryIcon: {fileID: 0}
-  itemDescription: No description available.
-  itemIconPrefab: {fileID: 0}
-  cachedShopIcon: {fileID: 0}
-  isMainObject: 0
-  isRemovable: 0
-  isPowerButton: 0
-  isWirePort: 0
-  parentComponent: {fileID: 0}
-  connectorType: 
-  isPSUPort: 0
-  isOccupied: 0
-  connectedTo: {fileID: 0}
-  attachedWire: {fileID: 0}
+  sourceOwner: 
   ribbonAxis: {x: 0, y: 1, z: 0}
   placeHeadHere: 0
   wireHead: {fileID: 0}

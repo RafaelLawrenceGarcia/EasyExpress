@@ -86,24 +86,10 @@ public class PlayerWallet : MonoBehaviour
             SaveData();
             return true;
         }
-        else if ((currentGold + maxLoanLimit - currentDebt) >= amount)
-        {
-            float remainingCost = amount - currentGold;
-            currentGold = 0;
-            currentDebt += remainingCost;
 
-            Debug.Log("Bought with a loan! Added ₱" + remainingCost + " to debt.");
-            UpdateUI();
-            SaveData();
-            return true;
-        }
-        else
-        {
-            Debug.Log("Purchase failed: Not enough money AND reached maximum loan limit!");
-            return false;
-        }
+        Debug.Log("Not enough gold to purchase.");
+        return false;
     }
-
     public void UpdateUI()
     {
         if (goldText != null)

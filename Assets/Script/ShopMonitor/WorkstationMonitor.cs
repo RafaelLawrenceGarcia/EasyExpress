@@ -62,10 +62,9 @@ public class WorkstationMonitor : MonoBehaviour
         }
         else if (isOn && errorScreen != null)
         {
-            // Dynamically update error screen if faults are fixed while PC is on
-            errorScreen.SetActive(currentPC.HasAnyFault());
+            bool isNoDisplay = currentPC.lastPowerResult == PowerResult.NoDisplay;
+            errorScreen.SetActive(currentPC.HasAnyFault() && !isNoDisplay);
         }
-
         // ═══════════════════════════════════════════════════════════
         //  FIX: The old code had an emission kill here that ran
         //  EVERY FRAME, overriding UpdateMonitorVisuals and keeping

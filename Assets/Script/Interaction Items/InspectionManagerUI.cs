@@ -53,6 +53,17 @@ public partial class InspectionManager
             }
         }
 
+        // ── FALLBACK: wire port on spawned part with no linkedPrebuiltWire ──
+        if (part.isWirePort && part.linkedPrebuiltWire == null && currentClone != null)
+        {
+            IPrebuiltWire fallbackWire = FindNearestPrebuiltWire(part);
+            if (fallbackWire != null)
+            {
+                if (fallbackWire.IsConnected) HandlePrebuiltWireDisconnect(fallbackWire);
+                else HandlePrebuiltWireConnect(fallbackWire);
+                return;
+            }
+        }
         if (part.isRemovable && part.linkedPrebuiltWire != null)
         {
             IPrebuiltWire wire = part.GetPrebuiltWire();
@@ -172,6 +183,24 @@ public partial class InspectionManager
         string extra = "";
         if (part.isWirePort)
         {
+            // Try fallback PrebuiltWire before showing dynamic-port tooltip
+            if (part.linkedPrebuiltWire == null && currentClone != null)
+            {
+                IPrebuiltWire fallbackWire = FindNearestPrebuiltWire(part);
+                if (fallbackWire != null)
+                {
+                    tooltipPanel.SetActive(true);
+                    tooltipAnchored = false;
+                    if (tooltipTitle) tooltipTitle.text = fallbackWire.WireName;
+                    tooltipBody.text = fallbackWire.IsConnected
+                        ? "Click to disconnect."
+                        : fallbackWire.IsRequiredComponentInstalled(currentClone.transform)
+                            ? "Click to connect."
+                            : $"Install {fallbackWire.RequiredPartCategory} first.";
+                    return;
+                }
+            }
+
             string side = part.isPSUPort ? "PSU" : "Device";
             extra = $"\n<size=80%>[{part.connectorType}] {side} port"
                   + (part.isOccupied ? " - CONNECTED" : " - empty") + "</size>";
@@ -260,5 +289,54 @@ public partial class InspectionManager
             bool cleaned = dust.CleanTick(Time.deltaTime);
             if (cleaned) Debug.Log("PC is now clean!");
         }
+    }
+    IPrebuiltWire FindNearestPrebuiltWire(InspectableItem clickedPort)
+    {
+        if (currentClone == null) return null;
+
+        string clickedType = clickedPort.connectorType;  // e.g. "8-Pin", "24-Pin", "SATA"
+
+        IPrebuiltWire best = null;
+        float bestDist = float.MaxValue;
+        bool bestMatchedType = false;
+
+        foreach (MonoBehaviour mb in currentClone.GetComponentsInChildren<MonoBehaviour>(true))
+        {
+            IPrebuiltWire w = mb as IPrebuiltWire;
+            if (w == null) continue;
+            if (w.ConnectorPort == null) continue;
+
+            float dist = Vector3.Distance(
+                clickedPort.transform.position,
+                w.ConnectorPort.transform.position);
+
+            // Check if connector types match
+            bool typesMatch = !string.IsNullOrEmpty(clickedType)
+                           && !string.IsNullOrEmpty(w.ConnectorPort.connectorType)
+                           && clickedType == w.ConnectorPort.connectorType;
+
+            // Priority 1: matching connector type (pick closest among matches)
+            // Priority 2: distance only (if no type matches found)
+            if (typesMatch)
+            {
+                if (!bestMatchedType || dist < bestDist)
+                {
+                    best = w;
+                    bestDist = dist;
+                    bestMatchedType = true;
+                }
+            }
+            else if (!bestMatchedType && dist < 0.5f)
+            {
+                // Only use distance fallback if no type match found yet
+                if (dist < bestDist)
+                {
+                    best = w;
+                    bestDist = dist;
+                }
+            }
+        }
+
+        return best;
     }
 }

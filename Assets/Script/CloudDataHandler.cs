@@ -409,7 +409,87 @@ public class CloudDataHandler : MonoBehaviour
     // =============================================
     //  SERIALIZATION HELPERS
     // =============================================
+    // =============================================
+    //  PRE-LOAD — Call from Main Menu BEFORE loading gameplay scene
+    //  Fetches cloud data, writes critical prefs, THEN loads scene.
+    // =============================================
 
+    /// <summary>
+    /// Call this from your main menu "Continue" / "Play" button instead of
+    /// SceneManager.LoadScene directly. It fetches cloud data first, writes
+    /// CurrentDay + TutorialDone to PlayerPrefs, then loads the scene.
+    /// </summary>
+    public void PreloadAndContinue(string sceneName)
+    {
+        if (!GameSession.IsLoggedIn)
+        {
+            Debug.Log("[CloudSave] Not logged in — loading scene directly.");
+            PlayerPrefs.SetInt("IsLoadingGame", 1);
+            PlayerPrefs.Save();
+            UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+            return;
+        }
+
+        StartCoroutine(PreloadRoutine(sceneName));
+    }
+
+    System.Collections.IEnumerator PreloadRoutine(string sceneName)
+    {
+        bool done = false;
+        bool success = false;
+
+        PlayFabClientAPI.GetUserData(new GetUserDataRequest(),
+            result =>
+            {
+                if (result.Data != null && result.Data.ContainsKey("GameData"))
+                {
+                    string json = result.Data["GameData"].Value;
+                    if (!string.IsNullOrEmpty(json))
+                    {
+                        GamePersistData data = JsonUtility.FromJson<GamePersistData>(json);
+
+                        // Write critical prefs BEFORE scene loads
+                        PlayerPrefs.SetInt("CurrentDay", data.currentDay);
+                        PlayerPrefs.SetInt("TutorialDone", data.tutorialDone ? 1 : 0);
+                        PlayerPrefs.SetInt("IsLoadingGame", 1);
+                        PlayerPrefs.SetFloat("SavedGold", data.gold);
+                        PlayerPrefs.SetFloat("SavedGameTime", data.gameTime);
+                        PlayerPrefs.SetInt("HasSaveData", 1);
+                        PlayerPrefs.Save();
+
+                        Debug.Log($"[CloudSave] Pre-load complete — Day {data.currentDay}, Tutorial={data.tutorialDone}");
+                        success = true;
+                    }
+                }
+
+                if (!success)
+                {
+                    // No cloud data — fresh start
+                    PlayerPrefs.SetInt("CurrentDay", 1);
+                    PlayerPrefs.SetInt("TutorialDone", 0);
+                    PlayerPrefs.SetInt("IsLoadingGame", 0);
+                    PlayerPrefs.SetFloat("SavedGold", 0f);
+                    PlayerPrefs.SetInt("HasSaveData", 0);
+                    PlayerPrefs.Save();
+                    Debug.Log("[CloudSave] Pre-load — no cloud data, fresh start.");
+                }
+
+                done = true;
+            },
+            error =>
+            {
+                Debug.LogWarning("[CloudSave] Pre-load failed: " + error.GenerateErrorReport());
+                PlayerPrefs.SetInt("IsLoadingGame", 1);
+                PlayerPrefs.Save();
+                done = true;
+            });
+
+        // Wait for PlayFab response
+        while (!done)
+            yield return null;
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+    }
     SavedJob SerializeJob(EmailData job)
     {
         SavedJob saved = new SavedJob();
