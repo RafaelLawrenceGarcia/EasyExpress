@@ -13066,7 +13066,6 @@ MonoBehaviour:
   statusText: {fileID: 0}
   optionsBackButton: {fileID: 673948059}
   gameplaySceneName: Gameplay
-  authManager: {fileID: 1740808176}
 --- !u!4 &1348517413
 Transform:
   m_ObjectHideFlags: 0
@@ -16240,13 +16239,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1740808171}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc2904ac007aa324095d216a5189c589, type: 3}
+  m_Script: {fileID: 11500000, guid: d8148a16d646a214bb6d1f81b2feca3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AuthManager
   loginOverlay: {fileID: 1740808171}
-  mainCanvas: {fileID: 1165837497}
-  loginPanel: {fileID: 1740808171}
-  registerPanel: {fileID: 786744854}
+  loginPanel: {fileID: 1555617545}
+  registerPanel: {fileID: 480276191}
   loginEmailInput: {fileID: 2111929757}
   loginPasswordInput: {fileID: 565704150}
   loginMessageText: {fileID: 1952738014}
@@ -16257,7 +16255,7 @@ MonoBehaviour:
   registerMessageText: {fileID: 1157378479}
   loginShowPasswordToggle: {fileID: 1691770090}
   registerShowPasswordToggle: {fileID: 259880784}
-  playOfflineButton: {fileID: 198978271}
+  playOfflineButton: {fileID: 0}
   offlineSceneName: 
 --- !u!1 &1748031397
 GameObject:
