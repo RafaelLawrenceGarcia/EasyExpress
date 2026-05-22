@@ -9837,10 +9837,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5221818994451435427}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33a9b2af5bf810b4db40d1a2caae718c, type: 3}
+  m_Script: {fileID: 11500000, guid: fbf1dff5115d3fb449b69896ec6c4d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
-  type: 2
+  type: 0
 --- !u!1 &5279714814167200626
 GameObject:
   m_ObjectHideFlags: 0
@@ -12303,10 +12303,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6045767257924579890}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33a9b2af5bf810b4db40d1a2caae718c, type: 3}
+  m_Script: {fileID: 11500000, guid: fbf1dff5115d3fb449b69896ec6c4d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
-  type: 2
+  type: 0
 --- !u!114 &5248741772411205381
 MonoBehaviour:
   m_ObjectHideFlags: 0

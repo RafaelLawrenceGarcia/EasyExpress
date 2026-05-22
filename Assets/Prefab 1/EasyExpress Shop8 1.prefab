@@ -246,7 +246,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 119771109804859500}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec401b6b18f22c647a01e836358c1f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8659392b6117e72469c3ca3e642dee1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlotData
   isOccupied: 0
@@ -4983,8 +4983,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: PC
+  partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: GAWA NAMIN TO MANIWALA KA
+  itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
+  isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  sourceOwner: 
+  ribbonAxis: {x: 0, y: 1, z: 0}
+  placeHeadHere: 0
+  wireHead: {fileID: 0}
+  blockingParts: []
+  childPartsToDetach: []
+  isInventorySlot: 0
+  inventoryEntryId: 
+  fault: 0
+  faultDescription: 
+  linkedPrebuiltWire: {fileID: 0}
 --- !u!65 &5227049454177697277
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7513,7 +7543,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3931757649126429054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec401b6b18f22c647a01e836358c1f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8659392b6117e72469c3ca3e642dee1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlotData
   isOccupied: 0
@@ -7830,10 +7860,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4049746909767028161}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcd3cb2aaf357d44387fa2cc54e5c612, type: 3}
+  m_Script: {fileID: 11500000, guid: c005cb4af7ba8ec46a7ddb70c450d6d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneDoor
-  sceneName: City
+  sceneName: 
   minLoadingTime: 3
   loadingScreenPanel: {fileID: 0}
   progressBar: {fileID: 0}
@@ -7903,7 +7933,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4072059328289979365}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec401b6b18f22c647a01e836358c1f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8659392b6117e72469c3ca3e642dee1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlotData
   isOccupied: 0
@@ -8581,7 +8611,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4386428445941143121}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec401b6b18f22c647a01e836358c1f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8659392b6117e72469c3ca3e642dee1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlotData
   isOccupied: 0
@@ -10390,8 +10420,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: PC
+  partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: GAWA NAMIN TO MANIWALA KA
+  itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
+  isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  sourceOwner: 
+  ribbonAxis: {x: 0, y: 1, z: 0}
+  placeHeadHere: 0
+  wireHead: {fileID: 0}
+  blockingParts: []
+  childPartsToDetach: []
+  isInventorySlot: 0
+  inventoryEntryId: 
+  fault: 0
+  faultDescription: 
+  linkedPrebuiltWire: {fileID: 0}
 --- !u!65 &2857160635440648090
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10795,7 +10855,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5813843613487462339}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec401b6b18f22c647a01e836358c1f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8659392b6117e72469c3ca3e642dee1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlotData
   isOccupied: 0
@@ -11650,7 +11710,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6375173850790142219}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec401b6b18f22c647a01e836358c1f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8659392b6117e72469c3ca3e642dee1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlotData
   isOccupied: 0
@@ -12277,8 +12337,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a026ba3e36912040911ca89ee3d09a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InspectableItem
+  compatTags: []
+  requiredTags: []
+  powerDraw: 0
+  maxWattage: 0
+  requiresScrewdriver: 1
   itemName: PC
+  partCategory: Generic
+  inventoryIcon: {fileID: 0}
   itemDescription: GAWA NAMIN TO MANIWALA KA
+  itemIconPrefab: {fileID: 0}
+  cachedShopIcon: {fileID: 0}
+  isMainObject: 0
+  isRemovable: 0
+  isPowerButton: 0
+  isWirePort: 0
+  parentComponent: {fileID: 0}
+  connectorType: 
+  isPSUPort: 0
+  isOccupied: 0
+  connectedTo: {fileID: 0}
+  attachedWire: {fileID: 0}
+  sourceOwner: 
+  ribbonAxis: {x: 0, y: 1, z: 0}
+  placeHeadHere: 0
+  wireHead: {fileID: 0}
+  blockingParts: []
+  childPartsToDetach: []
+  isInventorySlot: 0
+  inventoryEntryId: 
+  fault: 0
+  faultDescription: 
+  linkedPrebuiltWire: {fileID: 0}
 --- !u!65 &858923703045085852
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12487,7 +12577,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6986078472060674246}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec401b6b18f22c647a01e836358c1f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8659392b6117e72469c3ca3e642dee1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlotData
   isOccupied: 0

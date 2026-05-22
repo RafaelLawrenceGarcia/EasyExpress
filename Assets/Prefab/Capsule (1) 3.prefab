@@ -179,7 +179,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CustomerInside
   npcName: Customer
   jobRequest: 
-  budget: 0
+  reward: 0
   assignedJob: {fileID: 0}
   partDatabase: {fileID: 11400000, guid: 990bc3f4022393f41bb03754786c6ec1, type: 2}
   willBrowseFirst: 1
@@ -191,6 +191,7 @@ MonoBehaviour:
   isServed: 0
   isAtSpot: 0
   mySpawner: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!114 &-580255972435901364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,7 +201,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2756965066219999757}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33a9b2af5bf810b4db40d1a2caae718c, type: 3}
+  m_Script: {fileID: 11500000, guid: fbf1dff5115d3fb449b69896ec6c4d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialTarget
   type: 0

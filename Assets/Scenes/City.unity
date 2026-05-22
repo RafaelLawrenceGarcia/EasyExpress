@@ -2297,12 +2297,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2471030766159639888}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcd3cb2aaf357d44387fa2cc54e5c612, type: 3}
+  m_Script: {fileID: 11500000, guid: c005cb4af7ba8ec46a7ddb70c450d6d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneDoor
-  sceneName: Gameplay
+  sceneName: 
   minLoadingTime: 3
-  loadingScreenPanel: {fileID: 701883381}
+  loadingScreenPanel: {fileID: 0}
   progressBar: {fileID: 0}
 --- !u!33 &755980298092258622
 MeshFilter:

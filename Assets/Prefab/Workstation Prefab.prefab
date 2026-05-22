@@ -2373,7 +2373,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8811571767776688025}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: CloseCurrentApp
         m_Mode: 1
@@ -2709,7 +2709,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 100.000565}
+  m_AnchoredPosition: {x: 0, y: 100.000015}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &900078635420788461
@@ -5482,7 +5482,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8811571767776688025}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: CloseCurrentApp
         m_Mode: 1
@@ -9227,8 +9227,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1467085264218317815}
   m_HandleRect: {fileID: 5780592800262608396}
   m_Direction: 2
-  m_Value: -0.0000054931643
-  m_Size: 0.666622
+  m_Value: 0
+  m_Size: 0.6666667
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -10007,9 +10007,9 @@ GameObject:
   - component: {fileID: 1113431222175915007}
   - component: {fileID: 2331249409291541514}
   - component: {fileID: 7590374483361727382}
-  - component: {fileID: 8811571767776688025}
-  - component: {fileID: 6717851729275893033}
   - component: {fileID: 5973216675632918642}
+  - component: {fileID: 5169258566408072087}
+  - component: {fileID: 8832659747824259653}
   m_Layer: 5
   m_Name: Computer Canvas
   m_TagString: Untagged
@@ -10105,98 +10105,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &8811571767776688025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3050374967311123928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 538e1a27c9023c443a2b5cc3001673f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PCController
-  screenContainer: {fileID: 6125035164845882788}
-  desktopPanel: {fileID: 1285758944489022701}
-  biosPanel: {fileID: 2766350941801322568}
-  bootScreenPanel: {fileID: 2214903425250141143}
-  bootLogoText: {fileID: 7287098657980202318}
-  bootLoadingBar: {fileID: 5056383936649101307}
-  bootStatusText: {fileID: 2308545264760386683}
-  noSignalPanel: {fileID: 5736574109639445555}
-  noDisplayPanel: {fileID: 0}
-  bsodPanel: {fileID: 3133673137436380812}
-  bsodErrorCodeText: {fileID: 8864470444687224891}
-  bsodMessageText: {fileID: 4968336285412969539}
-  storeAppPanel: {fileID: 6316405794337966616}
-  storeAppPanel2: {fileID: 501402007509763124}
-  furnitureShopPanel: {fileID: 0}
-  emailAppPanel: {fileID: 4145440642992335820}
-  programsAppPanel: {fileID: 1575296498341981476}
-  wallpaperAppPanel: {fileID: 0}
-  searchPanel: {fileID: 3583626103739593544}
-  searchInput: {fileID: 2071385936673466625}
-  searchableIcons: []
-  pcID: DefaultPC
---- !u!114 &6717851729275893033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3050374967311123928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4d428967d1cbe94a8db8a35f430c203, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonitorShopBridge
-  searchInputField: {fileID: 6213946339474420201}
-  categoryScreen: {fileID: 9016897705623652870}
-  itemListScreen: {fileID: 501402007509763124}
-  categoryContentContainer: {fileID: 3795891562861636489}
-  filterCategoriesPanel: {fileID: 3491549256338431984}
-  thisShopPanel: {fileID: 1860199987433682568}
-  previousShopPanel: {fileID: 501402007509763124}
-  contentContainer: {fileID: 2972042699217541065}
-  productDetailsPanel: {fileID: 1860199987433682568}
-  detailNameText: {fileID: 2299221200109319332}
-  detailDescText: {fileID: 7578145817299880066}
-  detailPriceText: {fileID: 3307454962836103001}
-  detailImage: {fileID: 4667998723617674495}
-  detailAddToCartBtn: {fileID: 3119998708208861500}
-  cartIconButtons:
-  - {fileID: 7565774234493700764}
-  - {fileID: 5203949446979388527}
-  - {fileID: 5255586995176432561}
-  cartPanelRect: {fileID: 488473972293970431}
-  cartContentContainer: {fileID: 8636173935168396387}
-  totalCostText: {fileID: 3345258081701716122}
-  notificationPanel: {fileID: 2465540094130627088}
-  notificationText: {fileID: 3946188294647002646}
-  notificationRect: {fileID: 7141200251584528018}
-  inboxContentContainer: {fileID: 5601487058247958209}
-  emailDetailPanel: {fileID: 1055551709985065792}
-  senderText: {fileID: 2829252438741669478}
-  subjectText: {fileID: 3675504891394699046}
-  bodyText: {fileID: 7400421934224172458}
-  rewardText: {fileID: 7941567113937199277}
-  objectivesText: {fileID: 6692407145705199055}
-  detailProfilePic: {fileID: 2898855485983870914}
-  pcStatusPanel: {fileID: 6697137738042517950}
-  pcProblemsText: {fileID: 8059719646238551536}
-  requestedPartsText: {fileID: 0}
-  pcSpecsContentContainer: {fileID: 5991861631256100950}
-  acceptButton: {fileID: 7664664837899704785}
-  rejectButton: {fileID: 5467092625219945344}
-  completeButton: {fileID: 6916230055112115926}
-  completionPanel: {fileID: 5184929932782185786}
-  completionTitle: {fileID: 3261848768564128526}
-  completionDetails: {fileID: 5105944619236849229}
-  completionPay: {fileID: 2698821888290505957}
-  completionRating: {fileID: 6489333871801251050}
-  completionOKButton: {fileID: 2308586945670829957}
-  pcStatusButton: {fileID: 2987402091735740710}
 --- !u!114 &5973216675632918642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10209,6 +10117,98 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efce9868f5bfb554ba106fa8b9d2fdb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopRelay
+--- !u!114 &5169258566408072087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3050374967311123928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aa1612ba517884428298d3dffc9008c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PCController
+  screenContainer: {fileID: 3050374967311123928}
+  desktopPanel: {fileID: 6125035164845882788}
+  biosPanel: {fileID: 2766350941801322568}
+  bootScreenPanel: {fileID: 2214903425250141143}
+  bootLogoText: {fileID: 7287098657980202318}
+  bootLoadingBar: {fileID: 5056383936649101307}
+  bootStatusText: {fileID: 2308545264760386683}
+  noSignalPanel: {fileID: 5736574109639445555}
+  noDisplayPanel: {fileID: 3692017160079310842}
+  bsodPanel: {fileID: 3133673137436380812}
+  bsodErrorCodeText: {fileID: 8864470444687224891}
+  bsodMessageText: {fileID: 4968336285412969539}
+  storeAppPanel: {fileID: 9016897705623652870}
+  storeAppPanel2: {fileID: 501402007509763124}
+  furnitureShopPanel: {fileID: 0}
+  emailAppPanel: {fileID: 4145440642992335820}
+  programsAppPanel: {fileID: 1575296498341981476}
+  wallpaperAppPanel: {fileID: 0}
+  searchPanel: {fileID: 1575296498341981476}
+  searchInput: {fileID: 4523242692469707218}
+  searchableIcons: []
+  pcID: DefaultPC
+--- !u!114 &8832659747824259653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3050374967311123928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2594effcb7304d439be5f86e492990a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonitorShopBridge
+  searchInputField: {fileID: 630920234666129295}
+  categoryScreen: {fileID: 9016897705623652870}
+  itemListScreen: {fileID: 501402007509763124}
+  categoryContentContainer: {fileID: 2970139791228738031}
+  filterCategoriesPanel: {fileID: 3491549256338431984}
+  thisShopPanel: {fileID: 1860199987433682568}
+  previousShopPanel: {fileID: 501402007509763124}
+  contentContainer: {fileID: 2970139791228738031}
+  productDetailsPanel: {fileID: 8204027119132238688}
+  detailNameText: {fileID: 2299221200109319332}
+  detailDescText: {fileID: 7578145817299880066}
+  detailPriceText: {fileID: 3307454962836103001}
+  detailImage: {fileID: 4667998723617674495}
+  detailAddToCartBtn: {fileID: 3119998708208861500}
+  cartIconButtons:
+  - {fileID: 7565774234493700764}
+  - {fileID: 5203949446979388527}
+  - {fileID: 5255586995176432561}
+  cartPanelRect: {fileID: 488473972293970431}
+  cartContentContainer: {fileID: 1941768843782180738}
+  totalCostText: {fileID: 3345258081701716122}
+  notificationPanel: {fileID: 2465540094130627088}
+  notificationText: {fileID: 3946188294647002646}
+  notificationRect: {fileID: 7141200251584528018}
+  inboxContentContainer: {fileID: 579047301312200667}
+  emailDetailPanel: {fileID: 1055551709985065792}
+  senderText: {fileID: 2829252438741669478}
+  subjectText: {fileID: 3675504891394699046}
+  bodyText: {fileID: 7400421934224172458}
+  rewardText: {fileID: 7941567113937199277}
+  objectivesText: {fileID: 6692407145705199055}
+  detailProfilePic: {fileID: 2898855485983870914}
+  pcStatusPanel: {fileID: 6697137738042517950}
+  pcProblemsText: {fileID: 8059719646238551536}
+  requestedPartsText: {fileID: 0}
+  pcSpecsContentContainer: {fileID: 0}
+  acceptButton: {fileID: 7664664837899704785}
+  rejectButton: {fileID: 5467092625219945344}
+  completeButton: {fileID: 6916230055112115926}
+  completionPanel: {fileID: 0}
+  completionTitle: {fileID: 0}
+  completionDetails: {fileID: 0}
+  completionPay: {fileID: 0}
+  completionRating: {fileID: 0}
+  completionOKButton: {fileID: 0}
+  pcStatusButton: {fileID: 2987402091735740710}
 --- !u!1 &3059277922753102652
 GameObject:
   m_ObjectHideFlags: 0
@@ -16612,8 +16612,8 @@ GameObject:
   - component: {fileID: 526611036743524549}
   - component: {fileID: 6756675104179322633}
   - component: {fileID: 523654939187826305}
-  - component: {fileID: 8275358754093301397}
   - component: {fileID: 787374986299132410}
+  - component: {fileID: 7080381549428766477}
   m_Layer: 6
   m_Name: Cube
   m_TagString: WorkstationMonitor
@@ -16694,29 +16694,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8275358754093301397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5190076615505567683}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 539ade0e06e16d84da475c7e7f0d6fcb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WorkstationMonitor
-  linkedWorkstationSlot: {fileID: 1428420680023677059}
-  monitorScreen: {fileID: 3050374967311123928}
-  errorScreen: {fileID: 3133673137436380812}
-  noSignalScreen: {fileID: 5736574109639445555}
-  screenRenderer: {fileID: 3916841115420659031}
-  onEmissionColor: {r: 0, g: 0, b: 0, a: 0}
-  offEmissionColor: {r: 0, g: 0, b: 0, a: 1}
-  localUICamera: {fileID: 3504955104983984860}
-  localCanvas: {fileID: 1113431222175915007}
-  localOS: {fileID: 8811571767776688025}
-  uiBridge: {fileID: 6717851729275893033}
 --- !u!65 &787374986299132410
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -16738,6 +16715,29 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.02153662, y: 0.007999982, z: 0.009928874}
   m_Center: {x: 0.0024887128, y: -0.00000011908154, z: -0.0009644374}
+--- !u!114 &7080381549428766477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5190076615505567683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1ad22c9535f52a489dfa7f65bb26361, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WorkstationMonitor
+  linkedWorkstationSlot: {fileID: 11263148334349122}
+  monitorScreen: {fileID: 6125035164845882788}
+  errorScreen: {fileID: 0}
+  noSignalScreen: {fileID: 5736574109639445555}
+  screenRenderer: {fileID: 0}
+  onEmissionColor: {r: 1, g: 1.6, b: 2, a: 2}
+  offEmissionColor: {r: 0, g: 0, b: 0, a: 1}
+  localUICamera: {fileID: 3504955104983984860}
+  localCanvas: {fileID: 1113431222175915007}
+  localOS: {fileID: 5169258566408072087}
+  uiBridge: {fileID: 0}
 --- !u!1 &5190798981827140244
 GameObject:
   m_ObjectHideFlags: 0
@@ -18406,7 +18406,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8811571767776688025}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: OpenEmailApp
         m_Mode: 1
@@ -20800,7 +20800,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8811571767776688025}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: CloseCurrentApp
         m_Mode: 1
@@ -21478,7 +21478,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8811571767776688025}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: OpenStoreApp
         m_Mode: 1
@@ -25836,7 +25836,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8811571767776688025}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: OpenProgramsApp
         m_Mode: 1
@@ -27317,7 +27317,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8811571767776688025}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: CloseCurrentApp
         m_Mode: 1
@@ -31036,7 +31036,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8811571767776688025}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: CloseCurrentApp
         m_Mode: 1
@@ -31128,22 +31128,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: PC PLACEMENT WORKSTATION (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1092183315580528941, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7794865147663136313, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 11263148334349122}
   m_SourcePrefab: {fileID: 100100000, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
---- !u!114 &1428420680023677059 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1092183315580528941, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
+--- !u!1 &8130720775555745687 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7794865147663136313, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
   m_PrefabInstance: {fileID: 2088249632515371438}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+--- !u!114 &11263148334349122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8130720775555745687}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec401b6b18f22c647a01e836358c1f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8659392b6117e72469c3ca3e642dee1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlotData
+  isOccupied: 0
+  currentItem: {fileID: 0}
 --- !u!4 &8907504177787428141 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7450990221412854915, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}

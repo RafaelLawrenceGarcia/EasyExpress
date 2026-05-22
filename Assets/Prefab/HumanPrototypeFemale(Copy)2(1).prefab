@@ -696,6 +696,8 @@ MonoBehaviour:
   dayText: {fileID: 6839799461249482583}
   timeText: {fileID: 7167645328150277960}
   dayLengthInMinutes: 10
+  dayStartHour: 6
+  dayEndHour: 19
 --- !u!1 &1301071445428078262
 GameObject:
   m_ObjectHideFlags: 0
@@ -2060,6 +2062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44dbd63a416b5114395ebf9366235b35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteract
+  storageDetectRange: 3
   interactRange: 10
   interactLayer:
     serializedVersion: 2
@@ -2069,15 +2072,21 @@ MonoBehaviour:
   movementScript: {fileID: 0}
   cameraScript: {fileID: 0}
   inspectionManager: {fileID: 0}
+  dayTransitionManager: {fileID: 0}
+  interactionPrompt: {fileID: 0}
+  pressEText: {fileID: 0}
+  pcMenu: {fileID: 0}
   goldHUD: {fileID: 3902125869956570711}
-  pressEPrompt: {fileID: 6240276670241739377}
   dialoguePanel: {fileID: 8328336512675032019}
   computerOS: {fileID: 0}
   nameText: {fileID: 2815258235713426653}
   dialogueText: {fileID: 5152507490391217725}
+  characterPicture: {fileID: 0}
+  computerCanvas: {fileID: 0}
   option1Button: {fileID: 1480880820327929349}
   option2Button: {fileID: 3672788777857563221}
   exitButton: {fileID: 2678600787903807132}
+  highlightMaterial: {fileID: 0}
 --- !u!114 &1952680271918362691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4175,7 +4184,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5707482123526285941}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 413dd14b1ec432b42aec7d50862e3190, type: 3}
+  m_Script: {fileID: 11500000, guid: 2304184635eb46f4ab6c38ea2f67407e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneFader
   fadeSpeed: 1.5
@@ -6731,7 +6740,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8659238545902060868}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 413dd14b1ec432b42aec7d50862e3190, type: 3}
+  m_Script: {fileID: 11500000, guid: 2304184635eb46f4ab6c38ea2f67407e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneFader
   fadeSpeed: 1.5
@@ -7385,11 +7394,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!1 &6240276670241739377 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7716098616500859804, guid: dc026f287a81ea9438fcb086537ff921, type: 3}
-  m_PrefabInstance: {fileID: 4435197217292165613}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8328336512675032019 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5627473890640464446, guid: dc026f287a81ea9438fcb086537ff921, type: 3}

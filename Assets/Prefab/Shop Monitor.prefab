@@ -2606,7 +2606,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8454278530046214437}
+      - m_Target: {fileID: 161348927978808519}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: CloseCurrentApp
         m_Mode: 1
@@ -5266,7 +5266,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8454278530046214437}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: OpenEmailApp
         m_Mode: 1
@@ -9057,7 +9057,7 @@ GameObject:
   - component: {fileID: 4555943326303357104}
   - component: {fileID: 3022437634283194203}
   - component: {fileID: 4306333030818541267}
-  - component: {fileID: 9076599728354463142}
+  - component: {fileID: 3938764557356898903}
   m_Layer: 0
   m_Name: Quad
   m_TagString: Untagged
@@ -9159,7 +9159,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &9076599728354463142
+--- !u!114 &3938764557356898903
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9168,18 +9168,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3608615454612633067}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9084e0e180856a44b81cd78f62669482, type: 3}
+  m_Script: {fileID: 11500000, guid: ae3ed969539cfa54284e1e06d4e071a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PCScreenController
-  screenCanvas: {fileID: 6745464396137259669}
-  panels:
-  - {fileID: 548824138511538369}
-  - {fileID: 5940635343133300610}
-  - {fileID: 8826040489327834800}
-  - {fileID: 1303794135939819708}
-  - {fileID: 2955503802439165276}
-  - {fileID: 8183125619553308694}
-  - {fileID: 3030539645691933642}
+  screenCanvas: {fileID: 4614147711011793443}
+  panels: []
 --- !u!1 &3620728014138825823
 GameObject:
   m_ObjectHideFlags: 0
@@ -12349,7 +12342,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8454278530046214437}
+      - m_Target: {fileID: 161348927978808519}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: CloseCurrentApp
         m_Mode: 1
@@ -13792,7 +13785,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8454278530046214437}
+      - m_Target: {fileID: 161348927978808519}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: CloseCurrentApp
         m_Mode: 1
@@ -14053,7 +14046,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2647193944f2ecd48854321c306380ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoBuildWorkstationPC
-  targetSlot: {fileID: 6437965000263783355}
+  targetSlot: {fileID: 5571098969528085876}
   partDatabase: {fileID: 11400000, guid: 990bc3f4022393f41bb03754786c6ec1, type: 2}
   autoPlugInPower: 1
   autoTurnOn: 1
@@ -16424,7 +16417,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8454278530046214437}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: OpenProgramsApp
         m_Mode: 1
@@ -17099,9 +17092,8 @@ GameObject:
   - component: {fileID: 548300959955739773}
   - component: {fileID: 1777585099343970842}
   - component: {fileID: 903421675586690522}
-  - component: {fileID: 8454278530046214437}
-  - component: {fileID: 594816434158717746}
-  - component: {fileID: 6125347377758788955}
+  - component: {fileID: 161348927978808519}
+  - component: {fileID: 589759823370685587}
   m_Layer: 5
   m_Name: Computer Canvas
   m_TagString: Untagged
@@ -17197,7 +17189,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &8454278530046214437
+--- !u!114 &161348927978808519
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -17206,31 +17198,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 6745464396137259669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 538e1a27c9023c443a2b5cc3001673f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 8aa1612ba517884428298d3dffc9008c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PCController
-  screenContainer: {fileID: 4614147711011793443}
-  desktopPanel: {fileID: 548824138511538369}
+  screenContainer: {fileID: 6745464396137259669}
+  desktopPanel: {fileID: 4614147711011793443}
   biosPanel: {fileID: 2185499196254326197}
   bootScreenPanel: {fileID: 6756942907203512581}
   bootLogoText: {fileID: 8644320261454694208}
   bootLoadingBar: {fileID: 1863322756270711486}
   bootStatusText: {fileID: 4601842591045342051}
   noSignalPanel: {fileID: 6946927836354488631}
+  noDisplayPanel: {fileID: 4607478929640533134}
   bsodPanel: {fileID: 3810303864209175304}
   bsodErrorCodeText: {fileID: 989179616898334168}
   bsodMessageText: {fileID: 5185462924616445299}
-  storeAppPanel: {fileID: 1303794135939819708}
+  storeAppPanel: {fileID: 2425925381579925769}
   storeAppPanel2: {fileID: 5218832083744134878}
   furnitureShopPanel: {fileID: 0}
   emailAppPanel: {fileID: 2955503802439165276}
   programsAppPanel: {fileID: 3030539645691933642}
   wallpaperAppPanel: {fileID: 0}
-  searchPanel: {fileID: 6781367217228065612}
-  searchInput: {fileID: 981250032107647248}
+  searchPanel: {fileID: 3030539645691933642}
+  searchInput: {fileID: 2886841041598122171}
   searchableIcons: []
   pcID: DefaultPC
---- !u!114 &594816434158717746
+--- !u!114 &589759823370685587
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -17239,10 +17232,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6745464396137259669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4d428967d1cbe94a8db8a35f430c203, type: 3}
+  m_Script: {fileID: 11500000, guid: f2594effcb7304d439be5f86e492990a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonitorShopBridge
-  searchInputField: {fileID: 2613697899444972433}
+  searchInputField: {fileID: 4396989051876357562}
   categoryScreen: {fileID: 2425925381579925769}
   itemListScreen: {fileID: 5218832083744134878}
   categoryContentContainer: {fileID: 7781995101556759094}
@@ -17250,62 +17243,7 @@ MonoBehaviour:
   thisShopPanel: {fileID: 9094626835920561671}
   previousShopPanel: {fileID: 5218832083744134878}
   contentContainer: {fileID: 5604560376335893551}
-  productDetailsPanel: {fileID: 9094626835920561671}
-  detailNameText: {fileID: 1673286223242249850}
-  detailDescText: {fileID: 1577572111077278838}
-  detailPriceText: {fileID: 8533738482912941796}
-  detailImage: {fileID: 3750974508624265626}
-  detailAddToCartBtn: {fileID: 6732902817158520975}
-  cartIconButtons: []
-  cartPanelRect: {fileID: 7009398031779563360}
-  cartContentContainer: {fileID: 8708500229684542655}
-  totalCostText: {fileID: 5089822029724129822}
-  notificationPanel: {fileID: 8183125619553308694}
-  notificationText: {fileID: 5928357407214196993}
-  notificationRect: {fileID: 197112951979488787}
-  inboxContentContainer: {fileID: 7569472226122543084}
-  emailDetailPanel: {fileID: 0}
-  senderText: {fileID: 8325411243570617659}
-  subjectText: {fileID: 5814076543413646411}
-  bodyText: {fileID: 6332742692989634465}
-  rewardText: {fileID: 0}
-  objectivesText: {fileID: 1831253159856967331}
-  detailProfilePic: {fileID: 6763636211328994512}
-  pcStatusPanel: {fileID: 6055029761380059659}
-  pcProblemsText: {fileID: 2585654776430680047}
-  requestedPartsText: {fileID: 0}
-  pcSpecsContentContainer: {fileID: 7003921606423331044}
-  acceptButton: {fileID: 8569713246334994422}
-  rejectButton: {fileID: 2774024053867319212}
-  completeButton: {fileID: 7988476936287175396}
-  completionPanel: {fileID: 7364945652645514953}
-  completionTitle: {fileID: 8995010598700454438}
-  completionDetails: {fileID: 7160520694881959919}
-  completionPay: {fileID: 5896145141850439146}
-  completionRating: {fileID: 2838983517770218158}
-  completionOKButton: {fileID: 5514647314411443982}
-  pcStatusButton: {fileID: 0}
---- !u!114 &6125347377758788955
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6745464396137259669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4d428967d1cbe94a8db8a35f430c203, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MonitorShopBridge
-  searchInputField: {fileID: 2613697899444972433}
-  categoryScreen: {fileID: 2425925381579925769}
-  itemListScreen: {fileID: 5218832083744134878}
-  categoryContentContainer: {fileID: 7781995101556759094}
-  filterCategoriesPanel: {fileID: 3951059641463247926}
-  thisShopPanel: {fileID: 9094626835920561671}
-  previousShopPanel: {fileID: 5218832083744134878}
-  contentContainer: {fileID: 5604560376335893551}
-  productDetailsPanel: {fileID: 9094626835920561671}
+  productDetailsPanel: {fileID: 5676115117805079387}
   detailNameText: {fileID: 1673286223242249850}
   detailDescText: {fileID: 1577572111077278838}
   detailPriceText: {fileID: 8533738482912941796}
@@ -17330,18 +17268,18 @@ MonoBehaviour:
   objectivesText: {fileID: 1831253159856967331}
   detailProfilePic: {fileID: 6763636211328994512}
   pcStatusPanel: {fileID: 6055029761380059659}
-  pcProblemsText: {fileID: 0}
-  requestedPartsText: {fileID: 0}
-  pcSpecsContentContainer: {fileID: 0}
+  pcProblemsText: {fileID: 5602101187369336933}
+  requestedPartsText: {fileID: 7066294381356391438}
+  pcSpecsContentContainer: {fileID: 3423217168102757381}
   acceptButton: {fileID: 8569713246334994422}
   rejectButton: {fileID: 2774024053867319212}
   completeButton: {fileID: 7988476936287175396}
-  completionPanel: {fileID: 7364945652645514953}
-  completionTitle: {fileID: 8995010598700454438}
-  completionDetails: {fileID: 7160520694881959919}
-  completionPay: {fileID: 5896145141850439146}
-  completionRating: {fileID: 2838983517770218158}
-  completionOKButton: {fileID: 5514647314411443982}
+  completionPanel: {fileID: 0}
+  completionTitle: {fileID: 0}
+  completionDetails: {fileID: 0}
+  completionPay: {fileID: 0}
+  completionRating: {fileID: 0}
+  completionOKButton: {fileID: 0}
   pcStatusButton: {fileID: 8068676797376462347}
 --- !u!1 &6756942907203512581
 GameObject:
@@ -18728,7 +18666,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8454278530046214437}
+      - m_Target: {fileID: 161348927978808519}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: CloseCurrentApp
         m_Mode: 1
@@ -20325,7 +20263,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8454278530046214437}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: OpenStoreApp
         m_Mode: 1
@@ -22532,7 +22470,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8454278530046214437}
+      - m_Target: {fileID: 161348927978808519}
         m_TargetAssemblyTypeName: PCController, Assembly-CSharp
         m_MethodName: CloseCurrentApp
         m_Mode: 1
@@ -23360,9 +23298,9 @@ GameObject:
   - component: {fileID: 1567629524743660863}
   - component: {fileID: 7401185705834316246}
   - component: {fileID: 3431687777184411208}
-  - component: {fileID: 3430525966054716324}
   - component: {fileID: 7985181851112927530}
-  - component: {fileID: 7276599805510917904}
+  - component: {fileID: 3267290599969558796}
+  - component: {fileID: 1444827005464191623}
   m_Layer: 6
   m_Name: Cube
   m_TagString: WorkstationMonitor
@@ -23443,29 +23381,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3430525966054716324
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8735819020705933933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 539ade0e06e16d84da475c7e7f0d6fcb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WorkstationMonitor
-  linkedWorkstationSlot: {fileID: 6437965000263783355}
-  monitorScreen: {fileID: 6745464396137259669}
-  errorScreen: {fileID: 0}
-  noSignalScreen: {fileID: 0}
-  screenRenderer: {fileID: 3022437634283194203}
-  onEmissionColor: {r: 0.3745098, g: 0.5992157, b: 0.7490196, a: 0}
-  offEmissionColor: {r: 0, g: 0, b: 0, a: 1}
-  localUICamera: {fileID: 7599251360677666554}
-  localCanvas: {fileID: 548300959955739773}
-  localOS: {fileID: 8454278530046214437}
-  uiBridge: {fileID: 594816434158717746}
 --- !u!65 &7985181851112927530
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23487,7 +23402,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.015034799, y: 0.007999982, z: 0.009928874}
   m_Center: {x: 0.0057396106, y: -0.000000119085776, z: -0.0009644374}
---- !u!114 &7276599805510917904
+--- !u!114 &3267290599969558796
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -23496,12 +23411,35 @@ MonoBehaviour:
   m_GameObject: {fileID: 8735819020705933933}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 473fd0d924ac17140af067a6fbd60301, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f26328c39db729428cf764b54d86a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonitorInteraction
   screenController: {fileID: 0}
-  interactDistance: 10
+  interactDistance: 3
   playerTransform: {fileID: 0}
+--- !u!114 &1444827005464191623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8735819020705933933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1ad22c9535f52a489dfa7f65bb26361, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WorkstationMonitor
+  linkedWorkstationSlot: {fileID: 0}
+  monitorScreen: {fileID: 0}
+  errorScreen: {fileID: 0}
+  noSignalScreen: {fileID: 0}
+  screenRenderer: {fileID: 0}
+  onEmissionColor: {r: 1, g: 1.6, b: 2, a: 2}
+  offEmissionColor: {r: 0, g: 0, b: 0, a: 1}
+  localUICamera: {fileID: 0}
+  localCanvas: {fileID: 0}
+  localOS: {fileID: 0}
+  uiBridge: {fileID: 0}
 --- !u!1 &8751519712359823400
 GameObject:
   m_ObjectHideFlags: 0
@@ -25144,7 +25082,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: PC PLACEMENT WORKSTATION (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1092183315580528941, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
     m_RemovedGameObjects:
     - {fileID: 984653030531782335, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
     - {fileID: 914142719918330333, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
@@ -25177,6 +25116,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7794865147663136313, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8856890783996975389}
+    - targetCorrespondingSourceObject: {fileID: 7794865147663136313, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5571098969528085876}
   m_SourcePrefab: {fileID: 100100000, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
 --- !u!4 &3537355266698712597 stripped
 Transform:
@@ -25245,14 +25187,17 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6437965000263783355 stripped
+--- !u!114 &5571098969528085876
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1092183315580528941, guid: 60cb2b5ca29449642841b225f3dd39f9, type: 3}
-  m_PrefabInstance: {fileID: 6228489273593035414}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4205488434298440879}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec401b6b18f22c647a01e836358c1f7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 8659392b6117e72469c3ca3e642dee1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlotData
+  isOccupied: 0
+  currentItem: {fileID: 0}

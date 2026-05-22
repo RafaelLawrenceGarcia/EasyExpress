@@ -1414,11 +1414,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 801081596514047457}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d50a4417668bc1b47beaeb9433dc0ff3, type: 3}
+  m_Script: {fileID: 11500000, guid: 628289ad23e020a4ebcc613e13fb1e12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControlSettingsHandler
   sensitivitySlider: {fileID: 4664508010205760101}
-  sensitivityValueText: {fileID: 4309928760948747236}
+  sensitivityValueText: {fileID: 7628854149353264784}
   invertYToggle: {fileID: 4072771647070416478}
 --- !u!1 &1013101339932927528
 GameObject:
@@ -4441,14 +4441,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 4124599234784865578}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1f87cd2ff12a2a4780cbfa7f3aaea41, type: 3}
+  m_Script: {fileID: 11500000, guid: 30282e7c474d5f64290901fc9c7110ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OptionsController
-  allPanels:
-  - {fileID: 5668114065920403749}
-  - {fileID: 8431830627542897688}
-  - {fileID: 801081596514047457}
-  - {fileID: 387180149920197961}
+  audioBtn: {fileID: 351378509662197531}
+  videoBtn: {fileID: 3469979630459567222}
+  controlsBtn: {fileID: 2216134543529271615}
+  audioPanel: {fileID: 8431830627542897688}
+  videoPanel: {fileID: 5668114065920403749}
+  controlsPanel: {fileID: 801081596514047457}
+  activeTabColor: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+  inactiveTabColor: {r: 0.15, g: 0.15, b: 0.15, a: 1}
+  activeTextColor: {r: 1, g: 1, b: 1, a: 1}
+  inactiveTextColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
 --- !u!1 &4160468508193215430
 GameObject:
   m_ObjectHideFlags: 0
@@ -6447,14 +6452,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 5668114065920403749}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4b973bb84439924fb695443650c3787, type: 3}
+  m_Script: {fileID: 11500000, guid: 856bf106eded1b14cbefddc47a0a2dca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VideoSettingsHandler
   resolutionText: {fileID: 5251048010752249597}
+  resolutionLeftBtn: {fileID: 4482753154554001379}
+  resolutionRightBtn: {fileID: 2424434245645520701}
   fullscreenText: {fileID: 7879051288022207251}
+  fullscreenLeftBtn: {fileID: 3235699621199434277}
+  fullscreenRightBtn: {fileID: 4747983180233269807}
   vsyncText: {fileID: 5905744395172865229}
-  qualityText: {fileID: 6611707857401328682}
+  vsyncLeftBtn: {fileID: 4825124588442191358}
+  vsyncRightBtn: {fileID: 7136020069694366046}
   brightnessSlider: {fileID: 4735805906858040256}
+  brightnessPercentText: {fileID: 62324416002216895}
   globalVolume: {fileID: 0}
 --- !u!1 &5819448800887311266
 GameObject:
@@ -9063,13 +9074,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 8431830627542897688}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92110c36cbb4962489330efc9595b058, type: 3}
+  m_Script: {fileID: 11500000, guid: b36e83ae99fe55b4d8b2428362f297bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioSettingsHandler
   mainMixer: {fileID: 24100000, guid: 7b1cf32f0b2bf4b47b779577cc4ed4a2, type: 2}
   masterSlider: {fileID: 239114090843224601}
   musicSlider: {fileID: 6810366200842169683}
   sfxSlider: {fileID: 4970105145979959963}
+  masterPercentText: {fileID: 7183906046450164980}
+  musicPercentText: {fileID: 8750156934495958194}
+  sfxPercentText: {fileID: 6168859500251219308}
 --- !u!1 &8548507404057902161
 GameObject:
   m_ObjectHideFlags: 0

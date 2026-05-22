@@ -46,7 +46,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 854695644703675373}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7acaef7b172b0a74390e746fb7a62f55, type: 3}
+  m_Script: {fileID: 11500000, guid: 351dbae28b8f63548aaf3c3aee1f3aad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerCordInteraction
   isPluggedIntoPC: 0
@@ -693,7 +693,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4978957320067690521}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7acaef7b172b0a74390e746fb7a62f55, type: 3}
+  m_Script: {fileID: 11500000, guid: 351dbae28b8f63548aaf3c3aee1f3aad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PowerCordInteraction
   isPluggedIntoPC: 0

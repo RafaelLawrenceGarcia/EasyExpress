@@ -100,10 +100,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 304055030551993319}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d681e28642e222459633bf5da844a7e, type: 3}
+  m_Script: {fileID: 11500000, guid: eaab5aba6847ef24eb4d822bf582377c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarAI
-  speed: 15
+  speed: 5
   rotationSpeed: 5
   stopDistance: 3
   obstacleLayer:
@@ -111,9 +111,9 @@ MonoBehaviour:
     m_Bits: 0
   groundLayer:
     serializedVersion: 2
-    m_Bits: 8
-  heightOffset: 0
-  modelCorrection: {x: 270, y: 0, z: 0}
+    m_Bits: 0
+  heightOffset: 0.1
+  modelCorrection: {x: 0, y: 0, z: 0}
   currentNode: {fileID: 0}
 --- !u!54 &4028893361532363726
 Rigidbody:

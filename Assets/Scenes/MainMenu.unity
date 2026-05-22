@@ -3756,10 +3756,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 405247402}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 856da66ec5f7ce14e913bea33931902d, type: 3}
+  m_Script: {fileID: 11500000, guid: 48e6aa1b7edfc4b4a9ab1b5ed380c5d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFloat
-  moveDirection: {x: 1, y: 1, z: 0}
+  moveDirection: {x: 1, y: 0, z: 0}
   speed: 0.5
   distance: 1
 --- !u!114 &405247405
@@ -9281,7 +9281,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 961779491}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92110c36cbb4962489330efc9595b058, type: 3}
+  m_Script: {fileID: 11500000, guid: b36e83ae99fe55b4d8b2428362f297bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioSettingsHandler
   mainMixer: {fileID: 0}
@@ -11239,14 +11239,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1148245681}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4b973bb84439924fb695443650c3787, type: 3}
+  m_Script: {fileID: 11500000, guid: 856bf106eded1b14cbefddc47a0a2dca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VideoSettingsHandler
   resolutionText: {fileID: 442275342}
   resolutionLeftBtn: {fileID: 2092866274}
   resolutionRightBtn: {fileID: 780436789}
   fullscreenText: {fileID: 1999461147}
-  fullscreenLeftBtn: {fileID: 2092866274}
+  fullscreenLeftBtn: {fileID: 478242103}
   fullscreenRightBtn: {fileID: 780436789}
   vsyncText: {fileID: 1833714294}
   vsyncLeftBtn: {fileID: 125444863}
@@ -12793,7 +12793,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1325589471}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1f87cd2ff12a2a4780cbfa7f3aaea41, type: 3}
+  m_Script: {fileID: 11500000, guid: 30282e7c474d5f64290901fc9c7110ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OptionsController
   audioBtn: {fileID: 1734175465}
@@ -13866,7 +13866,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1447075583}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0a10b0c5b4ae594fa0faaf12b7f3c63, type: 3}
+  m_Script: {fileID: 11500000, guid: 47cb7bcb275f18e468bbd2be8846ea8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSettingsCloud
 --- !u!4 &1447075585
@@ -16532,11 +16532,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1810993835}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc2904ac007aa324095d216a5189c589, type: 3}
+  m_Script: {fileID: 11500000, guid: d8148a16d646a214bb6d1f81b2feca3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AuthManager
-  loginOverlay: {fileID: 1740808171}
-  mainCanvas: {fileID: 1165837497}
+  loginOverlay: {fileID: 0}
   loginPanel: {fileID: 0}
   registerPanel: {fileID: 0}
   loginEmailInput: {fileID: 0}
@@ -16954,7 +16953,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1885387093}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d50a4417668bc1b47beaeb9433dc0ff3, type: 3}
+  m_Script: {fileID: 11500000, guid: 628289ad23e020a4ebcc613e13fb1e12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControlSettingsHandler
   sensitivitySlider: {fileID: 677732897}

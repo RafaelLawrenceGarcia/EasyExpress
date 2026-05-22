@@ -2642,6 +2642,7 @@ MonoBehaviour:
   target: {fileID: 0}
   viewModeKey: 118
   isFirstPerson: 0
+  forceFPSMode: 0
   tpsDistance: 5
   tpsHeight: 1.5
   tpsFOV: 60
@@ -2988,7 +2989,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6088911678093205690}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 413dd14b1ec432b42aec7d50862e3190, type: 3}
+  m_Script: {fileID: 11500000, guid: 2304184635eb46f4ab6c38ea2f67407e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneFader
   fadeSpeed: 1.5
@@ -3804,11 +3805,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 096ad116eefd5924c82c963c76e6cb46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  speed: 6
+  walkSpeed: 3
+  runSpeed: 8
   gravity: -9.81
-  jumpHeight: 1.5
   turnSmoothTime: 0.1
   cam: {fileID: 0}
+  animator: {fileID: 0}
   canMove: 1
 --- !u!114 &3895308167548406213
 MonoBehaviour:
@@ -3822,18 +3824,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44dbd63a416b5114395ebf9366235b35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteract
+  storageDetectRange: 3
   interactRange: 10
   interactLayer:
     serializedVersion: 2
     m_Bits: 64
-  pressEPrompt: {fileID: 0}
+  mainCam: {fileID: 8053832429410033531}
+  placementManager: {fileID: 0}
+  movementScript: {fileID: 0}
+  cameraScript: {fileID: 0}
+  inspectionManager: {fileID: 0}
+  dayTransitionManager: {fileID: 0}
+  interactionPrompt: {fileID: 0}
+  pressEText: {fileID: 0}
+  pcMenu: {fileID: 0}
+  goldHUD: {fileID: 0}
   dialoguePanel: {fileID: 0}
+  computerOS: {fileID: 0}
   nameText: {fileID: 0}
   dialogueText: {fileID: 0}
+  characterPicture: {fileID: 0}
+  computerCanvas: {fileID: 0}
   option1Button: {fileID: 0}
   option2Button: {fileID: 0}
   exitButton: {fileID: 0}
-  mainCam: {fileID: 8053832429410033531}
+  highlightMaterial: {fileID: 0}
 --- !u!1 &6872703257617983995
 GameObject:
   m_ObjectHideFlags: 0
