@@ -3,116 +3,80 @@ using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro; 
 
-/// <summary>
-/// INTRO VIDEO PLAYER
-/// ─────────────────────────────────────────────────────────────────────
-/// Place this on a GameObject in a dedicated "IntroVideo" scene.
-///
-/// SCENE SETUP:
-///   1. Create a new Scene called "IntroVideo" and add it as Scene 0
-///      in File > Build Settings (drag it to the top of the list).
-///   2. In the scene, create:
-///        • A Canvas (Screen Space - Overlay, Sort Order 10)
-///            └─ RawImage (stretch to fill canvas) ← assign to videoDisplay
-///            └─ Text/TMP "Press ESC to Skip"      ← assign to skipHintText
-///        • An empty GameObject with a VideoPlayer component
-///            └─ Assign your .mov file to "Video Clip"
-///            └─ Set Render Mode to "Render Texture"
-///            └─ Create a RenderTexture asset and assign it here AND
-///               to the RawImage's Texture field
-///   3. Assign the scene name that holds your Login/MainMenu to
-///      mainMenuSceneName below.
-/// ─────────────────────────────────────────────────────────────────────
-/// </summary>
 public class IntroVideoPlayer : MonoBehaviour
 {
-    [Header("Video")]
-    [Tooltip("The VideoPlayer component that will play your .mov intro.")]
+    [Header("Video Settings")]
     public VideoPlayer videoPlayer;
+    public GameObject skipHintText;
 
-    [Header("UI")]
-    [Tooltip("RawImage used to display the video. Set its texture to the same RenderTexture assigned to the VideoPlayer.")]
-    public RawImage videoDisplay;
+    [Header("Scene Transition Settings")]
+    public string loginSceneName = "MAINMENU"; 
+    public float fadeDuration = 1.0f; 
+    public float pauseInBlack = 0.3f; 
+    
+    [Tooltip("How many seconds the loading screen will stay on screen.")]
+    public float loadingScreenDuration = 4.0f; // Now you can change this in Unity!
+    
+    [Tooltip("The pure black UI image that covers the whole screen.")]
+    public Image fadeOverlay;         
 
-    [Tooltip("Optional 'Press ESC to Skip' hint text shown on screen.")]
-    public Text skipHintText;          // use TMP_Text if you prefer TextMeshPro
+    [Header("Loading Canvas (Optional)")]
+    public GameObject loadingScreenPanel;
+    public Slider progressBar;
+    public TextMeshProUGUI progressText;
 
-    [Header("Scene Transition")]
-    [Tooltip("Name of the scene to load after the video (your MainMenu / Login scene).")]
-    public string mainMenuSceneName = "MainMenu";
+    private bool isTransitioning = false;
 
-    [Tooltip("Fade-to-black duration in seconds before scene switch.")]
-    public float fadeDuration = 0.5f;
-
-    // ── private state ───────────────────────────────────────────────────
-    private bool _skipping = false;
-
-    // ── optional fade image (create a full-screen black Image sibling of videoDisplay) ──
-    [Header("Fade (optional)")]
-    [Tooltip("A full-screen black Image used for the fade-out. Leave empty to skip fade.")]
-    public Image fadeOverlay;
-
-    // ────────────────────────────────────────────────────────────────────
     void Start()
     {
-        // Make sure fade overlay starts invisible
         if (fadeOverlay != null)
         {
             Color c = fadeOverlay.color;
             c.a = 0f;
             fadeOverlay.color = c;
+            fadeOverlay.gameObject.SetActive(false); 
         }
 
-        if (videoPlayer == null)
+        if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
+
+        if (videoPlayer != null)
         {
-            Debug.LogError("[IntroVideoPlayer] No VideoPlayer assigned! Skipping to menu.");
-            LoadMainMenu();
-            return;
+            videoPlayer.loopPointReached += EndVideo;
+            videoPlayer.Play();
         }
-
-        // Hook the finished event
-        videoPlayer.loopPointReached += OnVideoFinished;
-
-        videoPlayer.Play();
     }
 
-    // ────────────────────────────────────────────────────────────────────
     void Update()
     {
-        if (_skipping) return;
+        if (isTransitioning) return;
 
-        // ESC or any key / touch skips the intro
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
-            Skip();
+            EndVideo(videoPlayer);
         }
     }
 
-    // ────────────────────────────────────────────────────────────────────
-    void OnVideoFinished(VideoPlayer vp)
+    void EndVideo(VideoPlayer vp)
     {
-        if (_skipping) return;
-        StartCoroutine(FadeAndLoad());
-    }
-
-    public void Skip()
-    {
-        if (_skipping) return;
-        _skipping = true;
+        if (isTransitioning) return;
+        isTransitioning = true;
 
         if (videoPlayer != null) videoPlayer.Stop();
-        if (skipHintText != null) skipHintText.gameObject.SetActive(false);
-
-        StartCoroutine(FadeAndLoad());
+        if (skipHintText != null) skipHintText.SetActive(false);
+        
+        StartCoroutine(FadeAndLoadSequence());
     }
 
-    // ────────────────────────────────────────────────────────────────────
-    IEnumerator FadeAndLoad()
+    IEnumerator FadeAndLoadSequence()
     {
-        // Optional fade to black
-        if (fadeOverlay != null && fadeDuration > 0f)
+        // ---------------------------------------------------------
+        // PHASE 1: Fade the Video to pure Black
+        // ---------------------------------------------------------
+        if (fadeOverlay != null)
         {
+            fadeOverlay.gameObject.SetActive(true);
             float elapsed = 0f;
             Color c = fadeOverlay.color;
             while (elapsed < fadeDuration)
@@ -124,11 +88,66 @@ public class IntroVideoPlayer : MonoBehaviour
             }
         }
 
-        LoadMainMenu();
-    }
+        yield return new WaitForSeconds(pauseInBlack);
 
-    void LoadMainMenu()
-    {
-        SceneManager.LoadScene(mainMenuSceneName);
+        // ---------------------------------------------------------
+        // PHASE 2: Turn on Loading UI, Fade Black away to reveal it!
+        // ---------------------------------------------------------
+        if (loadingScreenPanel != null)
+        {
+            loadingScreenPanel.SetActive(true);
+            if (progressBar != null) progressBar.value = 0f;
+            if (progressText != null) progressText.text = "0%";
+
+            if (fadeOverlay != null)
+            {
+                float elapsed = 0f;
+                Color c = fadeOverlay.color;
+                while (elapsed < fadeDuration)
+                {
+                    elapsed += Time.deltaTime;
+                    c.a = 1f - Mathf.Clamp01(elapsed / fadeDuration);
+                    fadeOverlay.color = c;
+                    yield return null;
+                }
+                fadeOverlay.gameObject.SetActive(false);
+            }
+        }
+
+        // ---------------------------------------------------------
+        // PHASE 3: Actually Load the Main Menu with Smooth Bar
+        // ---------------------------------------------------------
+        AsyncOperation operation = SceneManager.LoadSceneAsync(loginSceneName);
+        operation.allowSceneActivation = false;
+
+        float timer = 0f;
+
+        while (!operation.isDone)
+        {
+            timer += Time.deltaTime;
+
+            float loadProgress = Mathf.Clamp01(operation.progress / 0.9f);
+            float timeProgress = Mathf.Clamp01(timer / loadingScreenDuration);
+            float currentProgress = Mathf.Min(loadProgress, timeProgress);
+
+            if (progressBar != null) progressBar.value = currentProgress;
+            if (progressText != null) progressText.text = Mathf.RoundToInt(currentProgress * 100f) + "%"; 
+
+            // When the timer is up AND the scene is ready...
+            if (operation.progress >= 0.9f && timer >= loadingScreenDuration)
+            {
+                // Force it to exactly 100%
+                if (progressBar != null) progressBar.value = 1f;
+                if (progressText != null) progressText.text = "100%";
+                
+                // WAIT FOR HALF A SECOND SO THE PLAYER CAN ACTUALLY SEE IT HIT 100%
+                yield return new WaitForSeconds(0.5f);
+
+                // Jump to the Main Menu 
+                operation.allowSceneActivation = true;
+            }
+
+            yield return null;
+        }
     }
 }
