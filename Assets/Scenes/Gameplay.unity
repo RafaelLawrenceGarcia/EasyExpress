@@ -39540,6 +39540,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f5ce51533b16c34da736364b26f11fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialArrow
+  arrowRect: {fileID: 0}
+  playerCamera: {fileID: 0}
+  screenEdgeOffset: 150
+  arrowColor: {r: 1, g: 0.85, b: 0, a: 1}
+  arrowSize: 80
+  bounceAmount: 18
+  bounceSpeed: 3.5
 --- !u!4 &872536734
 Transform:
   m_ObjectHideFlags: 0
@@ -82739,7 +82746,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 374427566626879368, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.000946
+      value: 100.00044
       objectReference: {fileID: 0}
     - target: {fileID: 380236640057395779, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -87580,7 +87587,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 374427566626879368, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.00096
+      value: 100.00044
       objectReference: {fileID: 0}
     - target: {fileID: 380236640057395779, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -91220,7 +91227,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 374427566626879368, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.00096
+      value: 100.000435
       objectReference: {fileID: 0}
     - target: {fileID: 380236640057395779, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -99652,7 +99659,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6761423660927144584, guid: 47c09cc455470474bb19572d0f043263, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.00092
+      value: 100.000435
       objectReference: {fileID: 0}
     - target: {fileID: 7003921606423331044, guid: 47c09cc455470474bb19572d0f043263, type: 3}
       propertyPath: m_SizeDelta.y
@@ -108060,7 +108067,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6761423660927144584, guid: 47c09cc455470474bb19572d0f043263, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.00098
+      value: 100.00044
       objectReference: {fileID: 0}
     - target: {fileID: 7003921606423331044, guid: 47c09cc455470474bb19572d0f043263, type: 3}
       propertyPath: m_SizeDelta.y
@@ -108719,7 +108726,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 374427566626879368, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 100.000946
+      value: 100.00044
       objectReference: {fileID: 0}
     - target: {fileID: 380236640057395779, guid: c9baba36cf5ce9b449ebf7d6bb94cb4e, type: 3}
       propertyPath: m_AnchorMax.x
